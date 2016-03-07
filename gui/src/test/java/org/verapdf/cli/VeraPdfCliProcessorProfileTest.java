@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.verapdf.cli;
 
@@ -25,7 +25,6 @@ import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.ProfileDirectory;
 import org.verapdf.pdfa.validation.Profiles;
 import org.verapdf.pdfa.validation.ValidationProfile;
-import org.verapdf.validation.profile.parser.LegacyProfileConverter;
 
 import com.beust.jcommander.JCommander;
 
@@ -40,7 +39,7 @@ public class VeraPdfCliProcessorProfileTest {
      * Test method for
      * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
      * .
-     * 
+     *
      * @throws IOException
      * @throws FileNotFoundException
      * @throws ProfileException
@@ -68,31 +67,6 @@ public class VeraPdfCliProcessorProfileTest {
         }
     }
 
-    /**
-     * Test method for
-     * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
-     * .
-     * 
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws ProfileException
-     * @throws JAXBException
-     * @throws URISyntaxException
-     */
-    @Test
-    public final void testCreateProcessorFromArgsOldProfile()
-            throws ProfileException, FileNotFoundException, IOException,
-            JAXBException, URISyntaxException {
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = VeraPdfCliProcessorTest
-                .initialiseJCommander(parser);
-        jCommander.parse(new String[] {});
-        for (File profileFile : getProfiles()) {
-            testWithProfileFile(PDFAFlavour.fromString(profileFile.getName()),
-                    profileFile);
-        }
-    }
-
     private static void testWithProfileFile(final PDFAFlavour flavour,
             final File profileFile) throws ProfileException,
             FileNotFoundException, IOException, JAXBException {
@@ -107,13 +81,6 @@ public class VeraPdfCliProcessorProfileTest {
                     .createProcessorFromArgs(parser);
             try (InputStream is = new FileInputStream(profileFile)) {
                 ValidationProfile profile = Profiles.profileFromXml(is);
-                if (profile.equals(Profiles.defaultProfile())
-                        || (profile.getHexSha1Digest()
-                                .equals("sha-1 hash code"))) {
-                    try (InputStream lis = new FileInputStream(profileFile)) {
-                        profile = LegacyProfileConverter.fromLegacyStream(lis);
-                    }
-                }
                 assertEquals(flavour, proc.validator.getProfile()
                         .getPDFAFlavour());
                 assertTrue(profile != proc.validator.getProfile());

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.verapdf.cli;
 
@@ -38,7 +38,6 @@ import org.verapdf.report.FeaturesReport;
 import org.verapdf.report.HTMLReport;
 import org.verapdf.report.ItemDetails;
 import org.verapdf.report.MachineReadableReport;
-import org.verapdf.validation.profile.parser.LegacyProfileConverter;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -225,9 +224,6 @@ final class VeraPdfCliProcessor {
                     .getValidationProfileByFlavour(args.getFlavour());
         }
         ValidationProfile profile = profileFromFile(args.getProfileFile());
-        if (profile.equals(Profiles.defaultProfile())) {
-            profile = profileFromLegacyFile(args.getProfileFile());
-        }
 
         return profile;
     }
@@ -242,19 +238,6 @@ final class VeraPdfCliProcessor {
             }
             return profile;
         } catch (JAXBException e) {
-            e.printStackTrace();
-            return Profiles.defaultProfile();
-        }
-    }
-
-    private static ValidationProfile profileFromLegacyFile(
-            final File profileFile) throws FileNotFoundException, IOException {
-        ValidationProfile profile = Profiles.defaultProfile();
-        try (InputStream is = new FileInputStream(profileFile)) {
-            profile = LegacyProfileConverter.fromLegacyStream(is);
-            return profile;
-        } catch (ProfileException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             return Profiles.defaultProfile();
         }
