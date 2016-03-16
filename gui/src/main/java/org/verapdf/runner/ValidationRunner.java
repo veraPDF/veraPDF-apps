@@ -32,7 +32,7 @@ public class ValidationRunner {
      */
     public static ValidationResult runValidation(InputStream toValidate)
             throws VeraPDFException, IOException {
-        try (ModelParser loader = new ModelParser(toValidate)) {
+        try (ModelParser loader = new ModelParser(toValidate, PDFAFlavour.PDFA_1_B)) {
             org.verapdf.model.baselayer.Object root;
             try {
                 root = loader.getRoot();

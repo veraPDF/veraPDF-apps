@@ -1,21 +1,5 @@
 package org.verapdf.gui;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.TransformerException;
-
 import org.apache.log4j.Logger;
 import org.verapdf.core.ValidationException;
 import org.verapdf.features.pb.PBFeatureParser;
@@ -30,13 +14,20 @@ import org.verapdf.metadata.fixer.utils.FixerConfig;
 import org.verapdf.model.ModelParser;
 import org.verapdf.pdfa.PDFAValidator;
 import org.verapdf.pdfa.results.MetadataFixerResult;
-import org.verapdf.pdfa.results.ValidationResult;
 import org.verapdf.pdfa.results.MetadataFixerResult.RepairStatus;
+import org.verapdf.pdfa.results.ValidationResult;
 import org.verapdf.pdfa.validation.ValidationProfile;
 import org.verapdf.pdfa.validators.Validators;
 import org.verapdf.report.HTMLReport;
-import org.verapdf.report.ItemDetails;
 import org.verapdf.report.MachineReadableReport;
+
+import javax.swing.*;
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
+import java.io.*;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * Validates PDF in a new threat.
@@ -89,7 +80,7 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
         this.startTimeOfValidation = System.currentTimeMillis();
 
         try (ModelParser parser = new ModelParser(new FileInputStream(
-                this.pdf.getPath()))) {
+                this.pdf.getPath()), this.profile.getPDFAFlavour())) {
 
             if (this.processingType.isValidating()) {
                 validationResult = runValidator(parser);
