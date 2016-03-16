@@ -3,23 +3,8 @@
  */
 package org.verapdf.cli;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.TransformerException;
-
 import org.verapdf.cli.commands.FormatOption;
 import org.verapdf.cli.commands.VeraCliArgParser;
-import org.verapdf.core.ProfileException;
 import org.verapdf.core.ValidationException;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeaturesCollection;
@@ -33,11 +18,14 @@ import org.verapdf.pdfa.validation.Profiles;
 import org.verapdf.pdfa.validation.RuleId;
 import org.verapdf.pdfa.validation.ValidationProfile;
 import org.verapdf.pdfa.validators.Validators;
-import org.verapdf.report.CliReport;
-import org.verapdf.report.FeaturesReport;
-import org.verapdf.report.HTMLReport;
-import org.verapdf.report.ItemDetails;
-import org.verapdf.report.MachineReadableReport;
+import org.verapdf.report.*;
+
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
+import java.io.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -128,7 +116,7 @@ final class VeraPdfCliProcessor {
         ValidationResult validationResult = null;
         FeaturesCollection featuresCollection = null;
         long start = System.currentTimeMillis();
-        try (ModelParser toValidate = new ModelParser(toProcess)) {
+        try (ModelParser toValidate = new ModelParser(toProcess, this.validator.getProfile().getPDFAFlavour())) {
             if (this.validator != null) {
                 validationResult = this.validator.validate(toValidate);
             }
