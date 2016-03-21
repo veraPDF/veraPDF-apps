@@ -32,7 +32,7 @@ class CheckerPanel extends JPanel {
 
     //  TODO: Can I declare this renderer here?
 
-    private class ChooseFlavourRenderer extends JLabel implements ListCellRenderer {
+    private class ChooseFlavourRenderer extends JLabel implements ListCellRenderer<PDFAFlavour> {
 
         public ChooseFlavourRenderer() {
             setOpaque(true);
@@ -41,24 +41,24 @@ class CheckerPanel extends JPanel {
         }
 
         @Override
-        public Component getListCellRendererComponent(JList list, Object value,
+        public Component getListCellRendererComponent(JList<? extends PDFAFlavour> list, PDFAFlavour value,
         int index, boolean isSelected, boolean cellHasFocus) {
-            if(value.equals(PDFAFlavour.NO_FLAVOUR)) {
+            this.setText("Error in parsing flavour");
+            if(value == PDFAFlavour.NO_FLAVOUR) {
                 this.setText("Choose profile manually");
                 return this;
             }
-            else if(value.toString().matches("PDFA_\\d_\\w")) {
-                StringBuilder parsedFlavour = new StringBuilder();
-                String [] splitedFlavour = value.toString().split("_");
-                parsedFlavour.append("PDF/A-");
-                parsedFlavour.append(splitedFlavour[1]);
-                parsedFlavour.append(splitedFlavour[2].toUpperCase());
-                this.setText(parsedFlavour.toString());
+            else if(value.toString().matches("\\d\\w")) {
+                String valueString = value.toString();
+                String parsedFlavour = "PDF/A-";
+                parsedFlavour += valueString.charAt(0);
+                parsedFlavour += valueString.substring(1,2).toUpperCase();
+                this.setText(parsedFlavour);
                 return this;
             }
             else {
-                //TODO: Throw exception if constant in PDFAFlavour doesn't satisfy regex "PDFA_\d_\w"
-                return null;
+                //TODO: Throw exception if constant in PDFAFlavour doesn't satisfy regex "\d\w"
+                return this;
             }
         }
     }
@@ -174,6 +174,7 @@ class CheckerPanel extends JPanel {
         chooseFlavour = new JComboBox<>(PDFAFlavour.values());
         ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
         chooseFlavour.setRenderer(renderer);
+		chooseFlavour.setSelectedItem(PDFAFlavour.PDFA_1_B);
         setGridBagConstraintsParameters(gbc,
                 GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDX,
                 GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDY,
@@ -188,6 +189,7 @@ class CheckerPanel extends JPanel {
         this.chosenProfile = new JTextField(
 				GUIConstants.VALIDATION_PROFILE_NOT_CHOSEN);
 		this.chosenProfile.setEditable(false);
+		chosenProfile.setEnabled(false);	// We are starting with chosen flavour
 		setGridBagConstraintsParameters(gbc,
 				GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_GRIDX,
 				GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_GRIDY,
@@ -211,6 +213,7 @@ class CheckerPanel extends JPanel {
 
 		final JButton chooseProfile = new JButton(
 				GUIConstants.CHOOSE_PROFILE_BUTTON_TEXT);
+		chooseProfile.setEnabled(false);	// We are starting with chosen flavour
 		setGridBagConstraintsParameters(gbc,
 				GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_GRIDX,
 				GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_GRIDY,
@@ -335,24 +338,20 @@ class CheckerPanel extends JPanel {
             }
         });
 
-        chooseFlavour.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if(chooseFlavour.getSelectedIndex() == 0) {
-                    chooseProfile.setEnabled(true);
-                    chosenProfile.setEnabled(true);
-                }
-                else if(chooseFlavour.getSelectedIndex() > 0 && pdfFile == null) {
-                    chooseProfile.setEnabled(false);
-                    chosenProfile.setEnabled(false);
-                }
-                else if(chooseFlavour.getSelectedIndex() > 0 && pdfFile != null) {
-                    chooseProfile.setEnabled(false);
-                    chosenProfile.setEnabled(false);
-                    validate.setEnabled(true);
-                }
-            }
-        });
+		chooseFlavour.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				if(chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR) {
+					chooseProfile.setEnabled(true);
+					chosenProfile.setEnabled(true);
+				}
+				else if(chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR) {
+					chooseProfile.setEnabled(false);
+					chosenProfile.setEnabled(false);
+				}
+				setValidationButtonEnability();
+			}
+		});
 
 		chooseProfile.addActionListener(new ActionListener() {
 			@Override
@@ -366,7 +365,6 @@ class CheckerPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					ProcessingType type = (ProcessingType) CheckerPanel.this.processingType.getSelectedItem();
-
 					ValidationProfile prof = Profiles.profileFromXml(new FileInputStream(profile));
 					CheckerPanel.this.validateWorker = new ValidateWorker(
                             CheckerPanel.this, CheckerPanel.this.pdfFile, prof,
@@ -561,21 +559,16 @@ class CheckerPanel extends JPanel {
 					case GUIConstants.PDF:
 						this.pdfFile = chooser.getSelectedFile();
 						this.chosenPDF.setText(this.pdfFile.getAbsolutePath());
-						if (this.profile != null || this.chooseFlavour.getSelectedIndex() != 0) {
-							this.validate.setEnabled(true);
-						}
 						break;
 					case GUIConstants.XML:
 						this.profile = chooser.getSelectedFile();
 						this.chosenProfile.setText(this.profile.getAbsolutePath());
-						if (this.pdfFile != null) {
-							this.validate.setEnabled(true);
-						}
 						break;
 					default:
 						// This method used only for previous two cases.
 						// So do nothing.
 				}
+				setValidationButtonEnability();
 			}
 		}
 	}
@@ -625,6 +618,14 @@ class CheckerPanel extends JPanel {
 				}
 			}
 		}
+	}
+
+	void setValidationButtonEnability() {
+		if(this.pdfFile != null &&
+				(this.profile != null || this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR))
+				validate.setEnabled(true);
+		else
+			validate.setEnabled(false);
 	}
 
 	void setConfig(Config config) {
