@@ -171,7 +171,7 @@ class CheckerPanel extends JPanel {
         gbl.setConstraints(this.fixMetadata, gbc);
         this.add(this.fixMetadata);
 
-        chooseFlavour = new JComboBox<>(PDFAFlavour.values());
+        chooseFlavour = new JComboBox<PDFAFlavour>(PDFAFlavour.values());
         ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
         chooseFlavour.setRenderer(renderer);
 		chooseFlavour.setSelectedItem(PDFAFlavour.PDFA_1_B);
@@ -365,7 +365,12 @@ class CheckerPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					ProcessingType type = (ProcessingType) CheckerPanel.this.processingType.getSelectedItem();
-					ValidationProfile prof = Profiles.profileFromXml(new FileInputStream(profile));
+                    ValidationProfile prof;
+                    if(chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR)
+					    prof = Profiles.profileFromXml(new FileInputStream(profile));
+                    else
+                        prof = Profiles.getVeraProfileDirectory().
+                                getValidationProfileByFlavour((PDFAFlavour) chooseFlavour.getSelectedItem());
 					CheckerPanel.this.validateWorker = new ValidateWorker(
                             CheckerPanel.this, CheckerPanel.this.pdfFile, prof,
                             CheckerPanel.this.config, type,
