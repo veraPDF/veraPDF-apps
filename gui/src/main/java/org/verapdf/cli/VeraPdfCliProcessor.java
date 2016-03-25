@@ -8,9 +8,14 @@ import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.ValidationException;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeaturesCollection;
+import org.verapdf.metadata.fixer.impl.MetadataFixerImpl;
+import org.verapdf.metadata.fixer.impl.pb.FixerConfigImpl;
+import org.verapdf.metadata.fixer.utils.FileGenerator;
+import org.verapdf.metadata.fixer.utils.FixerConfig;
 import org.verapdf.model.ModelParser;
 import org.verapdf.pdfa.PDFAValidator;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+import org.verapdf.pdfa.results.MetadataFixerResult;
 import org.verapdf.pdfa.results.TestAssertion;
 import org.verapdf.pdfa.results.TestAssertion.Status;
 import org.verapdf.pdfa.results.ValidationResult;
@@ -23,6 +28,10 @@ import org.verapdf.report.*;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,12 +48,18 @@ final class VeraPdfCliProcessor {
     final boolean verbose;
     final PDFAValidator validator;
 
-    private VeraPdfCliProcessor() throws FileNotFoundException, IOException {
+    final int maxFailuresDisplayed;
+
+    final boolean fixMetadata;
+    final String prefix;
+    final Path saveFolder;
+
+    private VeraPdfCliProcessor() throws IOException {
         this(new VeraCliArgParser());
     }
 
     private VeraPdfCliProcessor(final VeraCliArgParser args)
-            throws FileNotFoundException, IOException {
+            throws IOException {
         this.format = args.getFormat();
         this.extractFeatures = args.extractFeatures();
         this.logPassed = args.logPassed();
@@ -52,8 +67,13 @@ final class VeraPdfCliProcessor {
         this.verbose = args.isVerbose();
         ValidationProfile profile = profileFromArgs(args);
         this.validator = (profile == Profiles.defaultProfile()) ? null
-                : Validators.createValidator(profile, logPassed(args));
+                : Validators.createValidator(profile, logPassed(args), args.maxFailures());
 
+        this.maxFailuresDisplayed = args.maxFailuresDisplayed();
+
+        this.fixMetadata = args.fixMetadata();
+        this.prefix = args.prefix();
+        this.saveFolder = FileSystems.getDefault().getPath(args.saveFolder());
     }
 
     private static boolean logPassed(final VeraCliArgParser args) {
@@ -161,7 +181,7 @@ final class VeraPdfCliProcessor {
                     this.validator == null ? Profiles.defaultProfile()
                             : this.validator.getProfile(), validationResult,
                     this.logPassed, null, featuresCollection,
-                    System.currentTimeMillis() - start);
+                    System.currentTimeMillis() - start, this.maxFailuresDisplayed);
             outputMrr(report, this.format == FormatOption.HTML);
         }
     }
@@ -229,5 +249,56 @@ final class VeraPdfCliProcessor {
             e.printStackTrace();
             return Profiles.defaultProfile();
         }
+    }
+
+    private MetadataFixerResult fixMetadata(ValidationResult info,
+                                            ModelParser parser, String fileName) throws IOException {
+        FixerConfig fixerConfig = FixerConfigImpl.getFixerConfig(
+                parser.getPDDocument(), info);
+        Path path = this.saveFolder;
+        File tempFile = File.createTempFile("fixedTempFile", ".pdf");
+        tempFile.deleteOnExit();
+        try (OutputStream tempOutput = new BufferedOutputStream(
+                new FileOutputStream(tempFile))) {
+            MetadataFixerResult fixerResult = MetadataFixerImpl.fixMetadata(
+                    tempOutput, fixerConfig);
+            MetadataFixerResult.RepairStatus repairStatus = fixerResult
+                    .getRepairStatus();
+            if (repairStatus == MetadataFixerResult.RepairStatus.SUCCESS || repairStatus == MetadataFixerResult.RepairStatus.ID_REMOVED) {
+                File resFile;
+                boolean flag = true;
+                while (flag) {
+                    if (!path.toString().trim().isEmpty()) {
+                        resFile = FileGenerator.createOutputFile(this.saveFolder.toFile(),
+                                fileName, prefix);
+                    } else {
+                        resFile = FileGenerator.createOutputFile(new File(fileName),
+                                prefix);
+                    }
+
+                    try {
+                        Files.copy(tempFile.toPath(), resFile.toPath());
+                        flag = false;
+                    } catch (FileAlreadyExistsException e) {
+                        System.err.println(e);
+                    }
+                }
+            }
+            return fixerResult;
+        }
+    }
+
+    /**
+     * Checks is the parameter path a valid for saving fixed file
+     *
+     * @param path path for check
+     * @return true if it is valid
+     */
+    private static boolean isValidFolderPath(Path path) {
+        if (path == null) {
+            return false;
+        }
+        File f = path.toFile();
+        return path.toString().isEmpty() || (f.isDirectory() && f.canWrite());
     }
 }

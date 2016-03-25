@@ -24,7 +24,7 @@ public class VeraCliFormatTest {
     @Test
     public final void testGetFormatDefault() {
         // Test default is XML
-        assertTrue(VeraCliArgParser.DEFAULT_ARGS.getFormat() == FormatOption.XML);
+        assertTrue(VeraCliArgParser.DEFAULT_ARGS.getFormat() == FormatOption.MRR);
 
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = VeraCliArgParserTest
