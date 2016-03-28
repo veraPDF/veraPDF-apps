@@ -16,13 +16,15 @@ public final class Config {
 	private final int maxNumberOfDisplayedFailedChecks;
 	private final String metadataFixerPrefix;
 	private final Path fixMetadataPathFolder;
+	private final String profileWikiPath;
 
-	private Config(boolean showPassedRules, int maxNumberOfFailedChecks, int maxNumberOfDisplayedFailedChecks, String metadataFixerPrefix, Path fixMetadataPathFolder) {
+	private Config(boolean showPassedRules, int maxNumberOfFailedChecks, int maxNumberOfDisplayedFailedChecks, String metadataFixerPrefix, Path fixMetadataPathFolder, String profileWikiPath) {
 		this.showPassedRules = showPassedRules;
 		this.maxNumberOfFailedChecks = maxNumberOfFailedChecks;
 		this.maxNumberOfDisplayedFailedChecks = maxNumberOfDisplayedFailedChecks;
 		this.metadataFixerPrefix = metadataFixerPrefix;
 		this.fixMetadataPathFolder = fixMetadataPathFolder;
+		this.profileWikiPath = profileWikiPath;
 	}
 
 	/**
@@ -60,6 +62,13 @@ public final class Config {
 		return fixMetadataPathFolder;
 	}
 
+	/**
+	 * @return path to the profiles wiki
+     */
+	public String getProfileWikiPath() {
+		return profileWikiPath;
+	}
+
 	public static final class Builder {
 
 		private static final char[] FORBIDDEN_SYMBOLS_IN_FILE_NAME = new char[]{'\\', '/', ':', '*', '?', '\"', '<', '>', '|', '+', '\0', '%'};
@@ -69,20 +78,22 @@ public final class Config {
 		private static final int DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS = 100;
 		private static final String DEFAULT_METADATA_FIXER_PREFIX = MetadataFixerConstants.DEFAULT_PREFIX;
 		private static final Path DEFAULT_FIX_METADATA_PATH_FOLDER = FileSystems.getDefault().getPath("");
+		private static final String DEFAULT_PROFILES_WIKI_PATH = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
 
-		private static final Config DEFAULT_CONFIG = new Config(DEFAULT_SHOW_PASSED_RULES, DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS, DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS, DEFAULT_METADATA_FIXER_PREFIX, DEFAULT_FIX_METADATA_PATH_FOLDER);
+		private static final Config DEFAULT_CONFIG = new Config(DEFAULT_SHOW_PASSED_RULES, DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS, DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS, DEFAULT_METADATA_FIXER_PREFIX, DEFAULT_FIX_METADATA_PATH_FOLDER, DEFAULT_PROFILES_WIKI_PATH);
 
 		private boolean showPassedRules = DEFAULT_SHOW_PASSED_RULES;
 		private int maxNumberOfFailedChecks = DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS;
 		private int maxNumberOfDisplayedFailedChecks = DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS;
 		private String metadataFixerPrefix = DEFAULT_METADATA_FIXER_PREFIX;
 		private Path fixMetadataPathFolder = DEFAULT_FIX_METADATA_PATH_FOLDER;
+		private String profilesWikiPath = DEFAULT_PROFILES_WIKI_PATH;
 
 		public Builder() {
 		}
 
 		public Config build() {
-			return new Config(this.showPassedRules, this.maxNumberOfFailedChecks, this.maxNumberOfDisplayedFailedChecks, this.metadataFixerPrefix, this.fixMetadataPathFolder);
+			return new Config(this.showPassedRules, this.maxNumberOfFailedChecks, this.maxNumberOfDisplayedFailedChecks, this.metadataFixerPrefix, this.fixMetadataPathFolder, this.profilesWikiPath);
 		}
 
 		public static Config buildDefaultConfig() {
@@ -162,6 +173,11 @@ public final class Config {
 			} else {
 				throw new IllegalArgumentException("Path should be an empty path or a path to an existing and write acceptable directory");
 			}
+		}
+
+		public Builder profilesWikiPath(String profilesWikiPath) {
+			this.profilesWikiPath = profilesWikiPath;
+			return this;
 		}
 
 		/**

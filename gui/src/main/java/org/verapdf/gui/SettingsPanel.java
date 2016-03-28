@@ -32,13 +32,14 @@ class SettingsPanel extends JPanel {
 	private JTextField fixMetadataPrefix;
 	private JTextField fixMetadataFolder;
 	private JFileChooser folderChooser;
+	private JTextField profilesWikiPath;
 
 	SettingsPanel() throws IOException {
 		setBorder(new EmptyBorder(GUIConstants.EMPTYBORDER_INSETS, GUIConstants.EMPTYBORDER_INSETS, GUIConstants.EMPTYBORDER_INSETS, GUIConstants.EMPTYBORDER_INSETS));
 		setLayout(new BorderLayout());
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(5, 2));
+		panel.setLayout(new GridLayout(6, 2));
 
 		panel.add(new JLabel(GUIConstants.DISPLAY_PASSED_RULES));
 		hidePassedRules = new JCheckBox();
@@ -119,6 +120,11 @@ class SettingsPanel extends JPanel {
 			}
 		});
 
+		panel.add(new JLabel(GUIConstants.SELECTED_PROFILES_WIKI_PATH));
+		profilesWikiPath = new JTextField();
+		panel.add(profilesWikiPath);
+
+
 		add(panel, BorderLayout.CENTER);
 
 		okButton = new JButton("Ok");
@@ -171,6 +177,8 @@ class SettingsPanel extends JPanel {
 
 		fixMetadataPrefix.setText(settings.getMetadataFixerPrefix());
 		fixMetadataFolder.setText(settings.getFixMetadataPathFolder().toString());
+
+		profilesWikiPath.setText(settings.getProfileWikiPath());
 
 		Frame owner;
 		if (parent instanceof Frame) {
@@ -249,5 +257,9 @@ class SettingsPanel extends JPanel {
 
 	String getFixMetadataPrefix() {
 		return fixMetadataPrefix.getText();
+	}
+
+	String getProfilesWikiPath() {
+		return profilesWikiPath.getText();
 	}
 }

@@ -54,6 +54,8 @@ final class VeraPdfCliProcessor {
     final String prefix;
     final Path saveFolder;
 
+    final String profilesWikiPath;
+
     private VeraPdfCliProcessor() throws IOException {
         this(new VeraCliArgParser());
     }
@@ -74,6 +76,7 @@ final class VeraPdfCliProcessor {
         this.fixMetadata = args.fixMetadata();
         this.prefix = args.prefix();
         this.saveFolder = FileSystems.getDefault().getPath(args.saveFolder());
+        this.profilesWikiPath = args.getProfilesWikiPath();
     }
 
     private static boolean logPassed(final VeraCliArgParser args) {
@@ -192,7 +195,7 @@ final class VeraPdfCliProcessor {
         }
     }
 
-    private static void outputMrr(final MachineReadableReport report,
+    private void outputMrr(final MachineReadableReport report,
             final boolean toHtml) {
         try {
             if (toHtml) {
@@ -206,14 +209,14 @@ final class VeraPdfCliProcessor {
         }
     }
 
-    private static void outputMrrAsHtml(final MachineReadableReport report)
+    private void outputMrrAsHtml(final MachineReadableReport report)
             throws IOException, JAXBException, TransformerException {
         File tmp = File.createTempFile("verpdf", "xml");
         try (OutputStream os = new FileOutputStream(tmp)) {
             MachineReadableReport.toXml(report, os, Boolean.FALSE);
         }
         try (InputStream is = new FileInputStream(tmp)) {
-            HTMLReport.writeHTMLReport(is, System.out);
+            HTMLReport.writeHTMLReport(is, System.out, this.profilesWikiPath);
         }
     }
 
