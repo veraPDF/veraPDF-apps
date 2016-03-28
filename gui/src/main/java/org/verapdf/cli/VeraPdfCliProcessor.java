@@ -134,11 +134,17 @@ final class VeraPdfCliProcessor {
     private void processStream(final ItemDetails item,
             final InputStream toProcess) {
         ValidationResult validationResult = null;
+        MetadataFixerResult fixerResult = null;
         FeaturesCollection featuresCollection = null;
+
         long start = System.currentTimeMillis();
         try (ModelParser toValidate = new ModelParser(toProcess, this.validator.getProfile().getPDFAFlavour())) {
             if (this.validator != null) {
                 validationResult = this.validator.validate(toValidate);
+                if (this.fixMetadata) {
+                    fixerResult = this.fixMetadata(validationResult, toValidate,
+                                                   item.getName());
+                }
             }
             if (this.extractFeatures) {
                 featuresCollection = PBFeatureParser
@@ -180,7 +186,7 @@ final class VeraPdfCliProcessor {
                     item.getName(),
                     this.validator == null ? Profiles.defaultProfile()
                             : this.validator.getProfile(), validationResult,
-                    this.logPassed, null, featuresCollection,
+                    this.logPassed, fixerResult, featuresCollection,
                     System.currentTimeMillis() - start, this.maxFailuresDisplayed);
             outputMrr(report, this.format == FormatOption.HTML);
         }
