@@ -1,15 +1,14 @@
 package org.verapdf.cli.commands;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.verapdf.pdfa.flavours.PDFAFlavour;
-
 import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class holds all command line options used by VeraPDF application.
@@ -43,6 +42,8 @@ public class VeraCliArgParser {
     final static String FIX_METADATA = OPTION_SEP + "fixmetadata";
     final static String FIX_METADATA_PREFIX = OPTION_SEP + "prefix";
     final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder";
+    final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
+    final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
 
     @Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
     private boolean help = false;
@@ -88,6 +89,9 @@ public class VeraCliArgParser {
 
     @Parameter(names = { FIX_METADATA_FOLDER }, description = "The folder to save the fixed file to.")
     private String saveFolder = "";
+
+    @Parameter(names = { PROFILES_WIKI_FLAG, PROFILES_WIKI }, description = "The path to the folder containing Validation Profiles wiki.")
+    private String profilesWikiPath = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
 
     @Parameter(description = "FILES")
     private List<String> pdfPaths = new ArrayList<>();
@@ -202,6 +206,13 @@ public class VeraCliArgParser {
      */
     public List<String> getPdfPaths() {
         return this.pdfPaths;
+    }
+
+    /**
+     * @return path to validation profiles wiki
+     */
+    public String getProfilesWikiPath() {
+        return this.profilesWikiPath;
     }
 
     /**

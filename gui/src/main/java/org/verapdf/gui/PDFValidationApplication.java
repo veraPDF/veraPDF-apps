@@ -97,6 +97,7 @@ public class PDFValidationApplication extends JFrame {
 					builder.maxNumberOfDisplayedFailedChecks(settingsPanel.getFailedChecksDisplayNumber());
 					builder.fixMetadataPathFolder(settingsPanel.getFixMetadataDirectory());
 					builder.metadataFixerPrefix(settingsPanel.getFixMetadataPrefix());
+					builder.profilesWikiPath(settingsPanel.getProfilesWikiPath());
 					PDFValidationApplication.this.config = builder.build();
 					PDFValidationApplication.this.checkerPanel.setConfig(PDFValidationApplication.this.config);
 					if (PDFValidationApplication.this.isSerializedConfig) {

@@ -21,6 +21,7 @@ public final class ConfigPropertiesSerializator {
 	private static final String PROPERTY_MAX_NUMBER_DISPLAYED_FAILED_CHECKS = "maxNumbDisplFailedChecks";
 	private static final String PROPERTY_METADATA_FIXER_PREFIX = "metadataFixerPrefix";
 	private static final String PROPERTY_FIX_METADATA_PATH_FOLDER = "fixMetadataPathFolder";
+	private static final String PROPERTY_PROFILES_WIKI_PATH = "profilesWikiPath";
 
 	/**
 	 * Saves config by serrializing it as properties
@@ -48,6 +49,7 @@ public final class ConfigPropertiesSerializator {
 		settings.setProperty(PROPERTY_SHOW_PASSED_RULES, String.valueOf(config.isShowPassedRules()));
 		settings.setProperty(PROPERTY_METADATA_FIXER_PREFIX, config.getMetadataFixerPrefix());
 		settings.setProperty(PROPERTY_FIX_METADATA_PATH_FOLDER, config.getFixMetadataPathFolder().toString());
+		settings.setProperty(PROPERTY_PROFILES_WIKI_PATH, config.getProfileWikiPath());
 		settings.store(writer, "settings");
 		writer.close();
 
@@ -139,6 +141,11 @@ public final class ConfigPropertiesSerializator {
 			builder.fixMetadataPathFolder(getPathValue(properties, PROPERTY_FIX_METADATA_PATH_FOLDER));
 		} catch (IllegalArgumentException e) {
 			LOGGER.error("Property " + PROPERTY_FIX_METADATA_PATH_FOLDER + " is missing or containing a wrong value. Setting it to default", e);
+		}
+		try {
+			builder.profilesWikiPath(getStringValue(properties, PROPERTY_PROFILES_WIKI_PATH));
+		} catch (IllegalArgumentException e) {
+			LOGGER.error("Property " + PROPERTY_PROFILES_WIKI_PATH + " is missing or containing a wrong value. Setting it to default", e);
 		}
 		return builder.build();
 	}

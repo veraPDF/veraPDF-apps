@@ -10,6 +10,8 @@
 
     <xsl:output method="html"/>
 
+    <xsl:param name="wikiPath"/>
+
     <!-- HTML header and body wrapper -->
     <xsl:template match="/">
         <html>
@@ -230,14 +232,36 @@
         <xsl:param name="idWithDots" select="concat(@clause,'t',@testNumber)"/>
         <xsl:param name="id" select="translate($idWithDots, '.', '_')"/>
 
+        <xsl:param name="tempWikiLink">
+            <xsl:choose>
+                <xsl:when test="starts-with(@specification, 'ISO 19005-1')">
+                    <xsl:value-of select="concat($wikiPath, 'PDFA-Part-1-rules')"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="concat($wikiPath, 'PDFA-Parts-2-and-3-rules')"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:param>
+        <xsl:param name="wikiLink">
+            <xsl:choose>
+                <xsl:when test="not(starts-with($tempWikiLink, 'http'))">
+                    <xsl:value-of select="concat($tempWikiLink, '.html')"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="$tempWikiLink"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:param>
+        <xsl:param name="ruleLink" select="concat($wikiLink, '#rule-', translate(@clause, '.', ''), '-', @testNumber)"/>
+
         <tr style="BACKGROUND: #dcdaf6">
-            <td width="800">
+            <td width="800"><a href="{$ruleLink}">
                 Specification:
                 <xsl:value-of select="@specification"/>,
                 Clause:
                 <xsl:value-of select="@clause"/>,
                 Test number:
-                <xsl:value-of select="@testNumber"/>
+                <xsl:value-of select="@testNumber"/></a>
             </td>
             <td/>
         </tr>

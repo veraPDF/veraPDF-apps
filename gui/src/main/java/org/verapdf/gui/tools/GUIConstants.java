@@ -57,6 +57,7 @@ public final class GUIConstants {
 	public static final String SELECTED_PATH_FOR_FIXER_LABEL_TEXT = "Save fixed files into the folder:";
 	public static final String FIX_METADATA_PREFIX_LABEL_TEXT = "Save fixed files with prefix:";
 	public static final String SELECTED_PATH_FOR_FIXER_TOOLTIP = "The folder to save the fixed file to. Leave empty to save it near the original file.";
+	public static final String SELECTED_PROFILES_WIKI_PATH = "Validation Profiles wiki:";
 
 	public static final int EMPTYBORDER_INSETS = 5;
 	public static final int FRAME_COORD_X = 100;
