@@ -46,7 +46,7 @@ public class VeraPdfCliProcessorTest {
         jCommander.parse(new String[] {});
         VeraPdfCliProcessor proc = VeraPdfCliProcessor
                 .createProcessorFromArgs(parser);
-        assertTrue(proc.format == FormatOption.XML);
+        assertTrue(proc.format == FormatOption.MRR);
         for (FormatOption format : FormatOption.values()) {
             parser = new VeraCliArgParser();
             jCommander = initialiseJCommander(parser);

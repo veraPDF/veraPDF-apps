@@ -38,6 +38,11 @@ public class VeraCliArgParser {
     final static String RECURSE = OPTION_SEP + "recurse";
     final static String VERBOSE_FLAG = FLAG_SEP + "v";
     final static String VERBOSE = OPTION_SEP + "verbose";
+    final static String MAX_FAILURES_DISPLAYED = OPTION_SEP + "maxfailuresdisplayed";
+    final static String MAX_FAILURES = OPTION_SEP + "maxfaiures";
+    final static String FIX_METADATA = OPTION_SEP + "fixmetadata";
+    final static String FIX_METADATA_PREFIX = OPTION_SEP + "prefix";
+    final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder";
 
     @Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
     private boolean help = false;
@@ -61,13 +66,28 @@ public class VeraCliArgParser {
     private boolean features = false;
 
     @Parameter(names = { FORMAT }, description = "Choose output format:", converter = FormatConverter.class)
-    private FormatOption format = FormatOption.XML;
+    private FormatOption format = FormatOption.MRR;
 
     @Parameter(names = { RECURSE_FLAG, RECURSE }, description = "Recurse directories, only files with a .pdf extension are processed.")
     private boolean isRecurse = false;
 
     @Parameter(names = { VERBOSE_FLAG, VERBOSE }, description = "Adds failed test information to text output.")
     private boolean isVerbose = false;
+
+    @Parameter(names = { MAX_FAILURES_DISPLAYED }, description = "Sets maximum amount of failed checks displayed for each rule.")
+    private int maxFailuresDisplayed = 100;
+
+    @Parameter(names = { MAX_FAILURES }, description = "Sets maximum amount of failed checks.")
+    private int maxFailures = -1;
+
+    @Parameter(names = { FIX_METADATA }, description = "Performs metadata fix.")
+    private boolean fixMetadata = false;
+
+    @Parameter(names = { FIX_METADATA_PREFIX }, description = "Prefix for the saved file.")
+    private String prefix = "veraPDF_";
+
+    @Parameter(names = { FIX_METADATA_FOLDER }, description = "The folder to save the fixed file to.")
+    private String saveFolder = "";
 
     @Parameter(description = "FILES")
     private List<String> pdfPaths = new ArrayList<>();
@@ -91,6 +111,41 @@ public class VeraCliArgParser {
      */
     public boolean isVerbose() {
         return this.isVerbose;
+    }
+
+    /**
+     * @return maximum amount of failed checks displayed for each rule
+     */
+    public int maxFailuresDisplayed() {
+        return this.maxFailuresDisplayed;
+    }
+
+    /**
+     * @return maximum amount of failed checks
+     */
+    public int maxFailures() {
+        return this.maxFailures;
+    }
+
+    /**
+     * @return true if metadata fix is enabled
+     */
+    public boolean fixMetadata() {
+        return fixMetadata;
+    }
+
+    /**
+     * @return the prefix of the saved file
+     */
+    public String prefix() {
+        return prefix;
+    }
+
+    /**
+     * @return the folder to save the fixed file to
+     */
+    public String saveFolder() {
+        return saveFolder;
     }
 
     /**

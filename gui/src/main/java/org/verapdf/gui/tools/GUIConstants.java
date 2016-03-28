@@ -20,6 +20,7 @@ public final class GUIConstants {
 	public static final String PDF_NOT_CHOSEN_TEXT = "PDF file not chosen";
 	public static final String FIX_METADATA_FOLDER_CHOOSE_BUTTON = "Choose";
 	public static final String CHOOSE_PROFILE_BUTTON_TEXT = "Choose Profile";
+	public static final String CUSTOM_PROFILE_COMBOBOX_TEXT = "Custom profile";
 	public static final String VALIDATION_PROFILE_NOT_CHOSEN = "Validation profile not chosen";
 	public static final String VALIDATE_BUTTON_TEXT = "Execute";
 	public static final String VALIDATION_OK = "PDF file is compliant with Validation Profile requirements";
@@ -92,6 +93,34 @@ public final class GUIConstants {
 	public static final int CHOOSEPDF_BUTTON_CONSTRAINT_WEIGHTY = 1;
 	public static final int CHOOSEPDF_BUTTON_CONSTRAINT_GRIDWIDTH = 1;
 	public static final int CHOOSEPDF_BUTTON_CONSTRAINT_GRIDHEIGHT = 1;
+
+	public static final int PROCESSTYPE_LABEL_CONSTRAINT_GRIDX = 0;
+	public static final int PROCESSTYPE_LABEL_CONSTRAINT_GRIDY = 2;
+	public static final int PROCESSTYPE_LABEL_CONSTRAINT_WEIGHTX = 0;
+	public static final int PROCESSTYPE_LABEL_CONSTRAINT_WEIGHTY = 1;
+	public static final int PROCESSTYPE_LABEL_CONSTRAINT_GRIDWIDTH = 1;
+	public static final int PROCESSTYPE_LABEL_CONSTRAINT_GRIDHEIGHT = 1;
+
+	public static final int PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDX = 1;
+	public static final int PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDY = 2;
+	public static final int PROCESSINGTYPE_COMBOBOX_CONSTRAINT_WEIGHTX = 0;
+	public static final int PROCESSINGTYPE_COMBOBOX_CONSTRAINT_WEIGHTY = 1;
+	public static final int PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDWIDTH = 1;
+	public static final int PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDHEIGHT = 1;
+
+	public static final int FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDX = 2;
+	public static final int FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDY = 2;
+	public static final int FIXMETADATA_CHECKBOX_CONSTRAINT_WEIGHTX = 0;
+	public static final int FIXMETADATA_CHECKBOX_CONSTRAINT_WEIGHTY = 1;
+	public static final int FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDWIDTH = 1;
+	public static final int FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDHEIGHT = 1;
+
+	public static final int CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDX = 3;
+	public static final int CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDY = 2;
+	public static final int CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_WEIGHTX = 0;
+	public static final int CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_WEIGHTY = 1;
+	public static final int CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDWIDTH = 1;
+	public static final int CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDHEIGHT = 1;
 
 	public static final int CHOSENPROFILE_LABEL_CONSTRAINT_GRIDX = 0;
 	public static final int CHOSENPROFILE_LABEL_CONSTRAINT_GRIDY = 1;
