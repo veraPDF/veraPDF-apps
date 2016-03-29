@@ -38,7 +38,7 @@ public class VeraCliArgParser {
     final static String VERBOSE_FLAG = FLAG_SEP + "v";
     final static String VERBOSE = OPTION_SEP + "verbose";
     final static String MAX_FAILURES_DISPLAYED = OPTION_SEP + "maxfailuresdisplayed";
-    final static String MAX_FAILURES = OPTION_SEP + "maxfaiures";
+    final static String MAX_FAILURES = OPTION_SEP + "maxfailures";
     final static String FIX_METADATA = OPTION_SEP + "fixmetadata";
     final static String FIX_METADATA_PREFIX = OPTION_SEP + "prefix";
     final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder";

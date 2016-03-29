@@ -56,6 +56,8 @@ final class VeraPdfCliProcessor {
 
     final String profilesWikiPath;
 
+    final ValidationProfile profile;
+
     private VeraPdfCliProcessor() throws IOException {
         this(new VeraCliArgParser());
     }
@@ -67,9 +69,9 @@ final class VeraPdfCliProcessor {
         this.logPassed = args.logPassed();
         this.recurse = args.isRecurse();
         this.verbose = args.isVerbose();
-        ValidationProfile profile = profileFromArgs(args);
-        this.validator = (profile == Profiles.defaultProfile()) ? null
-                : Validators.createValidator(profile, logPassed(args), args.maxFailures());
+        this.profile = profileFromArgs(args);
+        this.validator = (this.profile == Profiles.defaultProfile()) ? null
+                : Validators.createValidator(this.profile, logPassed(args), args.maxFailures());
 
         this.maxFailuresDisplayed = args.maxFailuresDisplayed();
 
@@ -141,7 +143,7 @@ final class VeraPdfCliProcessor {
         FeaturesCollection featuresCollection = null;
 
         long start = System.currentTimeMillis();
-        try (ModelParser toValidate = new ModelParser(toProcess, this.validator.getProfile().getPDFAFlavour())) {
+        try (ModelParser toValidate = new ModelParser(toProcess, this.profile.getPDFAFlavour())) {
             if (this.validator != null) {
                 validationResult = this.validator.validate(toValidate);
                 if (this.fixMetadata) {
