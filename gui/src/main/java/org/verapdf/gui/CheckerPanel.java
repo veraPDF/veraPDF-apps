@@ -144,6 +144,7 @@ class CheckerPanel extends JPanel {
 		this.add(processType);
 
 		this.processingType = new JComboBox<>(ProcessingType.values());
+		processingType.setSelectedItem(config.getProcessingType());
 		setGridBagConstraintsParameters(gbc,
 				GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDX,
 				GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDY,
@@ -156,7 +157,7 @@ class CheckerPanel extends JPanel {
 		this.add(this.processingType);
 
 		this.fixMetadata = new JCheckBox(GUIConstants.FIX_METADATA_LABEL_TEXT);
-		this.fixMetadata.setSelected(false);
+		this.fixMetadata.setSelected(config.isFixMetadata());
 		setGridBagConstraintsParameters(gbc,
 				GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDX,
 				GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDY,
@@ -360,6 +361,7 @@ class CheckerPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
+                    askApplicationToChangeConfig();
 					ProcessingType type = (ProcessingType) CheckerPanel.this.processingType.getSelectedItem();
 					ValidationProfile prof;
 					if (chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR) {
@@ -370,7 +372,7 @@ class CheckerPanel extends JPanel {
 									getValidationProfileByFlavour((PDFAFlavour) chooseFlavour.getSelectedItem());
 						} catch (NoSuchElementException re) {
 							JOptionPane.showMessageDialog(CheckerPanel.this, "PDF/A-" + chooseFlavour.getSelectedItem().toString().toUpperCase()
-															+ " is not supported.", "Warning", JOptionPane.WARNING_MESSAGE);
+									+ " is not supported.", "Warning", JOptionPane.WARNING_MESSAGE);
 							LOGGER.warn(re);
 							return;
 						}
@@ -639,5 +641,22 @@ class CheckerPanel extends JPanel {
 
 	void setConfig(Config config) {
 		this.config = config;
+		this.fixMetadata.setSelected(config.isFixMetadata());
+		this.processingType.setSelectedItem(config.getProcessingType());
 	}
+
+    private void askApplicationToChangeConfig () {   // TODO: Isn't that a crutch?
+        PDFValidationApplication app =
+                (PDFValidationApplication) SwingUtilities.getWindowAncestor(this);
+        app.changeConfigFromCheckerPanel(this.fixMetadata.isSelected(),
+                (ProcessingType) this.processingType.getSelectedItem());
+    }
+
+    boolean getFixMetadataValue() {
+        return fixMetadata.isSelected();
+    }
+
+    ProcessingType getProcessingTypeValue() {
+        return (ProcessingType)processingType.getSelectedItem();
+    }
 }

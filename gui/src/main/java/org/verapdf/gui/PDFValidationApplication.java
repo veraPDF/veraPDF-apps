@@ -2,16 +2,18 @@ package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
 import org.verapdf.gui.config.Config;
-import org.verapdf.gui.config.ConfigPropertiesSerializator;
 import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.gui.tools.ProcessingType;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.xml.bind.JAXBException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.*;
 import java.nio.file.Path;
 
 /**
@@ -19,7 +21,18 @@ import java.nio.file.Path;
  *
  * @author Maksim Bezrukov
  */
+
 public class PDFValidationApplication extends JFrame {
+
+    class ExitWindowAdapter extends WindowAdapter {
+
+        @Override
+        public void windowClosing(WindowEvent e) {
+            PDFValidationApplication app = (PDFValidationApplication) e.getSource();
+            changeConfigFromCheckerPanel(app.checkerPanel.getFixMetadataValue(),
+                    app.checkerPanel.getProcessingTypeValue());
+        }
+    }
 
 	private static final long serialVersionUID = -5569669411392145783L;
 
@@ -33,6 +46,7 @@ public class PDFValidationApplication extends JFrame {
 	private transient Path configPath;
 
 	private PDFValidationApplication() {
+        addWindowListener(new ExitWindowAdapter());
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(GUIConstants.FRAME_COORD_X, GUIConstants.FRAME_COORD_Y, GUIConstants.FRAME_WIDTH, GUIConstants.FRAME_HEIGHT);
 		setResizable(false);
@@ -52,10 +66,24 @@ public class PDFValidationApplication extends JFrame {
 				this.configPath = configFile.toPath();
 				if (configFile.exists()) {
 					try {
-						this.config = ConfigPropertiesSerializator.loadConfig(configFile.toPath());
-						ConfigPropertiesSerializator.saveConfig(this.config, configFile.toPath());
+						if (!configFile.canRead()) {        //  Should we check that? Or configFile is always accesable?
+							throw new IllegalArgumentException("Path should specify read accessible file");
+						}
+						FileReader reader = new FileReader(configFile);
+						StringBuilder stringBuilder = new StringBuilder("");	// Is this way of reading file OK?
+						BufferedReader bufferedReader = new BufferedReader(reader);
+						String line;
+						while ((line = bufferedReader.readLine()) != null)
+							stringBuilder.append(line).append('\n');
+						bufferedReader.close();
+						this.config = Config.fromXml(stringBuilder.toString());
+
 					} catch (IOException e) {
 						LOGGER.error("Can not read config file", e);
+						this.config = Config.Builder.buildDefaultConfig();
+					}
+					catch (JAXBException e) {   //  Is that the way we handle this exception?
+						LOGGER.error("Cannot parse config XML", e);
 						this.config = Config.Builder.buildDefaultConfig();
 					}
 
@@ -98,15 +126,14 @@ public class PDFValidationApplication extends JFrame {
 					builder.fixMetadataPathFolder(settingsPanel.getFixMetadataDirectory());
 					builder.metadataFixerPrefix(settingsPanel.getFixMetadataPrefix());
 					builder.profilesWikiPath(settingsPanel.getProfilesWikiPath());
-					PDFValidationApplication.this.config = builder.build();
-					PDFValidationApplication.this.checkerPanel.setConfig(PDFValidationApplication.this.config);
-					if (PDFValidationApplication.this.isSerializedConfig) {
-						try {
-							ConfigPropertiesSerializator.saveConfig(PDFValidationApplication.this.config, PDFValidationApplication.this.configPath);
-						} catch (IOException e1) {
-							LOGGER.error("Can not save config", e1);
-						}
-					}
+                    builder.isFixMetadata(PDFValidationApplication.this.config.isFixMetadata());
+                    builder.processingType(PDFValidationApplication.this.config.getProcessingType());
+                    Config builtConfig = builder.build();
+
+                    if(!PDFValidationApplication.this.config.equals(builtConfig)) { // TODO: We can check all fields for settings panel
+                        PDFValidationApplication.this.config = builtConfig;   //TODO:  before builder, so we don't have to build configs if nothing is changed
+                        writeConfigToFile();
+                    }
 				}
 			}
 		});
@@ -148,8 +175,46 @@ public class PDFValidationApplication extends JFrame {
 			LOGGER.error("Exception in loading xml or html image", e);
 		}
 		contentPane.add(checkerPanel);
+
 	}
 
+    void changeConfigFromCheckerPanel(boolean isFixMetadata, ProcessingType processingType) {
+        if(isFixMetadata == this.config.isFixMetadata() &&
+                processingType == this.config.getProcessingType())
+            return;
+        else {
+            Config.Builder builder = new Config.Builder();
+            builder.showPassedRules(this.config.isShowPassedRules());
+            builder.maxNumberOfFailedChecks(this.config.getMaxNumberOfFailedChecks());
+            builder.maxNumberOfDisplayedFailedChecks(this.config.getMaxNumberOfDisplayedFailedChecks());
+            builder.fixMetadataPathFolder(this.config.getFixMetadataPathFolder());
+            builder.metadataFixerPrefix(this.config.getMetadataFixerPrefix());
+            builder.profilesWikiPath(this.config.getProfileWikiPath());
+            builder.isFixMetadata(isFixMetadata);
+            builder.processingType(processingType);
+
+            PDFValidationApplication.this.config = builder.build();
+            writeConfigToFile();
+        }
+    }
+
+    private void writeConfigToFile() {
+        if (PDFValidationApplication.this.isSerializedConfig) {     // What is that for?
+            try {
+                FileWriter writer = new FileWriter(PDFValidationApplication.this.configPath.toFile());
+                writer.write(Config.toXml(PDFValidationApplication.this.config, true));
+                writer.close();
+
+            } catch (IOException e1) {
+                e1.printStackTrace();
+                LOGGER.error("Can not save config", e1);
+            }
+            catch (JAXBException e1) {
+                e1.printStackTrace();
+                LOGGER.error("Can not convert config to XML", e1);
+            }
+        }
+    }
 	/**
 	 * Starting point of the gui
 	 *
