@@ -58,6 +58,8 @@ final class VeraPdfCliProcessor {
 
     final ValidationProfile profile;
 
+    private String currentPdfName;
+
     private VeraPdfCliProcessor() throws IOException {
         this(new VeraCliArgParser());
     }
@@ -127,12 +129,14 @@ final class VeraPdfCliProcessor {
     private void processFile(final File pdfFile) {
         if (checkFileCanBeProcessed(pdfFile)) {
             try (InputStream toProcess = new FileInputStream(pdfFile)) {
+                this.currentPdfName = pdfFile.getName();
                 processStream(ItemDetails.fromFile(pdfFile), toProcess);
             } catch (IOException e) {
                 System.err.println("Exception raised while processing "
                         + pdfFile.getAbsolutePath());
                 e.printStackTrace();
             }
+            this.currentPdfName = "";
         }
     }
 
@@ -148,7 +152,7 @@ final class VeraPdfCliProcessor {
                 validationResult = this.validator.validate(toValidate);
                 if (this.fixMetadata) {
                     fixerResult = this.fixMetadata(validationResult, toValidate,
-                                                   item.getName());
+                                                   this.currentPdfName);
                 }
             }
             if (this.extractFeatures) {
