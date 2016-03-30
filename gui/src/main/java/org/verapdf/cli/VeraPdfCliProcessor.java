@@ -3,6 +3,7 @@
  */
 package org.verapdf.cli;
 
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.verapdf.cli.commands.FormatOption;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.ValidationException;
@@ -159,6 +160,8 @@ final class VeraPdfCliProcessor {
                 featuresCollection = PBFeatureParser
                         .getFeaturesCollection(toValidate.getPDDocument());
             }
+        } catch (InvalidPasswordException e) {
+            System.err.println("Error: " + item.getName() + " is an encrypted PDF file.");
         } catch (IOException e) {
             System.err.println("Error: " + item.getName() + " is not a PDF format file.");
             // TODO : do we need stacktrace in cli application?
