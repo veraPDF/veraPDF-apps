@@ -24,14 +24,14 @@ class SettingsPanel extends JPanel {
 
 	private static final long serialVersionUID = -5688021756073449469L;
 	private JButton okButton;
-	private boolean ok;
+	boolean ok;
 	JDialog dialog;
 	private JTextField numberOfFailed;
 	private JTextField numberOfFailedDisplay;
 	private JCheckBox hidePassedRules;
 	private JTextField fixMetadataPrefix;
-	private JTextField fixMetadataFolder;
-	private JFileChooser folderChooser;
+	JTextField fixMetadataFolder;
+	JFileChooser folderChooser;
 	private JTextField profilesWikiPath;
 
 	SettingsPanel() throws IOException {
@@ -42,36 +42,36 @@ class SettingsPanel extends JPanel {
 		panel.setLayout(new GridLayout(6, 2));
 
 		panel.add(new JLabel(GUIConstants.DISPLAY_PASSED_RULES));
-		hidePassedRules = new JCheckBox();
-		panel.add(hidePassedRules);
+		this.hidePassedRules = new JCheckBox();
+		panel.add(this.hidePassedRules);
 		panel.add(new JLabel(GUIConstants.MAX_NUMBER_FAILED_CHECKS));
 
-		numberOfFailed = new JTextField();
-		numberOfFailed.setTransferHandler(null);
-		numberOfFailed.addKeyListener(getKeyAdapter(numberOfFailed, false));
-		numberOfFailed.setToolTipText(GUIConstants.MAX_FAILED_CHECKS_SETTING_TIP);
+		this.numberOfFailed = new JTextField();
+		this.numberOfFailed.setTransferHandler(null);
+		this.numberOfFailed.addKeyListener(getKeyAdapter(this.numberOfFailed, false));
+		this.numberOfFailed.setToolTipText(GUIConstants.MAX_FAILED_CHECKS_SETTING_TIP);
 		JPanel panel1 = new JPanel();
 		panel1.setLayout(null);
-		numberOfFailed.setBounds(0, 0, 65, 23);
-		panel1.add(numberOfFailed);
+		this.numberOfFailed.setBounds(0, 0, 65, 23);
+		panel1.add(this.numberOfFailed);
 		panel.add(panel1);
 
 		panel.add(new JLabel(GUIConstants.MAX_NUMBER_FAILED_DISPLAYED_CHECKS));
 
-		numberOfFailedDisplay = new JTextField();
-		numberOfFailedDisplay.setTransferHandler(null);
-		numberOfFailedDisplay.addKeyListener(getKeyAdapter(numberOfFailedDisplay, true));
-		numberOfFailedDisplay.setToolTipText(GUIConstants.MAX_FAILED_CHECKS_DISP_SETTING_TIP);
+		this.numberOfFailedDisplay = new JTextField();
+		this.numberOfFailedDisplay.setTransferHandler(null);
+		this.numberOfFailedDisplay.addKeyListener(getKeyAdapter(this.numberOfFailedDisplay, true));
+		this.numberOfFailedDisplay.setToolTipText(GUIConstants.MAX_FAILED_CHECKS_DISP_SETTING_TIP);
 		JPanel panel2 = new JPanel();
 		panel2.setLayout(null);
-		numberOfFailedDisplay.setBounds(0, 0, 65, 23);
-		panel2.add(numberOfFailedDisplay);
+		this.numberOfFailedDisplay.setBounds(0, 0, 65, 23);
+		panel2.add(this.numberOfFailedDisplay);
 		panel.add(panel2);
 
 		panel.add(new JLabel(GUIConstants.FIX_METADATA_PREFIX_LABEL_TEXT));
-		fixMetadataPrefix = new JTextField();
-		fixMetadataPrefix.setTransferHandler(null);
-		panel.add(fixMetadataPrefix);
+		this.fixMetadataPrefix = new JTextField();
+		this.fixMetadataPrefix.setTransferHandler(null);
+		panel.add(this.fixMetadataPrefix);
 
 		panel.add(new JLabel(GUIConstants.SELECTED_PATH_FOR_FIXER_LABEL_TEXT));
 
@@ -79,34 +79,34 @@ class SettingsPanel extends JPanel {
 				new File(GUIConstants.DOT).getCanonicalPath());
 
 		JButton choose2 = new JButton(GUIConstants.FIX_METADATA_FOLDER_CHOOSE_BUTTON);
-		folderChooser = new JFileChooser();
-		folderChooser.setCurrentDirectory(currentDir);
-		folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		this.folderChooser = new JFileChooser();
+		this.folderChooser.setCurrentDirectory(currentDir);
+		this.folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		choose2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int resultChoose = folderChooser.showOpenDialog(SettingsPanel.this);
+				int resultChoose = SettingsPanel.this.folderChooser.showOpenDialog(SettingsPanel.this);
 				if (resultChoose == JFileChooser.APPROVE_OPTION) {
-					if (!folderChooser.getSelectedFile().isDirectory()) {
+					if (!SettingsPanel.this.folderChooser.getSelectedFile().isDirectory()) {
 						JOptionPane.showMessageDialog(SettingsPanel.this,
 								"Error. Selected directory doesn't exist.",
 								GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 					} else {
-						fixMetadataFolder.setText(folderChooser.getSelectedFile().getAbsolutePath());
+						SettingsPanel.this.fixMetadataFolder.setText(SettingsPanel.this.folderChooser.getSelectedFile().getAbsolutePath());
 					}
 				}
 
 			}
 		});
-		fixMetadataFolder = new JTextField();
-		fixMetadataFolder.setToolTipText(GUIConstants.SELECTED_PATH_FOR_FIXER_TOOLTIP);
+		this.fixMetadataFolder = new JTextField();
+		this.fixMetadataFolder.setToolTipText(GUIConstants.SELECTED_PATH_FOR_FIXER_TOOLTIP);
 		JPanel panel4 = new JPanel();
 		panel4.setLayout(new BoxLayout(panel4, BoxLayout.X_AXIS));
-		panel4.add(fixMetadataFolder);
+		panel4.add(this.fixMetadataFolder);
 		panel4.add(choose2);
 		panel.add(panel4);
 
-		fixMetadataPrefix.addKeyListener(new KeyAdapter() {
+		this.fixMetadataPrefix.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				if (!Config.Builder.isValidFileNameCharacter(e.getKeyChar())) {
@@ -121,64 +121,66 @@ class SettingsPanel extends JPanel {
 		});
 
 		panel.add(new JLabel(GUIConstants.SELECTED_PROFILES_WIKI_PATH));
-		profilesWikiPath = new JTextField();
-		panel.add(profilesWikiPath);
+		this.profilesWikiPath = new JTextField();
+		panel.add(this.profilesWikiPath);
 
 
 		add(panel, BorderLayout.CENTER);
 
-		okButton = new JButton("Ok");
-		okButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
+		this.okButton = new JButton("Ok");
+		this.okButton.addActionListener(new ActionListener() {
+			@Override
+            public void actionPerformed(ActionEvent event) {
 				boolean isEverythingValid = true;
-				if (!Config.Builder.isValidFolderPath(FileSystems.getDefault().getPath(fixMetadataFolder.getText()))) {
+				if (!Config.Builder.isValidFolderPath(FileSystems.getDefault().getPath(SettingsPanel.this.fixMetadataFolder.getText()))) {
 					isEverythingValid = false;
 					JOptionPane.showMessageDialog(SettingsPanel.this, "Invalid path for saving fixed files.", "Invalid data", JOptionPane.INFORMATION_MESSAGE);
 				}
 				if (isEverythingValid) {
-					ok = true;
-					dialog.setVisible(false);
+					SettingsPanel.this.ok = true;
+					SettingsPanel.this.dialog.setVisible(false);
 				}
 			}
 		});
 
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent event) {
-				dialog.setVisible(false);
+			@Override
+            public void actionPerformed(ActionEvent event) {
+				SettingsPanel.this.dialog.setVisible(false);
 			}
 		});
 
 		JPanel buttonPanel = new JPanel();
-		buttonPanel.add(okButton);
+		buttonPanel.add(this.okButton);
 		buttonPanel.add(cancelButton);
 		add(buttonPanel, BorderLayout.SOUTH);
 	}
 
 	boolean showDialog(Component parent, String title, Config settings) {
 
-		ok = false;
+		this.ok = false;
 
-		hidePassedRules.setSelected(settings.isShowPassedRules());
+		this.hidePassedRules.setSelected(settings.isShowPassedRules());
 
 		int numbOfFail = settings.getMaxNumberOfFailedChecks();
 		if (numbOfFail == -1) {
-			numberOfFailed.setText("");
+			this.numberOfFailed.setText("");
 		} else {
-			numberOfFailed.setText(String.valueOf(numbOfFail));
+			this.numberOfFailed.setText(String.valueOf(numbOfFail));
 		}
 
 		int numbOfFailDisp = settings.getMaxNumberOfDisplayedFailedChecks();
 		if (numbOfFailDisp == -1) {
-			numberOfFailedDisplay.setText("");
+			this.numberOfFailedDisplay.setText("");
 		} else {
-			numberOfFailedDisplay.setText(String.valueOf(numbOfFailDisp));
+			this.numberOfFailedDisplay.setText(String.valueOf(numbOfFailDisp));
 		}
 
-		fixMetadataPrefix.setText(settings.getMetadataFixerPrefix());
-		fixMetadataFolder.setText(settings.getFixMetadataPathFolder().toString());
+		this.fixMetadataPrefix.setText(settings.getMetadataFixerPrefix());
+		this.fixMetadataFolder.setText(settings.getFixMetadataPathFolder().toString());
 
-		profilesWikiPath.setText(settings.getProfileWikiPath());
+		this.profilesWikiPath.setText(settings.getProfileWikiPath());
 
 		Frame owner;
 		if (parent instanceof Frame) {
@@ -187,25 +189,26 @@ class SettingsPanel extends JPanel {
 			owner = (Frame) SwingUtilities.getAncestorOfClass(Frame.class, parent);
 		}
 
-		if (dialog == null || dialog.getOwner() != owner) {
-			dialog = new JDialog(owner, true);
-			dialog.setResizable(false);
-			dialog.add(this);
-			dialog.getRootPane().setDefaultButton(okButton);
-			dialog.pack();
-			dialog.setTitle(title);
+		if (this.dialog == null || this.dialog.getOwner() != owner) {
+			this.dialog = new JDialog(owner, true);
+			this.dialog.setResizable(false);
+			this.dialog.add(this);
+			this.dialog.getRootPane().setDefaultButton(this.okButton);
+			this.dialog.pack();
+			this.dialog.setTitle(title);
 		}
 
-		dialog.setLocation(GUIConstants.SETTINGSDIALOG_COORD_X, GUIConstants.SETTINGSDIALOG_COORD_Y);
-		dialog.setSize(650, 211);
-		dialog.setVisible(true);
+		this.dialog.setLocation(GUIConstants.SETTINGSDIALOG_COORD_X, GUIConstants.SETTINGSDIALOG_COORD_Y);
+		this.dialog.setSize(650, 211);
+		this.dialog.setVisible(true);
 
-		return ok;
+		return this.ok;
 	}
 
 	private static KeyAdapter getKeyAdapter(final JTextField field, final boolean fromZero) {
 		return new KeyAdapter() {
-			public void keyTyped(KeyEvent e) {
+			@Override
+            public void keyTyped(KeyEvent e) {
 				char c = e.getKeyChar();
 				if ((field.getText().length() == 6) && ((field.getSelectedText() == null) || (field.getSelectedText().length() == 0)) &&
 						(c != KeyEvent.VK_BACK_SPACE) &&
@@ -238,28 +241,28 @@ class SettingsPanel extends JPanel {
 	}
 
 	boolean isDispPassedRules() {
-		return hidePassedRules.isSelected();
+		return this.hidePassedRules.isSelected();
 	}
 
 	int getFailedChecksNumber() {
-		String str = numberOfFailed.getText();
+		String str = this.numberOfFailed.getText();
 		return str.length() > 0 ? Integer.parseInt(str) : -1;
 	}
 
 	int getFailedChecksDisplayNumber() {
-		String str = numberOfFailedDisplay.getText();
+		String str = this.numberOfFailedDisplay.getText();
 		return str.length() > 0 ? Integer.parseInt(str) : -1;
 	}
 
 	Path getFixMetadataDirectory() {
-		return FileSystems.getDefault().getPath(fixMetadataFolder.getText());
+		return FileSystems.getDefault().getPath(this.fixMetadataFolder.getText());
 	}
 
 	String getFixMetadataPrefix() {
-		return fixMetadataPrefix.getText();
+		return this.fixMetadataPrefix.getText();
 	}
 
 	String getProfilesWikiPath() {
-		return profilesWikiPath.getText();
+		return this.profilesWikiPath.getText();
 	}
 }

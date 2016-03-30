@@ -288,10 +288,10 @@ final class VeraPdfCliProcessor {
                 while (flag) {
                     if (!path.toString().trim().isEmpty()) {
                         resFile = FileGenerator.createOutputFile(this.saveFolder.toFile(),
-                                fileName, prefix);
+                                fileName, this.prefix);
                     } else {
                         resFile = FileGenerator.createOutputFile(new File(fileName),
-                                prefix);
+                                this.prefix);
                     }
 
                     try {
@@ -304,19 +304,5 @@ final class VeraPdfCliProcessor {
             }
             return fixerResult;
         }
-    }
-
-    /**
-     * Checks is the parameter path a valid for saving fixed file
-     *
-     * @param path path for check
-     * @return true if it is valid
-     */
-    private static boolean isValidFolderPath(Path path) {
-        if (path == null) {
-            return false;
-        }
-        File f = path.toFile();
-        return path.toString().isEmpty() || (f.isDirectory() && f.canWrite());
     }
 }

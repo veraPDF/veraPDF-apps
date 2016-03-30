@@ -152,7 +152,7 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
     private ValidationResult runValidator(ModelParser toValidate)
             throws IOException {
         try {
-            int max = settings.getMaxNumberOfFailedChecks();
+            int max = this.settings.getMaxNumberOfFailedChecks();
             PDFAValidator validator;
             if (max > 0) {
                 validator = Validators.createValidator(this.profile, true, max);
@@ -193,7 +193,7 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
                 try (InputStream xmlStream = new FileInputStream(this.xmlReport);
                         OutputStream htmlStream = new FileOutputStream(
                                 this.htmlReport)) {
-                    HTMLReport.writeHTMLReport(xmlStream, htmlStream, settings.getProfileWikiPath());
+                    HTMLReport.writeHTMLReport(xmlStream, htmlStream, this.settings.getProfileWikiPath());
 
                 } catch (IOException | TransformerException e) {
                     JOptionPane.showMessageDialog(this.parent,

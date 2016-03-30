@@ -135,21 +135,21 @@ public class VeraCliArgParser {
      * @return true if metadata fix is enabled
      */
     public boolean fixMetadata() {
-        return fixMetadata;
+        return this.fixMetadata;
     }
 
     /**
      * @return the prefix of the saved file
      */
     public String prefix() {
-        return prefix;
+        return this.prefix;
     }
 
     /**
      * @return the folder to save the fixed file to
      */
     public String saveFolder() {
-        return saveFolder;
+        return this.saveFolder;
     }
 
     /**
