@@ -99,9 +99,9 @@
     </dependency>
 
     <dependency>
-        <groupId>org.verapdf</groupId>
-        <artifactId>pdfbox-metadata-fixer</artifactId>
-        <version>${verapdf.library.version}</version>
+      <groupId>org.verapdf</groupId>
+      <artifactId>pdfbox-metadata-fixer</artifactId>
+      <version>${verapdf.library.version}</version>
     </dependency>
 
     <dependency>
@@ -117,6 +117,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
