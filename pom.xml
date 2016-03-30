@@ -407,6 +407,57 @@
     </profile>
 
     <profile>
+      <id>source-package</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.10</version>
+            <executions>
+              <execution>
+                <id>src-dependencies</id>
+                <phase>package</phase>
+                <goals>
+                  <!-- use copy-dependencies instead if you don't want to explode 
+                    the sources -->
+                  <goal>unpack-dependencies</goal>
+                </goals>
+                <configuration>
+                  <classifier>sources</classifier>
+                  <failOnMissingClassifierArtifact>false</failOnMissingClassifierArtifact>
+                  <outputDirectory>${project.build.directory}/sources</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.0.0</version>
+            <executions>
+              <execution>
+                <id>src-vera</id>
+                <phase>package</phase>
+                <goals>
+                  <!-- use copy-dependencies instead if you don't want to explode 
+                    the sources -->
+                  <goal>jar-no-fork</goal>
+                </goals>
+                <configuration>
+                  <outputDirectory>${project.build.directory}/sources</outputDirectory>
+                  <finalName>apps-sources</finalName>
+                  <attach>false</attach>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+
+    </profile>
+
+    <profile>
       <id>release-sign-artifacts</id>
       <activation>
         <property>
