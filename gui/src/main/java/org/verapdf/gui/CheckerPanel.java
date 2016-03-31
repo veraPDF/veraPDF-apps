@@ -187,7 +187,7 @@ class CheckerPanel extends JPanel {
 		this.chosenProfile = new JTextField(
 				GUIConstants.VALIDATION_PROFILE_NOT_CHOSEN);
 		this.chosenProfile.setEditable(false);
-		chosenProfile.setEnabled(false);    // We are starting with chosen flavour
+		chosenProfile.setEnabled(false);
 		setGridBagConstraintsParameters(gbc,
 				GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_GRIDX,
 				GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_GRIDY,
@@ -211,7 +211,7 @@ class CheckerPanel extends JPanel {
 
 		final JButton chooseProfile = new JButton(
 				GUIConstants.CHOOSE_PROFILE_BUTTON_TEXT);
-		chooseProfile.setEnabled(false);    // We are starting with chosen flavour
+		chooseProfile.setEnabled(false);
 		setGridBagConstraintsParameters(gbc,
 				GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_GRIDX,
 				GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_GRIDY,
@@ -361,7 +361,7 @@ class CheckerPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-                    askApplicationToChangeConfig();
+                    changeApplicationConfig();
 					ProcessingType type = (ProcessingType) CheckerPanel.this.processingType.getSelectedItem();
 					ValidationProfile prof;
 					if (chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR) {
@@ -631,6 +631,14 @@ class CheckerPanel extends JPanel {
 		}
 	}
 
+	void changeApplicationConfig() {	// TODO: Should we change config of CheckerPanel?
+		PDFValidationApplication app =
+				(PDFValidationApplication) SwingUtilities.getWindowAncestor(this);
+		app.getConfig().setProcessingType((ProcessingType) processingType.getSelectedItem());
+		app.getConfig().setFixMetadata(fixMetadata.isSelected());
+		app.writeConfigToFile();
+	}
+
 	void setValidationButtonEnability() {
 		if (this.pdfFile != null &&
 				(this.profile != null || this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR))
@@ -645,18 +653,11 @@ class CheckerPanel extends JPanel {
 		this.processingType.setSelectedItem(config.getProcessingType());
 	}
 
-    private void askApplicationToChangeConfig () {   // TODO: Isn't that a crutch?
-        PDFValidationApplication app =
-                (PDFValidationApplication) SwingUtilities.getWindowAncestor(this);
-        app.changeConfigFromCheckerPanel(this.fixMetadata.isSelected(),
-                (ProcessingType) this.processingType.getSelectedItem());
-    }
-
-    boolean getFixMetadataValue() {
+    boolean isFixMetadata() {
         return fixMetadata.isSelected();
     }
 
-    ProcessingType getProcessingTypeValue() {
+    ProcessingType getProcessingType() {
         return (ProcessingType)processingType.getSelectedItem();
     }
 }

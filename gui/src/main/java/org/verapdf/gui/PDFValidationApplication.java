@@ -29,8 +29,9 @@ public class PDFValidationApplication extends JFrame {
         @Override
         public void windowClosing(WindowEvent e) {
             PDFValidationApplication app = (PDFValidationApplication) e.getSource();
-            changeConfigFromCheckerPanel(app.checkerPanel.getFixMetadataValue(),
-                    app.checkerPanel.getProcessingTypeValue());
+			app.config.setFixMetadata(app.checkerPanel.isFixMetadata());
+			app.config.setProcessingType(app.checkerPanel.getProcessingType());
+            app.writeConfigToFile();
         }
     }
 
@@ -45,6 +46,10 @@ public class PDFValidationApplication extends JFrame {
 	private boolean isSerializedConfig;
 	private transient Path configPath;
 
+	Config getConfig () {
+		return this.config;
+	}
+
 	private PDFValidationApplication() {
         addWindowListener(new ExitWindowAdapter());
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -56,43 +61,37 @@ public class PDFValidationApplication extends JFrame {
 		String appHome = System.getProperty("app.home");
 		if (appHome != null) {
 			File user = new File(appHome);
-			File f = new File(user, "config");
+            File f = new File(user, "config");
 			if (!f.exists() && !f.mkdir()) {
 				this.isSerializedConfig = false;
-				this.config = Config.Builder.buildDefaultConfig();
+				this.config = Config.buildDefaultConfig();
 			} else {
 				File configFile = new File(f, "config.properties");
 				this.isSerializedConfig = true;
 				this.configPath = configFile.toPath();
 				if (configFile.exists()) {
 					try {
-						if (!configFile.canRead()) {        //  Should we check that? Or configFile is always accesable?
+						if (!configFile.canRead()) {
 							throw new IllegalArgumentException("Path should specify read accessible file");
 						}
-						FileReader reader = new FileReader(configFile);
-						StringBuilder stringBuilder = new StringBuilder("");	// Is this way of reading file OK?
-						BufferedReader bufferedReader = new BufferedReader(reader);
-						String line;
-						while ((line = bufferedReader.readLine()) != null)
-							stringBuilder.append(line).append('\n');
-						bufferedReader.close();
-						this.config = Config.fromXml(stringBuilder.toString());
+						FileInputStream reader = new FileInputStream(configFile);
+						this.config = Config.fromXml(reader);
 
 					} catch (IOException e) {
 						LOGGER.error("Can not read config file", e);
-						this.config = Config.Builder.buildDefaultConfig();
+						this.config = Config.buildDefaultConfig();
 					}
-					catch (JAXBException e) {   //  Is that the way we handle this exception?
+					catch (JAXBException e) {
 						LOGGER.error("Cannot parse config XML", e);
-						this.config = Config.Builder.buildDefaultConfig();
+						this.config = Config.buildDefaultConfig();
 					}
 
 				} else {
-					this.config = Config.Builder.buildDefaultConfig();
+					this.config = Config.buildDefaultConfig();
 				}
 			}
 		} else {
-			this.config = Config.Builder.buildDefaultConfig();
+			this.config = Config.buildDefaultConfig();
 		}
 
 		JMenuBar menuBar = new JMenuBar();
@@ -119,19 +118,18 @@ public class PDFValidationApplication extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (settingsPanel != null && settingsPanel.showDialog(PDFValidationApplication.this, "Settings", config)) {
-					Config.Builder builder = new Config.Builder();
-					builder.showPassedRules(settingsPanel.isDispPassedRules());
-					builder.maxNumberOfFailedChecks(settingsPanel.getFailedChecksNumber());
-					builder.maxNumberOfDisplayedFailedChecks(settingsPanel.getFailedChecksDisplayNumber());
-					builder.fixMetadataPathFolder(settingsPanel.getFixMetadataDirectory());
-					builder.metadataFixerPrefix(settingsPanel.getFixMetadataPrefix());
-					builder.profilesWikiPath(settingsPanel.getProfilesWikiPath());
-                    builder.isFixMetadata(PDFValidationApplication.this.config.isFixMetadata());
-                    builder.processingType(PDFValidationApplication.this.config.getProcessingType());
-                    Config builtConfig = builder.build();
+					Config builder = new Config();
+					builder.setShowPassedRules(settingsPanel.isDispPassedRules());
+					builder.setMaxNumberOfFailedChecks(settingsPanel.getFailedChecksNumber());
+					builder.setMaxNumberOfDisplayedFailedChecks(settingsPanel.getFailedChecksDisplayNumber());
+					builder.setFixMetadataPathFolder(settingsPanel.getFixMetadataDirectory());
+					builder.setMetadataFixerPrefix(settingsPanel.getFixMetadataPrefix());
+					builder.setProfileWikiPath(settingsPanel.getProfilesWikiPath());
+                    builder.setFixMetadata(PDFValidationApplication.this.config.isFixMetadata());
+                    builder.setProcessingType(PDFValidationApplication.this.config.getProcessingType());
 
-                    if(!PDFValidationApplication.this.config.equals(builtConfig)) { // TODO: We can check all fields for settings panel
-                        PDFValidationApplication.this.config = builtConfig;   //TODO:  before builder, so we don't have to build configs if nothing is changed
+                    if(!PDFValidationApplication.this.config.equals(builder)) { // TODO: We can check all fields for settings panel
+                        PDFValidationApplication.this.config = builder;   //TODO:  before builder, so we don't have to build configs if nothing is changed
                         writeConfigToFile();
                     }
 				}
@@ -178,39 +176,17 @@ public class PDFValidationApplication extends JFrame {
 
 	}
 
-    void changeConfigFromCheckerPanel(boolean isFixMetadata, ProcessingType processingType) {
-        if(isFixMetadata == this.config.isFixMetadata() &&
-                processingType == this.config.getProcessingType())
-            return;
-        else {
-            Config.Builder builder = new Config.Builder();
-            builder.showPassedRules(this.config.isShowPassedRules());
-            builder.maxNumberOfFailedChecks(this.config.getMaxNumberOfFailedChecks());
-            builder.maxNumberOfDisplayedFailedChecks(this.config.getMaxNumberOfDisplayedFailedChecks());
-            builder.fixMetadataPathFolder(this.config.getFixMetadataPathFolder());
-            builder.metadataFixerPrefix(this.config.getMetadataFixerPrefix());
-            builder.profilesWikiPath(this.config.getProfileWikiPath());
-            builder.isFixMetadata(isFixMetadata);
-            builder.processingType(processingType);
-
-            PDFValidationApplication.this.config = builder.build();
-            writeConfigToFile();
-        }
-    }
-
-    private void writeConfigToFile() {
-        if (PDFValidationApplication.this.isSerializedConfig) {     // What is that for?
+    void writeConfigToFile() {
+        if (PDFValidationApplication.this.isSerializedConfig) {
             try {
                 FileWriter writer = new FileWriter(PDFValidationApplication.this.configPath.toFile());
                 writer.write(Config.toXml(PDFValidationApplication.this.config, true));
                 writer.close();
 
             } catch (IOException e1) {
-                e1.printStackTrace();
                 LOGGER.error("Can not save config", e1);
             }
             catch (JAXBException e1) {
-                e1.printStackTrace();
                 LOGGER.error("Can not convert config to XML", e1);
             }
         }

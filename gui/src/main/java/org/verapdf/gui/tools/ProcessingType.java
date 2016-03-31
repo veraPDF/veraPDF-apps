@@ -25,6 +25,21 @@ public enum ProcessingType {
 		return this == FEATURES || this == VALIDATING_AND_FEATURES;
 	}
 
+	public static ProcessingType fromString(String string) throws IllegalArgumentException{
+		if(string == null)
+			throw new IllegalArgumentException("String to be parsed into ProcessingType cannot be null");
+
+		switch(string) {
+			case GUIConstants.VALIDATING:
+				return VALIDATING;
+            case GUIConstants.FEATURES:
+                return FEATURES;
+            case GUIConstants.VALIDATING_AND_FEATURES:
+                return VALIDATING_AND_FEATURES;
+		}
+        throw new IllegalArgumentException("String can't be parsed into ProcessingType");
+	}
+
 	@Override
 	public String toString() {
 		return this.value;

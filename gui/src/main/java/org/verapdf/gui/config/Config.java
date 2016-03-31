@@ -1,5 +1,6 @@
 package org.verapdf.gui.config;
 
+import org.apache.log4j.Logger;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.gui.tools.ProcessingType;
 import org.verapdf.metadata.fixer.utils.MetadataFixerConstants;
@@ -8,6 +9,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -35,18 +38,17 @@ class PathAdapter extends XmlAdapter<String, Path> {    //  TODO: Move adapters 
 
 class ProcessingTypeAdapter extends XmlAdapter<String, ProcessingType> {
 
+	private static final Logger LOGGER = Logger.getLogger(ProcessingTypeAdapter.class);
 	@Override
 	public ProcessingType unmarshal(String v) throws Exception {
-		if(v.equalsIgnoreCase(GUIConstants.VALIDATING_AND_FEATURES))    //  Is it OK to check all one by one?
-			return ProcessingType.VALIDATING_AND_FEATURES;
-		if(v.equalsIgnoreCase(GUIConstants.VALIDATING))
-			return ProcessingType.VALIDATING;
-		if(v.equalsIgnoreCase(GUIConstants.FEATURES))
-			return ProcessingType.FEATURES;
-
-		//  TODO: throw some exception like "ProcessingType not found"
-		return null;
-	}
+		try {
+			return ProcessingType.fromString(v);
+		}
+		catch(IllegalArgumentException e) {
+			LOGGER.error("Can't construct ProcessingType from string \"" + v + "\", setting ProcessingType to default", e);
+		}
+        return Config.getDefaultProcessingType();
+    }
 
 	@Override
 	public String marshal(ProcessingType v) throws Exception {
@@ -57,73 +59,79 @@ class ProcessingTypeAdapter extends XmlAdapter<String, ProcessingType> {
 @XmlRootElement(name = "config")
 public final class Config {
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+    private static final char[] FORBIDDEN_SYMBOLS_IN_FILE_NAME = new char[]{'\\', '/', ':', '*', '?', '\"', '<', '>', '|', '+', '\0', '%'};
 
-		Config config = (Config) o;
+    private static final boolean DEFAULT_SHOW_PASSED_RULES = false;
+    private static final int DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS = -1;
+    private static final int DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS = 100;
+    private static final String DEFAULT_METADATA_FIXER_PREFIX = MetadataFixerConstants.DEFAULT_PREFIX;
+    private static final Path DEFAULT_FIX_METADATA_PATH_FOLDER = FileSystems.getDefault().getPath("");
+    private static final String DEFAULT_PROFILES_WIKI_PATH = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
+    private static final boolean DEFAULT_IS_FIX_METADATA = true;
+    private static final ProcessingType DEFAULT_PROCESSING_TYPE = ProcessingType.VALIDATING_AND_FEATURES;
 
-		if (showPassedRules != config.showPassedRules) return false;
-		if (maxNumberOfFailedChecks != config.maxNumberOfFailedChecks)
-			return false;
-		if (maxNumberOfDisplayedFailedChecks != config.maxNumberOfDisplayedFailedChecks)
-			return false;
-		if (isFixMetadata != config.isFixMetadata) return false;
-		if (metadataFixerPrefix != null ? !metadataFixerPrefix.equals(config.metadataFixerPrefix) : config.metadataFixerPrefix != null)
-			return false;
-		if (fixMetadataPathFolder != null ? !fixMetadataPathFolder.equals(config.fixMetadataPathFolder) : config.fixMetadataPathFolder != null)
-			return false;
-		if (profileWikiPath != null ? !profileWikiPath.equals(config.profileWikiPath) : config.profileWikiPath != null)
-			return false;
-		return processingType == config.processingType;
+    private static final Config DEFAULT_CONFIG = new Config(DEFAULT_SHOW_PASSED_RULES,
+            DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS, DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS,
+            DEFAULT_METADATA_FIXER_PREFIX, DEFAULT_FIX_METADATA_PATH_FOLDER,
+            DEFAULT_PROFILES_WIKI_PATH, DEFAULT_IS_FIX_METADATA,
+            DEFAULT_PROCESSING_TYPE);
 
-	}
 
-	@Override
-	public int hashCode() {
-		int result = (showPassedRules ? 1 : 0);
-		result = 31 * result + maxNumberOfFailedChecks;
-		result = 31 * result + maxNumberOfDisplayedFailedChecks;
-		result = 31 * result + (metadataFixerPrefix != null ? metadataFixerPrefix.hashCode() : 0);
-		result = 31 * result + (fixMetadataPathFolder != null ? fixMetadataPathFolder.hashCode() : 0);
-		result = 31 * result + (profileWikiPath != null ? profileWikiPath.hashCode() : 0);
-		result = 31 * result + (processingType != null ? processingType.hashCode() : 0);
-		result = 31 * result + (isFixMetadata ? 1 : 0);
-		return result;
-	}
-
-	@XmlElement
-	private final boolean showPassedRules;
-	@XmlElement
-	private final int maxNumberOfFailedChecks;
-	@XmlElement
-	private final int maxNumberOfDisplayedFailedChecks;
-	@XmlElement
-	private final String metadataFixerPrefix;
-	@XmlElement
-	@XmlJavaTypeAdapter(PathAdapter.class)
-	private final Path fixMetadataPathFolder;
-	@XmlElement
-	private final String profileWikiPath;
-	@XmlElement
-	@XmlJavaTypeAdapter(ProcessingTypeAdapter.class)
-	private final ProcessingType processingType;
-	@XmlElement
-	private final boolean isFixMetadata;
+	private boolean showPassedRules;
+	private int maxNumberOfFailedChecks;
+	private int maxNumberOfDisplayedFailedChecks;
+	private String metadataFixerPrefix;
+	private Path fixMetadataPathFolder;
+	private String profileWikiPath;
+	private ProcessingType processingType;
+	private boolean isFixMetadata;
 	//private final ValidationProfile profile;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-	private Config() {
-		Config config = Builder.buildDefaultConfig();
-		this.showPassedRules = config.showPassedRules;
-		this.maxNumberOfFailedChecks = config.maxNumberOfFailedChecks;
-		this.maxNumberOfDisplayedFailedChecks = config.maxNumberOfDisplayedFailedChecks;
-		this.metadataFixerPrefix = config.metadataFixerPrefix;
-		this.fixMetadataPathFolder = config.fixMetadataPathFolder;
-		this.profileWikiPath = config.profileWikiPath;
-		this.isFixMetadata = config.isFixMetadata;
-		this.processingType = config.processingType;
+        Config config = (Config) o;
+
+        if (showPassedRules != config.showPassedRules) return false;
+        if (maxNumberOfFailedChecks != config.maxNumberOfFailedChecks)
+            return false;
+        if (maxNumberOfDisplayedFailedChecks != config.maxNumberOfDisplayedFailedChecks)
+            return false;
+        if (isFixMetadata != config.isFixMetadata) return false;
+        if (metadataFixerPrefix != null ? !metadataFixerPrefix.equals(config.metadataFixerPrefix) : config.metadataFixerPrefix != null)
+            return false;
+        if (fixMetadataPathFolder != null ? !fixMetadataPathFolder.equals(config.fixMetadataPathFolder) : config.fixMetadataPathFolder != null)
+            return false;
+        if (profileWikiPath != null ? !profileWikiPath.equals(config.profileWikiPath) : config.profileWikiPath != null)
+            return false;
+        return processingType == config.processingType;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (showPassedRules ? 1 : 0);
+        result = 31 * result + maxNumberOfFailedChecks;
+        result = 31 * result + maxNumberOfDisplayedFailedChecks;
+        result = 31 * result + (metadataFixerPrefix != null ? metadataFixerPrefix.hashCode() : 0);
+        result = 31 * result + (fixMetadataPathFolder != null ? fixMetadataPathFolder.hashCode() : 0);
+        result = 31 * result + (profileWikiPath != null ? profileWikiPath.hashCode() : 0);
+        result = 31 * result + (processingType != null ? processingType.hashCode() : 0);
+        result = 31 * result + (isFixMetadata ? 1 : 0);
+        return result;
+    }
+
+	public Config() {
+		this.showPassedRules = DEFAULT_SHOW_PASSED_RULES;
+		this.maxNumberOfFailedChecks = DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS;
+		this.maxNumberOfDisplayedFailedChecks = DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS;
+		this.metadataFixerPrefix = DEFAULT_METADATA_FIXER_PREFIX;
+		this.fixMetadataPathFolder = DEFAULT_FIX_METADATA_PATH_FOLDER;
+		this.profileWikiPath = DEFAULT_PROFILES_WIKI_PATH;
+		this.isFixMetadata = DEFAULT_IS_FIX_METADATA;
+		this.processingType = DEFAULT_PROCESSING_TYPE;
 	}
 
 	private Config(boolean showPassedRules, int maxNumberOfFailedChecks,
@@ -140,9 +148,18 @@ public final class Config {
 		this.processingType = processingType;
 	}
 
+    public static Config buildDefaultConfig() {
+        return DEFAULT_CONFIG;
+    }
+
+    public static ProcessingType getDefaultProcessingType() {
+        return DEFAULT_PROCESSING_TYPE;
+    }
+
 	/**
 	 * @return selected number for maximum displayed fail checks for a rule. If not selected returns -1
 	 */
+    @XmlElement
 	public int getMaxNumberOfDisplayedFailedChecks() {
 		return maxNumberOfDisplayedFailedChecks;
 	}
@@ -150,6 +167,7 @@ public final class Config {
 	/**
 	 * @return selected number for maximum fail checks for a rule. If not selected returns -1
 	 */
+    @XmlElement
 	public int getMaxNumberOfFailedChecks() {
 		return maxNumberOfFailedChecks;
 	}
@@ -157,6 +175,7 @@ public final class Config {
 	/**
 	 * @return true if desplay passed pules option selected
 	 */
+    @XmlElement
 	public boolean isShowPassedRules() {
 		return showPassedRules;
 	}
@@ -164,6 +183,7 @@ public final class Config {
 	/**
 	 * @return String representation of prefix for fixed files
 	 */
+    @XmlElement
 	public String getMetadataFixerPrefix() {
 		return metadataFixerPrefix;
 	}
@@ -171,6 +191,8 @@ public final class Config {
 	/**
 	 * @return path to the folder in which fixed file will be placed
 	 */
+    @XmlElement
+    @XmlJavaTypeAdapter(PathAdapter.class)
 	public Path getFixMetadataPathFolder() {
 		return fixMetadataPathFolder;
 	}
@@ -178,12 +200,23 @@ public final class Config {
 	/**
 	 * @return type of operation to be performed, e. g. validation & feature describing
 	 */
+    @XmlElement
+    @XmlJavaTypeAdapter(ProcessingTypeAdapter.class)
 	public ProcessingType getProcessingType() { return processingType; }
 
 	/**
 	 * @return true if metadata fixes are to be performed
 	 */
+    @XmlElement
 	public boolean isFixMetadata() { return isFixMetadata; }
+
+    /**
+     * @return path to the profiles wiki
+     */
+    @XmlElement
+    public String getProfileWikiPath() {
+        return profileWikiPath;
+    }
 
 	public static String toXml(final Config toConvert, Boolean prettyXml)
 			throws JAXBException, IOException {
@@ -208,7 +241,7 @@ public final class Config {
 		varMarshaller.marshal(toConvert, stream);
 	}
 
-	static Config fromXml(final InputStream toConvert)
+	public static Config fromXml(final InputStream toConvert)
 			throws JAXBException {
 		Unmarshaller stringUnmarshaller = getUnmarshaller();
 		return (Config) stringUnmarshaller.unmarshal(toConvert);
@@ -242,172 +275,115 @@ public final class Config {
 		return marshaller;
 	}
 
-	/**
-	 * @return path to the profiles wiki
-	 */
-	public String getProfileWikiPath() {
-		return profileWikiPath;
-	}
 
-	public static final class Builder {
-
-		private static final char[] FORBIDDEN_SYMBOLS_IN_FILE_NAME = new char[]{'\\', '/', ':', '*', '?', '\"', '<', '>', '|', '+', '\0', '%'};
-
-		private static final boolean DEFAULT_SHOW_PASSED_RULES = false;
-		private static final int DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS = -1;
-		private static final int DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS = 100;
-		private static final String DEFAULT_METADATA_FIXER_PREFIX = MetadataFixerConstants.DEFAULT_PREFIX;
-		private static final Path DEFAULT_FIX_METADATA_PATH_FOLDER = FileSystems.getDefault().getPath("");
-		private static final String DEFAULT_PROFILES_WIKI_PATH = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
-		private static final boolean DEFAULT_IS_FIX_METADATA = true;
-		private static final ProcessingType DEFAULT_PROCESSING_TYPE = ProcessingType.VALIDATING_AND_FEATURES;
-
-		private static final Config DEFAULT_CONFIG = new Config(DEFAULT_SHOW_PASSED_RULES,
-				DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS, DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS,
-				DEFAULT_METADATA_FIXER_PREFIX, DEFAULT_FIX_METADATA_PATH_FOLDER,
-				DEFAULT_PROFILES_WIKI_PATH, DEFAULT_IS_FIX_METADATA,
-				DEFAULT_PROCESSING_TYPE);
-
-		private boolean showPassedRules = DEFAULT_SHOW_PASSED_RULES;
-		private int maxNumberOfFailedChecks = DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS;
-		private int maxNumberOfDisplayedFailedChecks = DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS;
-		private String metadataFixerPrefix = DEFAULT_METADATA_FIXER_PREFIX;
-		private Path fixMetadataPathFolder = DEFAULT_FIX_METADATA_PATH_FOLDER;
-		private String profilesWikiPath = DEFAULT_PROFILES_WIKI_PATH;
-		public boolean isFixMetadata = DEFAULT_IS_FIX_METADATA;
-		private ProcessingType processingType = DEFAULT_PROCESSING_TYPE;
-
-		public Builder() {
-		}
-
-		public Config build() {
-			return new Config(this.showPassedRules, this.maxNumberOfFailedChecks,
-					this.maxNumberOfDisplayedFailedChecks, this.metadataFixerPrefix,
-					this.fixMetadataPathFolder, this.profilesWikiPath,
-					this.isFixMetadata, this.processingType);
-		}
-
-		public static Config buildDefaultConfig() {
-			return DEFAULT_CONFIG;
-		}
-
-		/**
-		 * Changes settings parameters
-		 *
-		 * @param metadataFixerPrefix a prefix which will be added to the fixed file
-		 * @throws IllegalArgumentException parameter can not be null
-		 */
-		public Builder metadataFixerPrefix(String metadataFixerPrefix) {
-			if (metadataFixerPrefix == null) {
-				throw new IllegalArgumentException("Prefix for metadata fixer can not be null");
-			}
-			for (char c : metadataFixerPrefix.toCharArray()) {
-				if (!isValidFileNameCharacter(c)) {
-					throw new IllegalArgumentException("Prefix for metadata fixer contains forbidden symbols");
-				}
-			}
-			this.metadataFixerPrefix = metadataFixerPrefix;
-			return this;
-		}
-
-		/**
-		 * Changes settings parameter
-		 *
-		 * @param showPassedRules true for show passed rules at the report
-		 */
-		public Builder showPassedRules(boolean showPassedRules) {
-			this.showPassedRules = showPassedRules;
-			return this;
-		}
-
-		/**
-		 * Changes settings parameter
-		 *
-		 * @param maxNumberOfFailedChecks a natural number that indicates maximum number of failed checks for rule or -1 for unlimited
-		 * @throws IllegalArgumentException if parameter is not a natural number or -1
-		 */
-		public Builder maxNumberOfFailedChecks(int maxNumberOfFailedChecks) {
-			if (maxNumberOfFailedChecks > 0 || maxNumberOfFailedChecks == -1) {
-				this.maxNumberOfFailedChecks = maxNumberOfFailedChecks;
-			} else {
-				throw new IllegalArgumentException("Max number of failed checks for rule for setter method is not a natural or -1");
-			}
-			return this;
-		}
-
-		/**
-		 * Changes settings parameter
-		 *
-		 * @param maxNumberOfDisplayedFailedChecks a non negative integer number that indicates maximum number of displayed
-		 *                                         failed checks for rule or -1 for infinite
-		 * @throws IllegalArgumentException if parameter is less than -1
-		 */
-		public Builder maxNumberOfDisplayedFailedChecks(int maxNumberOfDisplayedFailedChecks) {
-			if (maxNumberOfDisplayedFailedChecks >= -1) {
-				this.maxNumberOfDisplayedFailedChecks = maxNumberOfDisplayedFailedChecks;
-			} else {
-				throw new IllegalArgumentException("Max number of displayed failed checks for rule for setter method is less than -1");
-			}
-			return this;
-		}
-
-		/**
-		 * Changes settings parameters
-		 *
-		 * @param fixMetadataPathFolder a path to the folder in which fixed files will be saved
-		 * @throws IllegalArgumentException parameter should be an empty path or a path to an existing and write acceptable directory
-		 */
-		public Builder fixMetadataPathFolder(Path fixMetadataPathFolder) {
-			if (isValidFolderPath(fixMetadataPathFolder)) {
-				this.fixMetadataPathFolder = fixMetadataPathFolder;
-				return this;
-			} else {
-				throw new IllegalArgumentException("Path should be an empty path or a path to an existing and write acceptable directory");
-			}
-		}
-
-		public Builder profilesWikiPath(String profilesWikiPath) {
-			this.profilesWikiPath = profilesWikiPath;
-			return this;
-		}
-
-        public Builder isFixMetadata(boolean isFixMetadata) {
-            this.isFixMetadata = isFixMetadata;
-            return this;
+    /**
+     * Changes settings parameters
+     *
+     * @param metadataFixerPrefix a prefix which will be added to the fixed file
+     * @throws IllegalArgumentException parameter can not be null
+     */
+    public void setMetadataFixerPrefix(String metadataFixerPrefix) {
+        if (metadataFixerPrefix == null) {
+            throw new IllegalArgumentException("Prefix for metadata fixer can not be null");
         }
-
-        public Builder processingType(ProcessingType processingType) {   // Should we check validity?
-            this.processingType = processingType;
-            return this;
+        for (char c : metadataFixerPrefix.toCharArray()) {
+            if (!isValidFileNameCharacter(c)) {
+                throw new IllegalArgumentException("Prefix for metadata fixer contains forbidden symbols");
+            }
         }
+        this.metadataFixerPrefix = metadataFixerPrefix;
+    }
 
-		/**
-		 * Checks is the parameter path a valid for saving fixed file
-		 *
-		 * @param path path for check
-		 * @return true if it is valid
-		 */
-		public static boolean isValidFolderPath(Path path) {
-			if (path == null) {
-				return false;
-			}
-			File f = path.toFile();
-			return path.toString().isEmpty() || (f.isDirectory() && f.canWrite());
-		}
+    /**
+     * Changes settings parameter
+     *
+     * @param showPassedRules true for show passed rules at the report
+     */
+    public void setShowPassedRules(boolean showPassedRules) {
+        this.showPassedRules = showPassedRules;
+    }
 
-		/**
-		 * Checks is the character valid for file name
-		 *
-		 * @param c character to be checked
-		 * @return true if it is valid
-		 */
-		public static boolean isValidFileNameCharacter(char c) {
-			for (char ch : FORBIDDEN_SYMBOLS_IN_FILE_NAME) {
-				if (ch == c) {
-					return false;
-				}
-			}
-			return true;
-		}
-	}
+    /**
+     * Changes settings parameter
+     *
+     * @param maxNumberOfFailedChecks a natural number that indicates maximum number of failed checks for rule or -1 for unlimited
+     * @throws IllegalArgumentException if parameter is not a natural number or -1
+     */
+    public void setMaxNumberOfFailedChecks(int maxNumberOfFailedChecks) {
+        if (maxNumberOfFailedChecks > 0 || maxNumberOfFailedChecks == -1) {
+            this.maxNumberOfFailedChecks = maxNumberOfFailedChecks;
+        } else {
+            throw new IllegalArgumentException("Max number of failed checks for rule for setter method is not a natural or -1");
+        }
+    }
+
+    /**
+     * Changes settings parameter
+     *
+     * @param maxNumberOfDisplayedFailedChecks a non negative integer number that indicates maximum number of displayed
+     *                                         failed checks for rule or -1 for infinite
+     * @throws IllegalArgumentException if parameter is less than -1
+     */
+    public void setMaxNumberOfDisplayedFailedChecks(int maxNumberOfDisplayedFailedChecks) {
+        if (maxNumberOfDisplayedFailedChecks >= -1) {
+            this.maxNumberOfDisplayedFailedChecks = maxNumberOfDisplayedFailedChecks;
+        } else {
+            throw new IllegalArgumentException("Max number of displayed failed checks for rule for setter method is less than -1");
+        }
+    }
+
+    /**
+     * Changes settings parameters
+     *
+     * @param fixMetadataPathFolder a path to the folder in which fixed files will be saved
+     * @throws IllegalArgumentException parameter should be an empty path or a path to an existing and write acceptable directory
+     */
+    public void setFixMetadataPathFolder(Path fixMetadataPathFolder) {
+        if (isValidFolderPath(fixMetadataPathFolder)) {
+            this.fixMetadataPathFolder = fixMetadataPathFolder;
+        } else {
+            throw new IllegalArgumentException("Path should be an empty path or a path to an existing and write acceptable directory");
+        }
+    }
+
+    public void setProfileWikiPath(String profileWikiPath) {
+        this.profileWikiPath = profileWikiPath;
+    }
+
+    public void setFixMetadata(boolean fixMetadata) {
+        isFixMetadata = fixMetadata;
+    }
+
+    public void setProcessingType(ProcessingType processingType) {   // Should we check validity?
+        this.processingType = processingType;
+    }
+
+    /**
+     * Checks is the parameter path a valid for saving fixed file
+     *
+     * @param path path for check
+     * @return true if it is valid
+     */
+    public static boolean isValidFolderPath(Path path) {
+        if (path == null) {
+            return false;
+        }
+        File f = path.toFile();
+        return path.toString().isEmpty() || (f.isDirectory() && f.canWrite());
+    }
+
+    /**
+     * Checks is the character valid for file name
+     *
+     * @param c character to be checked
+     * @return true if it is valid
+     */
+    public static boolean isValidFileNameCharacter(char c) {
+        for (char ch : FORBIDDEN_SYMBOLS_IN_FILE_NAME) {
+            if (ch == c) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
