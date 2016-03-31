@@ -6,17 +6,11 @@
   <parent>
     <groupId>org.verapdf</groupId>
     <artifactId>verapdf-apps</artifactId>
-    <version>0.11.100-SNAPSHOT</version>
+    <version>0.12.0</version>
   </parent>
 
   <artifactId>gui</artifactId>
   <name>VeraPDF Library GUI</name>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.source.version>1.7</java.source.version>
-    <java.target.version>1.7</java.target.version>
-  </properties>
 
   <build>
     <plugins>
@@ -77,19 +71,19 @@
     <dependency>
       <groupId>org.verapdf</groupId>
       <artifactId>pdfbox-feature-reporting</artifactId>
-      <version>${verapdf.library.version}</version>
+      <version>${verapdf.pdfbox.validation.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.verapdf</groupId>
       <artifactId>pdfbox-validation-model</artifactId>
-      <version>${verapdf.library.version}</version>
+      <version>${verapdf.pdfbox.validation.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.verapdf</groupId>
       <artifactId>pdfbox-metadata-fixer</artifactId>
-      <version>${verapdf.library.version}</version>
+      <version>${verapdf.pdfbox.validation.version}</version>
     </dependency>
 
     <dependency>
