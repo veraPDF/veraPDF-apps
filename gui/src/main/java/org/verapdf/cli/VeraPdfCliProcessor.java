@@ -3,11 +3,13 @@
  */
 package org.verapdf.cli;
 
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.verapdf.cli.commands.FormatOption;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.ValidationException;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeaturesCollection;
+import org.verapdf.gui.tools.ProcessingType;
 import org.verapdf.metadata.fixer.impl.MetadataFixerImpl;
 import org.verapdf.metadata.fixer.impl.pb.FixerConfigImpl;
 import org.verapdf.metadata.fixer.utils.FileGenerator;
@@ -43,6 +45,7 @@ import java.util.Set;
 final class VeraPdfCliProcessor {
     final FormatOption format;
     final boolean extractFeatures;
+    final ProcessingType processingType;
     final boolean logPassed;
     final boolean recurse;
     final boolean verbose;
@@ -58,6 +61,8 @@ final class VeraPdfCliProcessor {
 
     final ValidationProfile profile;
 
+    private String currentPdfName;
+
     private VeraPdfCliProcessor() throws IOException {
         this(new VeraCliArgParser());
     }
@@ -66,6 +71,7 @@ final class VeraPdfCliProcessor {
             throws IOException {
         this.format = args.getFormat();
         this.extractFeatures = args.extractFeatures();
+        this.processingType = args.getProcessingType();
         this.logPassed = args.logPassed();
         this.recurse = args.isRecurse();
         this.verbose = args.isVerbose();
@@ -127,12 +133,14 @@ final class VeraPdfCliProcessor {
     private void processFile(final File pdfFile) {
         if (checkFileCanBeProcessed(pdfFile)) {
             try (InputStream toProcess = new FileInputStream(pdfFile)) {
+                this.currentPdfName = pdfFile.getName();
                 processStream(ItemDetails.fromFile(pdfFile), toProcess);
             } catch (IOException e) {
                 System.err.println("Exception raised while processing "
                         + pdfFile.getAbsolutePath());
                 e.printStackTrace();
             }
+            this.currentPdfName = "";
         }
     }
 
@@ -145,16 +153,20 @@ final class VeraPdfCliProcessor {
         long start = System.currentTimeMillis();
         try (ModelParser toValidate = new ModelParser(toProcess, this.profile.getPDFAFlavour())) {
             if (this.validator != null) {
-                validationResult = this.validator.validate(toValidate);
-                if (this.fixMetadata) {
-                    fixerResult = this.fixMetadata(validationResult, toValidate,
-                                                   item.getName());
+                if(this.processingType.isValidating()) {
+                    validationResult = this.validator.validate(toValidate);
+                    if (this.fixMetadata) {
+                        fixerResult = this.fixMetadata(validationResult, toValidate,
+                                this.currentPdfName);
+                    }
                 }
             }
-            if (this.extractFeatures) {
+            if (this.processingType.isFeatures()) {
                 featuresCollection = PBFeatureParser
                         .getFeaturesCollection(toValidate.getPDDocument());
             }
+        } catch (InvalidPasswordException e) {
+            System.err.println("Error: " + item.getName() + " is an encrypted PDF file.");
         } catch (IOException e) {
             System.err.println("Error: " + item.getName() + " is not a PDF format file.");
             // TODO : do we need stacktrace in cli application?
@@ -187,12 +199,13 @@ final class VeraPdfCliProcessor {
                 }
             }
         } else {
+            System.out.println(item.getName());
             MachineReadableReport report = MachineReadableReport.fromValues(
-                    item.getName(),
+                    item,
                     this.validator == null ? Profiles.defaultProfile()
                             : this.validator.getProfile(), validationResult,
-                    this.logPassed, fixerResult, featuresCollection,
-                    System.currentTimeMillis() - start, this.maxFailuresDisplayed);
+                    this.logPassed, this.maxFailuresDisplayed ,fixerResult, featuresCollection,
+                    System.currentTimeMillis() - start);
             outputMrr(report, this.format == FormatOption.HTML);
         }
     }
@@ -281,10 +294,10 @@ final class VeraPdfCliProcessor {
                 while (flag) {
                     if (!path.toString().trim().isEmpty()) {
                         resFile = FileGenerator.createOutputFile(this.saveFolder.toFile(),
-                                fileName, prefix);
+                                fileName, this.prefix);
                     } else {
                         resFile = FileGenerator.createOutputFile(new File(fileName),
-                                prefix);
+                                this.prefix);
                     }
 
                     try {
@@ -297,19 +310,5 @@ final class VeraPdfCliProcessor {
             }
             return fixerResult;
         }
-    }
-
-    /**
-     * Checks is the parameter path a valid for saving fixed file
-     *
-     * @param path path for check
-     * @return true if it is valid
-     */
-    private static boolean isValidFolderPath(Path path) {
-        if (path == null) {
-            return false;
-        }
-        File f = path.toFile();
-        return path.toString().isEmpty() || (f.isDirectory() && f.canWrite());
     }
 }

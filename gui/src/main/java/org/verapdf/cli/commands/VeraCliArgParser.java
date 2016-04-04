@@ -4,6 +4,7 @@ import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
+import org.verapdf.gui.tools.ProcessingType;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.File;
@@ -30,8 +31,8 @@ public class VeraCliArgParser {
     final static String LIST = OPTION_SEP + "list";
     final static String LOAD_PROFILE_FLAG = FLAG_SEP + "p";
     final static String LOAD_PROFILE = OPTION_SEP + "profile";
-    final static String EXTRACT_FLAG = FLAG_SEP + "x";
-    final static String EXTRACT = OPTION_SEP + "extract";
+    final static String EXTRACT_FLAG = FLAG_SEP + "x";      // TODO: Remove -x if -t is better
+    final static String EXTRACT = OPTION_SEP + "extract";   // TODO: Remove --extract if --type is better
     final static String FORMAT = OPTION_SEP + "format";
     final static String RECURSE_FLAG = FLAG_SEP + "r";
     final static String RECURSE = OPTION_SEP + "recurse";
@@ -44,6 +45,8 @@ public class VeraCliArgParser {
     final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder";
     final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
     final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
+    final static String REPORT_TYPE = OPTION_SEP + "type";
+    final static String REPORT_TYPE_FLAG = FLAG_SEP + "t";
 
     @Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
     private boolean help = false;
@@ -93,6 +96,9 @@ public class VeraCliArgParser {
     @Parameter(names = { PROFILES_WIKI_FLAG, PROFILES_WIKI }, description = "The path to the folder containing Validation Profiles wiki.")
     private String profilesWikiPath = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
 
+    @Parameter(names = { REPORT_TYPE_FLAG, REPORT_TYPE}, description = "Operation to be performed", converter = ProcessingTypeConverter.class)
+    private ProcessingType processingType = ProcessingType.VALIDATING_AND_FEATURES;
+
     @Parameter(description = "FILES")
     private List<String> pdfPaths = new ArrayList<>();
 
@@ -135,21 +141,21 @@ public class VeraCliArgParser {
      * @return true if metadata fix is enabled
      */
     public boolean fixMetadata() {
-        return fixMetadata;
+        return this.fixMetadata;
     }
 
     /**
      * @return the prefix of the saved file
      */
     public String prefix() {
-        return prefix;
+        return this.prefix;
     }
 
     /**
      * @return the folder to save the fixed file to
      */
     public String saveFolder() {
-        return saveFolder;
+        return this.saveFolder;
     }
 
     /**
@@ -216,6 +222,12 @@ public class VeraCliArgParser {
     }
 
     /**
+     * @return type of operation to be performed
+     */
+    public ProcessingType getProcessingType() {
+        return this.processingType;
+    }
+    /**
      * JCommander parameter converter for {@link FormatOption}, see
      * {@link IStringConverter} and {@link FormatOption#fromOption(String)}.
      * 
@@ -253,6 +265,25 @@ public class VeraCliArgParser {
                     return flavourLocal;
             }
             throw new ParameterException("Illegal --flavour argument:" + value);
+        }
+
+    }
+
+    /**
+     * JCommander parameter converter for {@link ProcessingType}, see
+     * {@link IStringConverter} and {@link ProcessingType#fromString(String)}.
+     *
+     * @author Shemyakov Sergey
+     *
+     */
+    public static final class ProcessingTypeConverter implements
+            IStringConverter<ProcessingType> {
+        /**
+         * { @inheritDoc }
+         */
+        @Override
+        public ProcessingType convert(final String value) {
+            return ProcessingType.fromString(value);
         }
 
     }
