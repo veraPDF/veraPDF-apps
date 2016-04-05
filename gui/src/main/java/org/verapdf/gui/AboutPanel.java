@@ -25,7 +25,7 @@ class AboutPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -4011118192914036216L;
 
-	private static final Logger LOGGER = Logger
+	static final Logger LOGGER = Logger
 			.getLogger(AboutPanel.class);
 
 	private JButton okButton;
@@ -48,11 +48,11 @@ class AboutPanel extends JPanel {
 
 		mainPanel.add(partners);
 
-		okButton = new JButton("Ok");
-		okButton.addActionListener(new ActionListener() {
+		this.okButton = new JButton("Ok");
+		this.okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				dialog.setVisible(false);
+				AboutPanel.this.dialog.setVisible(false);
 			}
 		});
 
@@ -80,7 +80,7 @@ class AboutPanel extends JPanel {
 
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		buttonPanel.add(okButton);
+		buttonPanel.add(this.okButton);
 
 		bottomPanel.add(labelPanel);
 		bottomPanel.add(buttonPanel);
@@ -96,17 +96,17 @@ class AboutPanel extends JPanel {
 			owner = (Frame) SwingUtilities.getAncestorOfClass(Frame.class, parent);
 		}
 
-		if (dialog == null || dialog.getOwner() != owner) {
-			dialog = new JDialog(owner, true);
-			dialog.setResizable(false);
-			dialog.add(this);
-			dialog.getRootPane().setDefaultButton(okButton);
-			dialog.pack();
-			dialog.setTitle(title);
+		if (this.dialog == null || this.dialog.getOwner() != owner) {
+			this.dialog = new JDialog(owner, true);
+			this.dialog.setResizable(false);
+			this.dialog.add(this);
+			this.dialog.getRootPane().setDefaultButton(this.okButton);
+			this.dialog.pack();
+			this.dialog.setTitle(title);
 		}
 
-		dialog.setLocation(GUIConstants.ABOUTDIALOG_COORD_X, GUIConstants.ABOUTDIALOG_COORD_Y);
-		dialog.setVisible(true);
+		this.dialog.setLocation(GUIConstants.ABOUTDIALOG_COORD_X, GUIConstants.ABOUTDIALOG_COORD_Y);
+		this.dialog.setVisible(true);
 	}
 
 }
