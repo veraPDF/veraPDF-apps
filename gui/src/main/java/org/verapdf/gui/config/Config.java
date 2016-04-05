@@ -16,29 +16,32 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.*;
+import java.net.URI;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author Maksim Bezrukov
  */
-class PathAdapter extends XmlAdapter<String, Path> {    //  TODO: Move adapters somewhere. Or leave here.
+
+class PathAdapter extends XmlAdapter<String, Path> {
 
 	@Override
 	public Path unmarshal(String v) throws Exception {
-		Path path = FileSystems.getDefault().getPath(v);
-		return path;
+		Path path = Paths.get(new URI(v));
+		return path.toAbsolutePath();
 	}
 
 	@Override
 	public String marshal(Path v) throws Exception {
-		return v.toString();
+		return v.toAbsolutePath().toUri().toString();
 	}
 }
 
 class ProcessingTypeAdapter extends XmlAdapter<String, ProcessingType> {
 
-	private static final Logger LOGGER = Logger.getLogger(ProcessingTypeAdapter.class);
+	private final Logger LOGGER = Logger.getLogger(ProcessingTypeAdapter.class);
 	@Override
 	public ProcessingType unmarshal(String v) throws Exception {
 		try {
@@ -47,8 +50,8 @@ class ProcessingTypeAdapter extends XmlAdapter<String, ProcessingType> {
 		catch(IllegalArgumentException e) {
 			LOGGER.error("Can't construct ProcessingType from string \"" + v + "\", setting ProcessingType to default", e);
 		}
-        return Config.getDefaultProcessingType();
-    }
+		return Config.DEFAULT_PROCESSING_TYPE;
+	}
 
 	@Override
 	public String marshal(ProcessingType v) throws Exception {
@@ -61,21 +64,14 @@ public final class Config {
 
     private static final char[] FORBIDDEN_SYMBOLS_IN_FILE_NAME = new char[]{'\\', '/', ':', '*', '?', '\"', '<', '>', '|', '+', '\0', '%'};
 
-    private static final boolean DEFAULT_SHOW_PASSED_RULES = false;
-    private static final int DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS = -1;
-    private static final int DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS = 100;
-    private static final String DEFAULT_METADATA_FIXER_PREFIX = MetadataFixerConstants.DEFAULT_PREFIX;
-    private static final Path DEFAULT_FIX_METADATA_PATH_FOLDER = FileSystems.getDefault().getPath("");
-    private static final String DEFAULT_PROFILES_WIKI_PATH = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
-    private static final boolean DEFAULT_IS_FIX_METADATA = true;
-    private static final ProcessingType DEFAULT_PROCESSING_TYPE = ProcessingType.VALIDATING_AND_FEATURES;
-
-    private static final Config DEFAULT_CONFIG = new Config(DEFAULT_SHOW_PASSED_RULES,
-            DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS, DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS,
-            DEFAULT_METADATA_FIXER_PREFIX, DEFAULT_FIX_METADATA_PATH_FOLDER,
-            DEFAULT_PROFILES_WIKI_PATH, DEFAULT_IS_FIX_METADATA,
-            DEFAULT_PROCESSING_TYPE);
-
+    public static final boolean DEFAULT_SHOW_PASSED_RULES = false;
+	public final int DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS = -1;
+	public static final int DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS = 100;
+	public static final String DEFAULT_METADATA_FIXER_PREFIX = MetadataFixerConstants.DEFAULT_PREFIX;
+	public static final Path DEFAULT_FIX_METADATA_PATH_FOLDER = FileSystems.getDefault().getPath("");
+	public static final String DEFAULT_PROFILES_WIKI_PATH = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
+	public static final boolean DEFAULT_IS_FIX_METADATA = true;
+	public static final ProcessingType DEFAULT_PROCESSING_TYPE = ProcessingType.VALIDATING_AND_FEATURES;
 
 	private boolean showPassedRules;
 	private int maxNumberOfFailedChecks;
@@ -148,9 +144,6 @@ public final class Config {
 		this.processingType = processingType;
 	}
 
-    public static Config buildDefaultConfig() {
-        return DEFAULT_CONFIG;
-    }
 
     public static ProcessingType getDefaultProcessingType() {
         return DEFAULT_PROCESSING_TYPE;

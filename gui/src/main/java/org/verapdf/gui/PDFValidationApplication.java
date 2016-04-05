@@ -64,7 +64,7 @@ public class PDFValidationApplication extends JFrame {
             File f = new File(user, "config");
 			if (!f.exists() && !f.mkdir()) {
 				this.isSerializedConfig = false;
-				this.config = Config.buildDefaultConfig();
+				this.config = new Config();
 			} else {
 				File configFile = new File(f, "config.properties");
 				this.isSerializedConfig = true;
@@ -74,24 +74,24 @@ public class PDFValidationApplication extends JFrame {
 						if (!configFile.canRead()) {
 							throw new IllegalArgumentException("Path should specify read accessible file");
 						}
-						FileInputStream reader = new FileInputStream(configFile);
-						this.config = Config.fromXml(reader);
+						FileInputStream inputStream = new FileInputStream(configFile);
+						this.config = Config.fromXml(inputStream);
 
 					} catch (IOException e) {
 						LOGGER.error("Can not read config file", e);
-						this.config = Config.buildDefaultConfig();
+						this.config =  new Config();
 					}
 					catch (JAXBException e) {
 						LOGGER.error("Cannot parse config XML", e);
-						this.config = Config.buildDefaultConfig();
+						this.config =  new Config();
 					}
 
 				} else {
-					this.config = Config.buildDefaultConfig();
+					this.config =  new Config();
 				}
 			}
 		} else {
-			this.config = Config.buildDefaultConfig();
+			this.config =  new Config();
 		}
 
 		JMenuBar menuBar = new JMenuBar();
@@ -118,18 +118,18 @@ public class PDFValidationApplication extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (settingsPanel != null && settingsPanel.showDialog(PDFValidationApplication.this, "Settings", config)) {
-					Config builder = new Config();
-					builder.setShowPassedRules(settingsPanel.isDispPassedRules());
-					builder.setMaxNumberOfFailedChecks(settingsPanel.getFailedChecksNumber());
-					builder.setMaxNumberOfDisplayedFailedChecks(settingsPanel.getFailedChecksDisplayNumber());
-					builder.setFixMetadataPathFolder(settingsPanel.getFixMetadataDirectory());
-					builder.setMetadataFixerPrefix(settingsPanel.getFixMetadataPrefix());
-					builder.setProfileWikiPath(settingsPanel.getProfilesWikiPath());
-                    builder.setFixMetadata(PDFValidationApplication.this.config.isFixMetadata());
-                    builder.setProcessingType(PDFValidationApplication.this.config.getProcessingType());
+					Config config = new Config();
+					config.setShowPassedRules(settingsPanel.isDispPassedRules());
+					config.setMaxNumberOfFailedChecks(settingsPanel.getFailedChecksNumber());
+					config.setMaxNumberOfDisplayedFailedChecks(settingsPanel.getFailedChecksDisplayNumber());
+					config.setFixMetadataPathFolder(settingsPanel.getFixMetadataDirectory());
+					config.setMetadataFixerPrefix(settingsPanel.getFixMetadataPrefix());
+					config.setProfileWikiPath(settingsPanel.getProfilesWikiPath());
+					config.setFixMetadata(PDFValidationApplication.this.config.isFixMetadata());
+					config.setProcessingType(PDFValidationApplication.this.config.getProcessingType());
 
-                    if(!PDFValidationApplication.this.config.equals(builder)) { // TODO: We can check all fields for settings panel
-                        PDFValidationApplication.this.config = builder;   //TODO:  before builder, so we don't have to build configs if nothing is changed
+                    if(!PDFValidationApplication.this.config.equals(config)) { // TODO: We can check all fields for settings panel
+                        PDFValidationApplication.this.config = config;   //TODO:  before builder, so we don't have to build configs if nothing is changed
                         writeConfigToFile();
                     }
 				}
@@ -179,7 +179,10 @@ public class PDFValidationApplication extends JFrame {
     void writeConfigToFile() {
         if (PDFValidationApplication.this.isSerializedConfig) {
             try {
-                FileWriter writer = new FileWriter(PDFValidationApplication.this.configPath.toFile());
+				FileOutputStream outputStream =
+						new FileOutputStream(PDFValidationApplication.this.configPath.toFile());
+				BufferedWriter writer =
+						new BufferedWriter(new OutputStreamWriter(outputStream));
                 writer.write(Config.toXml(PDFValidationApplication.this.config, true));
                 writer.close();
 
@@ -197,6 +200,7 @@ public class PDFValidationApplication extends JFrame {
 	 * @param args command line arguments
 	 */
 	public static void main(String[] args) {
+
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {

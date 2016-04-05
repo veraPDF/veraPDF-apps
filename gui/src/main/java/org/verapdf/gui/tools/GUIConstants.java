@@ -45,9 +45,12 @@ public final class GUIConstants {
 	public static final String HTML = "html";
 	public static final String DOT = ".";
 	public static final String PROCESSING_TYPE = " Report type: ";
-	public static final String VALIDATING_AND_FEATURES = "Validation & Features";
-	public static final String VALIDATING = "Validation";
-	public static final String FEATURES = "Features";
+	public static final String TEXT_VALIDATING_AND_FEATURES = "Validation & Features";
+	public static final String TEXT_VALIDATING = "Validation";
+	public static final String TEXT_FEATURES = "Features";
+	public static final String VALIDATING_AND_FEATURES = "vf";
+	public static final String VALIDATING = "v";
+	public static final String FEATURES = "f";
 	public static final String DISPLAY_PASSED_RULES = "Include passed rules:";
 	public static final String MAX_NUMBER_FAILED_DISPLAYED_CHECKS = "Display failed checks for rule: ";
 	public static final String MAX_NUMBER_FAILED_CHECKS = "Stop validating after failed checks:";

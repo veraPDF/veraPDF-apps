@@ -32,12 +32,26 @@ public enum ProcessingType {
 		switch(string) {
 			case GUIConstants.VALIDATING:
 				return VALIDATING;
-            case GUIConstants.FEATURES:
-                return FEATURES;
-            case GUIConstants.VALIDATING_AND_FEATURES:
-                return VALIDATING_AND_FEATURES;
+			case GUIConstants.FEATURES:
+				return FEATURES;
+			case GUIConstants.VALIDATING_AND_FEATURES:
+				return VALIDATING_AND_FEATURES;
+			default:
+				throw new IllegalArgumentException("String can't be parsed into ProcessingType");
 		}
-        throw new IllegalArgumentException("String can't be parsed into ProcessingType");
+	}
+
+	public String toText() {
+		switch(this) {
+			case VALIDATING:
+				return GUIConstants.TEXT_VALIDATING;
+			case FEATURES:
+				return GUIConstants.TEXT_FEATURES;
+			case VALIDATING_AND_FEATURES:
+				return GUIConstants.TEXT_VALIDATING_AND_FEATURES;
+			default:
+				throw new IllegalArgumentException("ProcessingType can't be parsed into String");
+		}
 	}
 
 	@Override

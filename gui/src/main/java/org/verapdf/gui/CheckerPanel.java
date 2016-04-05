@@ -60,6 +60,22 @@ class CheckerPanel extends JPanel {
 		}
 	}
 
+	private class ProcessingTypeRenderer extends JLabel implements ListCellRenderer<ProcessingType> {
+
+		public ProcessingTypeRenderer() {
+			setOpaque(true);
+			setHorizontalAlignment(CENTER);
+			setVerticalAlignment(CENTER);
+		}
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends ProcessingType> list, ProcessingType value,
+													  int index, boolean isSelected, boolean cellHasFocus) {
+			this.setText(value.toText());
+			return this;
+		}
+	}
+
 	/**
 	 * ID for serialisation
 	 */
@@ -145,6 +161,8 @@ class CheckerPanel extends JPanel {
 
 		this.processingType = new JComboBox<>(ProcessingType.values());
 		processingType.setSelectedItem(config.getProcessingType());
+		ProcessingTypeRenderer processingTypeRenderer = new ProcessingTypeRenderer();
+		processingType.setRenderer(processingTypeRenderer);
 		setGridBagConstraintsParameters(gbc,
 				GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDX,
 				GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDY,
@@ -168,6 +186,9 @@ class CheckerPanel extends JPanel {
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.fixMetadata, gbc);
 		this.add(this.fixMetadata);
+		System.out.println(config.getProcessingType());
+		if(config.getProcessingType() == ProcessingType.FEATURES)
+			this.fixMetadata.setEnabled(false);
 
 		chooseFlavour = new JComboBox<PDFAFlavour>(PDFAFlavour.values());
 		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
@@ -319,15 +340,16 @@ class CheckerPanel extends JPanel {
 		this.processingType.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int index = CheckerPanel.this.processingType.getSelectedIndex();
-				switch (index) {
-					case 0:
+				ProcessingType item =
+						(ProcessingType) CheckerPanel.this.processingType.getSelectedItem();
+				switch (item) {
+					case VALIDATING:
 						CheckerPanel.this.fixMetadata.setEnabled(true);
 						break;
-					case 1:
+					case VALIDATING_AND_FEATURES:
 						CheckerPanel.this.fixMetadata.setEnabled(true);
 						break;
-					case 2:
+					case FEATURES:
 						CheckerPanel.this.fixMetadata.setEnabled(false);
 						break;
 					default:
@@ -645,12 +667,6 @@ class CheckerPanel extends JPanel {
 			validate.setEnabled(true);
 		else
 			validate.setEnabled(false);
-	}
-
-	void setConfig(Config config) {
-		this.config = config;
-		this.fixMetadata.setSelected(config.isFixMetadata());
-		this.processingType.setSelectedItem(config.getProcessingType());
 	}
 
     boolean isFixMetadata() {

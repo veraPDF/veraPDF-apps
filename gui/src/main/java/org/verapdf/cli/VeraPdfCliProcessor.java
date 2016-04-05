@@ -199,7 +199,6 @@ final class VeraPdfCliProcessor {
                 }
             }
         } else {
-            System.out.println(item.getName());
             MachineReadableReport report = MachineReadableReport.fromValues(
                     item,
                     this.validator == null ? Profiles.defaultProfile()
