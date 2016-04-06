@@ -5,7 +5,7 @@ import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.verapdf.core.ValidationException;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeaturesCollection;
-import org.verapdf.gui.config.Config;
+import org.verapdf.config.Config;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.gui.tools.ProcessingType;
 import org.verapdf.metadata.fixer.impl.MetadataFixerImpl;

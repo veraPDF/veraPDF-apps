@@ -1,7 +1,7 @@
 package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
-import org.verapdf.gui.config.Config;
+import org.verapdf.config.Config;
 import org.verapdf.gui.tools.ConfigIO;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.gui.tools.ProcessingType;

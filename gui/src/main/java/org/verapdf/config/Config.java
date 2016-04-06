@@ -1,7 +1,7 @@
-package org.verapdf.gui.config;
+package org.verapdf.config;
 
 import org.apache.log4j.Logger;
-import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.cli.commands.FormatOption;
 import org.verapdf.gui.tools.ProcessingType;
 import org.verapdf.metadata.fixer.utils.MetadataFixerConstants;
 
@@ -9,8 +9,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -59,6 +57,18 @@ class ProcessingTypeAdapter extends XmlAdapter<String, ProcessingType> {
 	}
 }
 
+class ReportFormatAdapter extends XmlAdapter<String, FormatOption> {
+	@Override
+	public FormatOption unmarshal(String v) throws Exception {
+		return FormatOption.fromOption(v);
+	}
+
+	@Override
+	public String marshal(FormatOption v) throws Exception {
+		return v.toString();
+	}
+}
+
 @XmlRootElement(name = "config")
 public final class Config {
 
@@ -72,6 +82,7 @@ public final class Config {
 	public static final String DEFAULT_PROFILES_WIKI_PATH = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
 	public static final boolean DEFAULT_IS_FIX_METADATA = true;
 	public static final ProcessingType DEFAULT_PROCESSING_TYPE = ProcessingType.VALIDATING_AND_FEATURES;
+	public static final FormatOption DEFAULT_REPORT_FORMAT = FormatOption.MRR; //TODO : is it MRR?
 
 	private boolean showPassedRules;
 	private int maxNumberOfFailedChecks;
@@ -81,42 +92,45 @@ public final class Config {
 	private String profileWikiPath;
 	private ProcessingType processingType;
 	private boolean isFixMetadata;
+	private FormatOption reportFormat;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 
-        Config config = (Config) o;
+		Config config = (Config) o;
 
-        if (showPassedRules != config.showPassedRules) return false;
-        if (maxNumberOfFailedChecks != config.maxNumberOfFailedChecks)
-            return false;
-        if (maxNumberOfDisplayedFailedChecks != config.maxNumberOfDisplayedFailedChecks)
-            return false;
-        if (isFixMetadata != config.isFixMetadata) return false;
-        if (metadataFixerPrefix != null ? !metadataFixerPrefix.equals(config.metadataFixerPrefix) : config.metadataFixerPrefix != null)
-            return false;
-        if (fixMetadataPathFolder != null ? !fixMetadataPathFolder.equals(config.fixMetadataPathFolder) : config.fixMetadataPathFolder != null)
-            return false;
-        if (profileWikiPath != null ? !profileWikiPath.equals(config.profileWikiPath) : config.profileWikiPath != null)
-            return false;
-        return processingType == config.processingType;
+		if (showPassedRules != config.showPassedRules) return false;
+		if (maxNumberOfFailedChecks != config.maxNumberOfFailedChecks)
+			return false;
+		if (maxNumberOfDisplayedFailedChecks != config.maxNumberOfDisplayedFailedChecks)
+			return false;
+		if (isFixMetadata != config.isFixMetadata) return false;
+		if (metadataFixerPrefix != null ? !metadataFixerPrefix.equals(config.metadataFixerPrefix) : config.metadataFixerPrefix != null)
+			return false;
+		if (fixMetadataPathFolder != null ? !fixMetadataPathFolder.equals(config.fixMetadataPathFolder) : config.fixMetadataPathFolder != null)
+			return false;
+		if (profileWikiPath != null ? !profileWikiPath.equals(config.profileWikiPath) : config.profileWikiPath != null)
+			return false;
+		if (processingType != config.processingType) return false;
+		return reportFormat == config.reportFormat;
 
-    }
+	}
 
-    @Override
-    public int hashCode() {
-        int result = (showPassedRules ? 1 : 0);
-        result = 31 * result + maxNumberOfFailedChecks;
-        result = 31 * result + maxNumberOfDisplayedFailedChecks;
-        result = 31 * result + (metadataFixerPrefix != null ? metadataFixerPrefix.hashCode() : 0);
-        result = 31 * result + (fixMetadataPathFolder != null ? fixMetadataPathFolder.hashCode() : 0);
-        result = 31 * result + (profileWikiPath != null ? profileWikiPath.hashCode() : 0);
-        result = 31 * result + (processingType != null ? processingType.hashCode() : 0);
-        result = 31 * result + (isFixMetadata ? 1 : 0);
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		int result = (showPassedRules ? 1 : 0);
+		result = 31 * result + maxNumberOfFailedChecks;
+		result = 31 * result + maxNumberOfDisplayedFailedChecks;
+		result = 31 * result + (metadataFixerPrefix != null ? metadataFixerPrefix.hashCode() : 0);
+		result = 31 * result + (fixMetadataPathFolder != null ? fixMetadataPathFolder.hashCode() : 0);
+		result = 31 * result + (profileWikiPath != null ? profileWikiPath.hashCode() : 0);
+		result = 31 * result + (processingType != null ? processingType.hashCode() : 0);
+		result = 31 * result + (isFixMetadata ? 1 : 0);
+		result = 31 * result + (reportFormat != null ? reportFormat.hashCode() : 0);
+		return result;
+	}
 
 	public Config() {
 		this.showPassedRules = DEFAULT_SHOW_PASSED_RULES;
@@ -127,12 +141,13 @@ public final class Config {
 		this.profileWikiPath = DEFAULT_PROFILES_WIKI_PATH;
 		this.isFixMetadata = DEFAULT_IS_FIX_METADATA;
 		this.processingType = DEFAULT_PROCESSING_TYPE;
+		this.reportFormat = DEFAULT_REPORT_FORMAT;
 	}
 
 	public Config(boolean showPassedRules, int maxNumberOfFailedChecks,
 				   int maxNumberOfDisplayedFailedChecks, String metadataFixerPrefix,
 				   Path fixMetadataPathFolder, String profileWikiPath,
-				   boolean isFixMetadata, ProcessingType processingType) {
+				   boolean isFixMetadata, ProcessingType processingType, FormatOption reportFormat) {
 		this.showPassedRules = showPassedRules;
 		this.maxNumberOfFailedChecks = maxNumberOfFailedChecks;
 		this.maxNumberOfDisplayedFailedChecks = maxNumberOfDisplayedFailedChecks;
@@ -141,6 +156,7 @@ public final class Config {
 		this.profileWikiPath = profileWikiPath;
 		this.isFixMetadata = isFixMetadata;
 		this.processingType = processingType;
+		this.reportFormat = reportFormat;
 	}
 
 	/**
@@ -204,6 +220,13 @@ public final class Config {
     public String getProfileWikiPath() {
         return profileWikiPath;
     }
+
+	/**
+	 * @return format to generated report
+	 */
+	@XmlElement
+	@XmlJavaTypeAdapter(ReportFormatAdapter.class)
+	public FormatOption getReportFormat() { return reportFormat; }
 
 	public static String toXml(final Config toConvert, Boolean prettyXml)
 			throws JAXBException, IOException {
@@ -341,9 +364,13 @@ public final class Config {
         isFixMetadata = fixMetadata;
     }
 
-    public void setProcessingType(ProcessingType processingType) {   // Should we check validity?
+    public void setProcessingType(ProcessingType processingType) {
         this.processingType = processingType;
     }
+
+	public void setReportFormat(FormatOption reportFormat) {
+		this.reportFormat = reportFormat;
+	}
 
     /**
      * Checks is the parameter path a valid for saving fixed file

@@ -46,13 +46,13 @@ public class VeraPdfCliProcessorTest {
         jCommander.parse(new String[] {});
         VeraPdfCliProcessor proc = VeraPdfCliProcessor
                 .createProcessorFromArgs(parser);
-        assertTrue(proc.format == FormatOption.MRR);
+        assertTrue(proc.config.getReportFormat() == FormatOption.MRR);
         for (FormatOption format : FormatOption.values()) {
             parser = new VeraCliArgParser();
             jCommander = initialiseJCommander(parser);
             jCommander.parse(new String[] { "--format", format.getOption() });
             proc = VeraPdfCliProcessor.createProcessorFromArgs(parser);
-            assertTrue(proc.format == format);
+            assertTrue(proc.config.getReportFormat() == format);
         }
     }
 

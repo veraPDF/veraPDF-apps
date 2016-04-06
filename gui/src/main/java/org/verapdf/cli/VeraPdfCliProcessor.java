@@ -9,8 +9,7 @@ import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.ValidationException;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeaturesCollection;
-import org.verapdf.gui.config.Config;
-import org.verapdf.gui.tools.ProcessingType;
+import org.verapdf.config.Config;
 import org.verapdf.metadata.fixer.impl.MetadataFixerImpl;
 import org.verapdf.metadata.fixer.impl.pb.FixerConfigImpl;
 import org.verapdf.metadata.fixer.utils.FileGenerator;
@@ -44,7 +43,6 @@ import java.util.Set;
  *
  */
 final class VeraPdfCliProcessor {
-    final FormatOption format;
     final boolean recurse;
     final boolean verbose;
 	final ValidationProfile profile;
@@ -61,7 +59,6 @@ final class VeraPdfCliProcessor {
 
     private VeraPdfCliProcessor(final VeraCliArgParser args)
             throws IOException {
-        this.format = args.getFormat();
         this.recurse = args.isRecurse();
         this.verbose = args.isVerbose();
         this.profile = profileFromArgs(args);
@@ -71,7 +68,7 @@ final class VeraPdfCliProcessor {
                 args.maxFailuresDisplayed(), args.prefix(),
                 FileSystems.getDefault().getPath(args.saveFolder()),
                 args.getProfilesWikiPath(), args.fixMetadata(),
-                args.getProcessingType());
+                args.getProcessingType(), args.getFormat());
 
         this.validator = (this.profile == Profiles.defaultProfile()) ? null
                 : Validators.createValidator(this.profile, logPassed(args),
@@ -167,7 +164,7 @@ final class VeraPdfCliProcessor {
                     + item.getName());
             e.printStackTrace();
         }
-        if (this.format == FormatOption.XML) {
+        if (this.config.getReportFormat() == FormatOption.XML) {
             CliReport report = CliReport.fromValues(item, validationResult,
                     FeaturesReport.fromValues(featuresCollection));
             try {
@@ -176,7 +173,7 @@ final class VeraPdfCliProcessor {
                 // TODO Auto-generated catch block
                 excep.printStackTrace();
             }
-        } else if ((this.format == FormatOption.TEXT) && (validationResult != null)) {
+        } else if ((this.config.getReportFormat() == FormatOption.TEXT) && (validationResult != null)) {
             System.out.println((validationResult.isCompliant() ? "PASS " : "FAIL ") + item.getName());
             if (this.verbose) {
                 Set<RuleId> ruleIds = new HashSet<>();
@@ -197,7 +194,7 @@ final class VeraPdfCliProcessor {
                     this.config.isShowPassedRules(),
 					this.config.getMaxNumberOfDisplayedFailedChecks(),
 					fixerResult, featuresCollection, System.currentTimeMillis() - start);
-            outputMrr(report, this.format == FormatOption.HTML);
+            outputMrr(report, this.config.getReportFormat() == FormatOption.HTML);
         }
     }
 

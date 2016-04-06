@@ -1,7 +1,7 @@
 package org.verapdf.gui.tools;
 
 import org.apache.log4j.Logger;
-import org.verapdf.gui.config.Config;
+import org.verapdf.config.Config;
 
 import javax.xml.bind.JAXBException;
 import java.io.*;

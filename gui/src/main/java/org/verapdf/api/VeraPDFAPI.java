@@ -1,6 +1,6 @@
 package org.verapdf.api;
 
-import org.verapdf.gui.config.Config;
+import org.verapdf.config.Config;
 
 /**
  * The most general class to wrap veraPDF functionality

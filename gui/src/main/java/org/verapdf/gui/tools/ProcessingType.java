@@ -29,16 +29,11 @@ public enum ProcessingType {
 		if(string == null)
 			throw new IllegalArgumentException("String to be parsed into ProcessingType cannot be null");
 
-		switch(string) {
-			case GUIConstants.VALIDATING:
-				return VALIDATING;
-			case GUIConstants.FEATURES:
-				return FEATURES;
-			case GUIConstants.VALIDATING_AND_FEATURES:
-				return VALIDATING_AND_FEATURES;
-			default:
-				throw new IllegalArgumentException("String can't be parsed into ProcessingType");
-		}
+		for(ProcessingType processingType : ProcessingType.values())
+			if(processingType.toString().equalsIgnoreCase(string))
+				return processingType;
+
+		throw new IllegalArgumentException("String can't be parsed into ProcessingType");
 	}
 
 	public String toText() {
