@@ -2,6 +2,7 @@ package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
 import org.verapdf.gui.config.Config;
+import org.verapdf.gui.tools.ConfigIO;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.gui.tools.ProcessingType;
 
@@ -14,7 +15,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
-import java.nio.file.Path;
 
 /**
  * Main frame of the PDFA Conformance Checker
@@ -31,8 +31,8 @@ public class PDFValidationApplication extends JFrame {
             PDFValidationApplication app = (PDFValidationApplication) e.getSource();
 			app.config.setFixMetadata(app.checkerPanel.isFixMetadata());
 			app.config.setProcessingType(app.checkerPanel.getProcessingType());
-            app.writeConfigToFile();
-        }
+            app.configIO.writeConfig(app.config);
+		}
     }
 
 	private static final long serialVersionUID = -5569669411392145783L;
@@ -43,8 +43,7 @@ public class PDFValidationApplication extends JFrame {
 	private transient Config config;
 	private SettingsPanel settingsPanel;
 	private CheckerPanel checkerPanel;
-	private boolean isSerializedConfig;
-	private transient Path configPath;
+	private ConfigIO configIO;
 
 	Config getConfig () {
 		return this.config;
@@ -58,39 +57,16 @@ public class PDFValidationApplication extends JFrame {
 
 		setTitle(GUIConstants.TITLE);
 
-		String appHome = System.getProperty("app.home");
-		if (appHome != null) {
-			File user = new File(appHome);
-            File f = new File(user, "config");
-			if (!f.exists() && !f.mkdir()) {
-				this.isSerializedConfig = false;
-				this.config = new Config();
-			} else {
-				File configFile = new File(f, "config.properties");
-				this.isSerializedConfig = true;
-				this.configPath = configFile.toPath();
-				if (configFile.exists()) {
-					try {
-						if (!configFile.canRead()) {
-							throw new IllegalArgumentException("Path should specify read accessible file");
-						}
-						FileInputStream inputStream = new FileInputStream(configFile);
-						this.config = Config.fromXml(inputStream);
-
-					} catch (IOException e) {
-						LOGGER.error("Can not read config file", e);
-						this.config =  new Config();
-					}
-					catch (JAXBException e) {
-						LOGGER.error("Cannot parse config XML", e);
-						this.config =  new Config();
-					}
-
-				} else {
-					this.config =  new Config();
-				}
-			}
-		} else {
+		configIO = new ConfigIO();
+		try {
+			config = configIO.readConfig();
+		}
+		catch (IOException e) {
+			LOGGER.error("Can not read config file", e);
+			this.config =  new Config();
+		}
+		catch (JAXBException e) {
+			LOGGER.error("Cannot parse config XML", e);
 			this.config =  new Config();
 		}
 
@@ -128,9 +104,9 @@ public class PDFValidationApplication extends JFrame {
 					config.setFixMetadata(PDFValidationApplication.this.config.isFixMetadata());
 					config.setProcessingType(PDFValidationApplication.this.config.getProcessingType());
 
-                    if(!PDFValidationApplication.this.config.equals(config)) { // TODO: We can check all fields for settings panel
-                        PDFValidationApplication.this.config = config;   //TODO:  before builder, so we don't have to build configs if nothing is changed
-                        writeConfigToFile();
+                    if(!PDFValidationApplication.this.config.equals(config)) {
+                        PDFValidationApplication.this.config = config;
+						configIO.writeConfig(PDFValidationApplication.this.config);
                     }
 				}
 			}
@@ -167,7 +143,7 @@ public class PDFValidationApplication extends JFrame {
 
 		checkerPanel = null;
 		try {
-			checkerPanel = new CheckerPanel(config);
+			checkerPanel = new CheckerPanel(config, configIO);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in loading xml or html image.", GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 			LOGGER.error("Exception in loading xml or html image", e);
@@ -176,24 +152,6 @@ public class PDFValidationApplication extends JFrame {
 
 	}
 
-    void writeConfigToFile() {
-        if (PDFValidationApplication.this.isSerializedConfig) {
-            try {
-				FileOutputStream outputStream =
-						new FileOutputStream(PDFValidationApplication.this.configPath.toFile());
-				BufferedWriter writer =
-						new BufferedWriter(new OutputStreamWriter(outputStream));
-                writer.write(Config.toXml(PDFValidationApplication.this.config, true));
-                writer.close();
-
-            } catch (IOException e1) {
-                LOGGER.error("Can not save config", e1);
-            }
-            catch (JAXBException e1) {
-                LOGGER.error("Can not convert config to XML", e1);
-            }
-        }
-    }
 	/**
 	 * Starting point of the gui
 	 *

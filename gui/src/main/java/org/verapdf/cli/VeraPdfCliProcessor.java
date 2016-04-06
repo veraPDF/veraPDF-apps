@@ -66,7 +66,7 @@ final class VeraPdfCliProcessor {
         this.verbose = args.isVerbose();
         this.profile = profileFromArgs(args);
 
-		if(!args.isLoadingConfig())
+		//if(!args.isLoadingConfig())
         	config = new Config(args.logPassed(), args.maxFailures(),
                 args.maxFailuresDisplayed(), args.prefix(),
                 FileSystems.getDefault().getPath(args.saveFolder()),

@@ -64,8 +64,8 @@ public final class Config {
 
     private static final char[] FORBIDDEN_SYMBOLS_IN_FILE_NAME = new char[]{'\\', '/', ':', '*', '?', '\"', '<', '>', '|', '+', '\0', '%'};
 
+	public static final int DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS = -1;
     public static final boolean DEFAULT_SHOW_PASSED_RULES = false;
-	public final int DEFAULT_MAX_NUMBER_OF_FAILED_CHECKS = -1;
 	public static final int DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS = 100;
 	public static final String DEFAULT_METADATA_FIXER_PREFIX = MetadataFixerConstants.DEFAULT_PREFIX;
 	public static final Path DEFAULT_FIX_METADATA_PATH_FOLDER = FileSystems.getDefault().getPath("");
@@ -142,11 +142,6 @@ public final class Config {
 		this.isFixMetadata = isFixMetadata;
 		this.processingType = processingType;
 	}
-
-
-    public static ProcessingType getDefaultProcessingType() {
-        return DEFAULT_PROCESSING_TYPE;
-    }
 
 	/**
 	 * @return selected number for maximum displayed fail checks for a rule. If not selected returns -1

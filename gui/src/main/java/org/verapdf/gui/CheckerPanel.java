@@ -2,6 +2,7 @@ package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
 import org.verapdf.gui.config.Config;
+import org.verapdf.gui.tools.ConfigIO;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.gui.tools.ProcessingType;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -108,13 +109,15 @@ class CheckerPanel extends JPanel {
 	private JButton viewHTML;
 
 	private transient Config config;
+	private transient ConfigIO configIO;
 
 	JProgressBar progressBar;
 	transient ValidateWorker validateWorker;
 
-	CheckerPanel(final Config config) throws IOException {
+	CheckerPanel(final Config config, final ConfigIO configIO) throws IOException {
 
 		this.config = config;
+		this.configIO = configIO;
 		setPreferredSize(new Dimension(GUIConstants.PREFERRED_SIZE_WIDTH,
 				GUIConstants.PREFERRED_SIZE_HEIGHT));
 
@@ -186,7 +189,6 @@ class CheckerPanel extends JPanel {
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.fixMetadata, gbc);
 		this.add(this.fixMetadata);
-		System.out.println(config.getProcessingType());
 		if(config.getProcessingType() == ProcessingType.FEATURES)
 			this.fixMetadata.setEnabled(false);
 
@@ -653,12 +655,12 @@ class CheckerPanel extends JPanel {
 		}
 	}
 
-	void changeApplicationConfig() {	// TODO: Should we change config of CheckerPanel?
+	void changeApplicationConfig() {
 		PDFValidationApplication app =
 				(PDFValidationApplication) SwingUtilities.getWindowAncestor(this);
 		app.getConfig().setProcessingType((ProcessingType) processingType.getSelectedItem());
 		app.getConfig().setFixMetadata(fixMetadata.isSelected());
-		app.writeConfigToFile();
+		configIO.writeConfig(app.getConfig());
 	}
 
 	void setValidationButtonEnability() {
