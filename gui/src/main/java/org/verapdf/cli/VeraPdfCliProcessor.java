@@ -9,6 +9,7 @@ import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.ValidationException;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeaturesCollection;
+import org.verapdf.gui.config.Config;
 import org.verapdf.gui.tools.ProcessingType;
 import org.verapdf.metadata.fixer.impl.MetadataFixerImpl;
 import org.verapdf.metadata.fixer.impl.pb.FixerConfigImpl;
@@ -44,22 +45,13 @@ import java.util.Set;
  */
 final class VeraPdfCliProcessor {
     final FormatOption format;
-    final boolean extractFeatures;
-    final ProcessingType processingType;
-    final boolean logPassed;
     final boolean recurse;
     final boolean verbose;
-    final PDFAValidator validator;
+	final ValidationProfile profile;
 
-    final int maxFailuresDisplayed;
+    final Config config;
 
-    final boolean fixMetadata;
-    final String prefix;
-    final Path saveFolder;
-
-    final String profilesWikiPath;
-
-    final ValidationProfile profile;
+	final PDFAValidator validator;
 
     private String currentPdfName;
 
@@ -70,21 +62,20 @@ final class VeraPdfCliProcessor {
     private VeraPdfCliProcessor(final VeraCliArgParser args)
             throws IOException {
         this.format = args.getFormat();
-        this.extractFeatures = args.extractFeatures();
-        this.processingType = args.getProcessingType();
-        this.logPassed = args.logPassed();
         this.recurse = args.isRecurse();
         this.verbose = args.isVerbose();
         this.profile = profileFromArgs(args);
+
+		if(!args.isLoadingConfig())
+        	config = new Config(args.logPassed(), args.maxFailures(),
+                args.maxFailuresDisplayed(), args.prefix(),
+                FileSystems.getDefault().getPath(args.saveFolder()),
+                args.getProfilesWikiPath(), args.fixMetadata(),
+                args.getProcessingType());
+
         this.validator = (this.profile == Profiles.defaultProfile()) ? null
-                : Validators.createValidator(this.profile, logPassed(args), args.maxFailures());
-
-        this.maxFailuresDisplayed = args.maxFailuresDisplayed();
-
-        this.fixMetadata = args.fixMetadata();
-        this.prefix = args.prefix();
-        this.saveFolder = FileSystems.getDefault().getPath(args.saveFolder());
-        this.profilesWikiPath = args.getProfilesWikiPath();
+                : Validators.createValidator(this.profile, logPassed(args),
+                this.config.getMaxNumberOfFailedChecks());
     }
 
     private static boolean logPassed(final VeraCliArgParser args) {
@@ -152,16 +143,16 @@ final class VeraPdfCliProcessor {
 
         long start = System.currentTimeMillis();
         try (ModelParser toValidate = new ModelParser(toProcess, this.profile.getPDFAFlavour())) {
-            if (this.validator != null) {
-                if(this.processingType.isValidating()) {
-                    validationResult = this.validator.validate(toValidate);
-                    if (this.fixMetadata) {
-                        fixerResult = this.fixMetadata(validationResult, toValidate,
-                                this.currentPdfName);
-                    }
-                }
-            }
-            if (this.processingType.isFeatures()) {
+            if(this.config.getProcessingType().isValidating()) {
+				if (this.validator != null) {
+					validationResult = this.validator.validate(toValidate);
+					if (this.config.isFixMetadata()) {
+						fixerResult = this.fixMetadata(validationResult, toValidate,
+								this.currentPdfName);
+					}
+				}
+			}
+            if (this.config.getProcessingType().isFeatures()) {
                 featuresCollection = PBFeatureParser
                         .getFeaturesCollection(toValidate.getPDDocument());
             }
@@ -203,8 +194,9 @@ final class VeraPdfCliProcessor {
                     item,
                     this.validator == null ? Profiles.defaultProfile()
                             : this.validator.getProfile(), validationResult,
-                    this.logPassed, this.maxFailuresDisplayed ,fixerResult, featuresCollection,
-                    System.currentTimeMillis() - start);
+                    this.config.isShowPassedRules(),
+					this.config.getMaxNumberOfDisplayedFailedChecks(),
+					fixerResult, featuresCollection, System.currentTimeMillis() - start);
             outputMrr(report, this.format == FormatOption.HTML);
         }
     }
@@ -230,7 +222,7 @@ final class VeraPdfCliProcessor {
             MachineReadableReport.toXml(report, os, Boolean.FALSE);
         }
         try (InputStream is = new FileInputStream(tmp)) {
-            HTMLReport.writeHTMLReport(is, System.out, this.profilesWikiPath);
+            HTMLReport.writeHTMLReport(is, System.out, this.config.getProfileWikiPath());
         }
     }
 
@@ -278,7 +270,7 @@ final class VeraPdfCliProcessor {
                                             ModelParser parser, String fileName) throws IOException {
         FixerConfig fixerConfig = FixerConfigImpl.getFixerConfig(
                 parser.getPDDocument(), info);
-        Path path = this.saveFolder;
+        Path path = this.config.getFixMetadataPathFolder();
         File tempFile = File.createTempFile("fixedTempFile", ".pdf");
         tempFile.deleteOnExit();
         try (OutputStream tempOutput = new BufferedOutputStream(
@@ -292,11 +284,11 @@ final class VeraPdfCliProcessor {
                 boolean flag = true;
                 while (flag) {
                     if (!path.toString().trim().isEmpty()) {
-                        resFile = FileGenerator.createOutputFile(this.saveFolder.toFile(),
-                                fileName, this.prefix);
+                        resFile = FileGenerator.createOutputFile(this.config.getFixMetadataPathFolder().toFile(),
+                                fileName, this.config.getMetadataFixerPrefix());
                     } else {
                         resFile = FileGenerator.createOutputFile(new File(fileName),
-                                this.prefix);
+								this.config.getMetadataFixerPrefix());
                     }
 
                     try {

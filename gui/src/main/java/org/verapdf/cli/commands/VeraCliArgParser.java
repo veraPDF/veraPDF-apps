@@ -31,8 +31,6 @@ public class VeraCliArgParser {
     final static String LIST = OPTION_SEP + "list";
     final static String LOAD_PROFILE_FLAG = FLAG_SEP + "p";
     final static String LOAD_PROFILE = OPTION_SEP + "profile";
-    final static String EXTRACT_FLAG = FLAG_SEP + "x";      // TODO: Remove -x if -t is better
-    final static String EXTRACT = OPTION_SEP + "extract";   // TODO: Remove --extract if --type is better
     final static String FORMAT = OPTION_SEP + "format";
     final static String RECURSE_FLAG = FLAG_SEP + "r";
     final static String RECURSE = OPTION_SEP + "recurse";
@@ -47,6 +45,8 @@ public class VeraCliArgParser {
     final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
     final static String REPORT_TYPE = OPTION_SEP + "type";
     final static String REPORT_TYPE_FLAG = FLAG_SEP + "t";
+    final static String USE_CONFIG = OPTION_SEP + "config";
+    final static String USE_CONFIG_FLAG = FLAG_SEP + "c";
 
     @Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
     private boolean help = false;
@@ -65,9 +65,6 @@ public class VeraCliArgParser {
 
     @Parameter(names = { LOAD_PROFILE_FLAG, LOAD_PROFILE }, description = "Load a Validation Profile from given path and exit if loading fails. This overrides any choice or default implied by the -f / --flavour option.", validateWith = ProfileFileValidator.class)
     private File profileFile;
-
-    @Parameter(names = { EXTRACT_FLAG, EXTRACT }, description = "Extract and report PDF features.")
-    private boolean features = false;
 
     @Parameter(names = { FORMAT }, description = "Choose output format:", converter = FormatConverter.class)
     private FormatOption format = FormatOption.MRR;
@@ -98,6 +95,9 @@ public class VeraCliArgParser {
 
     @Parameter(names = { REPORT_TYPE_FLAG, REPORT_TYPE}, description = "Operation to be performed", converter = ProcessingTypeConverter.class)
     private ProcessingType processingType = ProcessingType.VALIDATING_AND_FEATURES;
+
+    @Parameter(names = {USE_CONFIG, USE_CONFIG_FLAG}, description = "Load settings from file; this flag overrides all other configurational flags") // TODO : specify configurational flags
+    private boolean isLoadingConfig = false;
 
     @Parameter(description = "FILES")
     private List<String> pdfPaths = new ArrayList<>();
@@ -187,13 +187,6 @@ public class VeraCliArgParser {
     }
 
     /**
-     * @return true if PDF Feature extraction requested
-     */
-    public boolean extractFeatures() {
-        return this.features;
-    }
-
-    /**
      * @return the validation flavour string id
      */
     public PDFAFlavour getFlavour() {
@@ -227,7 +220,13 @@ public class VeraCliArgParser {
     public ProcessingType getProcessingType() {
         return this.processingType;
     }
-    /**
+
+	/**
+	 * @return true if config should be loaded from file instead of constructing from flags
+	 */
+	public boolean isLoadingConfig() { return isLoadingConfig; }
+
+	/**
      * JCommander parameter converter for {@link FormatOption}, see
      * {@link IStringConverter} and {@link FormatOption#fromOption(String)}.
      * 

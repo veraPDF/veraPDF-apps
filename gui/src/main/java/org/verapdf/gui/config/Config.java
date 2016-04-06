@@ -81,7 +81,6 @@ public final class Config {
 	private String profileWikiPath;
 	private ProcessingType processingType;
 	private boolean isFixMetadata;
-	//private final ValidationProfile profile;
 
     @Override
     public boolean equals(Object o) {
@@ -130,7 +129,7 @@ public final class Config {
 		this.processingType = DEFAULT_PROCESSING_TYPE;
 	}
 
-	private Config(boolean showPassedRules, int maxNumberOfFailedChecks,
+	public Config(boolean showPassedRules, int maxNumberOfFailedChecks,
 				   int maxNumberOfDisplayedFailedChecks, String metadataFixerPrefix,
 				   Path fixMetadataPathFolder, String profileWikiPath,
 				   boolean isFixMetadata, ProcessingType processingType) {
