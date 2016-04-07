@@ -45,8 +45,6 @@ public class VeraCliArgParser {
     final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
     final static String REPORT_TYPE = OPTION_SEP + "type";
     final static String REPORT_TYPE_FLAG = FLAG_SEP + "t";
-    final static String USE_CONFIG = OPTION_SEP + "config";
-    final static String USE_CONFIG_FLAG = FLAG_SEP + "c";
 
     @Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
     private boolean help = false;
@@ -95,9 +93,6 @@ public class VeraCliArgParser {
 
     @Parameter(names = { REPORT_TYPE_FLAG, REPORT_TYPE}, description = "Operation to be performed", converter = ProcessingTypeConverter.class)
     private ProcessingType processingType = ProcessingType.VALIDATING_AND_FEATURES;
-
-    @Parameter(names = {USE_CONFIG, USE_CONFIG_FLAG}, description = "Load settings from file; this flag overrides all other configurational flags") // TODO : specify configurational flags
-    private boolean isLoadingConfig = false;
 
     @Parameter(description = "FILES")
     private List<String> pdfPaths = new ArrayList<>();
@@ -220,11 +215,6 @@ public class VeraCliArgParser {
     public ProcessingType getProcessingType() {
         return this.processingType;
     }
-
-	/**
-	 * @return true if config should be loaded from file instead of constructing from flags
-	 */
-	public boolean isLoadingConfig() { return isLoadingConfig; }
 
 	/**
      * JCommander parameter converter for {@link FormatOption}, see

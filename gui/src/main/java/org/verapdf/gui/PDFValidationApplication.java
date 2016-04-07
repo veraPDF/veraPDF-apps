@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import org.verapdf.gui.config.Config;
 import org.verapdf.gui.tools.ConfigIO;
 import org.verapdf.gui.tools.GUIConstants;
-import org.verapdf.gui.tools.ProcessingType;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -143,7 +142,7 @@ public class PDFValidationApplication extends JFrame {
 
 		checkerPanel = null;
 		try {
-			checkerPanel = new CheckerPanel(config, configIO);
+			checkerPanel = new CheckerPanel(config, configIO, this);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in loading xml or html image.", GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 			LOGGER.error("Exception in loading xml or html image", e);
@@ -158,7 +157,6 @@ public class PDFValidationApplication extends JFrame {
 	 * @param args command line arguments
 	 */
 	public static void main(String[] args) {
-
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {

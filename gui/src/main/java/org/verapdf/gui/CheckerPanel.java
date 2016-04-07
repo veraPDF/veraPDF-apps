@@ -23,6 +23,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.NoSuchElementException;
+import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -110,12 +111,15 @@ class CheckerPanel extends JPanel {
 
 	private transient Config config;
 	private transient ConfigIO configIO;
+	private PDFValidationApplication application;
 
 	JProgressBar progressBar;
 	transient ValidateWorker validateWorker;
 
-	CheckerPanel(final Config config, final ConfigIO configIO) throws IOException {
+	CheckerPanel(final Config config, final ConfigIO configIO,
+				 final PDFValidationApplication application) throws IOException {
 
+		this.application = application;
 		this.config = config;
 		this.configIO = configIO;
 		setPreferredSize(new Dimension(GUIConstants.PREFERRED_SIZE_WIDTH,
@@ -192,7 +196,10 @@ class CheckerPanel extends JPanel {
 		if(config.getProcessingType() == ProcessingType.FEATURES)
 			this.fixMetadata.setEnabled(false);
 
-		chooseFlavour = new JComboBox<PDFAFlavour>(PDFAFlavour.values());
+		Vector<PDFAFlavour> possibleFlavours = new Vector<>();
+		for(PDFAFlavour flavour : Profiles.getVeraProfileDirectory().getPDFAFlavours())	// TODO : Is it guaranteed that all possible flavours will be got?
+			possibleFlavours.add(flavour);
+		chooseFlavour = new JComboBox<>(possibleFlavours);
 		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
 		chooseFlavour.setRenderer(renderer);
 		chooseFlavour.setSelectedItem(PDFAFlavour.PDFA_1_B);
@@ -655,15 +662,13 @@ class CheckerPanel extends JPanel {
 		}
 	}
 
-	void changeApplicationConfig() {
-		PDFValidationApplication app =
-				(PDFValidationApplication) SwingUtilities.getWindowAncestor(this);
-		app.getConfig().setProcessingType((ProcessingType) processingType.getSelectedItem());
-		app.getConfig().setFixMetadata(fixMetadata.isSelected());
-		configIO.writeConfig(app.getConfig());
+	private void changeApplicationConfig() {
+		application.getConfig().setProcessingType((ProcessingType) processingType.getSelectedItem());
+		application.getConfig().setFixMetadata(fixMetadata.isSelected());
+		configIO.writeConfig(application.getConfig());
 	}
 
-	void setValidationButtonEnability() {
+	private void setValidationButtonEnability() {
 		if (this.pdfFile != null &&
 				(this.profile != null || this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR))
 			validate.setEnabled(true);

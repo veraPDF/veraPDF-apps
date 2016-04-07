@@ -129,20 +129,6 @@ public final class Config {
 		this.processingType = DEFAULT_PROCESSING_TYPE;
 	}
 
-	public Config(boolean showPassedRules, int maxNumberOfFailedChecks,
-				   int maxNumberOfDisplayedFailedChecks, String metadataFixerPrefix,
-				   Path fixMetadataPathFolder, String profileWikiPath,
-				   boolean isFixMetadata, ProcessingType processingType) {
-		this.showPassedRules = showPassedRules;
-		this.maxNumberOfFailedChecks = maxNumberOfFailedChecks;
-		this.maxNumberOfDisplayedFailedChecks = maxNumberOfDisplayedFailedChecks;
-		this.metadataFixerPrefix = metadataFixerPrefix;
-		this.fixMetadataPathFolder = fixMetadataPathFolder;
-		this.profileWikiPath = profileWikiPath;
-		this.isFixMetadata = isFixMetadata;
-		this.processingType = processingType;
-	}
-
 	/**
 	 * @return selected number for maximum displayed fail checks for a rule. If not selected returns -1
 	 */
@@ -222,7 +208,7 @@ public final class Config {
 		}
 	}
 
-	static void toXml(final Config toConvert,
+	public static void toXml(final Config toConvert,
 					  final OutputStream stream, Boolean prettyXml) throws JAXBException {
 		Marshaller varMarshaller = getMarshaller(prettyXml);
 		varMarshaller.marshal(toConvert, stream);

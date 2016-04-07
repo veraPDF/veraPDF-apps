@@ -25,7 +25,7 @@ public class ConfigIO {
 			File user = new File(appHome);
 			File f = new File(user, "config");
 			if (f.exists() || f.mkdir()) {
-				configFile = new File(f, "config.properties");
+				this.configFile = new File(f, "config.xml");
 				this.isSerializedConfig = true;
 				this.configPath = configFile.toPath();
 			}
@@ -53,10 +53,7 @@ public class ConfigIO {
 			try {
 				FileOutputStream outputStream =
 						new FileOutputStream(this.configPath.toFile());        // Can we use configFile?
-				BufferedWriter writer =
-						new BufferedWriter(new OutputStreamWriter(outputStream));
-				writer.write(Config.toXml(config, true));
-				writer.close();
+				Config.toXml(config, outputStream, true);
 			}
 			catch (IOException e1) {	// TODO : Is handling exception here OK?
 				LOGGER.error("Can not save config", e1);
@@ -88,9 +85,6 @@ public class ConfigIO {
 			throw new IllegalArgumentException("Path should specify existing read accessible file");
 		FileOutputStream outputStream =
 				new FileOutputStream(configFile);
-		BufferedWriter writer =
-				new BufferedWriter(new OutputStreamWriter(outputStream));
-		writer.write(Config.toXml(config, true));
-		writer.close();
+		Config.toXml(config, outputStream, true);
 	}
 }
