@@ -13,8 +13,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 import javax.xml.bind.JAXBException;
 
@@ -68,8 +66,7 @@ public class VeraPdfCliProcessorProfileTest {
     }
 
     private static void testWithProfileFile(final PDFAFlavour flavour,
-            final File profileFile) throws ProfileException,
-            FileNotFoundException, IOException, JAXBException {
+            final File profileFile) throws FileNotFoundException, IOException, JAXBException {
         String[] argVals = new String[] { "-p", "--profile" };
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = VeraPdfCliProcessorTest
@@ -93,12 +90,5 @@ public class VeraPdfCliProcessorProfileTest {
                         proc.validator.getProfile().getRules());
             }
         }
-    }
-
-    private static File[] getProfiles() throws URISyntaxException {
-        URL resourceUrl = ClassLoader.class
-                .getResource("/org/verapdf/profiles");
-        File file = new File(resourceUrl.toURI());
-        return file.listFiles();
     }
 }

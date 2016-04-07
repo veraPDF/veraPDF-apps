@@ -28,7 +28,7 @@ class LogoPanel extends JPanel {
 	LogoPanel(String logoName, Color backgroundColor, int borderWidth) throws IOException {
 		this.borderWidth = borderWidth;
 		try (InputStream is = getClass().getClassLoader().getResourceAsStream(logoName)) {
-			logo = ImageIO.read(is);
+			this.logo = ImageIO.read(is);
 		}
 		this.background = backgroundColor;
 		this.setLayout(null);
@@ -47,13 +47,13 @@ class LogoPanel extends JPanel {
 	public void paint(Graphics g) {
 		super.paint(g);
 
-		int imageHeight = getHeight() - borderWidth * 2;
-		int imageWidth = logo.getWidth() * imageHeight / logo.getHeight();
+		int imageHeight = getHeight() - this.borderWidth * 2;
+		int imageWidth = this.logo.getWidth() * imageHeight / this.logo.getHeight();
 		int imageStartX = (getWidth() - imageWidth) / 2;
 
-		g.setColor(background);
+		g.setColor(this.background);
 
-		g.drawImage(logo, imageStartX, borderWidth, imageStartX + imageWidth, borderWidth + imageHeight, 0, 0, logo.getWidth(), logo.getHeight(), this);
+		g.drawImage(this.logo, imageStartX, this.borderWidth, imageStartX + imageWidth, this.borderWidth + imageHeight, 0, 0, this.logo.getWidth(), this.logo.getHeight(), this);
 
 	}
 

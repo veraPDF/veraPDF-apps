@@ -1,6 +1,7 @@
 package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.verapdf.core.ValidationException;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeaturesCollection;
@@ -102,6 +103,9 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
             }
             this.endTimeOfValidation = System.currentTimeMillis();
             writeReports(validationResult, fixerResult, collection);
+        } catch (InvalidPasswordException e) {
+            this.parent
+                    .errorInValidatingOccur(GUIConstants.ENCRYPTED_PDF, e);
         } catch (IOException e) {
             this.parent
                     .errorInValidatingOccur(GUIConstants.ERROR_IN_PARSING, e);
@@ -152,7 +156,7 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
     private ValidationResult runValidator(ModelParser toValidate)
             throws IOException {
         try {
-            int max = settings.getMaxNumberOfFailedChecks();
+            int max = this.settings.getMaxNumberOfFailedChecks();
             PDFAValidator validator;
             if (max > 0) {
                 validator = Validators.createValidator(this.profile, true, max);
@@ -193,7 +197,7 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
                 try (InputStream xmlStream = new FileInputStream(this.xmlReport);
                         OutputStream htmlStream = new FileOutputStream(
                                 this.htmlReport)) {
-                    HTMLReport.writeHTMLReport(xmlStream, htmlStream, settings.getProfileWikiPath());
+                    HTMLReport.writeHTMLReport(xmlStream, htmlStream, this.settings.getProfileWikiPath());
 
                 } catch (IOException | TransformerException e) {
                     JOptionPane.showMessageDialog(this.parent,

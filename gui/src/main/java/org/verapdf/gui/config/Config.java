@@ -113,6 +113,7 @@ public final class Config {
 	private final boolean isFixMetadata;
 	//private final ValidationProfile profile;
 
+<<<<<<< HEAD
 
 	private Config() {
 		Config config = Builder.buildDefaultConfig();
@@ -130,6 +131,9 @@ public final class Config {
 				   int maxNumberOfDisplayedFailedChecks, String metadataFixerPrefix,
 				   Path fixMetadataPathFolder, String profileWikiPath,
 				   boolean isFixMetadata, ProcessingType processingType) {
+=======
+	Config(boolean showPassedRules, int maxNumberOfFailedChecks, int maxNumberOfDisplayedFailedChecks, String metadataFixerPrefix, Path fixMetadataPathFolder, String profileWikiPath) {
+>>>>>>> a9ca1c10313498b0d5fe11f8a0aca24b207a34f9
 		this.showPassedRules = showPassedRules;
 		this.maxNumberOfFailedChecks = maxNumberOfFailedChecks;
 		this.maxNumberOfDisplayedFailedChecks = maxNumberOfDisplayedFailedChecks;
@@ -144,35 +148,35 @@ public final class Config {
 	 * @return selected number for maximum displayed fail checks for a rule. If not selected returns -1
 	 */
 	public int getMaxNumberOfDisplayedFailedChecks() {
-		return maxNumberOfDisplayedFailedChecks;
+		return this.maxNumberOfDisplayedFailedChecks;
 	}
 
 	/**
 	 * @return selected number for maximum fail checks for a rule. If not selected returns -1
 	 */
 	public int getMaxNumberOfFailedChecks() {
-		return maxNumberOfFailedChecks;
+		return this.maxNumberOfFailedChecks;
 	}
 
 	/**
 	 * @return true if desplay passed pules option selected
 	 */
 	public boolean isShowPassedRules() {
-		return showPassedRules;
+		return this.showPassedRules;
 	}
 
 	/**
 	 * @return String representation of prefix for fixed files
 	 */
 	public String getMetadataFixerPrefix() {
-		return metadataFixerPrefix;
+		return this.metadataFixerPrefix;
 	}
 
 	/**
 	 * @return path to the folder in which fixed file will be placed
 	 */
 	public Path getFixMetadataPathFolder() {
-		return fixMetadataPathFolder;
+		return this.fixMetadataPathFolder;
 	}
 
 	/**
@@ -246,7 +250,7 @@ public final class Config {
 	 * @return path to the profiles wiki
 	 */
 	public String getProfileWikiPath() {
-		return profileWikiPath;
+		return this.profileWikiPath;
 	}
 
 	public static final class Builder {
@@ -297,7 +301,7 @@ public final class Config {
 		 * @param metadataFixerPrefix a prefix which will be added to the fixed file
 		 * @throws IllegalArgumentException parameter can not be null
 		 */
-		public Builder metadataFixerPrefix(String metadataFixerPrefix) {
+		public Builder metadataFixerPrefix(@SuppressWarnings("hiding") String metadataFixerPrefix) {
 			if (metadataFixerPrefix == null) {
 				throw new IllegalArgumentException("Prefix for metadata fixer can not be null");
 			}
@@ -315,7 +319,7 @@ public final class Config {
 		 *
 		 * @param showPassedRules true for show passed rules at the report
 		 */
-		public Builder showPassedRules(boolean showPassedRules) {
+		public Builder showPassedRules(@SuppressWarnings("hiding") boolean showPassedRules) {
 			this.showPassedRules = showPassedRules;
 			return this;
 		}
@@ -326,7 +330,7 @@ public final class Config {
 		 * @param maxNumberOfFailedChecks a natural number that indicates maximum number of failed checks for rule or -1 for unlimited
 		 * @throws IllegalArgumentException if parameter is not a natural number or -1
 		 */
-		public Builder maxNumberOfFailedChecks(int maxNumberOfFailedChecks) {
+		public Builder maxNumberOfFailedChecks(@SuppressWarnings("hiding") int maxNumberOfFailedChecks) {
 			if (maxNumberOfFailedChecks > 0 || maxNumberOfFailedChecks == -1) {
 				this.maxNumberOfFailedChecks = maxNumberOfFailedChecks;
 			} else {
@@ -342,7 +346,7 @@ public final class Config {
 		 *                                         failed checks for rule or -1 for infinite
 		 * @throws IllegalArgumentException if parameter is less than -1
 		 */
-		public Builder maxNumberOfDisplayedFailedChecks(int maxNumberOfDisplayedFailedChecks) {
+		public Builder maxNumberOfDisplayedFailedChecks(@SuppressWarnings("hiding") int maxNumberOfDisplayedFailedChecks) {
 			if (maxNumberOfDisplayedFailedChecks >= -1) {
 				this.maxNumberOfDisplayedFailedChecks = maxNumberOfDisplayedFailedChecks;
 			} else {
@@ -357,16 +361,15 @@ public final class Config {
 		 * @param fixMetadataPathFolder a path to the folder in which fixed files will be saved
 		 * @throws IllegalArgumentException parameter should be an empty path or a path to an existing and write acceptable directory
 		 */
-		public Builder fixMetadataPathFolder(Path fixMetadataPathFolder) {
+		public Builder fixMetadataPathFolder(@SuppressWarnings("hiding") Path fixMetadataPathFolder) {
 			if (isValidFolderPath(fixMetadataPathFolder)) {
 				this.fixMetadataPathFolder = fixMetadataPathFolder;
 				return this;
-			} else {
-				throw new IllegalArgumentException("Path should be an empty path or a path to an existing and write acceptable directory");
 			}
+            throw new IllegalArgumentException("Path should be an empty path or a path to an existing and write acceptable directory");
 		}
 
-		public Builder profilesWikiPath(String profilesWikiPath) {
+		public Builder profilesWikiPath(@SuppressWarnings("hiding") String profilesWikiPath) {
 			this.profilesWikiPath = profilesWikiPath;
 			return this;
 		}

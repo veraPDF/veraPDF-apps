@@ -36,17 +36,21 @@ public class PDFValidationApplication extends JFrame {
 
 	private static final long serialVersionUID = -5569669411392145783L;
 
-	private static final Logger LOGGER = Logger.getLogger(PDFValidationApplication.class);
+	static final Logger LOGGER = Logger.getLogger(PDFValidationApplication.class);
 
-	private AboutPanel aboutPanel;
-	private transient Config config;
-	private SettingsPanel settingsPanel;
-	private CheckerPanel checkerPanel;
-	private boolean isSerializedConfig;
-	private transient Path configPath;
+	AboutPanel aboutPanel;
+	transient Config config;
+	SettingsPanel settingsPanel;
+	CheckerPanel checkerPanel;
+	boolean isSerializedConfig;
+	transient Path configPath;
 
+<<<<<<< HEAD
 	private PDFValidationApplication() {
         addWindowListener(new ExitWindowAdapter());
+=======
+	PDFValidationApplication() {
+>>>>>>> a9ca1c10313498b0d5fe11f8a0aca24b207a34f9
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(GUIConstants.FRAME_COORD_X, GUIConstants.FRAME_COORD_Y, GUIConstants.FRAME_WIDTH, GUIConstants.FRAME_HEIGHT);
 		setResizable(false);
@@ -99,16 +103,16 @@ public class PDFValidationApplication extends JFrame {
 		menuBar.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		setJMenuBar(menuBar);
 
-		aboutPanel = null;
+		this.aboutPanel = null;
 		try {
-			aboutPanel = new AboutPanel();
+			this.aboutPanel = new AboutPanel();
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(this, "Error in reading logo image.", GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 			LOGGER.error("Exception in reading logo image", e);
 		}
 
 		try {
-			settingsPanel = new SettingsPanel();
+			this.settingsPanel = new SettingsPanel();
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error initialising settings panel.", GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 			LOGGER.error("Exception in initialising settings panel", e);
@@ -118,8 +122,9 @@ public class PDFValidationApplication extends JFrame {
 		sett.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (settingsPanel != null && settingsPanel.showDialog(PDFValidationApplication.this, "Settings", config)) {
+				if (PDFValidationApplication.this.settingsPanel != null && PDFValidationApplication.this.settingsPanel.showDialog(PDFValidationApplication.this, "Settings", PDFValidationApplication.this.config)) {
 					Config.Builder builder = new Config.Builder();
+<<<<<<< HEAD
 					builder.showPassedRules(settingsPanel.isDispPassedRules());
 					builder.maxNumberOfFailedChecks(settingsPanel.getFailedChecksNumber());
 					builder.maxNumberOfDisplayedFailedChecks(settingsPanel.getFailedChecksDisplayNumber());
@@ -134,6 +139,23 @@ public class PDFValidationApplication extends JFrame {
                         PDFValidationApplication.this.config = builtConfig;   //TODO:  before builder, so we don't have to build configs if nothing is changed
                         writeConfigToFile();
                     }
+=======
+					builder.showPassedRules(PDFValidationApplication.this.settingsPanel.isDispPassedRules());
+					builder.maxNumberOfFailedChecks(PDFValidationApplication.this.settingsPanel.getFailedChecksNumber());
+					builder.maxNumberOfDisplayedFailedChecks(PDFValidationApplication.this.settingsPanel.getFailedChecksDisplayNumber());
+					builder.fixMetadataPathFolder(PDFValidationApplication.this.settingsPanel.getFixMetadataDirectory());
+					builder.metadataFixerPrefix(PDFValidationApplication.this.settingsPanel.getFixMetadataPrefix());
+					builder.profilesWikiPath(PDFValidationApplication.this.settingsPanel.getProfilesWikiPath());
+					PDFValidationApplication.this.config = builder.build();
+					PDFValidationApplication.this.checkerPanel.setConfig(PDFValidationApplication.this.config);
+					if (PDFValidationApplication.this.isSerializedConfig) {
+						try {
+							ConfigPropertiesSerializator.saveConfig(PDFValidationApplication.this.config, PDFValidationApplication.this.configPath);
+						} catch (IOException e1) {
+							LOGGER.error("Can not save config", e1);
+						}
+					}
+>>>>>>> a9ca1c10313498b0d5fe11f8a0aca24b207a34f9
 				}
 			}
 		});
@@ -144,8 +166,8 @@ public class PDFValidationApplication extends JFrame {
 		about.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (aboutPanel != null) {
-					aboutPanel.showDialog(PDFValidationApplication.this, "About veraPDF");
+				if (PDFValidationApplication.this.aboutPanel != null) {
+					PDFValidationApplication.this.aboutPanel.showDialog(PDFValidationApplication.this, "About veraPDF");
 				}
 			}
 		});
@@ -167,15 +189,19 @@ public class PDFValidationApplication extends JFrame {
 
 		contentPane.add(logoPanel);
 
-		checkerPanel = null;
+		this.checkerPanel = null;
 		try {
-			checkerPanel = new CheckerPanel(config);
+			this.checkerPanel = new CheckerPanel(this.config);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in loading xml or html image.", GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 			LOGGER.error("Exception in loading xml or html image", e);
 		}
+<<<<<<< HEAD
 		contentPane.add(checkerPanel);
 
+=======
+		contentPane.add(this.checkerPanel);
+>>>>>>> a9ca1c10313498b0d5fe11f8a0aca24b207a34f9
 	}
 
     void changeConfigFromCheckerPanel(boolean isFixMetadata, ProcessingType processingType) {
