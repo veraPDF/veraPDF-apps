@@ -13,12 +13,14 @@ import org.verapdf.pdfa.validation.ValidationProfile;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBException;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -33,6 +35,7 @@ import java.util.concurrent.ExecutionException;
  */
 class CheckerPanel extends JPanel {
 
+<<<<<<< HEAD
 	private class ChooseFlavourRenderer extends JLabel implements ListCellRenderer<PDFAFlavour> {
 
 		public ChooseFlavourRenderer() {
@@ -684,3 +687,650 @@ class CheckerPanel extends JPanel {
         return (ProcessingType)processingType.getSelectedItem();
     }
 }
+=======
+    private class ChooseFlavourRenderer extends JLabel implements
+            ListCellRenderer<PDFAFlavour> {
+
+        /**
+         * 
+         */
+        private static final long serialVersionUID = 3740801661593829099L;
+
+        public ChooseFlavourRenderer() {
+            setOpaque(true);
+            setHorizontalAlignment(CENTER);
+            setVerticalAlignment(CENTER);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(
+                JList<? extends PDFAFlavour> list, PDFAFlavour value,
+                int index, boolean isSelected, boolean cellHasFocus) {
+            this.setText("Error in parsing flavour");
+            if (value == PDFAFlavour.NO_FLAVOUR) {
+                this.setText(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
+                return this;
+            } else if (value.toString().matches("\\d\\w")) {
+                String valueString = value.toString();
+                String parsedFlavour = "PDF/A-";
+                parsedFlavour += valueString.charAt(0);
+                parsedFlavour += valueString.substring(1, 2).toUpperCase();
+                this.setText(parsedFlavour);
+                return this;
+            } else {
+                // TODO: Throw exception if constant in PDFAFlavour doesn't
+                // satisfy regex "\d\w"
+                return this;
+            }
+        }
+    }
+
+    /**
+     * ID for serialisation
+     */
+    private static final long serialVersionUID = 1290058869994329766L;
+
+    static final Logger LOGGER = Logger.getLogger(CheckerPanel.class);
+
+    JFileChooser pdfChooser;
+    JFileChooser xmlChooser;
+    JFileChooser htmlChooser;
+    File pdfFile;
+    File profile;
+    private JTextField chosenPDF;
+    JTextField chosenProfile;
+    JLabel resultLabel;
+    transient ValidationResult result;
+    File xmlReport;
+    File htmlReport;
+
+    JComboBox<ProcessingType> processingType;
+    JCheckBox fixMetadata;
+    JComboBox<PDFAFlavour> chooseFlavour;
+
+    boolean isValidationErrorOccurred;
+
+    JButton validate;
+    JButton saveXML;
+    JButton viewXML;
+    JButton saveHTML;
+    JButton viewHTML;
+
+    transient Config config;
+
+    JProgressBar progressBar;
+    transient ValidateWorker validateWorker;
+
+    CheckerPanel(final Config config) throws IOException {
+
+        this.config = config;
+        setPreferredSize(new Dimension(GUIConstants.PREFERRED_SIZE_WIDTH,
+                GUIConstants.PREFERRED_SIZE_HEIGHT));
+
+        GridBagLayout gbl = new GridBagLayout();
+        this.setLayout(gbl);
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        this.chosenPDF = new JTextField(GUIConstants.PDF_NOT_CHOSEN_TEXT);
+        this.chosenPDF.setEditable(false);
+        setGridBagConstraintsParameters(gbc,
+                GUIConstants.CHOSENPDF_LABEL_CONSTRAINT_GRIDX,
+                GUIConstants.CHOSENPDF_LABEL_CONSTRAINT_GRIDY,
+                GUIConstants.CHOSENPDF_LABEL_CONSTRAINT_WEIGHTX,
+                GUIConstants.CHOSENPDF_LABEL_CONSTRAINT_WEIGHTY,
+                GUIConstants.CHOSENPDF_LABEL_CONSTRAINT_GRIDWIDTH,
+                GUIConstants.CHOSENPDF_LABEL_CONSTRAINT_GRIDHEIGHT,
+                GridBagConstraints.HORIZONTAL);
+        gbl.setConstraints(this.chosenPDF, gbc);
+        this.add(this.chosenPDF);
+
+        JButton choosePDF = new JButton(GUIConstants.CHOOSE_PDF_BUTTON_TEXT);
+        setGridBagConstraintsParameters(gbc,
+                GUIConstants.CHOOSEPDF_BUTTON_CONSTRAINT_GRIDX,
+                GUIConstants.CHOOSEPDF_BUTTON_CONSTRAINT_GRIDY,
+                GUIConstants.CHOOSEPDF_BUTTON_CONSTRAINT_WEIGHTX,
+                GUIConstants.CHOOSEPDF_BUTTON_CONSTRAINT_WEIGHTY,
+                GUIConstants.CHOOSEPDF_BUTTON_CONSTRAINT_GRIDWIDTH,
+                GUIConstants.CHOOSEPDF_BUTTON_CONSTRAINT_GRIDHEIGHT,
+                GridBagConstraints.HORIZONTAL);
+        gbl.setConstraints(choosePDF, gbc);
+        this.add(choosePDF);
+
+        final JLabel processType = new JLabel(GUIConstants.PROCESSING_TYPE);
+        setGridBagConstraintsParameters(gbc,
+                GUIConstants.PROCESSTYPE_LABEL_CONSTRAINT_GRIDX,
+                GUIConstants.PROCESSTYPE_LABEL_CONSTRAINT_GRIDY,
+                GUIConstants.PROCESSTYPE_LABEL_CONSTRAINT_WEIGHTX,
+                GUIConstants.PROCESSTYPE_LABEL_CONSTRAINT_WEIGHTY,
+                GUIConstants.PROCESSTYPE_LABEL_CONSTRAINT_GRIDWIDTH,
+                GUIConstants.PROCESSTYPE_LABEL_CONSTRAINT_GRIDHEIGHT,
+                GridBagConstraints.HORIZONTAL);
+        gbl.setConstraints(processType, gbc);
+        this.add(processType);
+
+        this.processingType = new JComboBox<>(ProcessingType.values());
+        setGridBagConstraintsParameters(gbc,
+                GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDX,
+                GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDY,
+                GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_WEIGHTX,
+                GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_WEIGHTY,
+                GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDWIDTH,
+                GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDHEIGHT,
+                GridBagConstraints.HORIZONTAL);
+        gbl.setConstraints(this.processingType, gbc);
+        this.add(this.processingType);
+
+        this.fixMetadata = new JCheckBox(GUIConstants.FIX_METADATA_LABEL_TEXT);
+        this.fixMetadata.setSelected(false);
+        setGridBagConstraintsParameters(gbc,
+                GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDX,
+                GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDY,
+                GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_WEIGHTX,
+                GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_WEIGHTY,
+                GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDWIDTH,
+                GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDHEIGHT,
+                GridBagConstraints.HORIZONTAL);
+        gbl.setConstraints(this.fixMetadata, gbc);
+        this.add(this.fixMetadata);
+
+        this.chooseFlavour = new JComboBox<PDFAFlavour>(PDFAFlavour.values());
+        ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
+        this.chooseFlavour.setRenderer(renderer);
+        this.chooseFlavour.setSelectedItem(PDFAFlavour.PDFA_1_B);
+        setGridBagConstraintsParameters(gbc,
+                GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDX,
+                GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDY,
+                GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_WEIGHTX,
+                GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_WEIGHTY,
+                GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDWIDTH,
+                GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDHEIGHT,
+                GridBagConstraints.HORIZONTAL);
+        gbl.setConstraints(this.chooseFlavour, gbc);
+        this.add(this.chooseFlavour);
+
+        this.chosenProfile = new JTextField(
+                GUIConstants.VALIDATION_PROFILE_NOT_CHOSEN);
+        this.chosenProfile.setEditable(false);
+        this.chosenProfile.setEnabled(false); // We are starting with chosen
+                                              // flavour
+        setGridBagConstraintsParameters(gbc,
+                GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_GRIDX,
+                GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_GRIDY,
+                GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_WEIGHTX,
+                GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_WEIGHTY,
+                GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_GRIDWIDTH,
+                GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_GRIDHEIGHT,
+                GridBagConstraints.HORIZONTAL);
+        gbl.setConstraints(this.chosenProfile, gbc);
+        this.add(this.chosenProfile);
+
+        String appHome = System.getProperty("app.home");
+        if (appHome != null) {
+            File user = new File(System.getProperty("app.home"));
+            File defaultProfile = new File(user,
+                    "profiles/veraPDF-validation-profiles-integration/PDF_A/PDFA-1B.xml");
+            if (defaultProfile.isFile() && defaultProfile.canRead()) {
+                this.profile = defaultProfile;
+                this.chosenProfile.setText(this.profile.getAbsolutePath());
+            }
+        }
+
+        final JButton chooseProfile = new JButton(
+                GUIConstants.CHOOSE_PROFILE_BUTTON_TEXT);
+        chooseProfile.setEnabled(false); // We are starting with chosen flavour
+        setGridBagConstraintsParameters(gbc,
+                GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_GRIDX,
+                GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_GRIDY,
+                GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_WEIGHTX,
+                GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_WEIGHTY,
+                GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_GRIDWIDTH,
+                GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_GRIDHEIGHT,
+                GridBagConstraints.HORIZONTAL);
+        gbl.setConstraints(chooseProfile, gbc);
+        this.add(chooseProfile);
+
+        this.resultLabel = new JLabel();
+        this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
+        this.resultLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+        setGridBagConstraintsParameters(gbc,
+                GUIConstants.RESULT_LABEL_CONSTRAINT_GRIDX,
+                GUIConstants.RESULT_LABEL_CONSTRAINT_GRIDY,
+                GUIConstants.RESULT_LABEL_CONSTRAINT_WEIGHTX,
+                GUIConstants.RESULT_LABEL_CONSTRAINT_WEIGHTY,
+                GUIConstants.RESULT_LABEL_CONSTRAINT_GRIDWIDTH,
+                GUIConstants.RESULT_LABEL_CONSTRAINT_GRIDHEIGHT,
+                GridBagConstraints.CENTER);
+        gbl.setConstraints(this.resultLabel, gbc);
+        this.add(this.resultLabel);
+
+        this.progressBar = new JProgressBar();
+        this.progressBar.setIndeterminate(true);
+        this.progressBar.setVisible(false);
+        setGridBagConstraintsParameters(gbc,
+                GUIConstants.PROGRESSBAR_CONSTRAINT_GRIDX,
+                GUIConstants.PROGRESSBAR_CONSTRAINT_GRIDY,
+                GUIConstants.PROGRESSBAR_CONSTRAINT_WEIGHTX,
+                GUIConstants.PROGRESSBAR_CONSTRAINT_WEIGHTY,
+                GUIConstants.PROGRESSBAR_CONSTRAINT_GRIDWIDTH,
+                GUIConstants.PROGRESSBAR_CONSTRAINT_GRIDHEIGHT,
+                GridBagConstraints.HORIZONTAL);
+        gbl.setConstraints(this.progressBar, gbc);
+        this.add(this.progressBar);
+
+        this.validate = new JButton(GUIConstants.VALIDATE_BUTTON_TEXT);
+        this.validate.setEnabled(false);
+        setGridBagConstraintsParameters(gbc,
+                GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRIDX,
+                GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRIDY,
+                GUIConstants.VALIDATE_BUTTON_CONSTRAINT_WEIGHTX,
+                GUIConstants.VALIDATE_BUTTON_CONSTRAINT_WEIGHTY,
+                GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRIDWIDTH,
+                GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRIDHEIGHT,
+                GridBagConstraints.HORIZONTAL);
+        gbl.setConstraints(this.validate, gbc);
+        this.add(this.validate);
+
+        JPanel reports = new JPanel();
+        reports.setBorder(BorderFactory.createTitledBorder(GUIConstants.REPORT));
+        reports.setLayout(new GridLayout(
+                GUIConstants.REPORT_PANEL_LINES_NUMBER,
+                GUIConstants.REPORT_PANEL_COLUMNS_NUMBER));
+        setGridBagConstraintsParameters(gbc,
+                GUIConstants.REPORT_PANEL_CONSTRAINT_GRIDX,
+                GUIConstants.REPORT_PANEL_CONSTRAINT_GRIDY,
+                GUIConstants.REPORT_PANEL_CONSTRAINT_WEIGHTX,
+                GUIConstants.REPORT_PANEL_CONSTRAINT_WEIGHTY,
+                GUIConstants.REPORT_PANEL_CONSTRAINT_GRIDWIDTH,
+                GUIConstants.REPORT_PANEL_CONSTRAINT_GRIDHEIGHT,
+                GridBagConstraints.HORIZONTAL);
+        gbl.setConstraints(reports, gbc);
+        this.add(reports);
+
+        LogoPanel xmlLogo = new LogoPanel(GUIConstants.XML_LOGO_NAME,
+                reports.getBackground(), GUIConstants.XMLLOGO_BORDER_WIDTH);
+        reports.add(xmlLogo);
+
+        this.saveXML = new JButton(GUIConstants.SAVE_REPORT_BUTTON_TEXT);
+        this.saveXML.setEnabled(false);
+        reports.add(this.saveXML);
+
+        this.viewXML = new JButton(GUIConstants.VIEW_REPORT_BUTTON_TEXT);
+        this.viewXML.setEnabled(false);
+        reports.add(this.viewXML);
+
+        LogoPanel htmlLogo = new LogoPanel(GUIConstants.HTML_LOGO_NAME,
+                reports.getBackground(), GUIConstants.HTMLLOGO_BORDER_WIDTH);
+        reports.add(htmlLogo);
+
+        this.saveHTML = new JButton(GUIConstants.SAVE_HTML_REPORT_BUTTON_TEXT);
+        this.saveHTML.setEnabled(false);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        reports.add(this.saveHTML);
+
+        this.viewHTML = new JButton(GUIConstants.VIEW_HTML_REPORT_BUTTON_TEXT);
+        this.viewHTML.setEnabled(false);
+        reports.add(this.viewHTML);
+
+        this.pdfChooser = getChooser(GUIConstants.PDF);
+        this.xmlChooser = getChooser(GUIConstants.XML);
+        this.htmlChooser = getChooser(GUIConstants.HTML);
+
+        choosePDF.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CheckerPanel.this.chooseFile(CheckerPanel.this.pdfChooser,
+                        GUIConstants.PDF);
+            }
+        });
+
+        this.processingType.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = CheckerPanel.this.processingType.getSelectedIndex();
+                switch (index) {
+                case 0:
+                    CheckerPanel.this.fixMetadata.setEnabled(true);
+                    break;
+                case 1:
+                    CheckerPanel.this.fixMetadata.setEnabled(true);
+                    break;
+                case 2:
+                    CheckerPanel.this.fixMetadata.setEnabled(false);
+                    break;
+                default:
+                    break;
+                }
+            }
+        });
+
+        this.chooseFlavour.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (CheckerPanel.this.chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR) {
+                    chooseProfile.setEnabled(true);
+                    CheckerPanel.this.chosenProfile.setEnabled(true);
+                } else if (CheckerPanel.this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR) {
+                    chooseProfile.setEnabled(false);
+                    CheckerPanel.this.chosenProfile.setEnabled(false);
+                }
+                setValidationButtonEnability();
+            }
+        });
+
+        chooseProfile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                CheckerPanel.this.chooseFile(CheckerPanel.this.xmlChooser,
+                        GUIConstants.XML);
+            }
+        });
+
+        this.validate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    ProcessingType type = (ProcessingType) CheckerPanel.this.processingType
+                            .getSelectedItem();
+                    ValidationProfile prof;
+                    if (CheckerPanel.this.chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR) {
+                        try (InputStream is = new FileInputStream(
+                                CheckerPanel.this.profile)) {
+                            prof = Profiles.profileFromXml(is);
+                        }
+                    } else {
+                        try {
+                            prof = Profiles
+                                    .getVeraProfileDirectory()
+                                    .getValidationProfileByFlavour(
+                                            (PDFAFlavour) CheckerPanel.this.chooseFlavour
+                                                    .getSelectedItem());
+                        } catch (NoSuchElementException re) {
+                            JOptionPane.showMessageDialog(CheckerPanel.this,
+                                    "PDF/A-"
+                                            + CheckerPanel.this.chooseFlavour
+                                                    .getSelectedItem()
+                                                    .toString().toUpperCase()
+                                            + " is not supported.", "Warning",
+                                    JOptionPane.WARNING_MESSAGE);
+                            LOGGER.warn(re);
+                            return;
+                        }
+                    }
+                    CheckerPanel.this.validateWorker = new ValidateWorker(
+                            CheckerPanel.this, CheckerPanel.this.pdfFile, prof,
+                            CheckerPanel.this.config, type,
+                            CheckerPanel.this.fixMetadata.isSelected());
+                    CheckerPanel.this.progressBar.setVisible(true);
+                    CheckerPanel.this.resultLabel.setVisible(false);
+                    setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                    CheckerPanel.this.validate.setEnabled(false);
+                    CheckerPanel.this.result = null;
+                    CheckerPanel.this.isValidationErrorOccurred = false;
+                    CheckerPanel.this.viewXML.setEnabled(false);
+                    CheckerPanel.this.saveXML.setEnabled(false);
+                    CheckerPanel.this.viewHTML.setEnabled(false);
+                    CheckerPanel.this.saveHTML.setEnabled(false);
+                    CheckerPanel.this.validateWorker.execute();
+                } catch (IllegalArgumentException | IOException | JAXBException exep) {
+                    JOptionPane.showMessageDialog(CheckerPanel.this,
+                            exep.getMessage(), "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    LOGGER.error(exep);
+                }
+            }
+        });
+
+        this.saveXML.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveReport(CheckerPanel.this.xmlChooser, GUIConstants.XML,
+                        CheckerPanel.this.xmlReport);
+            }
+        });
+
+        this.saveHTML.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveReport(CheckerPanel.this.htmlChooser, GUIConstants.HTML,
+                        CheckerPanel.this.htmlReport);
+            }
+        });
+
+        this.viewXML.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (CheckerPanel.this.xmlReport == null) {
+                    JOptionPane.showMessageDialog(CheckerPanel.this,
+                            "XML report hasn't been saved.",
+                            GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+                } else {
+                    this.openXMLReport();
+                }
+            }
+
+            private void openXMLReport() {
+                try {
+                    Desktop.getDesktop().open(CheckerPanel.this.xmlReport);
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(CheckerPanel.this,
+                            "Some error in opening the XML report.",
+                            GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+                    LOGGER.error("Exception in opening the XML report", e1);
+                }
+            }
+        });
+
+        this.viewHTML.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (CheckerPanel.this.htmlReport == null) {
+                    JOptionPane.showMessageDialog(CheckerPanel.this,
+                            "HTML report hasn't been saved.",
+                            GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+                } else {
+                    try {
+                        Desktop.getDesktop().open(CheckerPanel.this.htmlReport);
+                    } catch (IOException e1) {
+                        JOptionPane.showMessageDialog(CheckerPanel.this,
+                                "Some error in opening the HTML report.",
+                                GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+                        LOGGER.error("Exception in opening the HTML report", e1);
+                    }
+                }
+            }
+        });
+
+    }
+
+    @SuppressWarnings("hiding")
+    void validationEnded(File xmlReport, File htmlReport) {
+
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        this.progressBar.setVisible(false);
+        this.validate.setEnabled(true);
+
+        if (!this.isValidationErrorOccurred) {
+            try {
+                this.result = this.validateWorker.get();
+                if (this.result == null) {
+                    this.resultLabel
+                            .setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
+                    this.resultLabel
+                            .setText(GUIConstants.FEATURES_GENERATED_CORRECT);
+                } else if (this.result.isCompliant()) {
+                    this.resultLabel
+                            .setForeground(GUIConstants.VALIDATION_SUCCESS_COLOR);
+                    this.resultLabel.setText(GUIConstants.VALIDATION_OK);
+                } else {
+                    this.resultLabel
+                            .setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
+                    this.resultLabel.setText(GUIConstants.VALIDATION_FALSE);
+                }
+
+                this.resultLabel.setVisible(true);
+
+                this.xmlReport = xmlReport;
+                this.htmlReport = htmlReport;
+
+                if (xmlReport != null) {
+                    this.saveXML.setEnabled(true);
+                    this.viewXML.setEnabled(true);
+                }
+
+                if (htmlReport != null) {
+                    this.saveHTML.setEnabled(true);
+                    this.viewHTML.setEnabled(true);
+                }
+
+            } catch (InterruptedException e) {
+                errorInValidatingOccur("Process has interrupted.", e);
+            } catch (ExecutionException e) {
+                errorInValidatingOccur("Execution exception in processing.", e);
+            }
+        }
+
+    }
+
+    void errorInValidatingOccur(String message, Throwable e) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        this.progressBar.setVisible(false);
+        this.isValidationErrorOccurred = true;
+        JOptionPane.showMessageDialog(CheckerPanel.this, message,
+                GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+
+        LOGGER.error("Exception during the validation process", e);
+
+        this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
+        this.resultLabel.setText(message);
+        this.resultLabel.setVisible(true);
+    }
+
+    private static JFileChooser getChooser(String type) throws IOException {
+        JFileChooser res = new JFileChooser();
+        File currentDir = new File(
+                new File(GUIConstants.DOT).getCanonicalPath());
+        res.setCurrentDirectory(currentDir);
+        res.setAcceptAllFileFilterUsed(false);
+        res.setFileFilter(new FileNameExtensionFilter(type, type));
+        return res;
+    }
+
+    private static void setGridBagConstraintsParameters(GridBagConstraints gbc,
+            int gridx, int gridy, int weightx, int weighty, int gridwidth,
+            int gridheight, int fill) {
+        gbc.gridx = gridx;
+        gbc.gridy = gridy;
+        gbc.weightx = weightx;
+        gbc.weighty = weighty;
+        gbc.gridwidth = gridwidth;
+        gbc.gridheight = gridheight;
+        gbc.fill = fill;
+    }
+
+    void chooseFile(JFileChooser chooser, String extension) {
+        int resultChoose = chooser.showOpenDialog(CheckerPanel.this);
+        if (resultChoose == JFileChooser.APPROVE_OPTION) {
+
+            if (!chooser.getSelectedFile().exists()) {
+                JOptionPane.showMessageDialog(CheckerPanel.this,
+                        "Error. Selected file doesn't exist.",
+                        GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+            } else if (!chooser.getSelectedFile().getName().toLowerCase()
+                    .endsWith(GUIConstants.DOT + extension.toLowerCase())) {
+                JOptionPane.showMessageDialog(
+                        CheckerPanel.this,
+                        "Error. Selected file is not in "
+                                + extension.toUpperCase() + " format.",
+                        GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+            } else {
+
+                this.result = null;
+                this.resultLabel
+                        .setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
+                this.resultLabel.setText("");
+                this.xmlReport = null;
+                this.htmlReport = null;
+                this.saveXML.setEnabled(false);
+                this.viewXML.setEnabled(false);
+                this.saveHTML.setEnabled(false);
+                this.viewHTML.setEnabled(false);
+
+                switch (extension) {
+                case GUIConstants.PDF:
+                    this.pdfFile = chooser.getSelectedFile();
+                    this.chosenPDF.setText(this.pdfFile.getAbsolutePath());
+                    break;
+                case GUIConstants.XML:
+                    this.profile = chooser.getSelectedFile();
+                    this.chosenProfile.setText(this.profile.getAbsolutePath());
+                    break;
+                default:
+                    // This method used only for previous two cases.
+                    // So do nothing.
+                }
+                setValidationButtonEnability();
+            }
+        }
+    }
+
+    void saveReport(JFileChooser chooser, String extension, File report) {
+        if (report == null) {
+            JOptionPane.showMessageDialog(CheckerPanel.this,
+                    "Validation hasn't been run.", GUIConstants.ERROR,
+                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            chooser.setSelectedFile(new File(extension.toLowerCase()
+                    + "Report." + extension.toLowerCase()));
+            int resultChoose = chooser.showSaveDialog(CheckerPanel.this);
+            if (resultChoose == JFileChooser.APPROVE_OPTION) {
+                File temp = chooser.getSelectedFile();
+
+                if (!(temp.getName().toLowerCase().endsWith(GUIConstants.DOT
+                        + extension.toLowerCase()))) {
+                    temp = new File(temp.getPath() + GUIConstants.DOT
+                            + extension.toLowerCase());
+                }
+
+                try {
+                    try {
+                        Files.copy(report.toPath(), temp.toPath());
+                    } catch (FileAlreadyExistsException e1) {
+                        LOGGER.debug(
+                                "File already exists, conform overwrite with user",
+                                e1);
+                        int resultOption = JOptionPane
+                                .showConfirmDialog(
+                                        CheckerPanel.this,
+                                        extension.toUpperCase()
+                                                + " file with the same name already exists. Do you want to overwrite it?",
+                                        "", JOptionPane.YES_NO_OPTION);
+                        if (resultOption == JOptionPane.YES_OPTION) {
+                            Files.copy(report.toPath(), temp.toPath(),
+                                    StandardCopyOption.REPLACE_EXISTING);
+                        }
+                    }
+                } catch (IOException e) {
+                    JOptionPane.showMessageDialog(CheckerPanel.this,
+                            GUIConstants.ERROR_IN_SAVING_HTML_REPORT,
+                            GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+                    LOGGER.error("Exception saving " + extension.toUpperCase()
+                            + " report", e);
+                }
+            }
+        }
+    }
+
+    void setValidationButtonEnability() {
+        if (this.pdfFile != null
+                && (this.profile != null || this.chooseFlavour
+                        .getSelectedItem() != PDFAFlavour.NO_FLAVOUR))
+            this.validate.setEnabled(true);
+        else
+            this.validate.setEnabled(false);
+    }
+
+    void setConfig(Config config) {
+        this.config = config;
+    }
+}
+>>>>>>> a9ca1c10313498b0d5fe11f8a0aca24b207a34f9
