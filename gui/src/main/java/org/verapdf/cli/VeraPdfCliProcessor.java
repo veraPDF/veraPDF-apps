@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.verapdf.cli;
 
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
@@ -9,7 +6,6 @@ import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.ValidationException;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeaturesCollection;
-import org.verapdf.gui.tools.ProcessingType;
 import org.verapdf.metadata.fixer.impl.MetadataFixerImpl;
 import org.verapdf.metadata.fixer.impl.pb.FixerConfigImpl;
 import org.verapdf.metadata.fixer.utils.FileGenerator;
@@ -44,7 +40,7 @@ import java.util.Set;
  */
 final class VeraPdfCliProcessor {
     final FormatOption format;
-    final ProcessingType processingType;
+    final boolean extractFeatures;
     final boolean logPassed;
     final boolean recurse;
     final boolean verbose;
@@ -69,7 +65,7 @@ final class VeraPdfCliProcessor {
     private VeraPdfCliProcessor(final VeraCliArgParser args)
             throws IOException {
         this.format = args.getFormat();
-        this.processingType = args.getProcessingType();
+        this.extractFeatures = args.extractFeatures();
         this.logPassed = args.logPassed();
         this.recurse = args.isRecurse();
         this.verbose = args.isVerbose();
@@ -151,15 +147,13 @@ final class VeraPdfCliProcessor {
         long start = System.currentTimeMillis();
         try (ModelParser toValidate = new ModelParser(toProcess, this.profile.getPDFAFlavour())) {
             if (this.validator != null) {
-                if(this.processingType.isValidating()) {
-                    validationResult = this.validator.validate(toValidate);
-                    if (this.fixMetadata) {
-                        fixerResult = this.fixMetadata(validationResult, toValidate,
-                                this.currentPdfName);
-                    }
+                validationResult = this.validator.validate(toValidate);
+                if (this.fixMetadata) {
+                    fixerResult = this.fixMetadata(validationResult, toValidate,
+                            this.currentPdfName);
                 }
             }
-            if (this.processingType.isFeatures()) {
+            if (this.extractFeatures) {
                 featuresCollection = PBFeatureParser
                         .getFeaturesCollection(toValidate.getPDDocument());
             }
@@ -201,7 +195,7 @@ final class VeraPdfCliProcessor {
                     item,
                     this.validator == null ? Profiles.defaultProfile()
                             : this.validator.getProfile(), validationResult,
-                    this.logPassed, this.maxFailuresDisplayed ,fixerResult, featuresCollection,
+                    this.logPassed, this.maxFailuresDisplayed,fixerResult, featuresCollection,
                     System.currentTimeMillis() - start);
             outputMrr(report, this.format == FormatOption.HTML);
         }

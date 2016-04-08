@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.verapdf.cli.commands;
 
@@ -261,6 +261,74 @@ public class VeraCliArgParserTest {
         jCommander.parse(new String[] { "-l", "--success", "--flavour", "3b" });
         assertFalse(parser.logPassed() == VeraCliArgParser.DEFAULT_ARGS
                 .logPassed());
+    }
+
+    /**
+     * Test method for
+     * {@link org.verapdf.cli.commands.VeraCliArgParser#extractFeatures()}.
+     */
+    @Test
+    public final void testExtractDefault() {
+        // Test default is false
+        assertFalse(VeraCliArgParser.DEFAULT_ARGS.extractFeatures());
+
+        // Test empty String[] args doesn't change that
+        VeraCliArgParser parser = new VeraCliArgParser();
+        JCommander jCommander = initialiseJCommander(parser);
+        jCommander.parse(new String[] {});
+        assertTrue(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
+                .extractFeatures());
+
+        // Test other flags & options doesn't change that
+        parser = new VeraCliArgParser();
+        jCommander = initialiseJCommander(parser);
+        jCommander.parse(new String[] { "-l", "--flavour", "1a", "-h" });
+        assertTrue(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
+                .extractFeatures());
+    }
+
+    /**
+     * Test method for
+     * {@link org.verapdf.cli.commands.VeraCliArgParser#extractFeatures()}.
+     */
+    @Test
+    public final void testExtractFlag() {
+        VeraCliArgParser parser = new VeraCliArgParser();
+        JCommander jCommander = initialiseJCommander(parser);
+
+        // Test flag works
+        jCommander.parse(new String[] { "-x" });
+        assertFalse(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
+                .extractFeatures());
+
+        // Test flag works with other options & flags
+        parser = new VeraCliArgParser();
+        jCommander = initialiseJCommander(parser);
+        jCommander.parse(new String[] { "-x", "--format", "html", "-h" });
+        assertFalse(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
+                .extractFeatures());
+    }
+
+    /**
+     * Test method for
+     * {@link org.verapdf.cli.commands.VeraCliArgParser#extractFeatures()}.
+     */
+    @Test
+    public final void testExtractOption() {
+        VeraCliArgParser parser = new VeraCliArgParser();
+        JCommander jCommander = initialiseJCommander(parser);
+
+        // Test option works
+        jCommander.parse(new String[] { "--extract" });
+        assertFalse(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
+                .extractFeatures());
+
+        // Test option works with other options & flags
+        parser = new VeraCliArgParser();
+        jCommander = initialiseJCommander(parser);
+        jCommander.parse(new String[] { "-l", "--extract", "--flavour", "3b" });
+        assertFalse(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
+                .extractFeatures());
     }
 
     static final JCommander initialiseJCommander(final VeraCliArgParser parser) {

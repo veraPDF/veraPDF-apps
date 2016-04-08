@@ -46,7 +46,6 @@ class CheckerPanel extends JPanel {
 		@Override
 		public Component getListCellRendererComponent(JList<? extends PDFAFlavour> list, PDFAFlavour value,
 													  int index, boolean isSelected, boolean cellHasFocus) {
-			this.setText("Error in parsing flavour");
 			if (value == PDFAFlavour.NO_FLAVOUR) {
 				this.setText(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
 				return this;
@@ -58,7 +57,8 @@ class CheckerPanel extends JPanel {
 				this.setText(parsedFlavour);
 				return this;
 			} else {
-				//TODO: Throw exception if constant in PDFAFlavour doesn't satisfy regex "\d\w"
+				//TODO: check logic in case if constant in PDFAFlavour doesn't satisfy regex "\d\w"
+				this.setText("Error in parsing flavour");
 				return this;
 			}
 		}
@@ -112,18 +112,13 @@ class CheckerPanel extends JPanel {
 	private JButton viewHTML;
 
 	private transient Config config;
-	private transient ConfigIO configIO;
-	private PDFValidationApplication application;
 
 	JProgressBar progressBar;
 	transient ValidateWorker validateWorker;
 
-	CheckerPanel(final Config config, final ConfigIO configIO,
-				 final PDFValidationApplication application) throws IOException {
+	CheckerPanel(final Config config) throws IOException {
 
-		this.application = application;
 		this.config = config;
-		this.configIO = configIO;
 		setPreferredSize(new Dimension(GUIConstants.PREFERRED_SIZE_WIDTH,
 				GUIConstants.PREFERRED_SIZE_HEIGHT));
 
@@ -195,12 +190,14 @@ class CheckerPanel extends JPanel {
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.fixMetadata, gbc);
 		this.add(this.fixMetadata);
-		if (config.getProcessingType() == ProcessingType.FEATURES)
+		if (config.getProcessingType() == ProcessingType.FEATURES) {
 			this.fixMetadata.setEnabled(false);
+		}
 
 		Vector<PDFAFlavour> possibleFlavours = new Vector<>();
-		for (PDFAFlavour flavour : Profiles.getVeraProfileDirectory().getPDFAFlavours())    // TODO : Is it guaranteed that all possible flavours will be got?
+		for (PDFAFlavour flavour : Profiles.getVeraProfileDirectory().getPDFAFlavours()) {
 			possibleFlavours.add(flavour);
+		}
 		chooseFlavour = new JComboBox<>(possibleFlavours);
 		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
 		chooseFlavour.setRenderer(renderer);
@@ -394,7 +391,7 @@ class CheckerPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
-					changeApplicationConfig();
+					changeConfig();
 					ProcessingType type = (ProcessingType) CheckerPanel.this.processingType.getSelectedItem();
 					ValidationProfile prof;
 					if (chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR) {
@@ -664,18 +661,20 @@ class CheckerPanel extends JPanel {
 		}
 	}
 
-	private void changeApplicationConfig() {
-		application.getConfig().setProcessingType((ProcessingType) processingType.getSelectedItem());
-		application.getConfig().setFixMetadata(fixMetadata.isSelected());
-		configIO.writeConfig(application.getConfig());
+	private void changeConfig() {
+		this.config.setProcessingType((ProcessingType) processingType.getSelectedItem());
+		this.config.setFixMetadata(fixMetadata.isSelected());
+		ConfigIO.writeConfig(this.config);
 	}
 
 	private void setValidationButtonEnability() {
 		if (this.pdfFile != null &&
-				(this.profile != null || this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR))
+				(this.profile != null || this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR)) {
 			validate.setEnabled(true);
-		else
+		}
+		else {
 			validate.setEnabled(false);
+		}
 	}
 
 	boolean isFixMetadata() {
