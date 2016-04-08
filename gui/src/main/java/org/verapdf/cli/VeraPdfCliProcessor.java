@@ -1,6 +1,3 @@
-/**
- *
- */
 package org.verapdf.cli;
 
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
@@ -142,7 +139,7 @@ final class VeraPdfCliProcessor {
     }
 
     private void processStream(final ItemDetails item,
-            final InputStream toProcess) {
+                               final InputStream toProcess) {
         ValidationResult validationResult = null;
         MetadataFixerResult fixerResult = null;
         FeaturesCollection featuresCollection = null;
@@ -153,7 +150,7 @@ final class VeraPdfCliProcessor {
                 validationResult = this.validator.validate(toValidate);
                 if (this.fixMetadata) {
                     fixerResult = this.fixMetadata(validationResult, toValidate,
-                                                   this.currentPdfName);
+                            this.currentPdfName);
                 }
             }
             if (this.extractFeatures) {
@@ -195,17 +192,17 @@ final class VeraPdfCliProcessor {
             }
         } else {
             MachineReadableReport report = MachineReadableReport.fromValues(
-                    item.getName(),
+                    item,
                     this.validator == null ? Profiles.defaultProfile()
                             : this.validator.getProfile(), validationResult,
-                    this.logPassed, fixerResult, featuresCollection,
-                    System.currentTimeMillis() - start, this.maxFailuresDisplayed);
+                    this.logPassed, this.maxFailuresDisplayed,fixerResult, featuresCollection,
+                    System.currentTimeMillis() - start);
             outputMrr(report, this.format == FormatOption.HTML);
         }
     }
 
     private void outputMrr(final MachineReadableReport report,
-            final boolean toHtml) {
+                           final boolean toHtml) {
         try {
             if (toHtml) {
                 outputMrrAsHtml(report);

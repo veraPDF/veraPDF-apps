@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.verapdf.cli;
 
@@ -33,7 +33,7 @@ public class VeraPdfCliProcessorTest {
      * Test method for
      * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
      * .
-     * 
+     *
      * @throws IOException
      * @throws FileNotFoundException
      * @throws ProfileException
@@ -60,7 +60,7 @@ public class VeraPdfCliProcessorTest {
      * Test method for
      * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
      * .
-     * 
+     *
      * @throws IOException
      * @throws FileNotFoundException
      * @throws ProfileException
@@ -89,7 +89,7 @@ public class VeraPdfCliProcessorTest {
      * Test method for
      * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
      * .
-     * 
+     *
      * @throws IOException
      * @throws FileNotFoundException
      * @throws ProfileException
@@ -117,7 +117,7 @@ public class VeraPdfCliProcessorTest {
      * Test method for
      * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
      * .
-     * 
+     *
      * @throws IOException
      * @throws FileNotFoundException
      * @throws ProfileException
@@ -151,7 +151,7 @@ public class VeraPdfCliProcessorTest {
      * Test method for
      * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
      * .
-     * 
+     *
      * @throws IOException
      * @throws FileNotFoundException
      * @throws ProfileException

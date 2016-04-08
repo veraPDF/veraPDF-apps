@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.verapdf.cli.commands;
 

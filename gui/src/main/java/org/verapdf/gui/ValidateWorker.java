@@ -47,10 +47,10 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
     private File htmlReport = null;
     private ProcessingType processingType;
     private boolean isFixMetadata;
-
+    
     private long startTimeOfValidation;
     private long endTimeOfValidation;
-
+    
     ValidateWorker(CheckerPanel parent, File pdf, ValidationProfile profile,
             Config settings, ProcessingType processingType,
             boolean isFixMetadata) {

@@ -109,7 +109,7 @@ class SettingsPanel extends JPanel {
 		this.fixMetadataPrefix.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				if (!Config.Builder.isValidFileNameCharacter(e.getKeyChar())) {
+				if (!Config.isValidFileNameCharacter(e.getKeyChar())) {
 					e.consume();
 				}
 			}
@@ -132,7 +132,7 @@ class SettingsPanel extends JPanel {
 			@Override
             public void actionPerformed(ActionEvent event) {
 				boolean isEverythingValid = true;
-				if (!Config.Builder.isValidFolderPath(FileSystems.getDefault().getPath(SettingsPanel.this.fixMetadataFolder.getText()))) {
+				if (!Config.isValidFolderPath(FileSystems.getDefault().getPath(SettingsPanel.this.fixMetadataFolder.getText()))) {
 					isEverythingValid = false;
 					JOptionPane.showMessageDialog(SettingsPanel.this, "Invalid path for saving fixed files.", "Invalid data", JOptionPane.INFORMATION_MESSAGE);
 				}

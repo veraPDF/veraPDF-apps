@@ -56,7 +56,6 @@ public final class VeraPdfCli {
             jCommander.usage();
             System.exit(0);
         }
-
         messagesFromParser(cliArgParser);
         if (isProcess(cliArgParser)) {
             try {
