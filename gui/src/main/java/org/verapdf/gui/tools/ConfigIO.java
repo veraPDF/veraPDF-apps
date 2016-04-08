@@ -28,8 +28,7 @@ public class ConfigIO {
 		}
 	}
 
-	public ConfigIO() {
-		
+	private ConfigIO() {
 	}
 
 	private static final Logger LOGGER = Logger.getLogger(ConfigIO.class);
