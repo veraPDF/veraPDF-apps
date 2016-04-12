@@ -10,7 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.junit.Test;
-import org.verapdf.cli.commands.FormatOption;
+import org.verapdf.processor.config.FormatOption;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.ProfileException;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -46,13 +46,13 @@ public class VeraPdfCliProcessorTest {
         jCommander.parse(new String[] {});
         VeraPdfCliProcessor proc = VeraPdfCliProcessor
                 .createProcessorFromArgs(parser);
-        assertTrue(proc.config.getReportFormat() == FormatOption.MRR);
+        assertTrue(proc.getConfig().getReportType() == FormatOption.MRR);
         for (FormatOption format : FormatOption.values()) {
             parser = new VeraCliArgParser();
             jCommander = initialiseJCommander(parser);
             jCommander.parse(new String[] { "--format", format.getOption() });
             proc = VeraPdfCliProcessor.createProcessorFromArgs(parser);
-            assertTrue(proc.config.getReportFormat() == format);
+            assertTrue(proc.getConfig().getReportType() == format);
         }
     }
 
@@ -74,12 +74,12 @@ public class VeraPdfCliProcessorTest {
         jCommander.parse(new String[] {});
         VeraPdfCliProcessor proc = VeraPdfCliProcessor
                 .createProcessorFromArgs(parser);
-        assertFalse(proc.logPassed);
+        assertFalse(proc.getConfig().isShowPassedRules());
 
         for (String argVal : argVals) {
             jCommander.parse(new String[] { argVal });
             proc = VeraPdfCliProcessor.createProcessorFromArgs(parser);
-            assertTrue(proc.logPassed);
+            assertTrue(proc.getConfig().isShowPassedRules());
             parser = new VeraCliArgParser();
             jCommander = initialiseJCommander(parser);
         }

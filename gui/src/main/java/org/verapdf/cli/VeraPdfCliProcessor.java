@@ -3,13 +3,15 @@
  */
 package org.verapdf.cli;
 
+import org.apache.log4j.Logger;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.verapdf.cli.commands.FormatOption;
+import org.verapdf.processor.config.ConfigIO;
+import org.verapdf.processor.config.FormatOption;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.ValidationException;
 import org.verapdf.features.pb.PBFeatureParser;
 import org.verapdf.features.tools.FeaturesCollection;
-import org.verapdf.config.Config;
+import org.verapdf.processor.config.Config;
 import org.verapdf.metadata.fixer.impl.MetadataFixerImpl;
 import org.verapdf.metadata.fixer.impl.pb.FixerConfigImpl;
 import org.verapdf.metadata.fixer.utils.FileGenerator;
@@ -43,11 +45,14 @@ import java.util.Set;
  *
  */
 final class VeraPdfCliProcessor {
+
+	private static final Logger LOGGER = Logger.getLogger(VeraPdfCliProcessor.class);
+
     final boolean recurse;
     final boolean verbose;
-	final ValidationProfile profile;
+	final ValidationProfile profile;    // TODO: when API is ready, this should not be here
 
-    final Config config;
+    private Config config;
 
 	final PDFAValidator validator;
 
@@ -57,18 +62,42 @@ final class VeraPdfCliProcessor {
         this(new VeraCliArgParser());
     }
 
+	public Config getConfig() {
+		return this.config;
+	}
+
     private VeraPdfCliProcessor(final VeraCliArgParser args)
             throws IOException {
-        this.recurse = args.isRecurse();
-        this.verbose = args.isVerbose();
-        this.profile = profileFromArgs(args);
+		this.recurse = args.isRecurse();
+		this.verbose = args.isVerbose();
+		this.profile = profileFromArgs(args);
 
-		//if(!args.isLoadingConfig())
-        	config = new Config(args.logPassed(), args.maxFailures(),
-                args.maxFailuresDisplayed(), args.prefix(),
-                FileSystems.getDefault().getPath(args.saveFolder()),
-                args.getProfilesWikiPath(), args.fixMetadata(),
-                args.getProcessingType(), args.getFormat());
+
+		if (args.isLoadingConfig()) {
+			try {
+				config = ConfigIO.readConfig();
+			} catch (IOException e) {
+				LOGGER.error("Can not read config file", e);
+				this.config = new Config();
+			} catch (JAXBException e) {
+				LOGGER.error("Cannot parse config XML", e);
+				this.config = new Config();
+			}
+		} else {
+			config = new Config();
+			config.setShowPassedRules(args.logPassed());
+			config.setMaxNumberOfFailedChecks(args.maxFailures());
+			config.setMaxNumberOfDisplayedFailedChecks(args.maxFailuresDisplayed());
+			config.setMetadataFixerPrefix(args.prefix());
+			config.setFixMetadataPathFolder(FileSystems.getDefault().getPath(args.saveFolder()));
+			config.setProfileWikiPath(args.getProfilesWikiPath());
+			config.setFixMetadata(args.fixMetadata());
+			config.setProcessingType(args.getProcessingType());
+			config.setReportType(args.getFormat());
+            config.setValidationProfilePath(
+					args.getProfileFile() == null ? null : args.getProfileFile().toPath());
+            config.setFlavour(args.getFlavour());
+		}
 
         this.validator = (this.profile == Profiles.defaultProfile()) ? null
                 : Validators.createValidator(this.profile, logPassed(args),
@@ -164,7 +193,7 @@ final class VeraPdfCliProcessor {
                     + item.getName());
             e.printStackTrace();
         }
-        if (this.config.getReportFormat() == FormatOption.XML) {
+        if (this.config.getReportType() == FormatOption.XML) {
             CliReport report = CliReport.fromValues(item, validationResult,
                     FeaturesReport.fromValues(featuresCollection));
             try {
@@ -173,13 +202,13 @@ final class VeraPdfCliProcessor {
                 // TODO Auto-generated catch block
                 excep.printStackTrace();
             }
-        } else if ((this.config.getReportFormat() == FormatOption.TEXT) && (validationResult != null)) {
+        } else if ((this.config.getReportType() == FormatOption.TEXT) && (validationResult != null)) {
             System.out.println((validationResult.isCompliant() ? "PASS " : "FAIL ") + item.getName());
-            if (this.verbose) {
+                if (this.verbose) {
                 Set<RuleId> ruleIds = new HashSet<>();
                 for (TestAssertion assertion : validationResult.getTestAssertions()) {
                     if (assertion.getStatus() == Status.FAILED) {
-                        ruleIds.add(assertion.getRuleId());
+           	             ruleIds.add(assertion.getRuleId());
                     }
                 }
                 for (RuleId id : ruleIds) {
@@ -194,7 +223,7 @@ final class VeraPdfCliProcessor {
                     this.config.isShowPassedRules(),
 					this.config.getMaxNumberOfDisplayedFailedChecks(),
 					fixerResult, featuresCollection, System.currentTimeMillis() - start);
-            outputMrr(report, this.config.getReportFormat() == FormatOption.HTML);
+            outputMrr(report, this.config.getReportType() == FormatOption.HTML);
         }
     }
 

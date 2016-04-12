@@ -4,7 +4,8 @@ import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
-import org.verapdf.gui.tools.ProcessingType;
+import org.verapdf.processor.config.FormatOption;
+import org.verapdf.processor.config.ProcessingType;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import java.io.File;
@@ -43,8 +44,10 @@ public class VeraCliArgParser {
     final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder";
     final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
     final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
-    final static String REPORT_TYPE = OPTION_SEP + "type";
-    final static String REPORT_TYPE_FLAG = FLAG_SEP + "t";
+    final static String REPORT_TYPE_FLAG = FLAG_SEP + "pt";
+    final static String REPORT_TYPE = OPTION_SEP + "processingType";
+    final static String LOAD_CONFIG_FLAG = FLAG_SEP + "c";
+	final static String LOAD_CONFIG = OPTION_SEP + "config";
 
     @Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
     private boolean help = false;
@@ -91,8 +94,11 @@ public class VeraCliArgParser {
     @Parameter(names = { PROFILES_WIKI_FLAG, PROFILES_WIKI }, description = "The path to the folder containing Validation Profiles wiki.")
     private String profilesWikiPath = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
 
-    @Parameter(names = { REPORT_TYPE_FLAG, REPORT_TYPE}, description = "Operation to be performed", converter = ProcessingTypeConverter.class)
+    @Parameter(names = { REPORT_TYPE_FLAG, REPORT_TYPE}, description = "Operation to be performed.", converter = ProcessingTypeConverter.class)
     private ProcessingType processingType = ProcessingType.VALIDATING_AND_FEATURES;
+
+	@Parameter(names = {LOAD_CONFIG_FLAG, LOAD_CONFIG}, description = "Loads config form default file, all config flags are ignored.")
+	private boolean isLoadingConfig = false;
 
     @Parameter(description = "FILES")
     private List<String> pdfPaths = new ArrayList<>();
@@ -215,6 +221,13 @@ public class VeraCliArgParser {
     public ProcessingType getProcessingType() {
         return this.processingType;
     }
+
+	/**
+	 * @return true if config is loaded from default file
+	 */
+	public boolean isLoadingConfig() {
+		return isLoadingConfig;
+	}
 
 	/**
      * JCommander parameter converter for {@link FormatOption}, see

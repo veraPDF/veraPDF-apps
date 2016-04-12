@@ -1,9 +1,9 @@
 package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
-import org.verapdf.config.Config;
-import org.verapdf.gui.tools.ConfigIO;
 import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.processor.config.Config;
+import org.verapdf.processor.config.ConfigIO;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,16 +23,17 @@ import java.io.*;
 
 public class PDFValidationApplication extends JFrame {
 
-    class ExitWindowAdapter extends WindowAdapter {
+	class ExitWindowAdapter extends WindowAdapter {
 
-        @Override
-        public void windowClosing(WindowEvent e) {
-            PDFValidationApplication app = (PDFValidationApplication) e.getSource();
-			app.config.setFixMetadata(app.checkerPanel.isFixMetadata());
-			app.config.setProcessingType(app.checkerPanel.getProcessingType());
-            app.configIO.writeConfig(app.config);
+		@Override
+		public void windowClosing(WindowEvent e) {
+			PDFValidationApplication.this.config.setFixMetadata(
+					PDFValidationApplication.this.checkerPanel.isFixMetadata());
+			PDFValidationApplication.this.config.setProcessingType(
+					PDFValidationApplication.this.checkerPanel.getProcessingType());
+			ConfigIO.writeConfig(PDFValidationApplication.this.config);
 		}
-    }
+	}
 
 	private static final long serialVersionUID = -5569669411392145783L;
 
@@ -42,23 +43,17 @@ public class PDFValidationApplication extends JFrame {
 	private transient Config config;
 	private SettingsPanel settingsPanel;
 	private CheckerPanel checkerPanel;
-	private ConfigIO configIO;
-
-	Config getConfig () {
-		return this.config;
-	}
 
 	private PDFValidationApplication() {
-        addWindowListener(new ExitWindowAdapter());
+		addWindowListener(new ExitWindowAdapter());
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(GUIConstants.FRAME_COORD_X, GUIConstants.FRAME_COORD_Y, GUIConstants.FRAME_WIDTH, GUIConstants.FRAME_HEIGHT);
 		setResizable(false);
 
 		setTitle(GUIConstants.TITLE);
 
-		configIO = new ConfigIO();
 		try {
-			config = configIO.readConfig();
+			config = ConfigIO.readConfig();
 		}
 		catch (IOException e) {
 			LOGGER.error("Can not read config file", e);
@@ -92,21 +87,17 @@ public class PDFValidationApplication extends JFrame {
 		sett.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (settingsPanel != null && settingsPanel.showDialog(PDFValidationApplication.this, "Settings", config)) {
-					Config config = new Config();
-					config.setShowPassedRules(settingsPanel.isDispPassedRules());
-					config.setMaxNumberOfFailedChecks(settingsPanel.getFailedChecksNumber());
-					config.setMaxNumberOfDisplayedFailedChecks(settingsPanel.getFailedChecksDisplayNumber());
-					config.setFixMetadataPathFolder(settingsPanel.getFixMetadataDirectory());
-					config.setMetadataFixerPrefix(settingsPanel.getFixMetadataPrefix());
-					config.setProfileWikiPath(settingsPanel.getProfilesWikiPath());
-					config.setFixMetadata(PDFValidationApplication.this.config.isFixMetadata());
-					config.setProcessingType(PDFValidationApplication.this.config.getProcessingType());
+				if (settingsPanel != null && settingsPanel.showDialog(PDFValidationApplication.this, "Settings", PDFValidationApplication.this.config)) {
+					PDFValidationApplication.this.config.setShowPassedRules(settingsPanel.isDispPassedRules());
+					PDFValidationApplication.this.config.setMaxNumberOfFailedChecks(settingsPanel.getFailedChecksNumber());
+					PDFValidationApplication.this.config.setMaxNumberOfDisplayedFailedChecks(settingsPanel.getFailedChecksDisplayNumber());
+					PDFValidationApplication.this.config.setFixMetadataPathFolder(settingsPanel.getFixMetadataDirectory());
+					PDFValidationApplication.this.config.setMetadataFixerPrefix(settingsPanel.getFixMetadataPrefix());
+					PDFValidationApplication.this.config.setProfileWikiPath(settingsPanel.getProfilesWikiPath());
+					PDFValidationApplication.this.config.setFixMetadata(PDFValidationApplication.this.config.isFixMetadata());
+					PDFValidationApplication.this.config.setProcessingType(PDFValidationApplication.this.config.getProcessingType());
 
-                    if(!PDFValidationApplication.this.config.equals(config)) {
-                        PDFValidationApplication.this.config = config;
-						configIO.writeConfig(PDFValidationApplication.this.config);
-                    }
+					ConfigIO.writeConfig(PDFValidationApplication.this.config);
 				}
 			}
 		});
@@ -142,7 +133,7 @@ public class PDFValidationApplication extends JFrame {
 
 		checkerPanel = null;
 		try {
-			checkerPanel = new CheckerPanel(config, configIO, this);
+			checkerPanel = new CheckerPanel(config);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in loading xml or html image.", GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 			LOGGER.error("Exception in loading xml or html image", e);
