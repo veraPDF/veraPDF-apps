@@ -25,40 +25,6 @@ import java.nio.file.Paths;
  * @author Maksim Bezrukov
  */
 
-class PathAdapter extends XmlAdapter<String, Path> {
-
-	@Override
-	public Path unmarshal(String v) throws Exception {
-		Path path = Paths.get(new URI(v));
-		return path.toAbsolutePath();
-	}
-
-	@Override
-	public String marshal(Path v) throws Exception {
-		return v.toAbsolutePath().toUri().toString();
-	}
-}
-
-class ProcessingTypeAdapter extends XmlAdapter<String, ProcessingType> {
-
-	private final Logger LOGGER = Logger.getLogger(ProcessingTypeAdapter.class);
-	@Override
-	public ProcessingType unmarshal(String v) throws Exception {
-		try {
-			return ProcessingType.fromString(v);
-		}
-		catch(IllegalArgumentException e) {
-			LOGGER.error("Can't construct ProcessingType from string \"" + v + "\", setting ProcessingType to default", e);
-		}
-		return Config.DEFAULT_PROCESSING_TYPE;
-	}
-
-	@Override
-	public String marshal(ProcessingType v) throws Exception {
-		return v.toString();
-	}
-}
-
 @XmlRootElement(name = "config")
 public final class Config {
 
@@ -165,7 +131,7 @@ public final class Config {
 	 * @return path to the folder in which fixed file will be placed
 	 */
     @XmlElement
-    @XmlJavaTypeAdapter(PathAdapter.class)
+    @XmlJavaTypeAdapter(Config.PathAdapter.class)
 	private Path getFixMetadataPathFolder() {
 		return fixMetadataPathFolder.toString().equals("") ? null : fixMetadataPathFolder;
 	}
@@ -178,7 +144,7 @@ public final class Config {
 	 * @return type of operation to be performed, e. g. validation & feature describing
 	 */
     @XmlElement
-    @XmlJavaTypeAdapter(ProcessingTypeAdapter.class)
+    @XmlJavaTypeAdapter(Config.ProcessingTypeAdapter.class)
 	public ProcessingType getProcessingType() { return processingType; }
 
 	/**
@@ -363,4 +329,38 @@ public final class Config {
         }
         return true;
     }
+
+	private static class PathAdapter extends XmlAdapter<String, Path> {
+
+		@Override
+		public Path unmarshal(String v) throws Exception {
+			Path path = Paths.get(new URI(v));
+			return path.toAbsolutePath();
+		}
+
+		@Override
+		public String marshal(Path v) throws Exception {
+			return v.toAbsolutePath().toUri().toString();
+		}
+	}
+
+	private static class ProcessingTypeAdapter extends XmlAdapter<String, ProcessingType> {
+
+		private final Logger LOGGER = Logger.getLogger(ProcessingTypeAdapter.class);
+		@Override
+		public ProcessingType unmarshal(String v) throws Exception {
+			try {
+				return ProcessingType.fromString(v);
+			}
+			catch(IllegalArgumentException e) {
+				LOGGER.error("Can't construct ProcessingType from string \"" + v + "\", setting ProcessingType to default", e);
+			}
+			return Config.DEFAULT_PROCESSING_TYPE;
+		}
+
+		@Override
+		public String marshal(ProcessingType v) throws Exception {
+			return v.toString();
+		}
+	}
 }
