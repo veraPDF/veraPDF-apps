@@ -47,10 +47,10 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
     private File htmlReport = null;
     private ProcessingType processingType;
     private boolean isFixMetadata;
-
+    
     private long startTimeOfValidation;
     private long endTimeOfValidation;
-
+    
     ValidateWorker(CheckerPanel parent, File pdf, ValidationProfile profile,
             Config settings, ProcessingType processingType,
             boolean isFixMetadata) {
@@ -118,7 +118,7 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
             ModelParser parser) throws IOException {
         FixerConfig fixerConfig = FixerConfigImpl.getFixerConfig(
                 parser.getPDDocument(), info);
-        Path path = this.settings.getFixMetadataPathFolder();
+        Path path = this.settings.getFixMetadataFolder();
         File tempFile = File.createTempFile("fixedTempFile", ".pdf");
         tempFile.deleteOnExit();
         try (OutputStream tempOutput = new BufferedOutputStream(
@@ -133,7 +133,7 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
                 while (flag) {
                     if (!path.toString().trim().isEmpty()) {
                         resFile = FileGenerator.createOutputFile(this.settings
-                                .getFixMetadataPathFolder().toFile(), this.pdf
+                                .getFixMetadataFolder().toFile(), this.pdf
                                 .getName(), this.settings
                                 .getMetadataFixerPrefix());
                     } else {
