@@ -178,7 +178,7 @@ class SettingsPanel extends JPanel {
 		}
 
 		this.fixMetadataPrefix.setText(settings.getMetadataFixerPrefix());
-		this.fixMetadataFolder.setText(settings.getFixMetadataPathFolder().toString());
+		this.fixMetadataFolder.setText(settings.getFixMetadataFolder().toString());
 
 		this.profilesWikiPath.setText(settings.getProfileWikiPath());
 

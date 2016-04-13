@@ -166,7 +166,11 @@ public final class Config {
 	 */
     @XmlElement
     @XmlJavaTypeAdapter(PathAdapter.class)
-	public Path getFixMetadataPathFolder() {
+	private Path getFixMetadataPathFolder() {
+		return fixMetadataPathFolder.toString().equals("") ? null : fixMetadataPathFolder;
+	}
+
+	public Path getFixMetadataFolder() {
 		return fixMetadataPathFolder;
 	}
 
