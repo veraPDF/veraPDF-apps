@@ -25,6 +25,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 
@@ -195,8 +196,12 @@ class CheckerPanel extends JPanel {
 		}
 
 		Vector<PDFAFlavour> possibleFlavours = new Vector<>();
-		for (PDFAFlavour flavour : Profiles.getVeraProfileDirectory().getPDFAFlavours()) {
-			possibleFlavours.add(flavour);
+		possibleFlavours.add(PDFAFlavour.NO_FLAVOUR);
+		for (PDFAFlavour flavour : PDFAFlavour.values()) {
+			Set<PDFAFlavour> currentFlavours = Profiles.getVeraProfileDirectory().getPDFAFlavours();
+			if (currentFlavours.contains(flavour)) {
+				possibleFlavours.add(flavour);
+			}
 		}
 		chooseFlavour = new JComboBox<>(possibleFlavours);
 		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
