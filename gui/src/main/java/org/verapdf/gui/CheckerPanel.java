@@ -195,15 +195,15 @@ class CheckerPanel extends JPanel {
 			this.fixMetadata.setEnabled(false);
 		}
 
-		Vector<PDFAFlavour> possibleFlavours = new Vector<>();
-		possibleFlavours.add(PDFAFlavour.NO_FLAVOUR);
+		Vector<PDFAFlavour> availableFlavours = new Vector<>();
+		availableFlavours.add(PDFAFlavour.NO_FLAVOUR);
 		for (PDFAFlavour flavour : PDFAFlavour.values()) {
 			Set<PDFAFlavour> currentFlavours = Profiles.getVeraProfileDirectory().getPDFAFlavours();
 			if (currentFlavours.contains(flavour)) {
-				possibleFlavours.add(flavour);
+				availableFlavours.add(flavour);
 			}
 		}
-		chooseFlavour = new JComboBox<>(possibleFlavours);
+		chooseFlavour = new JComboBox<>(availableFlavours);
 		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
 		chooseFlavour.setRenderer(renderer);
 		chooseFlavour.setSelectedItem(PDFAFlavour.PDFA_1_B);
