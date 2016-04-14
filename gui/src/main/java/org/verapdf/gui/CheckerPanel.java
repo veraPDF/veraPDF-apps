@@ -497,7 +497,6 @@ class CheckerPanel extends JPanel {
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
 		this.validate.setEnabled(true);
-		JOptionPane.showMessageDialog(CheckerPanel.this,result.getExceptionsInProcessing().get(0).getMessage());
 
 		if (!this.isValidationErrorOccurred) {
 			this.result = result.getValidationResult();
