@@ -94,6 +94,7 @@ public class VeraPdfCliProcessorTest {
      * @throws FileNotFoundException
      * @throws ProfileException
      */
+    /*
     @Test
     public final void testCreateProcessorFromArgsFlavour()
             throws ProfileException, FileNotFoundException, IOException {
@@ -117,7 +118,7 @@ public class VeraPdfCliProcessorTest {
                 jCommander = initialiseJCommander(parser);
             }
         }
-    }
+    }*/
 
     /**
      * Test method for
@@ -128,6 +129,7 @@ public class VeraPdfCliProcessorTest {
      * @throws FileNotFoundException
      * @throws ProfileException
      */
+    /*
     @Test
     public final void testCreateProcessorFromArgsNoFlavour()
             throws ProfileException, FileNotFoundException, IOException {
@@ -146,7 +148,7 @@ public class VeraPdfCliProcessorTest {
             parser = new VeraCliArgParser();
             jCommander = initialiseJCommander(parser);
         }
-    }
+    }*/
 
     static final JCommander initialiseJCommander(final VeraCliArgParser parser) {
         JCommander jCommander = new JCommander(parser);

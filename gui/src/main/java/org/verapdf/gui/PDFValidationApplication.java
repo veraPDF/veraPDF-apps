@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
+import java.nio.file.FileSystems;
 
 /**
  * Main frame of the PDFA Conformance Checker
@@ -54,12 +55,10 @@ public class PDFValidationApplication extends JFrame {
 
 		try {
 			config = ConfigIO.readConfig();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			LOGGER.error("Can not read config file", e);
 			this.config =  new Config();
-		}
-		catch (JAXBException e) {
+		} catch (JAXBException e) {
 			LOGGER.error("Cannot parse config XML", e);
 			this.config =  new Config();
 		}
