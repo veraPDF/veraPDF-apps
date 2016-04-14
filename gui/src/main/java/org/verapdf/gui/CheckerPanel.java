@@ -396,7 +396,6 @@ class CheckerPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					changeConfig();
-					ProcessingType type = (ProcessingType) CheckerPanel.this.processingType.getSelectedItem();
 					ValidationProfile prof;
 					if (chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR) {
 						prof = Profiles.profileFromXml(new FileInputStream(profile));
@@ -529,7 +528,6 @@ class CheckerPanel extends JPanel {
 				errorInValidatingOccur(e.getMessage(), e);
 			}
 		}
-
 	}
 
 	void errorInValidatingOccur(String message, Throwable e) {
