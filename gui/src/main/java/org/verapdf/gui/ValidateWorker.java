@@ -1,38 +1,19 @@
 package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
-import org.verapdf.core.ValidationException;
-import org.verapdf.features.pb.PBFeatureParser;
-import org.verapdf.features.tools.FeaturesCollection;
 import org.verapdf.processor.ProcessingResult;
 import org.verapdf.processor.Processor;
 import org.verapdf.processor.ProcessorImpl;
 import org.verapdf.processor.config.Config;
 import org.verapdf.gui.tools.GUIConstants;
-import org.verapdf.processor.config.ProcessingType;
-import org.verapdf.metadata.fixer.impl.MetadataFixerImpl;
-import org.verapdf.metadata.fixer.impl.pb.FixerConfigImpl;
-import org.verapdf.metadata.fixer.utils.FileGenerator;
-import org.verapdf.metadata.fixer.utils.FixerConfig;
-import org.verapdf.model.ModelParser;
-import org.verapdf.pdfa.PDFAValidator;
-import org.verapdf.pdfa.results.MetadataFixerResult;
-import org.verapdf.pdfa.results.MetadataFixerResult.RepairStatus;
-import org.verapdf.pdfa.results.ValidationResult;
 import org.verapdf.pdfa.validation.ValidationProfile;
-import org.verapdf.pdfa.validators.Validators;
 import org.verapdf.report.HTMLReport;
 import org.verapdf.report.ItemDetails;
-import org.verapdf.report.MachineReadableReport;
 
 import javax.swing.*;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * Validates PDF in a new threat.
@@ -68,12 +49,11 @@ class ValidateWorker extends SwingWorker<Void, Integer> {
     @Override
     protected Void doInBackground() {
 		try {
-			this.xmlReport = File.createTempFile("veraPDF-tempXMLReport",
-					".xml");
+			this.xmlReport = File.createTempFile("veraPDF-tempXMLReport", ".xml");
 			this.xmlReport.deleteOnExit();
 			this.htmlReport = null;
 		} catch (IOException e) {
-			//TODO: handle
+			LOGGER.error("Can't create temporary file for XML report", e);
 		}
 		try (InputStream toProcess = new FileInputStream(pdf);
 		OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
@@ -81,7 +61,7 @@ class ValidateWorker extends SwingWorker<Void, Integer> {
 			processingResult = processor.validate(toProcess, ItemDetails.fromFile(pdf),
 					settings, mrrReport);
 		} catch (IOException e) {
-			//TODO: handle
+			LOGGER.error("Can't open stream from PDF file or can't open stream to temporary XML report file", e);
 		}
 
         writeHtmlReport();
