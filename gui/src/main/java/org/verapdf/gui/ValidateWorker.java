@@ -20,7 +20,7 @@ import java.io.*;
  *
  * @author Maksim Bezrukov
  */
-class ValidateWorker extends SwingWorker<Void, Integer> {
+class ValidateWorker extends SwingWorker<ProcessingResult, Integer> {
 
     private static final Logger LOGGER = Logger.getLogger(ValidateWorker.class);
 
@@ -47,7 +47,7 @@ class ValidateWorker extends SwingWorker<Void, Integer> {
     }
 
     @Override
-    protected Void doInBackground() {
+    protected ProcessingResult doInBackground() {
 		try {
 			this.xmlReport = File.createTempFile("veraPDF-tempXMLReport", ".xml");
 			this.xmlReport.deleteOnExit();
@@ -60,19 +60,17 @@ class ValidateWorker extends SwingWorker<Void, Integer> {
 			Processor processor = new ProcessorImpl();
 			processingResult = processor.validate(toProcess, ItemDetails.fromFile(pdf),
 					settings, mrrReport);
+			writeHtmlReport();
 		} catch (IOException e) {
 			LOGGER.error("Can't open stream from PDF file or can't open stream to temporary XML report file", e);
 		}
 
-        writeHtmlReport();
-
-		return null;
+		return processingResult;
     }
 
     @Override
     protected void done() {
-        this.parent.validationEnded(this.xmlReport, this.htmlReport,
-				this.processingResult);
+        this.parent.validationEnded(this.xmlReport, this.htmlReport);
     }
 
     private void writeHtmlReport() {

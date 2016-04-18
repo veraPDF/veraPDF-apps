@@ -34,10 +34,6 @@ final class VeraPdfCliProcessor {
         this(new VeraCliArgParser());
     }
 
-	public Config getConfig() {
-		return this.config;
-	}
-
     private VeraPdfCliProcessor(final VeraCliArgParser args)
             throws IOException {
 		this.recurse = args.isRecurse();
@@ -70,6 +66,10 @@ final class VeraPdfCliProcessor {
             config.setVerboseCli(args.isVerbose());
 		}
     }
+
+	public Config getConfig() {
+		return config;
+	}
 
 	static ProcessingType processingTypeFromArgs(final VeraCliArgParser args) {
 		if(args.getFlavour() != PDFAFlavour.NO_FLAVOUR &&

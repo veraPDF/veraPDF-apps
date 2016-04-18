@@ -185,9 +185,9 @@ class CheckerPanel extends JPanel {
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.chosenProfile, gbc);
 		this.add(this.chosenProfile);
-		if(!this.config.getValidationProfilePath().toString().equals("")) {
+		if(!this.config.getValidationProfile().toString().equals("")) {
 			this.chosenProfile.setText(
-					this.config.getValidationProfilePath().toAbsolutePath().toString());
+					this.config.getValidationProfile().toAbsolutePath().toString());
 		} else {
 			this.chosenProfile.setText(GUIConstants.CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT);
 		}
@@ -351,7 +351,7 @@ class CheckerPanel extends JPanel {
 					ValidationProfile prof;
 					if (chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR) {
 						prof = Profiles.profileFromXml(new FileInputStream(
-								CheckerPanel.this.config.getValidationProfilePath().toFile()));
+								CheckerPanel.this.config.getValidationProfile().toFile()));
 					} else {
 						try {
 							prof = Profiles.getVeraProfileDirectory().
@@ -443,44 +443,51 @@ class CheckerPanel extends JPanel {
 
 	}
 
-	void validationEnded(File xmlReport, File htmlReport, ProcessingResult result) {
+	void validationEnded(File xmlReport, File htmlReport) {
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
 		this.validate.setEnabled(true);
 
 		if (!this.isValidationErrorOccurred) {
-			if (result.getValidationSummary()
-					== ProcessingResult.ValidationSummary.ERROR_IN_VALIDATION ||
-					result.getValidationSummary()
-							== ProcessingResult.ValidationSummary.NO_VALIDATION) {
-				this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
-				this.resultLabel.setText(GUIConstants.FEATURES_GENERATED_CORRECT);
-			} else if (result.getValidationSummary()
-					== ProcessingResult.ValidationSummary.VALIDATION_SUCCEED) {
-				this.resultLabel.setForeground(GUIConstants.VALIDATION_SUCCESS_COLOR);
-				this.resultLabel.setText(GUIConstants.VALIDATION_OK);
-			} else {
-				this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
-				this.resultLabel.setText(GUIConstants.VALIDATION_FALSE);
-			}
+			try {
+				ProcessingResult result = this.validateWorker.get();
+				if (result.getValidationSummary()
+						== ProcessingResult.ValidationSummary.ERROR_IN_VALIDATION ||
+						result.getValidationSummary()
+								== ProcessingResult.ValidationSummary.VALIDATION_DISABLED) {
+					this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
+					this.resultLabel.setText(GUIConstants.FEATURES_GENERATED_CORRECT);
+				} else if (result.getValidationSummary()
+						== ProcessingResult.ValidationSummary.FILE_VALID) {
+					this.resultLabel.setForeground(GUIConstants.VALIDATION_SUCCESS_COLOR);
+					this.resultLabel.setText(GUIConstants.VALIDATION_OK);
+				} else {
+					this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
+					this.resultLabel.setText(GUIConstants.VALIDATION_FALSE);
+				}
 
-			this.resultLabel.setVisible(true);
+				this.resultLabel.setVisible(true);
 
-			this.xmlReport = xmlReport;
-			this.htmlReport = htmlReport;
+				this.xmlReport = xmlReport;
+				this.htmlReport = htmlReport;
 
-			if (xmlReport != null) {
-				this.saveXML.setEnabled(true);
-				this.viewXML.setEnabled(true);
-			}
+				if (xmlReport != null) {
+					this.saveXML.setEnabled(true);
+					this.viewXML.setEnabled(true);
+				}
 
-			if (htmlReport != null) {
-				this.saveHTML.setEnabled(true);
-				this.viewHTML.setEnabled(true);
-			}
-			for(String message : result.getErrorMessages()) {
-				errorInValidatingOccur(message);
+				if (htmlReport != null) {
+					this.saveHTML.setEnabled(true);
+					this.viewHTML.setEnabled(true);
+				}
+				for (String message : result.getErrorMessages()) {
+					errorInValidatingOccur(message);
+				}
+			} catch (InterruptedException e) {
+				errorInValidatingOccur("Process has been interrupted.");
+			} catch (ExecutionException e) {
+				errorInValidatingOccur("Execution exception in processing.");
 			}
 		}
 	}
@@ -554,7 +561,7 @@ class CheckerPanel extends JPanel {
 						this.config.setValidationProfilePath(
 								chooser.getSelectedFile().toPath().toAbsolutePath());
 						this.chosenProfile.setText(
-								this.config.getValidationProfilePath().toString());
+								this.config.getValidationProfile().toString());
 						break;
 					default:
 						// This method used only for previous two cases.
@@ -625,7 +632,7 @@ class CheckerPanel extends JPanel {
 
 	private void setValidationButtonEnability() {
 		if (this.pdfFile != null &&
-				(!this.config.getValidationProfilePath().toString().equals("") ||
+				(!this.config.getValidationProfile().toString().equals("") ||
 						this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR)) {
 			validate.setEnabled(true);
 		}
