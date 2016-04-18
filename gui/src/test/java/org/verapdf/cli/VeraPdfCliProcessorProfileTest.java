@@ -43,6 +43,7 @@ public class VeraPdfCliProcessorProfileTest {
      * @throws ProfileException
      * @throws JAXBException
      */
+    /*
     @Test
     public final void testCreateProcessorFromArgsNewProfile()
             throws ProfileException, FileNotFoundException, IOException,
@@ -63,8 +64,8 @@ public class VeraPdfCliProcessorProfileTest {
                 testWithProfileFile(profile.getPDFAFlavour(), tmpProfile);
             }
         }
-    }
-
+    }*/
+    /*
     private static void testWithProfileFile(final PDFAFlavour flavour,
             final File profileFile) throws FileNotFoundException, IOException, JAXBException {
         String[] argVals = new String[] { "-p", "--profile" };
@@ -90,5 +91,5 @@ public class VeraPdfCliProcessorProfileTest {
                         proc.validator.getProfile().getRules());
             }
         }
-    }
+    }*/
 }

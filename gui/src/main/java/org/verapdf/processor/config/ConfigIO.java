@@ -1,7 +1,6 @@
-package org.verapdf.gui.tools;
+package org.verapdf.processor.config;
 
 import org.apache.log4j.Logger;
-import org.verapdf.gui.config.Config;
 
 import javax.xml.bind.JAXBException;
 import java.io.*;
@@ -17,7 +16,7 @@ public class ConfigIO {
 
 	static {
 		configPath = FileSystems.getDefault().getPath("");
- 		String appHome = System.getProperty("app.home");
+		String appHome = System.getProperty("app.home");
 		if (appHome != null) {
 			File user = new File(appHome);
 			File f = new File(user, "config");
@@ -67,7 +66,7 @@ public class ConfigIO {
 	}
 
 	public static Config readConfig(Path configPath)
-		throws IOException, JAXBException, IllegalArgumentException {
+			throws IOException, JAXBException, IllegalArgumentException {
 		if(configPath == null) {
 			throw new IllegalArgumentException("Path should specify a file");
 		}
