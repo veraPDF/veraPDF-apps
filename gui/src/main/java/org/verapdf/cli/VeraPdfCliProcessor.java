@@ -4,11 +4,13 @@
 package org.verapdf.cli;
 
 import org.apache.log4j.Logger;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.processor.Processor;
 import org.verapdf.processor.ProcessorImpl;
 import org.verapdf.processor.config.ConfigIO;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.processor.config.Config;
+import org.verapdf.processor.config.ProcessingType;
 import org.verapdf.report.*;
 
 import javax.xml.bind.JAXBException;
@@ -60,7 +62,7 @@ final class VeraPdfCliProcessor {
 			config.setFixMetadataPathFolder(FileSystems.getDefault().getPath(args.saveFolder()));
 			config.setProfileWikiPath(args.getProfilesWikiPath());
 			config.setFixMetadata(args.fixMetadata());
-			config.setProcessingType(args.getProcessingType());
+			config.setProcessingType(processingTypeFromArgs(args));
 			config.setReportType(args.getFormat());
             config.setValidationProfilePath(
 					args.getProfileFile() == null ? null : args.getProfileFile().toPath());
@@ -68,6 +70,19 @@ final class VeraPdfCliProcessor {
             config.setVerboseCli(args.isVerbose());
 		}
     }
+
+	static ProcessingType processingTypeFromArgs(final VeraCliArgParser args) {
+		if(args.getFlavour() != PDFAFlavour.NO_FLAVOUR &&
+				args.extractFeatures()) {
+			return ProcessingType.VALIDATING_AND_FEATURES;
+		} else if(args.getFlavour() == PDFAFlavour.NO_FLAVOUR
+				&& args.extractFeatures()) {
+			return ProcessingType.FEATURES;
+		} else if(args.getFlavour() != PDFAFlavour.NO_FLAVOUR &&
+				!args.extractFeatures()) {
+			return ProcessingType.VALIDATING;
+		} else throw new IllegalArgumentException("Processing type is not chosen");
+	}
 
     void processPaths(final List<String> pdfPaths) {
         // If the path list is empty then

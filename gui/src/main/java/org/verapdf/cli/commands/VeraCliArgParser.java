@@ -32,6 +32,8 @@ public class VeraCliArgParser {
     final static String LIST = OPTION_SEP + "list";
     final static String LOAD_PROFILE_FLAG = FLAG_SEP + "p";
     final static String LOAD_PROFILE = OPTION_SEP + "profile";
+    final static String EXTRACT_FLAG = FLAG_SEP + "x";
+    final static String EXTRACT = OPTION_SEP + "extract";
     final static String FORMAT = OPTION_SEP + "format";
     final static String RECURSE_FLAG = FLAG_SEP + "r";
     final static String RECURSE = OPTION_SEP + "recurse";
@@ -44,8 +46,6 @@ public class VeraCliArgParser {
     final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder";
     final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
     final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
-    final static String REPORT_TYPE_FLAG = FLAG_SEP + "pt";
-    final static String REPORT_TYPE = OPTION_SEP + "processingType";
     final static String LOAD_CONFIG_FLAG = FLAG_SEP + "c";
 	final static String LOAD_CONFIG = OPTION_SEP + "config";
 
@@ -66,6 +66,9 @@ public class VeraCliArgParser {
 
     @Parameter(names = { LOAD_PROFILE_FLAG, LOAD_PROFILE }, description = "Load a Validation Profile from given path and exit if loading fails. This overrides any choice or default implied by the -f / --flavour option.", validateWith = ProfileFileValidator.class)
     private File profileFile;
+
+	@Parameter(names = { EXTRACT_FLAG, EXTRACT }, description = "Extract and report PDF features.")
+	private boolean features = false;
 
     @Parameter(names = { FORMAT }, description = "Choose output format:", converter = FormatConverter.class)
     private FormatOption format = FormatOption.MRR;
@@ -93,9 +96,6 @@ public class VeraCliArgParser {
 
     @Parameter(names = { PROFILES_WIKI_FLAG, PROFILES_WIKI }, description = "The path to the folder containing Validation Profiles wiki.")
     private String profilesWikiPath = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
-
-    @Parameter(names = { REPORT_TYPE_FLAG, REPORT_TYPE}, description = "Operation to be performed.", converter = ProcessingTypeConverter.class)
-    private ProcessingType processingType = ProcessingType.VALIDATING_AND_FEATURES;
 
 	@Parameter(names = {LOAD_CONFIG_FLAG, LOAD_CONFIG}, description = "Loads config form default file, all config flags are ignored.")
 	private boolean isLoadingConfig = false;
@@ -187,6 +187,13 @@ public class VeraCliArgParser {
         return this.passed;
     }
 
+	/**
+	 * @return true if PDF Feature extraction requested
+	 */
+	public boolean extractFeatures() {
+		return this.features;
+	}
+
     /**
      * @return the validation flavour string id
      */
@@ -213,13 +220,6 @@ public class VeraCliArgParser {
      */
     public String getProfilesWikiPath() {
         return this.profilesWikiPath;
-    }
-
-    /**
-     * @return type of operation to be performed
-     */
-    public ProcessingType getProcessingType() {
-        return this.processingType;
     }
 
 	/**
@@ -267,25 +267,6 @@ public class VeraCliArgParser {
                     return flavourLocal;
             }
             throw new ParameterException("Illegal --flavour argument:" + value);
-        }
-
-    }
-
-    /**
-     * JCommander parameter converter for {@link ProcessingType}, see
-     * {@link IStringConverter} and {@link ProcessingType#fromString(String)}.
-     *
-     * @author Shemyakov Sergey
-     *
-     */
-    public static final class ProcessingTypeConverter implements
-            IStringConverter<ProcessingType> {
-        /**
-         * { @inheritDoc }
-         */
-        @Override
-        public ProcessingType convert(final String value) {
-            return ProcessingType.fromString(value);
         }
 
     }
