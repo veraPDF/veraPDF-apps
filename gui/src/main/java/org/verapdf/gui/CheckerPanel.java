@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.NoSuchElementException;
@@ -621,8 +622,9 @@ class CheckerPanel extends JPanel {
 	}
 
 	private void changeConfig() {
-		if(this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR)
-			this.config.setValidationProfilePath(null);
+		if(this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR) {
+			this.config.setValidationProfilePath(FileSystems.getDefault().getPath(""));
+		}
 		this.config.setProcessingType(
 				(ProcessingType) processingType.getSelectedItem());
 		this.config.setFixMetadata(fixMetadata.isSelected());
@@ -689,8 +691,10 @@ class CheckerPanel extends JPanel {
 		}
 
 		@Override
-		public Component getListCellRendererComponent(JList<? extends ProcessingType> list, ProcessingType value,
-													  int index, boolean isSelected, boolean cellHasFocus) {
+		public Component getListCellRendererComponent(JList<? extends ProcessingType> list,
+													  ProcessingType value,
+													  int index, boolean isSelected,
+													  boolean cellHasFocus) {
 			this.setText(value.toText());
 			return this;
 		}

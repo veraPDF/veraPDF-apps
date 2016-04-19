@@ -122,7 +122,7 @@ public class VeraPdfCliProcessorTest {
      * @throws FileNotFoundException
      * @throws ProfileException
      */
-    /*
+
     @Test
     public final void testCreateProcessorFromArgsFlavour()
             throws ProfileException, FileNotFoundException, IOException {
@@ -132,9 +132,9 @@ public class VeraPdfCliProcessorTest {
         jCommander.parse(new String[] {});
         VeraPdfCliProcessor proc = VeraPdfCliProcessor
                 .createProcessorFromArgs(parser);
-        assertTrue(proc.validator.getProfile().getPDFAFlavour() == PDFAFlavour.PDFA_1_B);
+        assertTrue(proc.getConfig().getFlavour() == PDFAFlavour.PDFA_1_B);
         ProfileDirectory directory = Profiles.getVeraProfileDirectory();
-        assertTrue(directory.getValidationProfiles().size() > 0);
+        assertTrue(directory.getValidationProfiles().size() > 0); /*	TODO: this logic has been moved to Processor
         for (String argVal : argVals) {
             for (ValidationProfile profile : directory
                     .getValidationProfiles()) {
@@ -145,8 +145,8 @@ public class VeraPdfCliProcessorTest {
                 parser = new VeraCliArgParser();
                 jCommander = initialiseJCommander(parser);
             }
-        }
-    }*/
+        }*/
+    }
 
     /**
      * Test method for
@@ -157,7 +157,7 @@ public class VeraPdfCliProcessorTest {
      * @throws FileNotFoundException
      * @throws ProfileException
      */
-    /*
+    /*	TODO: this logic has been moved to Processor
     @Test
     public final void testCreateProcessorFromArgsNoFlavour()
             throws ProfileException, FileNotFoundException, IOException {
