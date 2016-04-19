@@ -103,11 +103,11 @@ public class VeraPdfCliProcessorTest {
         jCommander.parse(new String[] {});
         VeraPdfCliProcessor proc = VeraPdfCliProcessor
                 .createProcessorFromArgs(parser);
-        assertFalse(proc.extractFeatures);
+        assertFalse(proc.getConfig().getProcessingType().isFeatures());
         for (String argVal : argVals) {
             jCommander.parse(new String[] { argVal });
             proc = VeraPdfCliProcessor.createProcessorFromArgs(parser);
-            assertTrue(proc.extractFeatures);
+            assertTrue(proc.getConfig().getProcessingType().isFeatures());
             parser = new VeraCliArgParser();
             jCommander = initialiseJCommander(parser);
         }
