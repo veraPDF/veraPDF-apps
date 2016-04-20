@@ -36,7 +36,7 @@ public final class Config {
 	public static final String DEFAULT_METADATA_FIXER_PREFIX = MetadataFixerConstants.DEFAULT_PREFIX;
 	public static final Path DEFAULT_FIX_METADATA_PATH_FOLDER = FileSystems.getDefault().getPath("");
 	public static final String DEFAULT_PROFILES_WIKI_PATH = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
-	public static final boolean DEFAULT_IS_FIX_METADATA = true;
+	public static final boolean DEFAULT_IS_FIX_METADATA = false;
 	public static final ProcessingType DEFAULT_PROCESSING_TYPE = ProcessingType.VALIDATING_AND_FEATURES;
 
 	private boolean showPassedRules;
