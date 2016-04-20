@@ -1,14 +1,14 @@
 package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
+import org.verapdf.gui.config.Config;
+import org.verapdf.gui.tools.ConfigIO;
 import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.gui.tools.ProcessingType;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+import org.verapdf.pdfa.results.ValidationResult;
 import org.verapdf.pdfa.validation.Profiles;
 import org.verapdf.pdfa.validation.ValidationProfile;
-import org.verapdf.processor.ProcessingResult;
-import org.verapdf.processor.config.Config;
-import org.verapdf.processor.config.ConfigIO;
-import org.verapdf.processor.config.ProcessingType;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -20,8 +20,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.NoSuchElementException;
@@ -36,6 +36,51 @@ import java.util.concurrent.ExecutionException;
  */
 class CheckerPanel extends JPanel {
 
+	private class ChooseFlavourRenderer extends JLabel implements ListCellRenderer<PDFAFlavour> {
+
+		public ChooseFlavourRenderer() {
+			setOpaque(true);
+			setHorizontalAlignment(CENTER);
+			setVerticalAlignment(CENTER);
+		}
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends PDFAFlavour> list, PDFAFlavour value,
+													  int index, boolean isSelected, boolean cellHasFocus) {
+			if (value == PDFAFlavour.NO_FLAVOUR) {
+				this.setText(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
+				return this;
+			} else if (value.toString().matches("\\d\\w")) {
+				String valueString = value.toString();
+				String parsedFlavour = "PDF/A-";
+				parsedFlavour += valueString.charAt(0);
+				parsedFlavour += valueString.substring(1, 2).toUpperCase();
+				this.setText(parsedFlavour);
+				return this;
+			} else {
+				//TODO: check logic in case if constant in PDFAFlavour doesn't satisfy regex "\d\w"
+				this.setText("Error in parsing flavour");
+				return this;
+			}
+		}
+	}
+
+	private class ProcessingTypeRenderer extends JLabel implements ListCellRenderer<ProcessingType> {
+
+		public ProcessingTypeRenderer() {
+			setOpaque(true);
+			setHorizontalAlignment(CENTER);
+			setVerticalAlignment(CENTER);
+		}
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends ProcessingType> list, ProcessingType value,
+													  int index, boolean isSelected, boolean cellHasFocus) {
+			this.setText(value.toText());
+			return this;
+		}
+	}
+
 	/**
 	 * ID for serialisation
 	 */
@@ -47,9 +92,11 @@ class CheckerPanel extends JPanel {
 	private JFileChooser xmlChooser;
 	private JFileChooser htmlChooser;
 	private File pdfFile;
+	private File profile;
 	private JTextField chosenPDF;
 	private JTextField chosenProfile;
 	private JLabel resultLabel;
+	transient ValidationResult result;
 	private File xmlReport;
 	private File htmlReport;
 
@@ -151,11 +198,10 @@ class CheckerPanel extends JPanel {
 		Vector<PDFAFlavour> availableFlavours = new Vector<>();
 		availableFlavours.add(PDFAFlavour.NO_FLAVOUR);
 		for (PDFAFlavour flavour : PDFAFlavour.values()) {
-			Set<PDFAFlavour> currentFlavours
-					= Profiles.getVeraProfileDirectory().getPDFAFlavours();
+			Set<PDFAFlavour> currentFlavours = Profiles.getVeraProfileDirectory().getPDFAFlavours();
 			if (currentFlavours.contains(flavour)) {
-					availableFlavours.add(flavour);
-				}
+				availableFlavours.add(flavour);
+			}
 		}
 		chooseFlavour = new JComboBox<>(availableFlavours);
 		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
@@ -186,11 +232,15 @@ class CheckerPanel extends JPanel {
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.chosenProfile, gbc);
 		this.add(this.chosenProfile);
-		if(!this.config.getValidationProfile().toString().equals("")) {
-			this.chosenProfile.setText(
-					this.config.getValidationProfile().toAbsolutePath().toString());
-		} else {
-			this.chosenProfile.setText(GUIConstants.CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT);
+
+		String appHome = System.getProperty("app.home");
+		if (appHome != null) {
+			File user = new File(System.getProperty("app.home"));
+			File defaultProfile = new File(user, "profiles/veraPDF-validation-profiles-integration/PDF_A/PDFA-1B.xml");
+			if (defaultProfile.isFile() && defaultProfile.canRead()) {
+				this.profile = defaultProfile;
+				this.chosenProfile.setText(this.profile.getAbsolutePath());
+			}
 		}
 
 		final JButton chooseProfile = new JButton(
@@ -324,8 +374,6 @@ class CheckerPanel extends JPanel {
 		chooseFlavour.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				CheckerPanel.this.config.setFlavour(
-						(PDFAFlavour) chooseFlavour.getSelectedItem());
 				if (chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR) {
 					chooseProfile.setEnabled(true);
 					chosenProfile.setEnabled(true);
@@ -349,10 +397,10 @@ class CheckerPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					changeConfig();
+					ProcessingType type = (ProcessingType) CheckerPanel.this.processingType.getSelectedItem();
 					ValidationProfile prof;
 					if (chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR) {
-						prof = Profiles.profileFromXml(new FileInputStream(
-								CheckerPanel.this.config.getValidationProfile().toFile()));
+						prof = Profiles.profileFromXml(new FileInputStream(profile));
 					} else {
 						try {
 							prof = Profiles.getVeraProfileDirectory().
@@ -366,11 +414,13 @@ class CheckerPanel extends JPanel {
 					}
 					CheckerPanel.this.validateWorker = new ValidateWorker(
 							CheckerPanel.this, CheckerPanel.this.pdfFile, prof,
-							CheckerPanel.this.config);
+							CheckerPanel.this.config, type,
+							CheckerPanel.this.fixMetadata.isSelected());
 					CheckerPanel.this.progressBar.setVisible(true);
 					CheckerPanel.this.resultLabel.setVisible(false);
 					setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 					CheckerPanel.this.validate.setEnabled(false);
+					CheckerPanel.this.result = null;
 					CheckerPanel.this.isValidationErrorOccurred = false;
 					CheckerPanel.this.viewXML.setEnabled(false);
 					CheckerPanel.this.saveXML.setEnabled(false);
@@ -452,15 +502,11 @@ class CheckerPanel extends JPanel {
 
 		if (!this.isValidationErrorOccurred) {
 			try {
-				ProcessingResult result = this.validateWorker.get();
-				if (result.getValidationSummary()
-						== ProcessingResult.ValidationSummary.ERROR_IN_VALIDATION ||
-						result.getValidationSummary()
-								== ProcessingResult.ValidationSummary.VALIDATION_DISABLED) {
+				this.result = this.validateWorker.get();
+				if (this.result == null) {
 					this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
 					this.resultLabel.setText(GUIConstants.FEATURES_GENERATED_CORRECT);
-				} else if (result.getValidationSummary()
-						== ProcessingResult.ValidationSummary.FILE_VALID) {
+				} else if (this.result.isCompliant()) {
 					this.resultLabel.setForeground(GUIConstants.VALIDATION_SUCCESS_COLOR);
 					this.resultLabel.setText(GUIConstants.VALIDATION_OK);
 				} else {
@@ -482,24 +528,24 @@ class CheckerPanel extends JPanel {
 					this.saveHTML.setEnabled(true);
 					this.viewHTML.setEnabled(true);
 				}
-				for (String message : result.getErrorMessages()) {
-					errorInValidatingOccur(message);
-				}
+
 			} catch (InterruptedException e) {
-				errorInValidatingOccur("Process has been interrupted.");
+				errorInValidatingOccur("Process has interrupted.", e);
 			} catch (ExecutionException e) {
-				errorInValidatingOccur("Execution exception in processing.");
+				errorInValidatingOccur("Execution exception in processing.", e);
 			}
 		}
 
 	}
 
-	void errorInValidatingOccur(String message) {
+	void errorInValidatingOccur(String message, Throwable e) {
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
 		this.isValidationErrorOccurred = true;
 		JOptionPane.showMessageDialog(CheckerPanel.this, message,
 				GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+
+		LOGGER.error("Exception during the validation process", e);
 
 		this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
 		this.resultLabel.setText(message);
@@ -545,6 +591,7 @@ class CheckerPanel extends JPanel {
 						GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 			} else {
 
+				this.result = null;
 				this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
 				this.resultLabel.setText("");
 				this.xmlReport = null;
@@ -560,10 +607,8 @@ class CheckerPanel extends JPanel {
 						this.chosenPDF.setText(this.pdfFile.getAbsolutePath());
 						break;
 					case GUIConstants.XML:
-						this.config.setValidationProfilePath(
-								chooser.getSelectedFile().toPath().toAbsolutePath());
-						this.chosenProfile.setText(
-								this.config.getValidationProfile().toString());
+						this.profile = chooser.getSelectedFile();
+						this.chosenProfile.setText(this.profile.getAbsolutePath());
 						break;
 					default:
 						// This method used only for previous two cases.
@@ -622,21 +667,14 @@ class CheckerPanel extends JPanel {
 	}
 
 	private void changeConfig() {
-		if(this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR) {
-			this.config.setValidationProfilePath(FileSystems.getDefault().getPath(""));
-		}
-		this.config.setProcessingType(
-				(ProcessingType) processingType.getSelectedItem());
+		this.config.setProcessingType((ProcessingType) processingType.getSelectedItem());
 		this.config.setFixMetadata(fixMetadata.isSelected());
-		this.config.setFlavour(
-				(PDFAFlavour) this.chooseFlavour.getSelectedItem());
 		ConfigIO.writeConfig(this.config);
 	}
 
 	private void setValidationButtonEnability() {
 		if (this.pdfFile != null &&
-				(!this.config.getValidationProfile().toString().equals("") ||
-						this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR)) {
+				(this.profile != null || this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR)) {
 			validate.setEnabled(true);
 		}
 		else {
@@ -650,53 +688,5 @@ class CheckerPanel extends JPanel {
 
 	ProcessingType getProcessingType() {
 		return (ProcessingType) processingType.getSelectedItem();
-	}
-
-
-	private class ChooseFlavourRenderer extends JLabel implements ListCellRenderer<PDFAFlavour> {
-
-		public ChooseFlavourRenderer() {
-			setOpaque(true);
-			setHorizontalAlignment(CENTER);
-			setVerticalAlignment(CENTER);
-		}
-
-		@Override
-		public Component getListCellRendererComponent(JList<? extends PDFAFlavour> list, PDFAFlavour value,
-													  int index, boolean isSelected, boolean cellHasFocus) {
-			if (value == PDFAFlavour.NO_FLAVOUR) {
-				this.setText(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
-				return this;
-			} else if (value.toString().matches("\\d\\w")) {
-				String valueString = value.toString();
-				String parsedFlavour = "PDF/A-";
-				parsedFlavour += valueString.charAt(0);
-				parsedFlavour += valueString.substring(1, 2).toUpperCase();
-				this.setText(parsedFlavour);
-				return this;
-			} else {
-				//TODO: check logic in case if constant in PDFAFlavour doesn't satisfy regex "\d\w"
-				this.setText("Error in parsing flavour");
-				return this;
-			}
-		}
-	}
-
-	private class ProcessingTypeRenderer extends JLabel implements ListCellRenderer<ProcessingType> {
-
-		public ProcessingTypeRenderer() {
-			setOpaque(true);
-			setHorizontalAlignment(CENTER);
-			setVerticalAlignment(CENTER);
-		}
-
-		@Override
-		public Component getListCellRendererComponent(JList<? extends ProcessingType> list,
-													  ProcessingType value,
-													  int index, boolean isSelected,
-													  boolean cellHasFocus) {
-			this.setText(value.toText());
-			return this;
-		}
 	}
 }

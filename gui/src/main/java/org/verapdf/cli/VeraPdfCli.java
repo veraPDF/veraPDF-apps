@@ -65,8 +65,6 @@ public final class VeraPdfCli {
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            } catch (IllegalArgumentException e) {
-                System.out.println("Program cannot be executed with this parameters: " + e.getMessage());
             }
         }
     }
