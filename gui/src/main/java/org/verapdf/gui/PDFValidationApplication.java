@@ -1,9 +1,9 @@
 package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
-import org.verapdf.gui.config.Config;
-import org.verapdf.gui.tools.ConfigIO;
 import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.processor.config.Config;
+import org.verapdf.processor.config.ConfigIO;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,17 +23,17 @@ import java.io.*;
 
 public class PDFValidationApplication extends JFrame {
 
-    class ExitWindowAdapter extends WindowAdapter {
+	class ExitWindowAdapter extends WindowAdapter {
 
-        @Override
-        public void windowClosing(WindowEvent e) {
+		@Override
+		public void windowClosing(WindowEvent e) {
 			PDFValidationApplication.this.config.setFixMetadata(
 					PDFValidationApplication.this.checkerPanel.isFixMetadata());
 			PDFValidationApplication.this.config.setProcessingType(
 					PDFValidationApplication.this.checkerPanel.getProcessingType());
 			ConfigIO.writeConfig(PDFValidationApplication.this.config);
 		}
-    }
+	}
 
 	private static final long serialVersionUID = -5569669411392145783L;
 
@@ -45,7 +45,7 @@ public class PDFValidationApplication extends JFrame {
 	private CheckerPanel checkerPanel;
 
 	private PDFValidationApplication() {
-        addWindowListener(new ExitWindowAdapter());
+		addWindowListener(new ExitWindowAdapter());
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(GUIConstants.FRAME_COORD_X, GUIConstants.FRAME_COORD_Y, GUIConstants.FRAME_WIDTH, GUIConstants.FRAME_HEIGHT);
 		setResizable(false);
@@ -54,12 +54,10 @@ public class PDFValidationApplication extends JFrame {
 
 		try {
 			config = ConfigIO.readConfig();
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			LOGGER.error("Can not read config file", e);
 			this.config =  new Config();
-		}
-		catch (JAXBException e) {
+		} catch (JAXBException e) {
 			LOGGER.error("Cannot parse config XML", e);
 			this.config =  new Config();
 		}

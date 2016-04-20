@@ -43,6 +43,7 @@ public class VeraPdfCliProcessorProfileTest {
      * @throws ProfileException
      * @throws JAXBException
      */
+	/*	TODO: this logic has been moved to Processor
     @Test
     public final void testCreateProcessorFromArgsNewProfile()
             throws ProfileException, FileNotFoundException, IOException,
@@ -53,11 +54,12 @@ public class VeraPdfCliProcessorProfileTest {
         jCommander.parse(new String[] {});
         VeraPdfCliProcessor proc = VeraPdfCliProcessor
                 .createProcessorFromArgs(parser);
-        assertTrue(proc.validator.getProfile().getPDFAFlavour() == PDFAFlavour.PDFA_1_B);
+        assertTrue(proc.getConfig().getFlavour() == PDFAFlavour.PDFA_1_B);
         ProfileDirectory directory = Profiles.getVeraProfileDirectory();
         assertTrue(directory.getValidationProfiles().size() > 0);
         for (ValidationProfile profile : directory.getValidationProfiles()) {
             File tmpProfile = File.createTempFile("verapdf", "profile");
+			tmpProfile.deleteOnExit();
             try (OutputStream os = new FileOutputStream(tmpProfile)) {
                 Profiles.profileToXml(profile, os, Boolean.FALSE);
                 testWithProfileFile(profile.getPDFAFlavour(), tmpProfile);
@@ -90,5 +92,5 @@ public class VeraPdfCliProcessorProfileTest {
                         proc.validator.getProfile().getRules());
             }
         }
-    }
+    }*/
 }
