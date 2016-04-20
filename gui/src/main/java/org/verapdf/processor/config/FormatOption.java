@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.verapdf.cli.commands;
+package org.verapdf.processor.config;
 
 import org.verapdf.report.MachineReadableReport;
 

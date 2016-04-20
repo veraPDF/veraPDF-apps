@@ -1,6 +1,6 @@
 package org.verapdf.gui;
 
-import org.verapdf.gui.config.Config;
+import org.verapdf.processor.config.Config;
 import org.verapdf.gui.tools.GUIConstants;
 
 import javax.swing.*;
