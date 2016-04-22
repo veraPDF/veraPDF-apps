@@ -38,6 +38,7 @@ public final class Config {
 	public static final String DEFAULT_PROFILES_WIKI_PATH = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
 	public static final boolean DEFAULT_IS_FIX_METADATA = false;
 	public static final ProcessingType DEFAULT_PROCESSING_TYPE = ProcessingType.VALIDATING_AND_FEATURES;
+	public static final boolean DEFAULT_USE_PLUGINS = false;
 
 	private boolean showPassedRules;
 	private int maxNumberOfFailedChecks;
@@ -47,42 +48,45 @@ public final class Config {
 	private String profileWikiPath;
 	private ProcessingType processingType;
 	private boolean isFixMetadata;
+	private boolean usePlugins;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 
-        Config config = (Config) o;
+		Config config = (Config) o;
 
-        if (showPassedRules != config.showPassedRules) return false;
-        if (maxNumberOfFailedChecks != config.maxNumberOfFailedChecks)
-            return false;
-        if (maxNumberOfDisplayedFailedChecks != config.maxNumberOfDisplayedFailedChecks)
-            return false;
-        if (isFixMetadata != config.isFixMetadata) return false;
-        if (metadataFixerPrefix != null ? !metadataFixerPrefix.equals(config.metadataFixerPrefix) : config.metadataFixerPrefix != null)
-            return false;
-        if (fixMetadataPathFolder != null ? !fixMetadataPathFolder.equals(config.fixMetadataPathFolder) : config.fixMetadataPathFolder != null)
-            return false;
-        if (profileWikiPath != null ? !profileWikiPath.equals(config.profileWikiPath) : config.profileWikiPath != null)
-            return false;
-        return processingType == config.processingType;
+		if (showPassedRules != config.showPassedRules) return false;
+		if (maxNumberOfFailedChecks != config.maxNumberOfFailedChecks)
+			return false;
+		if (maxNumberOfDisplayedFailedChecks != config.maxNumberOfDisplayedFailedChecks)
+			return false;
+		if (isFixMetadata != config.isFixMetadata) return false;
+		if (usePlugins != config.usePlugins) return false;
+		if (metadataFixerPrefix != null ? !metadataFixerPrefix.equals(config.metadataFixerPrefix) : config.metadataFixerPrefix != null)
+			return false;
+		if (fixMetadataPathFolder != null ? !fixMetadataPathFolder.equals(config.fixMetadataPathFolder) : config.fixMetadataPathFolder != null)
+			return false;
+		if (profileWikiPath != null ? !profileWikiPath.equals(config.profileWikiPath) : config.profileWikiPath != null)
+			return false;
+		return processingType == config.processingType;
 
-    }
+	}
 
-    @Override
-    public int hashCode() {
-        int result = (showPassedRules ? 1 : 0);
-        result = 31 * result + maxNumberOfFailedChecks;
-        result = 31 * result + maxNumberOfDisplayedFailedChecks;
-        result = 31 * result + (metadataFixerPrefix != null ? metadataFixerPrefix.hashCode() : 0);
-        result = 31 * result + (fixMetadataPathFolder != null ? fixMetadataPathFolder.hashCode() : 0);
-        result = 31 * result + (profileWikiPath != null ? profileWikiPath.hashCode() : 0);
-        result = 31 * result + (processingType != null ? processingType.hashCode() : 0);
-        result = 31 * result + (isFixMetadata ? 1 : 0);
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		int result = (showPassedRules ? 1 : 0);
+		result = 31 * result + maxNumberOfFailedChecks;
+		result = 31 * result + maxNumberOfDisplayedFailedChecks;
+		result = 31 * result + (metadataFixerPrefix != null ? metadataFixerPrefix.hashCode() : 0);
+		result = 31 * result + (fixMetadataPathFolder != null ? fixMetadataPathFolder.hashCode() : 0);
+		result = 31 * result + (profileWikiPath != null ? profileWikiPath.hashCode() : 0);
+		result = 31 * result + (processingType != null ? processingType.hashCode() : 0);
+		result = 31 * result + (isFixMetadata ? 1 : 0);
+		result = 31 * result + (usePlugins ? 1 : 0);
+		return result;
+	}
 
 	public Config() {
 		this.showPassedRules = DEFAULT_SHOW_PASSED_RULES;
@@ -93,6 +97,7 @@ public final class Config {
 		this.profileWikiPath = DEFAULT_PROFILES_WIKI_PATH;
 		this.isFixMetadata = DEFAULT_IS_FIX_METADATA;
 		this.processingType = DEFAULT_PROCESSING_TYPE;
+		this.usePlugins = DEFAULT_USE_PLUGINS;
 	}
 
 	/**
@@ -160,6 +165,12 @@ public final class Config {
     public String getProfileWikiPath() {
         return profileWikiPath;
     }
+
+	/**
+	 * @return true if plugins should be used in feature extracting
+	 */
+	@XmlElement
+	public boolean isUsePlugins() { return usePlugins; }
 
 	public static String toXml(final Config toConvert, Boolean prettyXml)
 			throws JAXBException, IOException {
@@ -297,9 +308,13 @@ public final class Config {
         isFixMetadata = fixMetadata;
     }
 
-    public void setProcessingType(ProcessingType processingType) {   // Should we check validity?
+    public void setProcessingType(ProcessingType processingType) {
         this.processingType = processingType;
     }
+
+	public void setUsePlugins(boolean usePlugins) {
+		this.usePlugins = usePlugins;
+	}
 
     /**
      * Checks is the parameter path a valid for saving fixed file

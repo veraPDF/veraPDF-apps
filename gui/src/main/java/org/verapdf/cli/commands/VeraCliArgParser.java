@@ -44,6 +44,7 @@ public class VeraCliArgParser {
 	final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder";
 	final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
 	final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
+	final static String USE_PLUGINS = OPTION_SEP + "plugin";
 
 	@Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
 	private boolean help = false;
@@ -92,6 +93,9 @@ public class VeraCliArgParser {
 
 	@Parameter(names = { PROFILES_WIKI_FLAG, PROFILES_WIKI }, description = "The path to the folder containing Validation Profiles wiki.")
 	private String profilesWikiPath = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
+
+	@Parameter(names = {USE_PLUGINS}, description = "Uses plugins in feature extracting.")
+	private boolean usePlugins = false;
 
 	@Parameter(description = "FILES")
 	private List<String> pdfPaths = new ArrayList<>();
@@ -214,6 +218,11 @@ public class VeraCliArgParser {
 	public String getProfilesWikiPath() {
 		return this.profilesWikiPath;
 	}
+
+	/**
+	 * @return true if plugins should be used in feature extracting
+	 */
+	public boolean isUsePlugins() { return usePlugins; }
 
 	/**
 	 * JCommander parameter converter for {@link FormatOption}, see

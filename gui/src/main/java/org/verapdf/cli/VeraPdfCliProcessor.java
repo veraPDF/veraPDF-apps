@@ -42,6 +42,7 @@ final class VeraPdfCliProcessor {
     final FormatOption format;
     final boolean extractFeatures;
     final boolean logPassed;
+    final boolean usePlugins;
     final boolean recurse;
     final boolean verbose;
     final PDFAValidator validator;
@@ -67,6 +68,7 @@ final class VeraPdfCliProcessor {
         this.format = args.getFormat();
         this.extractFeatures = args.extractFeatures();
         this.logPassed = args.logPassed();
+		this.usePlugins = args.isUsePlugins();
         this.recurse = args.isRecurse();
         this.verbose = args.isVerbose();
         this.profile = profileFromArgs(args);

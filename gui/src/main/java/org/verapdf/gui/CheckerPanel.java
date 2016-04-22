@@ -36,51 +36,6 @@ import java.util.concurrent.ExecutionException;
  */
 class CheckerPanel extends JPanel {
 
-	private class ChooseFlavourRenderer extends JLabel implements ListCellRenderer<PDFAFlavour> {
-
-		public ChooseFlavourRenderer() {
-			setOpaque(true);
-			setHorizontalAlignment(CENTER);
-			setVerticalAlignment(CENTER);
-		}
-
-		@Override
-		public Component getListCellRendererComponent(JList<? extends PDFAFlavour> list, PDFAFlavour value,
-													  int index, boolean isSelected, boolean cellHasFocus) {
-			if (value == PDFAFlavour.NO_FLAVOUR) {
-				this.setText(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
-				return this;
-			} else if (value.toString().matches("\\d\\w")) {
-				String valueString = value.toString();
-				String parsedFlavour = "PDF/A-";
-				parsedFlavour += valueString.charAt(0);
-				parsedFlavour += valueString.substring(1, 2).toUpperCase();
-				this.setText(parsedFlavour);
-				return this;
-			} else {
-				//TODO: check logic in case if constant in PDFAFlavour doesn't satisfy regex "\d\w"
-				this.setText("Error in parsing flavour");
-				return this;
-			}
-		}
-	}
-
-	private class ProcessingTypeRenderer extends JLabel implements ListCellRenderer<ProcessingType> {
-
-		public ProcessingTypeRenderer() {
-			setOpaque(true);
-			setHorizontalAlignment(CENTER);
-			setVerticalAlignment(CENTER);
-		}
-
-		@Override
-		public Component getListCellRendererComponent(JList<? extends ProcessingType> list, ProcessingType value,
-													  int index, boolean isSelected, boolean cellHasFocus) {
-			this.setText(value.toText());
-			return this;
-		}
-	}
-
 	/**
 	 * ID for serialisation
 	 */
@@ -688,5 +643,53 @@ class CheckerPanel extends JPanel {
 
 	ProcessingType getProcessingType() {
 		return (ProcessingType) processingType.getSelectedItem();
+	}
+
+	private class ChooseFlavourRenderer extends JLabel implements ListCellRenderer<PDFAFlavour> {
+
+		public ChooseFlavourRenderer() {
+			setOpaque(true);
+			setHorizontalAlignment(CENTER);
+			setVerticalAlignment(CENTER);
+		}
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends PDFAFlavour> list, PDFAFlavour value,
+													  int index, boolean isSelected, boolean cellHasFocus) {
+			if (value == PDFAFlavour.NO_FLAVOUR) {
+				this.setText(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
+				return this;
+			} else if(value == PDFAFlavour.AUTO) {
+				this.setText(GUIConstants.AUTO_FLAVOUR_COMBOBOX_TEXT);
+				return this;
+			} else if (value.toString().matches("\\d\\w")) {
+				String valueString = value.toString();
+				String parsedFlavour = "PDF/A-";
+				parsedFlavour += valueString.charAt(0);
+				parsedFlavour += valueString.substring(1, 2).toUpperCase();
+				this.setText(parsedFlavour);
+				return this;
+			} else {
+				//TODO: check logic in case if constant in PDFAFlavour doesn't satisfy regex "\d\w"
+				this.setText("Error in parsing flavour");
+				return this;
+			}
+		}
+	}
+
+	private class ProcessingTypeRenderer extends JLabel implements ListCellRenderer<ProcessingType> {
+
+		public ProcessingTypeRenderer() {
+			setOpaque(true);
+			setHorizontalAlignment(CENTER);
+			setVerticalAlignment(CENTER);
+		}
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends ProcessingType> list, ProcessingType value,
+													  int index, boolean isSelected, boolean cellHasFocus) {
+			this.setText(value.toText());
+			return this;
+		}
 	}
 }
