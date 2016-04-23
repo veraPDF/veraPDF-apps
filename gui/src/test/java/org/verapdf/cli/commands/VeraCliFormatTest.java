@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import org.verapdf.processor.config.FormatOption;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
