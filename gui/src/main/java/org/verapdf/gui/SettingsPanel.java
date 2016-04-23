@@ -46,7 +46,7 @@ class SettingsPanel extends JPanel {
 		this.hidePassedRules = new JCheckBox();
 		panel.add(this.hidePassedRules);
 
-		panel.add(new JLabel(GUIConstants.USE_PLUGINS));
+		panel.add(new JLabel(GUIConstants.PLUGINS_ENABLED_TEXT));
 		this.usePlugins = new JCheckBox();
 		panel.add(this.usePlugins);
 
@@ -74,7 +74,7 @@ class SettingsPanel extends JPanel {
 		panel.add(panel2);
 
 		panel.add(new JLabel(GUIConstants.FIX_METADATA_PREFIX_LABEL_TEXT));
-		this.fixMetadataPrefix = new JTextField(19); 
+		this.fixMetadataPrefix = new JTextField(GUIConstants.SETTINGSDIALOD_MAX_CHARS_TEXTFILD);
 		this.fixMetadataPrefix.setTransferHandler(null);
 		panel.add(this.fixMetadataPrefix);
 
@@ -103,7 +103,7 @@ class SettingsPanel extends JPanel {
 
 			}
 		});
-		this.fixMetadataFolder = new JTextField(19); 
+		this.fixMetadataFolder = new JTextField(GUIConstants.SETTINGSDIALOD_MAX_CHARS_TEXTFILD);
 		this.fixMetadataFolder.setToolTipText(GUIConstants.SELECTED_PATH_FOR_FIXER_TOOLTIP);
 		JPanel panel4 = new JPanel();
 		panel4.setLayout(new BoxLayout(panel4, BoxLayout.X_AXIS));
@@ -126,7 +126,7 @@ class SettingsPanel extends JPanel {
 		});
 
 		panel.add(new JLabel(GUIConstants.SELECTED_PROFILES_WIKI_PATH));
-		this.profilesWikiPath = new JTextField(19);	
+		this.profilesWikiPath = new JTextField(GUIConstants.SETTINGSDIALOD_MAX_CHARS_TEXTFILD);
 		panel.add(this.profilesWikiPath);
 
 
@@ -167,7 +167,7 @@ class SettingsPanel extends JPanel {
 		this.ok = false;
 
 		this.hidePassedRules.setSelected(settings.isShowPassedRules());
-		this.usePlugins.setSelected(settings.isUsePlugins());
+		this.usePlugins.setSelected(settings.isPluginsEnabled());
 
 		int numbOfFail = settings.getMaxNumberOfFailedChecks();
 		if (numbOfFail == -1) {
@@ -205,7 +205,6 @@ class SettingsPanel extends JPanel {
 		}
 
 		this.dialog.setLocation(GUIConstants.SETTINGSDIALOG_COORD_X, GUIConstants.SETTINGSDIALOG_COORD_Y);
-		//this.dialog.setSize(650, 234);
 		this.dialog.setVisible(true);
 
 		return this.ok;

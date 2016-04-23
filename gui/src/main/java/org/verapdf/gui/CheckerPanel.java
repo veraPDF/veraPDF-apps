@@ -660,7 +660,7 @@ class CheckerPanel extends JPanel {
 				this.setText(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
 				return this;
 			} else if(value == PDFAFlavour.AUTO) {
-//				this.setText(GUIConstants.AUTO_FLAVOUR_COMBOBOX_TEXT);
+				this.setText(GUIConstants.AUTO_FLAVOUR_COMBOBOX_TEXT);
 				return this;
 			} else if (value.toString().matches("\\d\\w")) {
 				String valueString = value.toString();
@@ -670,7 +670,6 @@ class CheckerPanel extends JPanel {
 				this.setText(parsedFlavour);
 				return this;
 			} else {
-				//TODO: check logic in case if constant in PDFAFlavour doesn't satisfy regex "\d\w"
 				this.setText("Error in parsing flavour");
 				return this;
 			}

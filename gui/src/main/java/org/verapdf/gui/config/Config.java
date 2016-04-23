@@ -1,7 +1,6 @@
 package org.verapdf.gui.config;
 
 import org.apache.log4j.Logger;
-import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.gui.tools.ProcessingType;
 import org.verapdf.metadata.fixer.utils.MetadataFixerConstants;
 
@@ -9,8 +8,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
@@ -38,7 +35,7 @@ public final class Config {
 	public static final String DEFAULT_PROFILES_WIKI_PATH = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
 	public static final boolean DEFAULT_IS_FIX_METADATA = false;
 	public static final ProcessingType DEFAULT_PROCESSING_TYPE = ProcessingType.VALIDATING_AND_FEATURES;
-	public static final boolean DEFAULT_USE_PLUGINS = false;
+	public static final boolean DEFAULT_PLUGINS_ENABLED = false;
 
 	private boolean showPassedRules;
 	private int maxNumberOfFailedChecks;
@@ -48,7 +45,7 @@ public final class Config {
 	private String profileWikiPath;
 	private ProcessingType processingType;
 	private boolean isFixMetadata;
-	private boolean usePlugins;
+	private boolean pluginsEnabled;
 
 	@Override
 	public boolean equals(Object o) {
@@ -63,7 +60,7 @@ public final class Config {
 		if (maxNumberOfDisplayedFailedChecks != config.maxNumberOfDisplayedFailedChecks)
 			return false;
 		if (isFixMetadata != config.isFixMetadata) return false;
-		if (usePlugins != config.usePlugins) return false;
+		if (pluginsEnabled != config.pluginsEnabled) return false;
 		if (metadataFixerPrefix != null ? !metadataFixerPrefix.equals(config.metadataFixerPrefix) : config.metadataFixerPrefix != null)
 			return false;
 		if (fixMetadataPathFolder != null ? !fixMetadataPathFolder.equals(config.fixMetadataPathFolder) : config.fixMetadataPathFolder != null)
@@ -84,7 +81,7 @@ public final class Config {
 		result = 31 * result + (profileWikiPath != null ? profileWikiPath.hashCode() : 0);
 		result = 31 * result + (processingType != null ? processingType.hashCode() : 0);
 		result = 31 * result + (isFixMetadata ? 1 : 0);
-		result = 31 * result + (usePlugins ? 1 : 0);
+		result = 31 * result + (pluginsEnabled ? 1 : 0);
 		return result;
 	}
 
@@ -97,7 +94,7 @@ public final class Config {
 		this.profileWikiPath = DEFAULT_PROFILES_WIKI_PATH;
 		this.isFixMetadata = DEFAULT_IS_FIX_METADATA;
 		this.processingType = DEFAULT_PROCESSING_TYPE;
-		this.usePlugins = DEFAULT_USE_PLUGINS;
+		this.pluginsEnabled = DEFAULT_PLUGINS_ENABLED;
 	}
 
 	/**
@@ -170,7 +167,7 @@ public final class Config {
 	 * @return true if plugins should be used in feature extracting
 	 */
 	@XmlElement
-	public boolean isUsePlugins() { return usePlugins; }
+	public boolean isPluginsEnabled() { return pluginsEnabled; }
 
 	public static String toXml(final Config toConvert, Boolean prettyXml)
 			throws JAXBException, IOException {
@@ -312,8 +309,8 @@ public final class Config {
         this.processingType = processingType;
     }
 
-	public void setUsePlugins(boolean usePlugins) {
-		this.usePlugins = usePlugins;
+	public void setPluginsEnabled(boolean pluginsEnabled) {
+		this.pluginsEnabled = pluginsEnabled;
 	}
 
     /**

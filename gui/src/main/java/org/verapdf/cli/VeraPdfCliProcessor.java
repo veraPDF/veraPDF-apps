@@ -68,7 +68,7 @@ final class VeraPdfCliProcessor {
         this.format = args.getFormat();
         this.extractFeatures = args.extractFeatures();
         this.logPassed = args.logPassed();
-		this.usePlugins = args.isUsePlugins();
+		this.usePlugins = args.isPluginsEnabled();
         this.recurse = args.isRecurse();
         this.verbose = args.isVerbose();
         this.profile = profileFromArgs(args);

@@ -47,7 +47,7 @@ public final class GUIConstants {
 	public static final String DOT = ".";
 	public static final String PROCESSING_TYPE = " Report type: ";
 	public static final String DISPLAY_PASSED_RULES = "Include passed rules:";
-	public static final String USE_PLUGINS = "Use plugins in feature extracting:";
+	public static final String PLUGINS_ENABLED_TEXT = "Use plugins in feature extracting:";
 	public static final String MAX_NUMBER_FAILED_DISPLAYED_CHECKS = "Display failed checks for rule: ";
 	public static final String MAX_NUMBER_FAILED_CHECKS = "Stop validating after failed checks:";
 	public static final String FEATURES_GENERATED_CORRECT = "Features report generating finished";
@@ -73,6 +73,7 @@ public final class GUIConstants {
 	public static final int ABOUTDIALOG_COORD_Y = 150;
 	public static final int SETTINGSDIALOG_COORD_X = 150;
 	public static final int SETTINGSDIALOG_COORD_Y = 150;
+	public static final int SETTINGSDIALOD_MAX_CHARS_TEXTFILD = 19;
 	public static final int PREFERRED_WIDTH = 450;
 	public static final int PREFERRED_SIZE_WIDTH = 450;
 	public static final int PREFERRED_SIZE_HEIGHT = 200;
