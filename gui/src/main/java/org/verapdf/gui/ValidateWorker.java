@@ -14,9 +14,11 @@ import org.verapdf.metadata.fixer.utils.FileGenerator;
 import org.verapdf.metadata.fixer.utils.FixerConfig;
 import org.verapdf.model.ModelParser;
 import org.verapdf.pdfa.PDFAValidator;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.results.MetadataFixerResult;
 import org.verapdf.pdfa.results.MetadataFixerResult.RepairStatus;
 import org.verapdf.pdfa.results.ValidationResult;
+import org.verapdf.pdfa.validation.Profiles;
 import org.verapdf.pdfa.validation.ValidationProfile;
 import org.verapdf.pdfa.validators.Validators;
 import org.verapdf.report.HTMLReport;
@@ -29,6 +31,7 @@ import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.NoSuchElementException;
 
 /**
  * Validates PDF in a new threat.
@@ -41,30 +44,28 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
 
     private File pdf;
     private ValidationProfile profile;
+    private PDFAFlavour flavour;
     private CheckerPanel parent;
     private Config settings;
     private File xmlReport = null;
     private File htmlReport = null;
     private ProcessingType processingType;
     private boolean isFixMetadata;
-    
+
     private long startTimeOfValidation;
     private long endTimeOfValidation;
-    
-    ValidateWorker(CheckerPanel parent, File pdf, ValidationProfile profile,
+
+    ValidateWorker(CheckerPanel parent, File pdf, ValidationProfile profile, PDFAFlavour flavour,
             Config settings, ProcessingType processingType,
             boolean isFixMetadata) {
         if (pdf == null || !pdf.isFile() || !pdf.canRead()) {
             throw new IllegalArgumentException(
                     "PDF file doesn't exist or it can not be read");
         }
-        if (profile == null) {
-            throw new IllegalArgumentException(
-                    "Profile doesn't exist or it can not be read");
-        }
         this.parent = parent;
         this.pdf = pdf;
         this.profile = profile;
+        this.flavour = flavour;
         this.settings = settings;
         this.processingType = processingType;
         this.isFixMetadata = isFixMetadata;
@@ -80,8 +81,25 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
 
         this.startTimeOfValidation = System.currentTimeMillis();
 
-        try (ModelParser parser = new ModelParser(new FileInputStream(
-                this.pdf.getPath()), this.profile.getPDFAFlavour())) {
+        PDFAFlavour currentFlavour = this.profile == null ? this.flavour : this.profile.getPDFAFlavour();
+        try (ModelParser parser = ModelParser.createModelWithFlavour(new FileInputStream(
+                this.pdf.getPath()), currentFlavour)) {
+			if (this.profile == null) {
+				try {
+					this.profile = Profiles.getVeraProfileDirectory().
+							getValidationProfileByFlavour(parser.getFlavour());
+				} catch (NoSuchElementException re) {
+                    //TODO: remove/update next two if statements when we will cover not only B conformance for 2 and 3 parts
+                    if (parser.getFlavour().getPart() == PDFAFlavour.Specification.ISO_19005_2) {
+                        this.profile = Profiles.getVeraProfileDirectory().
+                                getValidationProfileByFlavour(PDFAFlavour.PDFA_2_B);
+                    } else if (parser.getFlavour().getPart() == PDFAFlavour.Specification.ISO_19005_3) {
+                        this.profile = Profiles.getVeraProfileDirectory().
+                                getValidationProfileByFlavour(PDFAFlavour.PDFA_3_B);
+                    }
+					LOGGER.warn(re);
+				}
+			}
 
             if (this.processingType.isValidating()) {
                 validationResult = runValidator(parser);
@@ -91,8 +109,13 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
             }
             if (this.processingType.isFeatures()) {
                 try {
+                    String appHome = System.getProperty("app.home");
+                    Path pluginsPath = null;
+                    if (appHome != null) {
+                        pluginsPath = new File(appHome, "plugins").toPath();
+                    }
                     collection = PBFeatureParser.getFeaturesCollection(parser
-                            .getPDDocument());
+                            .getPDDocument(), settings.isPluginsEnabled(), pluginsPath);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(this.parent,
                             "Some error in creating features collection.",

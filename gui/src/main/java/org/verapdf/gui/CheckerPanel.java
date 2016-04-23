@@ -13,18 +13,15 @@ import org.verapdf.pdfa.validation.ValidationProfile;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBException;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
@@ -35,51 +32,6 @@ import java.util.concurrent.ExecutionException;
  * @author Maksim Bezrukov
  */
 class CheckerPanel extends JPanel {
-
-	private class ChooseFlavourRenderer extends JLabel implements ListCellRenderer<PDFAFlavour> {
-
-		public ChooseFlavourRenderer() {
-			setOpaque(true);
-			setHorizontalAlignment(CENTER);
-			setVerticalAlignment(CENTER);
-		}
-
-		@Override
-		public Component getListCellRendererComponent(JList<? extends PDFAFlavour> list, PDFAFlavour value,
-													  int index, boolean isSelected, boolean cellHasFocus) {
-			if (value == PDFAFlavour.NO_FLAVOUR) {
-				this.setText(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
-				return this;
-			} else if (value.toString().matches("\\d\\w")) {
-				String valueString = value.toString();
-				String parsedFlavour = "PDF/A-";
-				parsedFlavour += valueString.charAt(0);
-				parsedFlavour += valueString.substring(1, 2).toUpperCase();
-				this.setText(parsedFlavour);
-				return this;
-			} else {
-				//TODO: check logic in case if constant in PDFAFlavour doesn't satisfy regex "\d\w"
-				this.setText("Error in parsing flavour");
-				return this;
-			}
-		}
-	}
-
-	private class ProcessingTypeRenderer extends JLabel implements ListCellRenderer<ProcessingType> {
-
-		public ProcessingTypeRenderer() {
-			setOpaque(true);
-			setHorizontalAlignment(CENTER);
-			setVerticalAlignment(CENTER);
-		}
-
-		@Override
-		public Component getListCellRendererComponent(JList<? extends ProcessingType> list, ProcessingType value,
-													  int index, boolean isSelected, boolean cellHasFocus) {
-			this.setText(value.toText());
-			return this;
-		}
-	}
 
 	/**
 	 * ID for serialisation
@@ -197,6 +149,7 @@ class CheckerPanel extends JPanel {
 
 		Vector<PDFAFlavour> availableFlavours = new Vector<>();
 		availableFlavours.add(PDFAFlavour.NO_FLAVOUR);
+		availableFlavours.add(PDFAFlavour.AUTO);
 		for (PDFAFlavour flavour : PDFAFlavour.values()) {
 			Set<PDFAFlavour> currentFlavours = Profiles.getVeraProfileDirectory().getPDFAFlavours();
 			if (currentFlavours.contains(flavour)) {
@@ -398,22 +351,12 @@ class CheckerPanel extends JPanel {
 				try {
 					changeConfig();
 					ProcessingType type = (ProcessingType) CheckerPanel.this.processingType.getSelectedItem();
-					ValidationProfile prof;
+					ValidationProfile prof = null;
 					if (chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR) {
 						prof = Profiles.profileFromXml(new FileInputStream(profile));
-					} else {
-						try {
-							prof = Profiles.getVeraProfileDirectory().
-									getValidationProfileByFlavour((PDFAFlavour) chooseFlavour.getSelectedItem());
-						} catch (NoSuchElementException re) {
-							JOptionPane.showMessageDialog(CheckerPanel.this, "PDF/A-" + chooseFlavour.getSelectedItem().toString().toUpperCase()
-									+ " is not supported.", "Warning", JOptionPane.WARNING_MESSAGE);
-							LOGGER.warn(re);
-							return;
-						}
 					}
 					CheckerPanel.this.validateWorker = new ValidateWorker(
-							CheckerPanel.this, CheckerPanel.this.pdfFile, prof,
+							CheckerPanel.this, CheckerPanel.this.pdfFile, prof, (PDFAFlavour) chooseFlavour.getSelectedItem(),
 							CheckerPanel.this.config, type,
 							CheckerPanel.this.fixMetadata.isSelected());
 					CheckerPanel.this.progressBar.setVisible(true);
@@ -688,5 +631,52 @@ class CheckerPanel extends JPanel {
 
 	ProcessingType getProcessingType() {
 		return (ProcessingType) processingType.getSelectedItem();
+	}
+
+	private class ChooseFlavourRenderer extends JLabel implements ListCellRenderer<PDFAFlavour> {
+
+		public ChooseFlavourRenderer() {
+			setOpaque(true);
+			setHorizontalAlignment(CENTER);
+			setVerticalAlignment(CENTER);
+		}
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends PDFAFlavour> list, PDFAFlavour value,
+													  int index, boolean isSelected, boolean cellHasFocus) {
+			if (value == PDFAFlavour.NO_FLAVOUR) {
+				this.setText(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
+				return this;
+			} else if(value == PDFAFlavour.AUTO) {
+				this.setText(GUIConstants.AUTO_FLAVOUR_COMBOBOX_TEXT);
+				return this;
+			} else if (value.toString().matches("\\d\\w")) {
+				String valueString = value.toString();
+				String parsedFlavour = "PDF/A-";
+				parsedFlavour += valueString.charAt(0);
+				parsedFlavour += valueString.substring(1, 2).toUpperCase();
+				this.setText(parsedFlavour);
+				return this;
+			} else {
+				this.setText("Error in parsing flavour");
+				return this;
+			}
+		}
+	}
+
+	private class ProcessingTypeRenderer extends JLabel implements ListCellRenderer<ProcessingType> {
+
+		public ProcessingTypeRenderer() {
+			setOpaque(true);
+			setHorizontalAlignment(CENTER);
+			setVerticalAlignment(CENTER);
+		}
+
+		@Override
+		public Component getListCellRendererComponent(JList<? extends ProcessingType> list, ProcessingType value,
+													  int index, boolean isSelected, boolean cellHasFocus) {
+			this.setText(value.toText());
+			return this;
+		}
 	}
 }

@@ -42,6 +42,7 @@ final class VeraPdfCliProcessor {
     final FormatOption format;
     final boolean extractFeatures;
     final boolean logPassed;
+    final boolean isPluginsEnabled;
     final boolean recurse;
     final boolean verbose;
     final PDFAValidator validator;
@@ -67,6 +68,7 @@ final class VeraPdfCliProcessor {
         this.format = args.getFormat();
         this.extractFeatures = args.extractFeatures();
         this.logPassed = args.logPassed();
+		this.isPluginsEnabled = args.isPluginsEnabled();
         this.recurse = args.isRecurse();
         this.verbose = args.isVerbose();
         this.profile = profileFromArgs(args);
@@ -145,7 +147,7 @@ final class VeraPdfCliProcessor {
         FeaturesCollection featuresCollection = null;
 
         long start = System.currentTimeMillis();
-        try (ModelParser toValidate = new ModelParser(toProcess, this.profile.getPDFAFlavour())) {
+        try (ModelParser toValidate = ModelParser.createModelWithFlavour(toProcess, this.profile.getPDFAFlavour())) {
             if (this.validator != null) {
                 validationResult = this.validator.validate(toValidate);
                 if (this.fixMetadata) {
@@ -154,8 +156,13 @@ final class VeraPdfCliProcessor {
                 }
             }
             if (this.extractFeatures) {
+                String appHome = System.getProperty("app.home");
+                Path pluginsPath = null;
+                if (appHome != null) {
+                    pluginsPath = new File(appHome, "plugins").toPath();
+                }
                 featuresCollection = PBFeatureParser
-                        .getFeaturesCollection(toValidate.getPDDocument());
+                        .getFeaturesCollection(toValidate.getPDDocument(), this.isPluginsEnabled, pluginsPath);
             }
         } catch (InvalidPasswordException e) {
             System.err.println("Error: " + item.getName() + " is an encrypted PDF file.");
