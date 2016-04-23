@@ -52,7 +52,7 @@ public class VeraCliArgParser {
 	@Parameter(names = { VERSION }, description = "Version information.")
 	private boolean showVersion = false;
 
-	@Parameter(names = { FLAVOUR_FLAG, FLAVOUR }, description = "Choose built in Validation Profile flavour, e.g. 1b. Alternatively supply 0 to turn off PDF/A validation.", converter = FlavourConverter.class)
+	@Parameter(names = { FLAVOUR_FLAG, FLAVOUR }, description = "Choose built in Validation Profile flavour, e.g. 1b. Alternatively supply 0 to turn off PDF/A validation or supply auto to automatic flavour detection from file's metadata.", converter = FlavourConverter.class)
 	private PDFAFlavour flavour = PDFAFlavour.PDFA_1_B;
 
 	@Parameter(names = { SUCCESS, PASSED }, description = "Logs successful validation checks.")

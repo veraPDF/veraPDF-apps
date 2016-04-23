@@ -13,18 +13,15 @@ import org.verapdf.pdfa.validation.ValidationProfile;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBException;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
@@ -152,6 +149,7 @@ class CheckerPanel extends JPanel {
 
 		Vector<PDFAFlavour> availableFlavours = new Vector<>();
 		availableFlavours.add(PDFAFlavour.NO_FLAVOUR);
+		availableFlavours.add(PDFAFlavour.AUTO);
 		for (PDFAFlavour flavour : PDFAFlavour.values()) {
 			Set<PDFAFlavour> currentFlavours = Profiles.getVeraProfileDirectory().getPDFAFlavours();
 			if (currentFlavours.contains(flavour)) {
@@ -353,22 +351,12 @@ class CheckerPanel extends JPanel {
 				try {
 					changeConfig();
 					ProcessingType type = (ProcessingType) CheckerPanel.this.processingType.getSelectedItem();
-					ValidationProfile prof;
+					ValidationProfile prof = null;
 					if (chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR) {
 						prof = Profiles.profileFromXml(new FileInputStream(profile));
-					} else {
-						try {
-							prof = Profiles.getVeraProfileDirectory().
-									getValidationProfileByFlavour((PDFAFlavour) chooseFlavour.getSelectedItem());
-						} catch (NoSuchElementException re) {
-							JOptionPane.showMessageDialog(CheckerPanel.this, "PDF/A-" + chooseFlavour.getSelectedItem().toString().toUpperCase()
-									+ " is not supported.", "Warning", JOptionPane.WARNING_MESSAGE);
-							LOGGER.warn(re);
-							return;
-						}
 					}
 					CheckerPanel.this.validateWorker = new ValidateWorker(
-							CheckerPanel.this, CheckerPanel.this.pdfFile, prof,
+							CheckerPanel.this, CheckerPanel.this.pdfFile, prof, (PDFAFlavour) chooseFlavour.getSelectedItem(),
 							CheckerPanel.this.config, type,
 							CheckerPanel.this.fixMetadata.isSelected());
 					CheckerPanel.this.progressBar.setVisible(true);
