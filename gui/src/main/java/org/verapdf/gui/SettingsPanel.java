@@ -1,7 +1,7 @@
 package org.verapdf.gui;
 
-import org.verapdf.gui.config.Config;
 import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.processor.config.Config;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -249,7 +249,7 @@ class SettingsPanel extends JPanel {
 		return this.hidePassedRules.isSelected();
 	}
 
-	boolean isUsePlugins() { return this.usePlugins.isSelected(); }
+	boolean isPluginsEnabled() { return this.usePlugins.isSelected(); }
 
 	int getFailedChecksNumber() {
 		String str = this.numberOfFailed.getText();

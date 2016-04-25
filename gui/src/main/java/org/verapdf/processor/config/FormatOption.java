@@ -1,11 +1,10 @@
 /**
  * 
  */
-package org.verapdf.cli.commands;
-
-import org.verapdf.report.MachineReadableReport;
+package org.verapdf.processor.config;
 
 import com.beust.jcommander.ParameterException;
+import org.verapdf.report.MachineReadableReport;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>

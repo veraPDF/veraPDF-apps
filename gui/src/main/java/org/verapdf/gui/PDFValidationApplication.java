@@ -1,9 +1,9 @@
 package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
-import org.verapdf.gui.config.Config;
-import org.verapdf.gui.tools.ConfigIO;
 import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.processor.config.Config;
+import org.verapdf.processor.config.ConfigIO;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -13,7 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.*;
+import java.io.IOException;
 
 /**
  * Main frame of the PDFA Conformance Checker
@@ -89,7 +89,7 @@ public class PDFValidationApplication extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (settingsPanel != null && settingsPanel.showDialog(PDFValidationApplication.this, "Settings", PDFValidationApplication.this.config)) {
 					PDFValidationApplication.this.config.setShowPassedRules(settingsPanel.isDispPassedRules());
-					PDFValidationApplication.this.config.setPluginsEnabled(settingsPanel.isUsePlugins());
+					PDFValidationApplication.this.config.setPluginsEnabled(settingsPanel.isPluginsEnabled());
 					PDFValidationApplication.this.config.setMaxNumberOfFailedChecks(settingsPanel.getFailedChecksNumber());
 					PDFValidationApplication.this.config.setMaxNumberOfDisplayedFailedChecks(settingsPanel.getFailedChecksDisplayNumber());
 					PDFValidationApplication.this.config.setFixMetadataPathFolder(settingsPanel.getFixMetadataDirectory());
@@ -97,7 +97,7 @@ public class PDFValidationApplication extends JFrame {
 					PDFValidationApplication.this.config.setProfileWikiPath(settingsPanel.getProfilesWikiPath());
 					PDFValidationApplication.this.config.setFixMetadata(PDFValidationApplication.this.config.isFixMetadata());
 					PDFValidationApplication.this.config.setProcessingType(PDFValidationApplication.this.config.getProcessingType());
-
+					PDFValidationApplication.this.config.setPluginsEnabled(settingsPanel.isPluginsEnabled());
 					ConfigIO.writeConfig(PDFValidationApplication.this.config);
 				}
 			}
