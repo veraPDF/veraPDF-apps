@@ -147,35 +147,37 @@ public class VeraPdfCliProcessorTest {
         }
     }
 
-    /** TODO: remove this test: first assert is the same as in previous test; second assert is unnecessary.
-     *  TODO: validator is Processor now and it cannot be null: it is created with profile obtained from ModelParser.
-     * Test method for
-     * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
-     * .
-     *
-     * @throws IOException
-     * @throws FileNotFoundException
-     * @throws ProfileException
-     */
-    /*@Test
-    public final void testCreateProcessorFromArgsNoFlavour()
-            throws ProfileException, FileNotFoundException, IOException {
-        String[] argVals = new String[] { "-f", "--flavour" };
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] {});
-        VeraPdfCliProcessor proc = VeraPdfCliProcessor
-                .createProcessorFromArgs(parser);
-        assertTrue(proc.validator.getProfile().getPDFAFlavour() == PDFAFlavour.PDFA_1_B);
-        for (String argVal : argVals) {
-            jCommander.parse(new String[] { argVal,
-                    PDFAFlavour.NO_FLAVOUR.getId() });
-            proc = VeraPdfCliProcessor.createProcessorFromArgs(parser);
-            assertTrue(proc.validator == null);
-            parser = new VeraCliArgParser();
-            jCommander = initialiseJCommander(parser);
-        }
-    } */
+    // TODO: remove this test: first assert is the same as in previous test; second assert is unnecessary.
+    // TODO: validator is in Processor now and it cannot be null: it is created with profile obtained by flavour from
+    // TODO: ModelParser that can not be NO_FLAVOUR or AUTO.
+//    /**
+//     * Test method for
+//     * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
+//     * .
+//     *
+//     * @throws IOException
+//     * @throws FileNotFoundException
+//     * @throws ProfileException
+//     */
+//    @Test
+//    public final void testCreateProcessorFromArgsNoFlavour()
+//            throws ProfileException, FileNotFoundException, IOException {
+//        String[] argVals = new String[] { "-f", "--flavour" };
+//        VeraCliArgParser parser = new VeraCliArgParser();
+//        JCommander jCommander = initialiseJCommander(parser);
+//        jCommander.parse(new String[] {});
+//        VeraPdfCliProcessor proc = VeraPdfCliProcessor
+//                .createProcessorFromArgs(parser);
+//        assertTrue(proc.validator.getProfile().getPDFAFlavour() == PDFAFlavour.PDFA_1_B);
+//        for (String argVal : argVals) {
+//            jCommander.parse(new String[] { argVal,
+//                    PDFAFlavour.NO_FLAVOUR.getId() });
+//            proc = VeraPdfCliProcessor.createProcessorFromArgs(parser);
+//            assertTrue(proc.validator == null);
+//            parser = new VeraCliArgParser();
+//            jCommander = initialiseJCommander(parser);
+//        }
+//    }
 
     static final JCommander initialiseJCommander(final VeraCliArgParser parser) {
         JCommander jCommander = new JCommander(parser);
