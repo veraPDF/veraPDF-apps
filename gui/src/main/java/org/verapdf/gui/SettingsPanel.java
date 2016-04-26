@@ -74,7 +74,7 @@ class SettingsPanel extends JPanel {
 		panel.add(panel2);
 
 		panel.add(new JLabel(GUIConstants.FIX_METADATA_PREFIX_LABEL_TEXT));
-		this.fixMetadataPrefix = new JTextField(GUIConstants.SETTINGSDIALOD_MAX_CHARS_TEXTFILD);
+		this.fixMetadataPrefix = new JTextField(GUIConstants.SETTINGSDIALOG_MAX_CHARS_TEXTFILD);
 		this.fixMetadataPrefix.setTransferHandler(null);
 		panel.add(this.fixMetadataPrefix);
 
@@ -103,7 +103,7 @@ class SettingsPanel extends JPanel {
 
 			}
 		});
-		this.fixMetadataFolder = new JTextField(GUIConstants.SETTINGSDIALOD_MAX_CHARS_TEXTFILD);
+		this.fixMetadataFolder = new JTextField(GUIConstants.SETTINGSDIALOG_MAX_CHARS_TEXTFILD);
 		this.fixMetadataFolder.setToolTipText(GUIConstants.SELECTED_PATH_FOR_FIXER_TOOLTIP);
 		JPanel panel4 = new JPanel();
 		panel4.setLayout(new BoxLayout(panel4, BoxLayout.X_AXIS));
@@ -126,7 +126,7 @@ class SettingsPanel extends JPanel {
 		});
 
 		panel.add(new JLabel(GUIConstants.SELECTED_PROFILES_WIKI_PATH));
-		this.profilesWikiPath = new JTextField(GUIConstants.SETTINGSDIALOD_MAX_CHARS_TEXTFILD);
+		this.profilesWikiPath = new JTextField(GUIConstants.SETTINGSDIALOG_MAX_CHARS_TEXTFILD);
 		panel.add(this.profilesWikiPath);
 
 

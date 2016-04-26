@@ -74,7 +74,7 @@ public final class GUIConstants {
 	public static final int ABOUTDIALOG_COORD_Y = 150;
 	public static final int SETTINGSDIALOG_COORD_X = 150;
 	public static final int SETTINGSDIALOG_COORD_Y = 150;
-	public static final int SETTINGSDIALOD_MAX_CHARS_TEXTFILD = 19;
+	public static final int SETTINGSDIALOG_MAX_CHARS_TEXTFILD = 19;
 	public static final int PREFERRED_WIDTH = 450;
 	public static final int PREFERRED_SIZE_WIDTH = 450;
 	public static final int PREFERRED_SIZE_HEIGHT = 200;

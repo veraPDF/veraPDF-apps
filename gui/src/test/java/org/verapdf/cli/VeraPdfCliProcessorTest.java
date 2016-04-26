@@ -147,7 +147,8 @@ public class VeraPdfCliProcessorTest {
         }
     }
 
-    /**
+    /** TODO: remove this test: first assert is the same as in previous test; second assert is unnecessary.
+     *  TODO: validator is Processor now and it cannot be null: it is created with profile obtained from ModelParser.
      * Test method for
      * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
      * .

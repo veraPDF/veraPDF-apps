@@ -37,8 +37,7 @@ public class ProcessorImplProfileTest {
             throws ProfileException, FileNotFoundException, IOException,
             JAXBException {
         Config config = new Config();
-        assertTrue(ProcessorImpl.profileFromConfig(config).getPDFAFlavour()
-				== PDFAFlavour.PDFA_1_B);
+        assertTrue(ProcessorImpl.profileFromConfig(config) == null);
         ProfileDirectory directory = Profiles.getVeraProfileDirectory();
         assertTrue(directory.getValidationProfiles().size() > 0);
         for (ValidationProfile profile : directory.getValidationProfiles()) {

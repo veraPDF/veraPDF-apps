@@ -4,7 +4,6 @@ import org.apache.log4j.Logger;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.Profiles;
-import org.verapdf.pdfa.validation.ValidationProfile;
 import org.verapdf.processor.ProcessingResult;
 import org.verapdf.processor.config.Config;
 import org.verapdf.processor.config.ConfigIO;
@@ -12,18 +11,15 @@ import org.verapdf.processor.config.ProcessingType;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.xml.bind.JAXBException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
@@ -349,23 +345,8 @@ class CheckerPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					changeConfig();
-					ValidationProfile prof;
-					if (chooseFlavour.getSelectedItem() == PDFAFlavour.NO_FLAVOUR) {
-						prof = Profiles.profileFromXml(new FileInputStream(
-								CheckerPanel.this.config.getValidationProfile().toFile()));
-					} else {
-						try {
-							prof = Profiles.getVeraProfileDirectory().
-									getValidationProfileByFlavour((PDFAFlavour) chooseFlavour.getSelectedItem());
-						} catch (NoSuchElementException re) {
-							JOptionPane.showMessageDialog(CheckerPanel.this, "PDF/A-" + chooseFlavour.getSelectedItem().toString().toUpperCase()
-									+ " is not supported.", "Warning", JOptionPane.WARNING_MESSAGE);
-							LOGGER.warn(re);
-							return;
-						}
-					}
 					CheckerPanel.this.validateWorker = new ValidateWorker(
-							CheckerPanel.this, CheckerPanel.this.pdfFile, prof,
+							CheckerPanel.this, CheckerPanel.this.pdfFile,
 							CheckerPanel.this.config);
 					CheckerPanel.this.progressBar.setVisible(true);
 					CheckerPanel.this.resultLabel.setVisible(false);
@@ -377,7 +358,7 @@ class CheckerPanel extends JPanel {
 					CheckerPanel.this.viewHTML.setEnabled(false);
 					CheckerPanel.this.saveHTML.setEnabled(false);
 					CheckerPanel.this.validateWorker.execute();
-				} catch (IllegalArgumentException | IOException | JAXBException exep) {
+				} catch (IllegalArgumentException exep) {
 					JOptionPane.showMessageDialog(CheckerPanel.this, exep.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 					LOGGER.error(exep);
 				}
@@ -483,22 +464,22 @@ class CheckerPanel extends JPanel {
 					this.viewHTML.setEnabled(true);
 				}
 				for (String message : result.getErrorMessages()) {
-					errorInValidatingOccur(message);
+					errorInValidatingOccur(message, new Exception(""));
 				}
 			} catch (InterruptedException e) {
-				errorInValidatingOccur("Process has been interrupted.");
+				errorInValidatingOccur("Process has been interrupted: ", e);
 			} catch (ExecutionException e) {
-				errorInValidatingOccur("Execution exception in processing.");
+				errorInValidatingOccur("Execution exception in processing: ", e);
 			}
 		}
 
 	}
 
-	void errorInValidatingOccur(String message) {
+	void errorInValidatingOccur(String message, Throwable e) {
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
 		this.isValidationErrorOccurred = true;
-		JOptionPane.showMessageDialog(CheckerPanel.this, message,
+		JOptionPane.showMessageDialog(CheckerPanel.this, message + e.getMessage(),
 				GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 
 		this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);

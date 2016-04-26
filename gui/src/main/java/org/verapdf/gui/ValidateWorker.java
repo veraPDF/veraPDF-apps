@@ -2,7 +2,6 @@ package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
 import org.verapdf.gui.tools.GUIConstants;
-import org.verapdf.pdfa.validation.ValidationProfile;
 import org.verapdf.processor.ProcessingResult;
 import org.verapdf.processor.Processor;
 import org.verapdf.processor.ProcessorImpl;
@@ -31,15 +30,10 @@ class ValidateWorker extends SwingWorker<ProcessingResult, Integer> {
     private File htmlReport = null;
     private ProcessingResult processingResult = null;
 
-    ValidateWorker(CheckerPanel parent, File pdf, ValidationProfile profile,
-                   Config settings) {
+    ValidateWorker(CheckerPanel parent, File pdf, Config settings) {
         if (pdf == null || !pdf.isFile() || !pdf.canRead()) {
             throw new IllegalArgumentException(
                     "PDF file doesn't exist or it can not be read");
-        }
-        if (profile == null) {
-            throw new IllegalArgumentException(
-                    "Profile doesn't exist or it can not be read");
         }
         this.parent = parent;
         this.pdf = pdf;

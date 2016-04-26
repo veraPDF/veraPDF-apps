@@ -61,7 +61,8 @@ final class VeraPdfCliProcessor {
             config.setProcessingType(processingTypeFromArgs(args));
             config.setReportType(args.getFormat());
             config.setValidationProfilePath(
-                    args.getProfileFile() == null ? null : args.getProfileFile().toPath());
+                    args.getProfileFile() == null ?
+                            FileSystems.getDefault().getPath("") : args.getProfileFile().toPath());
             config.setFlavour(args.getFlavour());
             config.setVerboseCli(args.isVerbose());
             config.setPluginsEnabled(args.isPluginsEnabled());

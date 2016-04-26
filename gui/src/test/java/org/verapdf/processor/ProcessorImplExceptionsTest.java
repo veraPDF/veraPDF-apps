@@ -1,31 +1,29 @@
 package org.verapdf.processor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.verapdf.processor.config.Config;
+import org.verapdf.processor.config.ProcessingType;
+import org.verapdf.report.ItemDetails;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 
-import org.junit.Test;
-
-import org.verapdf.processor.config.Config;
-import org.verapdf.processor.config.ProcessingType;
-import org.verapdf.report.ItemDetails;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Sergey Shemyakov
  *
  */
 @SuppressWarnings("static-method")
+@RunWith(Parameterized.class)
 public class ProcessorImplExceptionsTest {
 
 	private static final String BAD_PROFILE_PATH = "/org/verapdf/processor/bad-profile.xml";
@@ -38,20 +36,64 @@ public class ProcessorImplExceptionsTest {
 		fixMetadataValues.add(true);
 		fixMetadataValues.add(false);
 	}
+
+	@Parameterized.Parameters
+	public static Collection<Object[]> data() {
+		return Arrays.asList(new Object[][]{
+				{BAD_PROFILE_PATH, GOOD_PDF_PATH, false,
+						ProcessingResult.ValidationSummary.ERROR_IN_VALIDATION,
+						ProcessingResult.FeaturesSummary.FEATURES_SUCCEED,
+						ProcessingResult.MetadataFixingSummary.ERROR_IN_FIXING,
+						ProcessingResult.ReportSummary.REPORT_SUCCEED},
+				{GOOD_PROFILE_PATH, BAD_PDF_PATH, false,
+						ProcessingResult.ValidationSummary.ERROR_IN_VALIDATION,
+						ProcessingResult.FeaturesSummary.ERROR_IN_FEATURES,
+						ProcessingResult.MetadataFixingSummary.ERROR_IN_FIXING,
+						ProcessingResult.ReportSummary.REPORT_SUCCEED},
+				{GOOD_PROFILE_PATH, GOOD_PDF_PATH, true,
+						ProcessingResult.ValidationSummary.FILE_VALID,
+						ProcessingResult.FeaturesSummary.FEATURES_SUCCEED,
+						ProcessingResult.MetadataFixingSummary.FIXING_SUCCEED,
+						ProcessingResult.ReportSummary.ERROR_IN_REPORT}
+		});
+	}
+
+	@Parameterized.Parameter
+	public String profilePath;
+
+	@Parameterized.Parameter(value = 1)
+	public String pdfFilePath;
+
+	@Parameterized.Parameter(value = 2)
+	public boolean isCorruptedReportStream;
+
+	@Parameterized.Parameter(value = 3)
+	public ProcessingResult.ValidationSummary expectedValidationSummary;
+
+	@Parameterized.Parameter(value = 4)
+	public ProcessingResult.FeaturesSummary expectedFeaturesSummary;
+
+	@Parameterized.Parameter(value = 5)
+	public ProcessingResult.MetadataFixingSummary expectedFixingSummary;
+
+	@Parameterized.Parameter(value = 6)
+	public ProcessingResult.ReportSummary expectedReportSummary;
+
 	/**
 	 * Test method for
 	 * {@link org.verapdf.processor.ProcessorImpl#validate(InputStream, ItemDetails, Config, OutputStream)}
-	 * Uses corrupted validation profile to check exception processing in this case.
+	 * Uses corrupted validation profile, PDF file and report output stream
+	 * to check exception handling in this cases.
 	 * @throws URISyntaxException
 	 * @throws IOException
 	 */
 	@Test
-	public final void testValidateWithInvalidProfile() throws
+	public final void testValidate() throws
 			URISyntaxException, IOException {
 		Config config = new Config();
 		config.setValidationProfilePath(
-				new File(getSystemIndependentPath(BAD_PROFILE_PATH)).toPath());
-		File pdf = new File(getSystemIndependentPath(GOOD_PDF_PATH));
+				new File(getSystemIndependentPath(profilePath)).toPath());
+		File pdf = new File(getSystemIndependentPath(pdfFilePath));
 		File xmlReport = File.createTempFile("veraPDF-tempXMLReport", ".xml");
 		xmlReport.deleteOnExit();
 		ProcessingResult processingResult;
@@ -64,84 +106,37 @@ public class ProcessorImplExceptionsTest {
 				config.setFixMetadata(fixMetadata);
 				try (InputStream toProcess = new FileInputStream(pdf);
 					OutputStream mrrReport = new FileOutputStream(xmlReport)) {
+					if(isCorruptedReportStream) {
+						mrrReport.close();
+					}
 					Processor processor = new ProcessorImpl();
 					processingResult = processor.validate(toProcess,
 							ItemDetails.fromFile(pdf), config, mrrReport);
 
 					ProcessingResult.ValidationSummary expectedValidation = type.isValidating() ?
-							ProcessingResult.ValidationSummary.ERROR_IN_VALIDATION :
+							expectedValidationSummary :
 							ProcessingResult.ValidationSummary.VALIDATION_DISABLED;
-					assertEquals(processingResult.getValidationSummary(),
-							expectedValidation);
+					assertEquals(expectedValidation,
+							processingResult.getValidationSummary());
 
 					ProcessingResult.FeaturesSummary expectedFeatures = type.isFeatures() ?
-							ProcessingResult.FeaturesSummary.FEATURES_SUCCEED :
+							expectedFeaturesSummary :
 							ProcessingResult.FeaturesSummary.FEATURES_DISABLED;
-					assertEquals(processingResult.getFeaturesSummary(),
-							expectedFeatures);
+					assertEquals(expectedFeatures,
+							processingResult.getFeaturesSummary());
 
 					ProcessingResult.MetadataFixingSummary expectedMetadata = fixMetadata ?
-							ProcessingResult.MetadataFixingSummary.ERROR_IN_FIXING :
+							expectedFixingSummary :
 							ProcessingResult.MetadataFixingSummary.FIXING_DISABLED;
-					assertEquals(processingResult.getMetadataFixerSummary(),
-							expectedMetadata);
+					assertEquals(expectedMetadata,
+							processingResult.getMetadataFixerSummary());
+
+					assertEquals(expectedReportSummary,
+							processingResult.getReportSummary());
 				}
 			}
 		}
 	}
-
-	/**
-	 * Test method for
-	 * {@link org.verapdf.processor.ProcessorImpl#validate(InputStream, ItemDetails, Config, OutputStream)}
-	 * Uses corrupted PDF file to check exception processing in this case.
-	 * @throws URISyntaxException
-	 * @throws IOException
-	 */
-	@Test
-	public final void testValidateWithCorruptedPdfFile() throws
-			URISyntaxException, IOException {
-		Config config = new Config();
-		config.setValidationProfilePath(
-				new File(getSystemIndependentPath(GOOD_PROFILE_PATH)).toPath());
-		File pdf = new File(getSystemIndependentPath(BAD_PDF_PATH));
-		File xmlReport = File.createTempFile("veraPDF-tempXMLReport", ".xml");
-		xmlReport.deleteOnExit();
-		ProcessingResult processingResult;
-		for(ProcessingType type : ProcessingType.values()) {
-			for (Boolean fixMetadata : this.fixMetadataValues) {
-				if(!type.isValidating() && fixMetadata == true) {	// We can't fix metadata without validation
-					continue;
-				}
-				config.setProcessingType(type);
-				config.setFixMetadata(fixMetadata);
-				try (InputStream toProcess = new FileInputStream(pdf);
-					OutputStream mrrReport = new FileOutputStream(xmlReport)) {
-					Processor processor = new ProcessorImpl();
-					processingResult = processor.validate(toProcess,
-							ItemDetails.fromFile(pdf), config, mrrReport);
-
-					ProcessingResult.ValidationSummary expectedValidation = type.isValidating() ?
-							ProcessingResult.ValidationSummary.ERROR_IN_VALIDATION :
-							ProcessingResult.ValidationSummary.VALIDATION_DISABLED;
-					assertEquals(processingResult.getValidationSummary(),
-							expectedValidation);
-
-					ProcessingResult.FeaturesSummary expectedFeatures = type.isFeatures() ?
-							ProcessingResult.FeaturesSummary.ERROR_IN_FEATURES :
-							ProcessingResult.FeaturesSummary.FEATURES_DISABLED;
-					assertEquals(processingResult.getFeaturesSummary(),
-							expectedFeatures);
-
-					ProcessingResult.MetadataFixingSummary expectedMetadata = fixMetadata ?
-							ProcessingResult.MetadataFixingSummary.ERROR_IN_FIXING :
-							ProcessingResult.MetadataFixingSummary.FIXING_DISABLED;
-					assertEquals(processingResult.getMetadataFixerSummary(),
-							expectedMetadata);
-				}
-			}
-		}
-	}
-
 
 	private static String getSystemIndependentPath(String path)
 			throws URISyntaxException {
