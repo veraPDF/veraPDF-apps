@@ -20,6 +20,7 @@ public final class GUIConstants {
 	public static final String PDF_NOT_CHOSEN_TEXT = "PDF file not chosen";
 	public static final String FIX_METADATA_FOLDER_CHOOSE_BUTTON = "Choose";
 	public static final String CHOOSE_PROFILE_BUTTON_TEXT = "Choose Profile";
+	public static final String CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT = "Please, specify validation profile";
 	public static final String CUSTOM_PROFILE_COMBOBOX_TEXT = "Custom profile";
 	public static final String AUTO_FLAVOUR_COMBOBOX_TEXT = "Auto-detection";
 	public static final String VALIDATION_PROFILE_NOT_CHOSEN = "Validation profile not chosen";
@@ -73,7 +74,7 @@ public final class GUIConstants {
 	public static final int ABOUTDIALOG_COORD_Y = 150;
 	public static final int SETTINGSDIALOG_COORD_X = 150;
 	public static final int SETTINGSDIALOG_COORD_Y = 150;
-	public static final int SETTINGSDIALOD_MAX_CHARS_TEXTFILD = 19;
+	public static final int SETTINGSDIALOG_MAX_CHARS_TEXTFILD = 19;
 	public static final int PREFERRED_WIDTH = 450;
 	public static final int PREFERRED_SIZE_WIDTH = 450;
 	public static final int PREFERRED_SIZE_HEIGHT = 200;

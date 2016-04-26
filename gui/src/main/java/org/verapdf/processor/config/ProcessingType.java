@@ -1,4 +1,4 @@
-package org.verapdf.gui.tools;
+package org.verapdf.processor.config;
 
 /**
  * @author Evgeniy Muravitskiy
