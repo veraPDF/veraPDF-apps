@@ -35,7 +35,7 @@ class LogoPanel extends JPanel {
 
 		setBackground(backgroundColor);
 
-		setPreferredSize(new Dimension(GUIConstants.LOGOPANEL_PREFERRED_SIZE_WIDTH, GUIConstants.LOGOPANEL_PREFERRED_SIZE_HEIGHT));
+		setPreferredSize(new Dimension(GUIConstants.LOGO_PANEL_PREFERRED_SIZE_WIDTH, GUIConstants.LOGO_PANEL_PREFERRED_SIZE_HEIGHT));
 	}
 
 	/**

@@ -43,10 +43,10 @@ final class VeraPdfCliProcessor {
             try {
                 config = ConfigIO.readConfig();
             } catch (IOException e) {
-                LOGGER.error("Can not read config file", e);
+                LOGGER.error("Can not read config file. Using default config", e);
                 this.config = new Config();
             } catch (JAXBException e) {
-                LOGGER.error("Cannot parse config XML", e);
+                LOGGER.error("Cannot parse config XML. Using default config", e);
                 this.config = new Config();
             }
         } else {
@@ -74,16 +74,8 @@ final class VeraPdfCliProcessor {
     }
 
     static ProcessingType processingTypeFromArgs(final VeraCliArgParser args) {
-        if(args.getFlavour() != PDFAFlavour.NO_FLAVOUR &&
-                args.extractFeatures()) {
-            return ProcessingType.VALIDATING_AND_FEATURES;
-        } else if(args.getFlavour() == PDFAFlavour.NO_FLAVOUR
-                && args.extractFeatures()) {
-            return ProcessingType.FEATURES;
-        } else if(args.getFlavour() != PDFAFlavour.NO_FLAVOUR &&
-                !args.extractFeatures()) {
-            return ProcessingType.VALIDATING;
-        } else throw new IllegalArgumentException("Processing type is not chosen");
+        boolean isValidating = args.getFlavour() != PDFAFlavour.NO_FLAVOUR;
+        return ProcessingType.getType(isValidating, args.extractFeatures());
     }
 
     void processPaths(final List<String> pdfPaths) {

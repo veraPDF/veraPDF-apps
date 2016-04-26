@@ -10,7 +10,6 @@ import org.verapdf.report.HTMLReport;
 import org.verapdf.report.ItemDetails;
 
 import javax.swing.*;
-import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 import java.io.*;
 
@@ -22,6 +21,9 @@ import java.io.*;
 class ValidateWorker extends SwingWorker<ProcessingResult, Integer> {
 
     private static final Logger LOGGER = Logger.getLogger(ValidateWorker.class);
+
+    private static final String ERROR_IN_OPEN_STREAMS = "Can't open stream from PDF file or can't open stream to temporary XML report file";
+    private static final String ERROR_IN_CREATING_TEMP_FILE = "Can't create temporary file for XML report";
 
     private File pdf;
     private CheckerPanel parent;
@@ -47,16 +49,27 @@ class ValidateWorker extends SwingWorker<ProcessingResult, Integer> {
             this.xmlReport.deleteOnExit();
             this.htmlReport = null;
         } catch (IOException e) {
-            LOGGER.error("Can't create temporary file for XML report", e);
+            LOGGER.error(ERROR_IN_CREATING_TEMP_FILE, e);
+            parent.errorInValidatingOccur(ERROR_IN_CREATING_TEMP_FILE + ": ", e);
         }
         try (InputStream toProcess = new FileInputStream(pdf);
              OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
             Processor processor = new ProcessorImpl();
             processingResult = processor.validate(toProcess, ItemDetails.fromFile(pdf),
                     settings, mrrReport);
-            writeHtmlReport();
         } catch (IOException e) {
-            LOGGER.error("Can't open stream from PDF file or can't open stream to temporary XML report file", e);
+            LOGGER.error(ERROR_IN_OPEN_STREAMS, e);
+            parent.errorInValidatingOccur(ERROR_IN_OPEN_STREAMS + ": ", e);
+        }
+
+        for (String errorMessage : processingResult.getErrorMessages()) {
+            JOptionPane.showMessageDialog(this.parent,
+                    errorMessage,
+                    GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+        }
+
+        if (processingResult.getReportSummary() == ProcessingResult.ReportSummary.REPORT_SUCCEED) {
+            writeHtmlReport();
         }
 
         return processingResult;
@@ -79,17 +92,17 @@ class ValidateWorker extends SwingWorker<ProcessingResult, Integer> {
 
             } catch (IOException | TransformerException e) {
                 JOptionPane.showMessageDialog(this.parent,
-                        GUIConstants.ERROR_IN_SAVING_HTML_REPORT,
+                        GUIConstants.ERROR_IN_SAVING_HTML_REPORT + e.getMessage(),
                         GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
                 LOGGER.error("Exception saving the HTML report", e);
                 this.htmlReport = null;
             }
-        } catch (IOException | JAXBException e) {
+        } catch (IOException e) {
             JOptionPane.showMessageDialog(this.parent,
-                    GUIConstants.ERROR_IN_SAVING_XML_REPORT,
+                    GUIConstants.ERROR_IN_SAVING_HTML_REPORT + e.getMessage(),
                     GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-            LOGGER.error("Exception saving the XML report", e);
-            this.xmlReport = null;
+            LOGGER.error("Exception saving the HTML report", e);
+            this.htmlReport = null;
         }
     }
 }

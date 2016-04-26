@@ -36,7 +36,7 @@ class SettingsPanel extends JPanel {
 	private JTextField profilesWikiPath;
 
 	SettingsPanel() throws IOException {
-		setBorder(new EmptyBorder(GUIConstants.EMPTYBORDER_INSETS, GUIConstants.EMPTYBORDER_INSETS, GUIConstants.EMPTYBORDER_INSETS, GUIConstants.EMPTYBORDER_INSETS));
+		setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS));
 		setLayout(new BorderLayout());
 
 		JPanel panel = new JPanel();
@@ -74,7 +74,7 @@ class SettingsPanel extends JPanel {
 		panel.add(panel2);
 
 		panel.add(new JLabel(GUIConstants.FIX_METADATA_PREFIX_LABEL_TEXT));
-		this.fixMetadataPrefix = new JTextField(GUIConstants.SETTINGSDIALOG_MAX_CHARS_TEXTFILD);
+		this.fixMetadataPrefix = new JTextField(GUIConstants.SETTINGS_DIALOG_MAX_CHARS_TEXTFIELD);
 		this.fixMetadataPrefix.setTransferHandler(null);
 		panel.add(this.fixMetadataPrefix);
 
@@ -103,7 +103,7 @@ class SettingsPanel extends JPanel {
 
 			}
 		});
-		this.fixMetadataFolder = new JTextField(GUIConstants.SETTINGSDIALOG_MAX_CHARS_TEXTFILD);
+		this.fixMetadataFolder = new JTextField(GUIConstants.SETTINGS_DIALOG_MAX_CHARS_TEXTFIELD);
 		this.fixMetadataFolder.setToolTipText(GUIConstants.SELECTED_PATH_FOR_FIXER_TOOLTIP);
 		JPanel panel4 = new JPanel();
 		panel4.setLayout(new BoxLayout(panel4, BoxLayout.X_AXIS));
@@ -126,7 +126,7 @@ class SettingsPanel extends JPanel {
 		});
 
 		panel.add(new JLabel(GUIConstants.SELECTED_PROFILES_WIKI_PATH));
-		this.profilesWikiPath = new JTextField(GUIConstants.SETTINGSDIALOG_MAX_CHARS_TEXTFILD);
+		this.profilesWikiPath = new JTextField(GUIConstants.SETTINGS_DIALOG_MAX_CHARS_TEXTFIELD);
 		panel.add(this.profilesWikiPath);
 
 
@@ -204,7 +204,7 @@ class SettingsPanel extends JPanel {
 			this.dialog.setTitle(title);
 		}
 
-		this.dialog.setLocation(GUIConstants.SETTINGSDIALOG_COORD_X, GUIConstants.SETTINGSDIALOG_COORD_Y);
+		this.dialog.setLocation(GUIConstants.SETTINGS_DIALOG_COORD_X, GUIConstants.SETTINGS_DIALOG_COORD_Y);
 		this.dialog.setVisible(true);
 
 		return this.ok;

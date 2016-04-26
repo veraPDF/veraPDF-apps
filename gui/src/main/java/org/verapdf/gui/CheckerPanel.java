@@ -20,6 +20,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
@@ -78,36 +79,36 @@ class CheckerPanel extends JPanel {
 		this.chosenPDF = new JTextField(GUIConstants.PDF_NOT_CHOSEN_TEXT);
 		this.chosenPDF.setEditable(false);
 		setGridBagConstraintsParameters(gbc,
-				GUIConstants.CHOSENPDF_LABEL_CONSTRAINT_GRIDX,
-				GUIConstants.CHOSENPDF_LABEL_CONSTRAINT_GRIDY,
-				GUIConstants.CHOSENPDF_LABEL_CONSTRAINT_WEIGHTX,
-				GUIConstants.CHOSENPDF_LABEL_CONSTRAINT_WEIGHTY,
-				GUIConstants.CHOSENPDF_LABEL_CONSTRAINT_GRIDWIDTH,
-				GUIConstants.CHOSENPDF_LABEL_CONSTRAINT_GRIDHEIGHT,
+				GUIConstants.CHOSEN_PDF_LABEL_CONSTRAINT_GRID_X,
+				GUIConstants.CHOSEN_PDF_LABEL_CONSTRAINT_GRID_Y,
+				GUIConstants.CHOSEN_PDF_LABEL_CONSTRAINT_WEIGHT_X,
+				GUIConstants.CHOSEN_PDF_LABEL_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.CHOSEN_PDF_LABEL_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.CHOSEN_PDF_LABEL_CONSTRAINT_GRID_HEIGHT,
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.chosenPDF, gbc);
 		this.add(this.chosenPDF);
 
 		JButton choosePDF = new JButton(GUIConstants.CHOOSE_PDF_BUTTON_TEXT);
 		setGridBagConstraintsParameters(gbc,
-				GUIConstants.CHOOSEPDF_BUTTON_CONSTRAINT_GRIDX,
-				GUIConstants.CHOOSEPDF_BUTTON_CONSTRAINT_GRIDY,
-				GUIConstants.CHOOSEPDF_BUTTON_CONSTRAINT_WEIGHTX,
-				GUIConstants.CHOOSEPDF_BUTTON_CONSTRAINT_WEIGHTY,
-				GUIConstants.CHOOSEPDF_BUTTON_CONSTRAINT_GRIDWIDTH,
-				GUIConstants.CHOOSEPDF_BUTTON_CONSTRAINT_GRIDHEIGHT,
+				GUIConstants.CHOOSE_PDF_BUTTON_CONSTRAINT_GRID_X,
+				GUIConstants.CHOOSE_PDF_BUTTON_CONSTRAINT_GRID_Y,
+				GUIConstants.CHOOSE_PDF_BUTTON_CONSTRAINT_WEIGHT_X,
+				GUIConstants.CHOOSE_PDF_BUTTON_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.CHOOSE_PDF_BUTTON_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.CHOOSE_PDF_BUTTON_CONSTRAINT_GRID_HEIGHT,
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(choosePDF, gbc);
 		this.add(choosePDF);
 
 		final JLabel processType = new JLabel(GUIConstants.PROCESSING_TYPE);
 		setGridBagConstraintsParameters(gbc,
-				GUIConstants.PROCESSTYPE_LABEL_CONSTRAINT_GRIDX,
-				GUIConstants.PROCESSTYPE_LABEL_CONSTRAINT_GRIDY,
-				GUIConstants.PROCESSTYPE_LABEL_CONSTRAINT_WEIGHTX,
-				GUIConstants.PROCESSTYPE_LABEL_CONSTRAINT_WEIGHTY,
-				GUIConstants.PROCESSTYPE_LABEL_CONSTRAINT_GRIDWIDTH,
-				GUIConstants.PROCESSTYPE_LABEL_CONSTRAINT_GRIDHEIGHT,
+				GUIConstants.PROCESS_TYPE_LABEL_CONSTRAINT_GRID_X,
+				GUIConstants.PROCESS_TYPE_LABEL_CONSTRAINT_GRID_Y,
+				GUIConstants.PROCESS_TYPE_LABEL_CONSTRAINT_WEIGHT_X,
+				GUIConstants.PROCESS_TYPE_LABEL_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.PROCESS_TYPE_LABEL_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.PROCESS_TYPE_LABEL_CONSTRAINT_GRID_HEIGHT,
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(processType, gbc);
 		this.add(processType);
@@ -117,12 +118,12 @@ class CheckerPanel extends JPanel {
 		ProcessingTypeRenderer processingTypeRenderer = new ProcessingTypeRenderer();
 		processingType.setRenderer(processingTypeRenderer);
 		setGridBagConstraintsParameters(gbc,
-				GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDX,
-				GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDY,
-				GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_WEIGHTX,
-				GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_WEIGHTY,
-				GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDWIDTH,
-				GUIConstants.PROCESSINGTYPE_COMBOBOX_CONSTRAINT_GRIDHEIGHT,
+				GUIConstants.PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_X,
+				GUIConstants.PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_Y,
+				GUIConstants.PROCESSING_TYPE_COMBOBOX_CONSTRAINT_WEIGHT_X,
+				GUIConstants.PROCESSING_TYPE_COMBOBOX_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_HEIGHT,
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.processingType, gbc);
 		this.add(this.processingType);
@@ -130,12 +131,12 @@ class CheckerPanel extends JPanel {
 		this.fixMetadata = new JCheckBox(GUIConstants.FIX_METADATA_LABEL_TEXT);
 		this.fixMetadata.setSelected(config.isFixMetadata());
 		setGridBagConstraintsParameters(gbc,
-				GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDX,
-				GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDY,
-				GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_WEIGHTX,
-				GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_WEIGHTY,
-				GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDWIDTH,
-				GUIConstants.FIXMETADATA_CHECKBOX_CONSTRAINT_GRIDHEIGHT,
+				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_X,
+				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_Y,
+				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_WEIGHT_X,
+				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_HEIGHT,
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.fixMetadata, gbc);
 		this.add(this.fixMetadata);
@@ -158,12 +159,12 @@ class CheckerPanel extends JPanel {
 		chooseFlavour.setRenderer(renderer);
 		chooseFlavour.setSelectedItem(PDFAFlavour.PDFA_1_B);
 		setGridBagConstraintsParameters(gbc,
-				GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDX,
-				GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDY,
-				GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_WEIGHTX,
-				GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_WEIGHTY,
-				GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDWIDTH,
-				GUIConstants.CHOOSEFLAVOUR_COMBOBOX_CONSTRAINT_GRIDHEIGHT,
+				GUIConstants.CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_X,
+				GUIConstants.CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_Y,
+				GUIConstants.CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_WEIGHT_X,
+				GUIConstants.CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_HEIGHT,
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(chooseFlavour, gbc);
 		this.add(chooseFlavour);
@@ -173,16 +174,16 @@ class CheckerPanel extends JPanel {
 		this.chosenProfile.setEditable(false);
 		chosenProfile.setEnabled(false);
 		setGridBagConstraintsParameters(gbc,
-				GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_GRIDX,
-				GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_GRIDY,
-				GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_WEIGHTX,
-				GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_WEIGHTY,
-				GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_GRIDWIDTH,
-				GUIConstants.CHOSENPROFILE_LABEL_CONSTRAINT_GRIDHEIGHT,
+				GUIConstants.CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_X,
+				GUIConstants.CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_Y,
+				GUIConstants.CHOSEN_PROFILE_LABEL_CONSTRAINT_WEIGHT_X,
+				GUIConstants.CHOSEN_PROFILE_LABEL_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_HEIGHT,
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.chosenProfile, gbc);
 		this.add(this.chosenProfile);
-		if(!this.config.getValidationProfile().toString().equals("")) {
+		if (!this.config.getValidationProfile().toString().equals("")) {
 			this.chosenProfile.setText(
 					this.config.getValidationProfile().toAbsolutePath().toString());
 		} else {
@@ -193,12 +194,12 @@ class CheckerPanel extends JPanel {
 				GUIConstants.CHOOSE_PROFILE_BUTTON_TEXT);
 		chooseProfile.setEnabled(false);
 		setGridBagConstraintsParameters(gbc,
-				GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_GRIDX,
-				GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_GRIDY,
-				GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_WEIGHTX,
-				GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_WEIGHTY,
-				GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_GRIDWIDTH,
-				GUIConstants.CHOOSEPROFILE_BUTTON_CONSTRAINT_GRIDHEIGHT,
+				GUIConstants.CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_X,
+				GUIConstants.CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_Y,
+				GUIConstants.CHOOSE_PROFILE_BUTTON_CONSTRAINT_WEIGHT_X,
+				GUIConstants.CHOOSE_PROFILE_BUTTON_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_HEIGHT,
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(chooseProfile, gbc);
 		this.add(chooseProfile);
@@ -207,12 +208,12 @@ class CheckerPanel extends JPanel {
 		this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
 		this.resultLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 		setGridBagConstraintsParameters(gbc,
-				GUIConstants.RESULT_LABEL_CONSTRAINT_GRIDX,
-				GUIConstants.RESULT_LABEL_CONSTRAINT_GRIDY,
-				GUIConstants.RESULT_LABEL_CONSTRAINT_WEIGHTX,
-				GUIConstants.RESULT_LABEL_CONSTRAINT_WEIGHTY,
-				GUIConstants.RESULT_LABEL_CONSTRAINT_GRIDWIDTH,
-				GUIConstants.RESULT_LABEL_CONSTRAINT_GRIDHEIGHT,
+				GUIConstants.RESULT_LABEL_CONSTRAINT_GRID_X,
+				GUIConstants.RESULT_LABEL_CONSTRAINT_GRID_Y,
+				GUIConstants.RESULT_LABEL_CONSTRAINT_WEIGHT_X,
+				GUIConstants.RESULT_LABEL_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.RESULT_LABEL_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.RESULT_LABEL_CONSTRAINT_GRID_HEIGHT,
 				GridBagConstraints.CENTER);
 		gbl.setConstraints(this.resultLabel, gbc);
 		this.add(this.resultLabel);
@@ -221,12 +222,12 @@ class CheckerPanel extends JPanel {
 		this.progressBar.setIndeterminate(true);
 		this.progressBar.setVisible(false);
 		setGridBagConstraintsParameters(gbc,
-				GUIConstants.PROGRESSBAR_CONSTRAINT_GRIDX,
-				GUIConstants.PROGRESSBAR_CONSTRAINT_GRIDY,
-				GUIConstants.PROGRESSBAR_CONSTRAINT_WEIGHTX,
-				GUIConstants.PROGRESSBAR_CONSTRAINT_WEIGHTY,
-				GUIConstants.PROGRESSBAR_CONSTRAINT_GRIDWIDTH,
-				GUIConstants.PROGRESSBAR_CONSTRAINT_GRIDHEIGHT,
+				GUIConstants.PROGRESSBAR_CONSTRAINT_GRID_X,
+				GUIConstants.PROGRESSBAR_CONSTRAINT_GRID_Y,
+				GUIConstants.PROGRESSBAR_CONSTRAINT_WEIGHT_X,
+				GUIConstants.PROGRESSBAR_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.PROGRESSBAR_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.PROGRESSBAR_CONSTRAINT_GRID_HEIGHT,
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.progressBar, gbc);
 		this.add(this.progressBar);
@@ -234,12 +235,12 @@ class CheckerPanel extends JPanel {
 		this.validate = new JButton(GUIConstants.VALIDATE_BUTTON_TEXT);
 		this.validate.setEnabled(false);
 		setGridBagConstraintsParameters(gbc,
-				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRIDX,
-				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRIDY,
-				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_WEIGHTX,
-				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_WEIGHTY,
-				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRIDWIDTH,
-				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRIDHEIGHT,
+				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_X,
+				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_Y,
+				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_WEIGHT_X,
+				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_HEIGHT,
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.validate, gbc);
 		this.add(this.validate);
@@ -250,18 +251,18 @@ class CheckerPanel extends JPanel {
 				GUIConstants.REPORT_PANEL_LINES_NUMBER,
 				GUIConstants.REPORT_PANEL_COLUMNS_NUMBER));
 		setGridBagConstraintsParameters(gbc,
-				GUIConstants.REPORT_PANEL_CONSTRAINT_GRIDX,
-				GUIConstants.REPORT_PANEL_CONSTRAINT_GRIDY,
-				GUIConstants.REPORT_PANEL_CONSTRAINT_WEIGHTX,
-				GUIConstants.REPORT_PANEL_CONSTRAINT_WEIGHTY,
-				GUIConstants.REPORT_PANEL_CONSTRAINT_GRIDWIDTH,
-				GUIConstants.REPORT_PANEL_CONSTRAINT_GRIDHEIGHT,
+				GUIConstants.REPORT_PANEL_CONSTRAINT_GRID_X,
+				GUIConstants.REPORT_PANEL_CONSTRAINT_GRID_Y,
+				GUIConstants.REPORT_PANEL_CONSTRAINT_WEIGHT_X,
+				GUIConstants.REPORT_PANEL_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.REPORT_PANEL_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.REPORT_PANEL_CONSTRAINT_GRID_HEIGHT,
 				GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(reports, gbc);
 		this.add(reports);
 
 		LogoPanel xmlLogo = new LogoPanel(GUIConstants.XML_LOGO_NAME,
-				reports.getBackground(), GUIConstants.XMLLOGO_BORDER_WIDTH);
+				reports.getBackground(), GUIConstants.XML_LOGO_BORDER_WIDTH);
 		reports.add(xmlLogo);
 
 		this.saveXML = new JButton(GUIConstants.SAVE_REPORT_BUTTON_TEXT);
@@ -273,7 +274,7 @@ class CheckerPanel extends JPanel {
 		reports.add(this.viewXML);
 
 		LogoPanel htmlLogo = new LogoPanel(GUIConstants.HTML_LOGO_NAME,
-				reports.getBackground(), GUIConstants.HTMLLOGO_BORDER_WIDTH);
+				reports.getBackground(), GUIConstants.HTML_LOGO_BORDER_WIDTH);
 		reports.add(htmlLogo);
 
 		this.saveHTML = new JButton(GUIConstants.SAVE_HTML_REPORT_BUTTON_TEXT);
@@ -434,19 +435,26 @@ class CheckerPanel extends JPanel {
 		if (!this.isValidationErrorOccurred) {
 			try {
 				ProcessingResult result = this.validateWorker.get();
-				if (result.getValidationSummary()
-						== ProcessingResult.ValidationSummary.ERROR_IN_VALIDATION ||
-						result.getValidationSummary()
-								== ProcessingResult.ValidationSummary.VALIDATION_DISABLED) {
-					this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
-					this.resultLabel.setText(GUIConstants.FEATURES_GENERATED_CORRECT);
-				} else if (result.getValidationSummary()
-						== ProcessingResult.ValidationSummary.FILE_VALID) {
+				ProcessingResult.ValidationSummary validationSummary = result.getValidationSummary();
+				List<String> errorMessages = result.getErrorMessages();
+				if (!errorMessages.isEmpty()
+						&& validationSummary != ProcessingResult.ValidationSummary.FILE_VALID
+						&& validationSummary != ProcessingResult.ValidationSummary.FILE_NOT_VALID) {
+					this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
+					this.resultLabel.setText(errorMessages.get(0));
+				}
+
+				if (validationSummary == ProcessingResult.ValidationSummary.FILE_VALID) {
 					this.resultLabel.setForeground(GUIConstants.VALIDATION_SUCCESS_COLOR);
 					this.resultLabel.setText(GUIConstants.VALIDATION_OK);
-				} else {
+				} else if (validationSummary == ProcessingResult.ValidationSummary.FILE_NOT_VALID) {
 					this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
 					this.resultLabel.setText(GUIConstants.VALIDATION_FALSE);
+				} else if (errorMessages.isEmpty()) {
+					// If we did not obtain validation result and there is no errors,
+					// then it was features process and it finished correctly
+					this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
+					this.resultLabel.setText(GUIConstants.FEATURES_GENERATED_CORRECT);
 				}
 
 				this.resultLabel.setVisible(true);
@@ -462,9 +470,6 @@ class CheckerPanel extends JPanel {
 				if (htmlReport != null) {
 					this.saveHTML.setEnabled(true);
 					this.viewHTML.setEnabled(true);
-				}
-				for (String message : result.getErrorMessages()) {
-					errorInValidatingOccur(message, new Exception(""));
 				}
 			} catch (InterruptedException e) {
 				errorInValidatingOccur("Process has been interrupted: ", e);
@@ -593,7 +598,7 @@ class CheckerPanel extends JPanel {
 					}
 				} catch (IOException e) {
 					JOptionPane.showMessageDialog(CheckerPanel.this,
-							GUIConstants.ERROR_IN_SAVING_HTML_REPORT,
+							GUIConstants.ERROR_IN_SAVING_HTML_REPORT + e.getMessage(),
 							GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 					LOGGER.error("Exception saving " + extension.toUpperCase()
 							+ " report", e);
@@ -603,7 +608,7 @@ class CheckerPanel extends JPanel {
 	}
 
 	private void changeConfig() {
-		if(this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR) {
+		if (this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR) {
 			this.config.setValidationProfilePath(FileSystems.getDefault().getPath(""));
 		}
 		this.config.setProcessingType(
@@ -619,8 +624,7 @@ class CheckerPanel extends JPanel {
 				(!this.config.getValidationProfile().toString().equals("") ||
 						this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR)) {
 			validate.setEnabled(true);
-		}
-		else {
+		} else {
 			validate.setEnabled(false);
 		}
 	}
@@ -648,7 +652,7 @@ class CheckerPanel extends JPanel {
 			if (value == PDFAFlavour.NO_FLAVOUR) {
 				this.setText(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
 				return this;
-			} else if(value == PDFAFlavour.AUTO) {
+			} else if (value == PDFAFlavour.AUTO) {
 				this.setText(GUIConstants.AUTO_FLAVOUR_COMBOBOX_TEXT);
 				return this;
 			} else if (value.toString().matches("\\d\\w")) {
