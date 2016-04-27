@@ -37,7 +37,7 @@ public class ProcessorImplProfileTest {
             throws ProfileException, FileNotFoundException, IOException,
             JAXBException {
         Config config = new Config();
-        assertTrue(ProcessorImpl.profileFromConfig(config) == null);
+        assertTrue(new ProcessorImpl().profileFromConfig(config) == null);
         ProfileDirectory directory = Profiles.getVeraProfileDirectory();
         assertTrue(directory.getValidationProfiles().size() > 0);
         for (ValidationProfile profile : directory.getValidationProfiles()) {
@@ -57,15 +57,15 @@ public class ProcessorImplProfileTest {
 		try (InputStream is = new FileInputStream(profileFile)) {
 			ValidationProfile profile = Profiles.profileFromXml(is);
 			assertEquals(flavour,
-					ProcessorImpl.profileFromConfig(config).getPDFAFlavour());
-			assertTrue(profile != ProcessorImpl.profileFromConfig(config));
+					new ProcessorImpl().profileFromConfig(config).getPDFAFlavour());
+			assertTrue(profile != new ProcessorImpl().profileFromConfig(config));
 			assertEquals(
 					Profiles.profileToXml(profile, Boolean.TRUE)
 							+ "\n"
 							+ Profiles.profileToXml(
-									ProcessorImpl.profileFromConfig(config),
+							new ProcessorImpl().profileFromConfig(config),
 									Boolean.TRUE), profile.getRules(),
-					ProcessorImpl.profileFromConfig(config).getRules());
+					new ProcessorImpl().profileFromConfig(config).getRules());
 		}
     }
 }
