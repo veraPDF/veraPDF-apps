@@ -89,14 +89,6 @@ class ValidateWorker extends SwingWorker<ValidationResult, Integer> {
 					this.profile = Profiles.getVeraProfileDirectory().
 							getValidationProfileByFlavour(parser.getFlavour());
 				} catch (NoSuchElementException re) {
-                    //TODO: remove/update next two if statements when we will cover not only B conformance for 2 and 3 parts
-                    if (parser.getFlavour().getPart() == PDFAFlavour.Specification.ISO_19005_2) {
-                        this.profile = Profiles.getVeraProfileDirectory().
-                                getValidationProfileByFlavour(PDFAFlavour.PDFA_2_B);
-                    } else if (parser.getFlavour().getPart() == PDFAFlavour.Specification.ISO_19005_3) {
-                        this.profile = Profiles.getVeraProfileDirectory().
-                                getValidationProfileByFlavour(PDFAFlavour.PDFA_3_B);
-                    }
 					LOGGER.warn(re);
 				}
 			}
