@@ -14,7 +14,7 @@ import javax.xml.transform.TransformerException;
 import java.io.*;
 
 /**
- * Validates PDF in a new threat.
+ * Validates PDF in a new thread.
  *
  * @author Maksim Bezrukov
  */
