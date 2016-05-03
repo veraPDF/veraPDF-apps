@@ -5,6 +5,7 @@ import com.beust.jcommander.IStringConverter;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+import org.verapdf.processor.config.FormatOption;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,6 +44,8 @@ public class VeraCliArgParser {
 	final static String FIX_METADATA_PREFIX = OPTION_SEP + "prefix";
 	final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder";
 	final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
+	final static String LOAD_CONFIG_FLAG = FLAG_SEP + "c";
+	final static String LOAD_CONFIG = OPTION_SEP + "config";
 	final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
 	final static String USE_PLUGINS = OPTION_SEP + "plugins";
 
@@ -93,6 +96,9 @@ public class VeraCliArgParser {
 
 	@Parameter(names = { PROFILES_WIKI_FLAG, PROFILES_WIKI }, description = "The path to the folder containing Validation Profiles wiki.")
 	private String profilesWikiPath = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
+
+	@Parameter(names = {LOAD_CONFIG_FLAG, LOAD_CONFIG}, description = "Loads config form default file, all config flags are ignored.")
+	private boolean isLoadingConfig = false;
 
 	@Parameter(names = {USE_PLUGINS}, description = "Uses plugins in feature extracting.")
 	private boolean pluginsEnabled = false;
@@ -217,6 +223,13 @@ public class VeraCliArgParser {
 	 */
 	public String getProfilesWikiPath() {
 		return this.profilesWikiPath;
+	}
+
+	/**
+	 * @return true if config is loaded from default file
+	 */
+	public boolean isLoadingConfig() {
+		return isLoadingConfig;
 	}
 
 	/**

@@ -1,10 +1,12 @@
-package org.verapdf.gui.tools;
+package org.verapdf.processor.config;
 
 import org.apache.log4j.Logger;
-import org.verapdf.gui.config.Config;
 
 import javax.xml.bind.JAXBException;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 

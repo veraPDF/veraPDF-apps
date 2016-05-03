@@ -1,4 +1,4 @@
-package org.verapdf.gui.tools;
+package org.verapdf.processor.config;
 
 /**
  * @author Evgeniy Muravitskiy
@@ -17,6 +17,20 @@ public enum ProcessingType {
 	ProcessingType(String value, String text) {
 		this.value = value;
 		this.text = text;
+	}
+
+	public static ProcessingType getType(boolean isValidation, boolean isFeatures) {
+		if (isValidation) {
+			if (isFeatures) {
+				return VALIDATING_AND_FEATURES;
+			} else {
+				return VALIDATING;
+			}
+		} else if (isFeatures) {
+			return FEATURES;
+		} else {
+			throw new IllegalArgumentException("Processing type should contain at least one process");
+		}
 	}
 
 	public boolean isValidating() {
