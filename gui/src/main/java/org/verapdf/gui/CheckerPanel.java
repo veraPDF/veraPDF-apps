@@ -482,7 +482,6 @@ class CheckerPanel extends JPanel {
 
 	void errorInValidatingOccur(String message, Throwable e) {
 		LOGGER.error(e);
-		e.printStackTrace();
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
 		this.isValidationErrorOccurred = true;
