@@ -481,6 +481,7 @@ class CheckerPanel extends JPanel {
 	}
 
 	void errorInValidatingOccur(String message, Throwable e) {
+		LOGGER.error(e);
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
 		this.isValidationErrorOccurred = true;
@@ -488,7 +489,7 @@ class CheckerPanel extends JPanel {
 				GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 
 		this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
-		this.resultLabel.setText(message);
+		this.resultLabel.setText(message + e.getMessage());
 		this.resultLabel.setVisible(true);
 	}
 
