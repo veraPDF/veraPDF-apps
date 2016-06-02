@@ -170,6 +170,19 @@
               <outputDirectory>${project.build.directory}/staging/model</outputDirectory>
             </configuration>
           </execution>
+          <execution>
+            <id>plugin-pack-integration</id>
+            <phase>package</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>http://downloads.verapdf.org/dev/veraPDF-sample-plugin-pack.zip</url>
+              <unpack>false</unpack>
+              <skipCache>true</skipCache>
+              <outputDirectory>${project.build.directory}/staging/plugins</outputDirectory>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
 
