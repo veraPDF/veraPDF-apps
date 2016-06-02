@@ -4,8 +4,8 @@
 
     <xsl:output method="text"/>
 
-    <xsl:param name="argument"/>
-    <xsl:variable name="policyProfile" select="document($argument)"/>
+    <xsl:param name="policyProfilePath"/>
+    <xsl:variable name="policyProfile" select="document($policyProfilePath)"/>
 
     <xsl:template match="/">
         <xsl:call-template name="sum">
@@ -24,13 +24,13 @@
 
                 <xsl:variable name="weight">
                     <xsl:choose>
-                        <xsl:when test="$policyProfile/pp:policyProfile/pp:rulesConstants/pp:rule[@id=$id]">
+                        <xsl:when test="$policyProfile/pp:policyProfile/pp:rules/pp:rule[@id=$id]">
                             <xsl:value-of
-                                    select="$policyProfile/pp:policyProfile/pp:rulesConstants/pp:rule[@id=$id]/@weight"/>
+                                    select="$policyProfile/pp:policyProfile/pp:rules/pp:rule[@id=$id]/@weight"/>
                         </xsl:when>
-                        <xsl:when test="$policyProfile/pp:policyProfile/pp:rulesConstants/@defaultWeight">
+                        <xsl:when test="$policyProfile/pp:policyProfile/pp:rules/@defaultWeight">
                             <xsl:value-of
-                                    select="$policyProfile/pp:policyProfile/pp:rulesConstants/@defaultWeight"/>
+                                    select="$policyProfile/pp:policyProfile/pp:rules/@defaultWeight"/>
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:value-of select="1"/>
@@ -38,30 +38,30 @@
                     </xsl:choose>
                 </xsl:variable>
 
-                <xsl:variable name="f">
+                <xsl:variable name="count">
                     <xsl:choose>
-                        <xsl:when test="$policyProfile/pp:policyProfile/pp:rulesConstants/pp:rule[@id=$id]">
+                        <xsl:when test="$policyProfile/pp:policyProfile/pp:rules/pp:rule[@id=$id]">
                             <xsl:value-of
-                                    select="$policyProfile/pp:policyProfile/pp:rulesConstants/pp:rule[@id=$id]/@f"/>
+                                    select="$policyProfile/pp:policyProfile/pp:rules/pp:rule[@id=$id]/@count"/>
                         </xsl:when>
-                        <xsl:when test="$policyProfile/pp:policyProfile/pp:rulesConstants/@defaultF">
+                        <xsl:when test="$policyProfile/pp:policyProfile/pp:rules/@defaultCount">
                             <xsl:value-of
-                                    select="$policyProfile/pp:policyProfile/pp:rulesConstants/@defaultF"/>
+                                    select="$policyProfile/pp:policyProfile/pp:rules/@defaultCount"/>
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:value-of select="'all'"/>
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:variable>
-                <xsl:variable name="fValue">
+                <xsl:variable name="countValue">
                     <xsl:choose>
-                        <xsl:when test="$f='ignore'">
+                        <xsl:when test="$count='ignore'">
                             <xsl:value-of select="0"/>
                         </xsl:when>
-                        <xsl:when test="$f='one' and $vHead/@failedChecks&gt;0">
+                        <xsl:when test="$count='one' and $vHead/@failedChecks&gt;0">
                             <xsl:value-of select="1"/>
                         </xsl:when>
-                        <xsl:when test="$f='all'">
+                        <xsl:when test="$count='all'">
                             <xsl:value-of select="$vHead/@failedChecks"/>
                         </xsl:when>
                         <xsl:otherwise>
@@ -73,7 +73,7 @@
                 <xsl:call-template name="sum">
                     <xsl:with-param name="pList" select="$pList[position() > 1]"/>
                     <xsl:with-param name="pAccum"
-                                    select="$pAccum + $weight * $fValue"/>
+                                    select="$pAccum + $weight * $countValue"/>
                 </xsl:call-template>
             </xsl:when>
             <xsl:otherwise>
@@ -89,16 +89,19 @@
         <xsl:variable name="message">
             <xsl:choose>
                 <xsl:when
-                        test="$policyProfile/pp:policyProfile/pp:resultMessage/pp:message[@rangeStart&lt;=$pAccum and @rangeEnd&gt;=$pAccum]">
+                        test="$policyProfile/pp:policyProfile/pp:results/pp:result[(not(@rangeStart) or @rangeStart&lt;=$pAccum) and (not(@rangeEnd) or @rangeEnd&gt;=$pAccum)]">
                     <xsl:value-of
-                            select="$policyProfile/pp:policyProfile/pp:resultMessage/pp:message[@rangeStart&lt;=$pAccum and @rangeEnd&gt;=$pAccum]/@value"/>
+                            select="$policyProfile/pp:policyProfile/pp:results/pp:result[(not(@rangeStart) or @rangeStart&lt;=$pAccum) and (not(@rangeEnd) or @rangeEnd&gt;=$pAccum)]/@value"/>
                 </xsl:when>
                 <xsl:when
-                        test="$policyProfile/pp:policyProfile/pp:resultMessage/@default">
+                        test="$policyProfile/pp:policyProfile/pp:results/@default">
                     <xsl:value-of
-                            select="$policyProfile/pp:policyProfile/pp:resultMessage/@default"/>
+                            select="$policyProfile/pp:policyProfile/pp:results/@default"/>
                 </xsl:when>
-                <xsl:otherwise><xsl:value-of select="concat('There is no message for value ', $pAccum, ' and default message is missing')"/></xsl:otherwise>
+                <xsl:otherwise>
+                    <xsl:value-of
+                            select="concat('There is no message for value ', $pAccum, ' and default message is missing')"/>
+                </xsl:otherwise>
             </xsl:choose>
         </xsl:variable>
         <xsl:value-of select="$message"/>

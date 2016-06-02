@@ -10,7 +10,7 @@
 
     <xsl:output method="html"/>
 
-    <xsl:param name="argument"/>
+    <xsl:param name="wikiPath"/>
 
     <!-- HTML header and body wrapper -->
     <xsl:template match="/">
@@ -235,10 +235,10 @@
         <xsl:param name="tempWikiLink">
             <xsl:choose>
                 <xsl:when test="starts-with(@specification, 'ISO 19005-1')">
-                    <xsl:value-of select="concat($argument, 'PDFA-Part-1-rules')"/>
+                    <xsl:value-of select="concat($wikiPath, 'PDFA-Part-1-rules')"/>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:value-of select="concat($argument, 'PDFA-Parts-2-and-3-rules')"/>
+                    <xsl:value-of select="concat($wikiPath, 'PDFA-Parts-2-and-3-rules')"/>
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:param>
