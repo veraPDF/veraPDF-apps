@@ -16,6 +16,8 @@ import org.verapdf.report.ItemDetails;
 import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.nio.file.FileSystems;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -66,6 +68,14 @@ final class VeraPdfCliProcessor {
             config.setFlavour(args.getFlavour());
             config.setVerboseCli(args.isVerbose());
             config.setPluginsEnabled(args.isPluginsEnabled());
+            config.setReportFolderPath(args.getReportFolder());
+            config.setReportFilePath(args.getReportFile());
+        }
+        
+        if (!config.getReportFolder().isEmpty() && !config.getReportFile().isEmpty()) {
+            LOGGER.error("Report folder and report file defined together, switching to STDOUT.");
+            config.setReportFolderPath("");
+            config.setReportFilePath("");
         }
     }
 
@@ -145,7 +155,46 @@ final class VeraPdfCliProcessor {
     private void processStream(final ItemDetails item,
                                final InputStream toProcess) {
         Processor processor = new ProcessorImpl();
-        processor.validate(toProcess, item, this.config, System.out);
+        OutputStream outputReportStream = System.out;
+        boolean stdOut = true;
+        
+        if (!config.getReportFolder().isEmpty()) {
+            Path fileAbsolutePath = Paths.get(item.getName());
+            String pdfFileName = fileAbsolutePath.getFileName().toString();
+            String extension = "." + config.getReportType().toString();
+            String outputFileName = pdfFileName.replace(".pdf", extension);
+            
+            File outputFile = new File(config.getReportFolder(), outputFileName);
+            try {
+                outputReportStream = new FileOutputStream(outputFile);
+                stdOut = false;
+            }
+            catch (FileNotFoundException ex) {
+                outputReportStream = System.out;
+                stdOut = true;
+            }
+        }
+        
+        if (!config.getReportFile().isEmpty()) {
+            try {
+                outputReportStream = new FileOutputStream(config.getReportFile(), true);
+                stdOut = false;
+            }
+            catch (FileNotFoundException ex) {
+                outputReportStream = System.out;
+                stdOut = true;
+            }
+        }
+        
+        processor.validate(toProcess, item, this.config, outputReportStream);
+        
+        if (stdOut == false) {
+            try {
+                outputReportStream.close();
+            }
+            catch (IOException ex) {
+                LOGGER.error("Cannot close the report file: " + ex.toString() + "\n");
+            }
+        }
     }
-
 }

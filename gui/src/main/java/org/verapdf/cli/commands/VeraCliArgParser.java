@@ -48,6 +48,8 @@ public class VeraCliArgParser {
 	final static String LOAD_CONFIG = OPTION_SEP + "config";
 	final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
 	final static String USE_PLUGINS = OPTION_SEP + "plugins";
+	final static String REPORT_FILE = OPTION_SEP + "reportfile";
+	final static String REPORT_FOLDER = OPTION_SEP + "reportfolder";
 
 	@Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
 	private boolean help = false;
@@ -102,6 +104,12 @@ public class VeraCliArgParser {
 
 	@Parameter(names = {USE_PLUGINS}, description = "Uses plugins in feature extracting.")
 	private boolean pluginsEnabled = false;
+        
+	@Parameter(names = { REPORT_FOLDER }, description = "Save reports in folder.")
+	private String reportFolder = "";
+        
+	@Parameter(names = { REPORT_FILE }, description = "Save report to file")
+	private String reportFile = "";
 
 	@Parameter(description = "FILES")
 	private List<String> pdfPaths = new ArrayList<>();
@@ -236,7 +244,23 @@ public class VeraCliArgParser {
 	 * @return true if plugins should be used in feature extracting
 	 */
 	public boolean isPluginsEnabled() { return pluginsEnabled; }
+        
+        /**
+         * @author: Martin.Mancuska@gonitrom.com
+         * @return folder for reports
+         */
+	public String getReportFolder() {
+	    return this.reportFolder;
+	}
 
+	/**
+     * @author: Martin.Mancuska@gonitrom.com
+	 * @return output file for report
+	 */
+	public String getReportFile() {
+	    return this.reportFile;
+	}
+        
 	/**
 	 * JCommander parameter converter for {@link FormatOption}, see
 	 * {@link IStringConverter} and {@link FormatOption#fromOption(String)}.
