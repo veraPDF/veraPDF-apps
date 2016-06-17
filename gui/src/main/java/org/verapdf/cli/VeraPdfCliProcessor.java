@@ -19,6 +19,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Paths;
 import java.nio.file.Path;
 import java.util.List;
+import java.lang.StringBuilder;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -31,6 +32,8 @@ final class VeraPdfCliProcessor {
     final boolean recurse;
 
     private Config config;
+	
+	private String baseDirectory = "";
 
     private VeraPdfCliProcessor() throws IOException {
         this(new VeraCliArgParser());
@@ -96,8 +99,9 @@ final class VeraPdfCliProcessor {
         }
 
         for (String pdfPath : pdfPaths) {
-            File file = new File(pdfPath);
+			File file = new File(pdfPath);
             if (file.isDirectory()) {
+				baseDirectory = pdfPath;
                 processDir(file);
             } else {
                 processFile(file);
@@ -161,10 +165,35 @@ final class VeraPdfCliProcessor {
         if (!config.getReportFolder().isEmpty()) {
             Path fileAbsolutePath = Paths.get(item.getName());
             String pdfFileName = fileAbsolutePath.getFileName().toString();
+			String pdfFileDirectory = fileAbsolutePath.getParent().toString();
             String extension = "." + config.getReportType().toString();
             String outputFileName = pdfFileName.replace(".pdf", extension);
+			String reportFolder = config.getReportFolder();
             
-            File outputFile = new File(config.getReportFolder(), outputFileName);
+			if (pdfFileDirectory.length() > baseDirectory.length()) {
+				StringBuilder reportFolderBuilder = new StringBuilder();
+				reportFolderBuilder.append(reportFolder);
+			
+				String subDirectory = pdfFileDirectory.substring(baseDirectory.length());
+				reportFolderBuilder.append(File.separator);
+				reportFolderBuilder.append(subDirectory);
+				
+				reportFolder = reportFolderBuilder.toString();
+				
+				File dir = new File(reportFolder);
+				
+				if (!dir.exists()) {
+					try {
+						dir.mkdir();
+					}
+					catch (SecurityException ex) {
+						LOGGER.error("Cannot create subdirectories the: " + ex.toString() + "\n");
+						reportFolder = config.getReportFolder();
+					}
+				}
+			}
+			
+            File outputFile = new File(reportFolder, outputFileName);
             try {
                 outputReportStream = new FileOutputStream(outputFile);
                 stdOut = false;
