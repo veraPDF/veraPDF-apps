@@ -1,6 +1,8 @@
 package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
+import org.verapdf.core.ModelParsingException;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.processor.ProcessingResult;
 import org.verapdf.processor.Processor;
@@ -60,12 +62,16 @@ class ValidateWorker extends SwingWorker<ProcessingResult, Integer> {
         } catch (IOException e) {
             LOGGER.error(ERROR_IN_OPEN_STREAMS, e);
             parent.errorInValidatingOccur(ERROR_IN_OPEN_STREAMS + ": ", e);
-        }
-
-        for (String errorMessage : processingResult.getErrorMessages()) {
-            JOptionPane.showMessageDialog(this.parent,
-                    errorMessage,
-                    GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+        } catch (ModelParsingException e) {
+            if(e.getCause() instanceof InvalidPasswordException) {
+                LOGGER.error("Error: " + pdf.getName()
+                        + " is an encrypted PDF file.", e);
+            } else {
+                LOGGER.error("Error: " + pdf.getName()
+                        + " is not a PDF format file.", e);
+            }
+            parent.errorInValidatingOccur("Error in reading PDF file: "
+                    + e.getCause().getMessage(), e);
         }
 
         if (processingResult.getReportSummary() == ProcessingResult.ReportSummary.REPORT_SUCCEED) {

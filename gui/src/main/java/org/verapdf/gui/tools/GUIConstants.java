@@ -40,7 +40,8 @@ public final class GUIConstants {
 	public static final String TITLE = "PDF/A Conformance Checker";
 	public static final String ENCRYPTED_PDF = "Pdf document is encrypted.";
 	public static final String ERROR_IN_PARSING = "Failed to parse pdf document.";
-	public static final String ERROR_IN_VALIDATING = "Internal validation error. The PDF document might be corrupted";
+	public static final String ERROR_IN_VALIDATING = "Could not finish validation due to unexpected error.";
+	public static final String ERROR_IN_FEATURES = "Could not finish features collecting due to unexpected error.";
 	public static final String ERROR_IN_INCREMETAL_SAVE = "Some error in saving changes";
 	public static final String PDF = "pdf";
 	public static final String XML = "xml";
