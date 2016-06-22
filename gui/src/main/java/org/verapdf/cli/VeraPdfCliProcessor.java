@@ -101,7 +101,7 @@ final class VeraPdfCliProcessor {
         for (String pdfPath : pdfPaths) {
 			File file = new File(pdfPath);
             if (file.isDirectory()) {
-				baseDirectory = pdfPath;
+				baseDirectory = file.getAbsolutePath();
                 processDir(file);
             } else {
                 processFile(file);
@@ -175,7 +175,6 @@ final class VeraPdfCliProcessor {
 				reportFolderBuilder.append(reportFolder);
 			
 				String subDirectory = pdfFileDirectory.substring(baseDirectory.length());
-				reportFolderBuilder.append(File.separator);
 				reportFolderBuilder.append(subDirectory);
 				
 				reportFolder = reportFolderBuilder.toString();
@@ -184,7 +183,7 @@ final class VeraPdfCliProcessor {
 				
 				if (!dir.exists()) {
 					try {
-						dir.mkdir();
+						dir.mkdirs();
 					}
 					catch (SecurityException ex) {
 						LOGGER.error("Cannot create subdirectories the: " + ex.toString() + "\n");
@@ -200,7 +199,7 @@ final class VeraPdfCliProcessor {
             }
             catch (FileNotFoundException ex) {
                 outputReportStream = System.out;
-                stdOut = true;
+				stdOut = true;
             }
         }
         
