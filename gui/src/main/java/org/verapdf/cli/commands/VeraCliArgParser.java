@@ -48,6 +48,7 @@ public class VeraCliArgParser {
 	final static String LOAD_CONFIG = OPTION_SEP + "config";
 	final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
 	final static String USE_PLUGINS = OPTION_SEP + "plugins";
+	final static String POLICY_PROFILE = OPTION_SEP + "policyProfile";
 
 	@Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
 	private boolean help = false;
@@ -102,6 +103,9 @@ public class VeraCliArgParser {
 
 	@Parameter(names = {USE_PLUGINS}, description = "Uses plugins in feature extracting.")
 	private boolean pluginsEnabled = false;
+
+	@Parameter(names = {POLICY_PROFILE}, description = "Uses policy checks output with specified policy profile, output format option will be ignored.")
+	private String policyProfilePath = "";
 
 	@Parameter(description = "FILES")
 	private List<String> pdfPaths = new ArrayList<>();
@@ -160,6 +164,13 @@ public class VeraCliArgParser {
 	 */
 	public String saveFolder() {
 		return this.saveFolder;
+	}
+
+	/**
+	 * @return the policy profile path
+	 */
+	public String policyProfilePath() {
+		return policyProfilePath;
 	}
 
 	/**

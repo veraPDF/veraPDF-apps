@@ -303,10 +303,10 @@ class CheckerPanel extends JPanel {
 				ProcessingType item =
 						(ProcessingType) CheckerPanel.this.processingType.getSelectedItem();
 				switch (item) {
-					case VALIDATING:
+					case VALIDATION:
 						CheckerPanel.this.fixMetadata.setEnabled(true);
 						break;
-					case VALIDATING_AND_FEATURES:
+					case VALIDATION_AND_FEATURES:
 						CheckerPanel.this.fixMetadata.setEnabled(true);
 						break;
 					case FEATURES:
