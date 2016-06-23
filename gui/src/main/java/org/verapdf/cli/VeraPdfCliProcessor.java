@@ -58,6 +58,7 @@ final class VeraPdfCliProcessor {
             config.setMaxNumberOfDisplayedFailedChecks(args.maxFailuresDisplayed());
             config.setMetadataFixerPrefix(args.prefix());
             config.setFixMetadataPathFolder(FileSystems.getDefault().getPath(args.saveFolder()));
+            config.setPolicyProfilePath(FileSystems.getDefault().getPath(args.policyProfilePath()));
             config.setProfileWikiPath(args.getProfilesWikiPath());
             config.setFixMetadata(args.fixMetadata());
             config.setProcessingType(processingTypeFromArgs(args));

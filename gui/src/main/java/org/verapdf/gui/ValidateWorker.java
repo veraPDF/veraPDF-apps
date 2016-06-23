@@ -94,7 +94,7 @@ class ValidateWorker extends SwingWorker<ProcessingResult, Integer> {
             try (InputStream xmlStream = new FileInputStream(this.xmlReport);
                  OutputStream htmlStream = new FileOutputStream(
                          this.htmlReport)) {
-                HTMLReport.writeHTMLReport(xmlStream, htmlStream, this.settings.getProfileWikiPath());
+                HTMLReport.writeHTMLReport(xmlStream, htmlStream, this.settings.getProfileWikiPath(), true);
 
             } catch (IOException | TransformerException e) {
                 JOptionPane.showMessageDialog(this.parent,
