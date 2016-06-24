@@ -20,7 +20,6 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
@@ -157,7 +156,12 @@ class CheckerPanel extends JPanel {
 		chooseFlavour = new JComboBox<>(availableFlavours);
 		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
 		chooseFlavour.setRenderer(renderer);
-		chooseFlavour.setSelectedItem(PDFAFlavour.PDFA_1_B);
+		PDFAFlavour fromConfig = config.getFlavour();
+		if (availableFlavours.contains(fromConfig)) {
+			chooseFlavour.setSelectedItem(fromConfig);
+		} else {
+			chooseFlavour.setSelectedItem(PDFAFlavour.PDFA_1_B);
+		}
 		setGridBagConstraintsParameters(gbc,
 				GUIConstants.CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_X,
 				GUIConstants.CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_Y,
@@ -436,25 +440,24 @@ class CheckerPanel extends JPanel {
 			try {
 				ProcessingResult result = this.validateWorker.get();
 				ProcessingResult.ValidationSummary validationSummary = result.getValidationSummary();
-				List<String> errorMessages = result.getErrorMessages();
-				if (!errorMessages.isEmpty()
-						&& validationSummary != ProcessingResult.ValidationSummary.FILE_VALID
-						&& validationSummary != ProcessingResult.ValidationSummary.FILE_NOT_VALID) {
+				if (validationSummary == ProcessingResult.ValidationSummary.ERROR_IN_VALIDATION) {
 					this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
-					this.resultLabel.setText(errorMessages.get(0));
-				}
-
-				if (validationSummary == ProcessingResult.ValidationSummary.FILE_VALID) {
+					this.resultLabel.setText(GUIConstants.ERROR_IN_VALIDATING);
+				} else if (validationSummary == ProcessingResult.ValidationSummary.FILE_VALID) {
 					this.resultLabel.setForeground(GUIConstants.VALIDATION_SUCCESS_COLOR);
 					this.resultLabel.setText(GUIConstants.VALIDATION_OK);
 				} else if (validationSummary == ProcessingResult.ValidationSummary.FILE_NOT_VALID) {
 					this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
 					this.resultLabel.setText(GUIConstants.VALIDATION_FALSE);
-				} else if (errorMessages.isEmpty()) {
-					// If we did not obtain validation result and there is no errors,
-					// then it was features process and it finished correctly
+				} else if (result.getFeaturesSummary() == ProcessingResult.FeaturesSummary.FEATURES_SUCCEED) {
+					// If we did not obtain validation result, then it was features process
 					this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
 					this.resultLabel.setText(GUIConstants.FEATURES_GENERATED_CORRECT);
+				} else {
+					// If it was features process and it has not finished with succeed result,
+					// then it was features process with exception result
+					this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
+					this.resultLabel.setText(GUIConstants.ERROR_IN_FEATURES);
 				}
 
 				this.resultLabel.setVisible(true);
@@ -482,6 +485,7 @@ class CheckerPanel extends JPanel {
 
 	void errorInValidatingOccur(String message, Throwable e) {
 		LOGGER.error(e);
+		e.printStackTrace();
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
 		this.isValidationErrorOccurred = true;

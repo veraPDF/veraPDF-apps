@@ -3,6 +3,7 @@ package org.verapdf.processor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.verapdf.core.ModelParsingException;
 import org.verapdf.processor.config.Config;
 import org.verapdf.processor.config.ProcessingType;
 import org.verapdf.report.ItemDetails;
@@ -89,7 +90,7 @@ public class ProcessorImplExceptionsTest {
 	 */
 	@Test
 	public final void testValidate() throws
-			URISyntaxException, IOException {
+			URISyntaxException, IOException, ModelParsingException {
 		Config config = new Config();
 		config.setValidationProfilePath(
 				new File(getSystemIndependentPath(profilePath)).toPath());

@@ -4,7 +4,9 @@
 package org.verapdf.cli;
 
 import org.apache.log4j.Logger;
+import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.verapdf.cli.commands.VeraCliArgParser;
+import org.verapdf.core.ModelParsingException;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.processor.Processor;
 import org.verapdf.processor.ProcessorImpl;
@@ -146,7 +148,18 @@ final class VeraPdfCliProcessor {
     private void processStream(final ItemDetails item,
                                final InputStream toProcess) {
         Processor processor = new ProcessorImpl();
-        processor.validate(toProcess, item, this.config, System.out);
+        try {
+            processor.validate(toProcess, item, this.config, System.out);
+        } catch (ModelParsingException e) {
+            if(e.getCause() instanceof InvalidPasswordException) {
+                System.err.println("Error: " + item.getName()
+                        + " is an encrypted PDF file.");
+            } else {
+                System.err.println("Error: " + item.getName()
+                        + " is not a PDF format file.");
+            }
+            System.out.println("Error in reading PDF file: " + e.getCause().getMessage());
+        }
     }
 
 }
