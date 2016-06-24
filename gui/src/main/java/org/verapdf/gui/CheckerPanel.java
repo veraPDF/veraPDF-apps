@@ -156,7 +156,12 @@ class CheckerPanel extends JPanel {
 		chooseFlavour = new JComboBox<>(availableFlavours);
 		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
 		chooseFlavour.setRenderer(renderer);
-		chooseFlavour.setSelectedItem(PDFAFlavour.PDFA_1_B);
+		PDFAFlavour fromConfig = config.getFlavour();
+		if (availableFlavours.contains(fromConfig)) {
+			chooseFlavour.setSelectedItem(fromConfig);
+		} else {
+			chooseFlavour.setSelectedItem(PDFAFlavour.PDFA_1_B);
+		}
 		setGridBagConstraintsParameters(gbc,
 				GUIConstants.CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_X,
 				GUIConstants.CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_Y,
