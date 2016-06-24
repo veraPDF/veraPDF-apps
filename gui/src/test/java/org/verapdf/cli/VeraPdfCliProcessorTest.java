@@ -131,7 +131,7 @@ public class VeraPdfCliProcessorTest {
         jCommander.parse(new String[] {});
         VeraPdfCliProcessor proc = VeraPdfCliProcessor
                 .createProcessorFromArgs(parser);
-        assertTrue(proc.getConfig().getFlavour() == PDFAFlavour.PDFA_1_B);
+        assertTrue(proc.getConfig().getFlavour() == PDFAFlavour.AUTO);
         ProfileDirectory directory = Profiles.getVeraProfileDirectory();
         assertTrue(directory.getValidationProfiles().size() > 0);
         for (String argVal : argVals) {
