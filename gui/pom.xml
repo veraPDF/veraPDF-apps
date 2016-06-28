@@ -66,19 +66,19 @@
     <dependency>
       <groupId>org.verapdf</groupId>
       <artifactId>pdfbox-feature-reporting</artifactId>
-      <version>[0.17.0,0.18.0)</version>
+      <version>${verapdf.pdfbox.validation.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.verapdf</groupId>
       <artifactId>pdfbox-validation-model</artifactId>
-      <version>[0.17.0,0.18.0)</version>
+      <version>${verapdf.pdfbox.validation.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.verapdf</groupId>
       <artifactId>pdfbox-metadata-fixer</artifactId>
-      <version>[0.17.0,0.18.0)</version>
+      <version>${verapdf.pdfbox.validation.version}</version>
     </dependency>
 
     <dependency>
