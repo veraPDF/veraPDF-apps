@@ -47,7 +47,6 @@ public class VeraCliArgParser {
 	final static String LOAD_CONFIG_FLAG = FLAG_SEP + "c";
 	final static String LOAD_CONFIG = OPTION_SEP + "config";
 	final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
-	final static String USE_PLUGINS = OPTION_SEP + "plugins";
 	final static String POLICY_PROFILE = OPTION_SEP + "policyProfile";
 
 	@Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
@@ -100,9 +99,6 @@ public class VeraCliArgParser {
 
 	@Parameter(names = {LOAD_CONFIG_FLAG, LOAD_CONFIG}, description = "Loads config form default file, all config flags are ignored.")
 	private boolean isLoadingConfig = false;
-
-	@Parameter(names = {USE_PLUGINS}, description = "Uses plugins in feature extracting.")
-	private boolean pluginsEnabled = false;
 
 	@Parameter(names = {POLICY_PROFILE}, description = "Uses policy checks output with specified policy profile, output format option will be ignored.")
 	private String policyProfilePath = "";
@@ -242,11 +238,6 @@ public class VeraCliArgParser {
 	public boolean isLoadingConfig() {
 		return isLoadingConfig;
 	}
-
-	/**
-	 * @return true if plugins should be used in feature extracting
-	 */
-	public boolean isPluginsEnabled() { return pluginsEnabled; }
 
 	/**
 	 * JCommander parameter converter for {@link FormatOption}, see

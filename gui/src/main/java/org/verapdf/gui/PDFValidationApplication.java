@@ -89,7 +89,6 @@ public class PDFValidationApplication extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (settingsPanel != null && settingsPanel.showDialog(PDFValidationApplication.this, "Settings", PDFValidationApplication.this.config)) {
 					PDFValidationApplication.this.config.setShowPassedRules(settingsPanel.isDispPassedRules());
-					PDFValidationApplication.this.config.setPluginsEnabled(settingsPanel.isPluginsEnabled());
 					PDFValidationApplication.this.config.setMaxNumberOfFailedChecks(settingsPanel.getFailedChecksNumber());
 					PDFValidationApplication.this.config.setMaxNumberOfDisplayedFailedChecks(settingsPanel.getFailedChecksDisplayNumber());
 					PDFValidationApplication.this.config.setFixMetadataPathFolder(settingsPanel.getFixMetadataDirectory());
@@ -97,7 +96,6 @@ public class PDFValidationApplication extends JFrame {
 					PDFValidationApplication.this.config.setProfileWikiPath(settingsPanel.getProfilesWikiPath());
 					PDFValidationApplication.this.config.setFixMetadata(PDFValidationApplication.this.config.isFixMetadata());
 					PDFValidationApplication.this.config.setProcessingType(PDFValidationApplication.this.config.getProcessingType());
-					PDFValidationApplication.this.config.setPluginsEnabled(settingsPanel.isPluginsEnabled());
 					ConfigIO.writeConfig(PDFValidationApplication.this.config);
 				}
 			}
