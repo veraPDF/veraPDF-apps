@@ -36,7 +36,6 @@ public final class GUIConstants {
 	public static final String ERROR_IN_SAVING_XML_REPORT = "Some error in saving the XML report.";
 	public static final String LABEL_TEXT = "     Please specify input PDF, Validation Profile and press \"" + VALIDATE_BUTTON_TEXT + "\"";
 	public static final String CONSORTIUM_TEXT = "© 2015 veraPDF Consortium";
-	public static final String PROPERTIES_NAME = "config.properties";
 	public static final String TITLE = "PDF/A Conformance Checker";
 	public static final String ENCRYPTED_PDF = "Pdf document is encrypted.";
 	public static final String ERROR_IN_PARSING = "Failed to parse pdf document.";
