@@ -68,7 +68,6 @@ final class VeraPdfCliProcessor {
                             FileSystems.getDefault().getPath("") : args.getProfileFile().toPath());
             config.setFlavour(args.getFlavour());
             config.setVerboseCli(args.isVerbose());
-            config.setPluginsEnabled(args.isPluginsEnabled());
         }
     }
 

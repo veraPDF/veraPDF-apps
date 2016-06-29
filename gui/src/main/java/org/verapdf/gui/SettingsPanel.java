@@ -29,7 +29,6 @@ class SettingsPanel extends JPanel {
 	private JTextField numberOfFailed;
 	private JTextField numberOfFailedDisplay;
 	private JCheckBox hidePassedRules;
-	private JCheckBox usePlugins;
 	private JTextField fixMetadataPrefix;
 	JTextField fixMetadataFolder;
 	JFileChooser folderChooser;
@@ -40,15 +39,11 @@ class SettingsPanel extends JPanel {
 		setLayout(new BorderLayout());
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(7, 2));
+		panel.setLayout(new GridLayout(6, 2));
 
 		panel.add(new JLabel(GUIConstants.DISPLAY_PASSED_RULES));
 		this.hidePassedRules = new JCheckBox();
 		panel.add(this.hidePassedRules);
-
-		panel.add(new JLabel(GUIConstants.PLUGINS_ENABLED_TEXT));
-		this.usePlugins = new JCheckBox();
-		panel.add(this.usePlugins);
 
 		panel.add(new JLabel(GUIConstants.MAX_NUMBER_FAILED_CHECKS));
 		this.numberOfFailed = new JTextField();
@@ -167,7 +162,6 @@ class SettingsPanel extends JPanel {
 		this.ok = false;
 
 		this.hidePassedRules.setSelected(settings.isShowPassedRules());
-		this.usePlugins.setSelected(settings.isPluginsEnabled());
 
 		int numbOfFail = settings.getMaxNumberOfFailedChecks();
 		if (numbOfFail == -1) {
@@ -248,8 +242,6 @@ class SettingsPanel extends JPanel {
 	boolean isDispPassedRules() {
 		return this.hidePassedRules.isSelected();
 	}
-
-	boolean isPluginsEnabled() { return this.usePlugins.isSelected(); }
 
 	int getFailedChecksNumber() {
 		String str = this.numberOfFailed.getText();
