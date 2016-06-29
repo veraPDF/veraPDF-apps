@@ -74,7 +74,8 @@ class ValidateWorker extends SwingWorker<ProcessingResult, Integer> {
                     + e.getCause().getMessage(), e);
         }
 
-        if (processingResult.getReportSummary() == ProcessingResult.ReportSummary.REPORT_SUCCEED) {
+        if (settings.getProcessingType().isValidating() &&
+        processingResult.getReportSummary() == ProcessingResult.ReportSummary.REPORT_SUCCEED) {
             writeHtmlReport();
         }
 
