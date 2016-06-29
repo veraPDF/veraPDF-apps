@@ -1,6 +1,7 @@
 package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
+import org.verapdf.ReleaseDetails;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.processor.config.Config;
 import org.verapdf.processor.config.ConfigIO;
@@ -147,6 +148,8 @@ public class PDFValidationApplication extends JFrame {
 	 * @param args command line arguments
 	 */
 	public static void main(String[] args) {
+		ReleaseDetails.addDetailsFromResource(
+				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT);
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {

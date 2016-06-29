@@ -1,5 +1,6 @@
 package org.verapdf.gui;
 
+import org.verapdf.ReleaseDetails;
 import org.verapdf.gui.tools.GUIConstants;
 
 import javax.imageio.ImageIO;
@@ -45,10 +46,8 @@ class PartnersPanel extends JPanel {
 
 		add(this.consortium);
 
-		Properties properties = new Properties();
-		properties.load(getClass().getClassLoader().getResourceAsStream(GUIConstants.PROPERTIES_NAME));
-
-		String versionText = "Version: " + properties.getProperty("application.version");
+		ReleaseDetails details = ReleaseDetails.byId("gui");
+		String versionText = "Version: " + details.getVersion();
 
 		this.version = new JLabel(versionText);
 
