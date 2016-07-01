@@ -48,6 +48,8 @@ public class VeraCliArgParser {
 	final static String LOAD_CONFIG = OPTION_SEP + "config";
 	final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
 	final static String POLICY_PROFILE = OPTION_SEP + "policyProfile";
+	final static String REPORT_FILE = OPTION_SEP + "reportfile";
+	final static String REPORT_FOLDER = OPTION_SEP + "reportfolder";
 
 	@Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
 	private boolean help = false;
@@ -102,6 +104,12 @@ public class VeraCliArgParser {
 
 	@Parameter(names = {POLICY_PROFILE}, description = "Uses policy checks output with specified policy profile, output format option will be ignored.")
 	private String policyProfilePath = "";
+
+	@Parameter(names = { REPORT_FOLDER }, description = "Save reports in folder.")
+	private String reportFolder = "";
+
+	@Parameter(names = { REPORT_FILE }, description = "Save report to file")
+	private String reportFile = "";
 
 	@Parameter(description = "FILES")
 	private List<String> pdfPaths = new ArrayList<>();
@@ -237,6 +245,22 @@ public class VeraCliArgParser {
 	 */
 	public boolean isLoadingConfig() {
 		return isLoadingConfig;
+	}
+
+        /**
+         * @author: Martin.Mancuska@gonitrom.com
+         * @return folder for reports
+         */
+	public String getReportFolder() {
+	    return this.reportFolder;
+	}
+
+	/**
+     * @author: Martin.Mancuska@gonitrom.com
+	 * @return output file for report
+	 */
+	public String getReportFile() {
+	    return this.reportFile;
 	}
 
 	/**
