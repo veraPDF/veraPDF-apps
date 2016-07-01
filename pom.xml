@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -171,7 +171,7 @@
             <version>2.10</version>
             <executions>
               <execution>
-                <id>src-dependencies</id>
+                <id>sources-dependencies</id>
                 <phase>package</phase>
                 <goals>
                   <!-- use copy-dependencies instead if you don't want to explode
@@ -181,7 +181,46 @@
                 <configuration>
                   <classifier>sources</classifier>
                   <failOnMissingClassifierArtifact>true</failOnMissingClassifierArtifact>
+                  <outputDirectory>${project.build.directory}/sources/src/main/java</outputDirectory>
+                  <excludeArtifactIds>log4j, avalon-logkit, commons-io, commons-logging</excludeArtifactIds>
+                  <includes>**/*.java</includes>
+                  <excludes>**/*Test.java, **/test/**/*.java</excludes>
+                </configuration>
+              </execution>
+              <execution>
+                <id>resources-dependencies</id>
+                <phase>package</phase>
+                <goals>
+                  <!-- use copy-dependencies instead if you don't want to explode
+                    the sources -->
+                  <goal>unpack-dependencies</goal>
+                </goals>
+                <configuration>
+                  <classifier>sources</classifier>
+                  <failOnMissingClassifierArtifact>true</failOnMissingClassifierArtifact>
+                  <outputDirectory>${project.build.directory}/sources/src/main/resources</outputDirectory>
+                  <excludes>**/*.java</excludes>
+                  <overWrite>true</overWrite>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.googlecode.maven-download-plugin</groupId>
+            <artifactId>download-maven-plugin</artifactId>
+            <version>1.2.0</version>
+            <executions>
+              <execution>
+                <id>download-resources</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>wget</goal>
+                </goals>
+                <configuration>
+                  <url>http://downloads.verapdf.org/resources.zip</url>
+                  <unpack>true</unpack>
                   <outputDirectory>${project.build.directory}/sources</outputDirectory>
+                  <md5>31a208084cbe19c8617af67efcd68e70</md5>
                 </configuration>
               </execution>
             </executions>
