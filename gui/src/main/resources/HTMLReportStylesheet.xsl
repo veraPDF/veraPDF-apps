@@ -16,14 +16,14 @@
     <!-- HTML header and body wrapper -->
     <xsl:template match="/">
         <xsl:if test="$isFullHTML='true'">
-        <html>
-            <head>
-                <title>Validation Report</title>
-            </head>
-            <body>
-                <xsl:apply-templates/>
-            </body>
-        </html>
+            <html>
+                <head>
+                    <title>Validation Report</title>
+                </head>
+                <body>
+                    <xsl:apply-templates/>
+                </body>
+            </html>
         </xsl:if>
         <xsl:if test="$isFullHTML='false'">
             <xsl:apply-templates/>
@@ -238,13 +238,37 @@
         <xsl:param name="idWithDots" select="concat(@clause,'t',@testNumber)"/>
         <xsl:param name="id" select="translate($idWithDots, '.', '_')"/>
 
+        <xsl:variable name="part-1-rules">
+            <xsl:choose>
+                <xsl:when test="'/' = substring($wikiPath, string-length($wikiPath))">
+                    <xsl:value-of
+                            select="concat($wikiPath, 'PDFA-Part-1-rules')"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="concat($wikiPath, '/PDFA-Part-1-rules')"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+
+        <xsl:variable name="part-2-rules">
+            <xsl:choose>
+                <xsl:when test="'/' = substring($wikiPath, string-length($wikiPath))">
+                    <xsl:value-of
+                            select="concat($wikiPath, 'PDFA-Parts-2-and-3-rules')"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="concat($wikiPath, '/PDFA-Parts-2-and-3-rules')"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+
         <xsl:param name="tempWikiLink">
             <xsl:choose>
                 <xsl:when test="starts-with(@specification, 'ISO 19005-1')">
-                    <xsl:value-of select="concat($wikiPath, 'PDFA-Part-1-rules')"/>
+                    <xsl:value-of select="$part-1-rules"/>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:value-of select="concat($wikiPath, 'PDFA-Parts-2-and-3-rules')"/>
+                    <xsl:value-of select="$part-2-rules"/>
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:param>
