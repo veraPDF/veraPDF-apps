@@ -38,7 +38,7 @@
   <variables>
     <variable name="InstallerFrame.logfilePath" value="Default"/>
     <variable name="VERSION" value="v ${project.version}"/>
-    <variable name="BUILD_DATE" value="Built ${verapdf.timestamp}"/>    
+    <variable name="BUILD_DATE" value="Built ${verapdf.timestamp}"/>
     <variable name="TargetPanel.dir" value="$USER_HOME/verapdf"/>
   </variables>
 
@@ -103,12 +103,15 @@
       <file targetdir="$INSTALL_PATH/documents" src="documents/RELEASENOTES.md"/>
       <file targetdir="$INSTALL_PATH/documents" src="documents/veraPDFPDFAConformanceCheckerGUI.pdf"/>
     </pack>
-    <pack name="veraPDF Sample Plugins" required="no">
+    <pack name="veraPDF Sample Plugins" required="no" preselected="no">
       <description>The veraPDF sample plug-in pack.</description>
       <updatecheck>
         <include name="plugins/**"/>
+        <include name="config/**"/>
       </updatecheck>
       <file targetdir="$INSTALL_PATH/plugins" src="plugins/veraPDF-sample-plugin-pack.zip" unpack="true"/>
+      <file targetdir="$INSTALL_PATH/config" src="config/plugins.xml"/>
+      <parsable targetfile="$INSTALL_PATH/config/plugins.xml" type="xml"/>
     </pack>
   </packs>
 </izpack:installation>

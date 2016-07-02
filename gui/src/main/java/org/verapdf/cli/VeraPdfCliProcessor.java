@@ -18,10 +18,9 @@ import org.verapdf.report.ItemDetails;
 import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.nio.file.FileSystems;
-import java.nio.file.Paths;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
-import java.lang.StringBuilder;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -72,6 +71,10 @@ final class VeraPdfCliProcessor {
 			config.setVerboseCli(args.isVerbose());
 			config.setReportFolderPath(args.getReportFolder());
 			config.setReportFilePath(args.getReportFile());
+			Path configFolderPath = ConfigIO.getConfigFolderPath();
+			if (!configFolderPath.toString().isEmpty()) {
+				config.setPluginsConfigPath(FileSystems.getDefault().getPath(configFolderPath.toString(), "plugins.xml"));
+			}
 		}
 
 		if (!config.getReportFolder().isEmpty() && !config.getReportFile().isEmpty()) {
