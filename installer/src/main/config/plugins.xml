@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pluginsConfig>
+  <plugin enabled="false">
+    <name>Font Sample</name>
+    <version>0.1.0-SNAPSHOT</version>
+    <description>Sample, proof of concept, font plugin. Developed by the veraPDF team.</description>
+    <pluginJar>file://$INSTALL_PATH/plugins/fontSample-plugin/fontSample-plugin-0.1.0-SNAPSHOT.jar</pluginJar>
+  </plugin>
+  <plugin enabled="false">
+    <name>Font Type Sample</name>
+    <version>0.1.0-SNAPSHOT</version>
+    <description>Sample, proof of concept, font type plugin. Developed by the veraPDF team.</description>
+    <pluginJar>file://$INSTALL_PATH/plugins/fontType-plugin/fontType-plugin-0.1.0-SNAPSHOT.jar</pluginJar>
+  </plugin>
+  <plugin enabled="false">
+    <name>Embedded File Sample</name>
+    <version>0.1.0-SNAPSHOT</version>
+    <description>Sample, proof of concept, embedded file plugin. Developed by the veraPDF team.</description>
+    <pluginJar>file://$INSTALL_PATH/plugins/embeddedfileSample-plugin/embeddedfileSample-plugin-0.1.0-SNAPSHOT.jar</pluginJar>
+  </plugin>
+  <plugin enabled="false">
+    <name>ICC Profile Sample</name>
+    <version>0.1.0-SNAPSHOT</version>
+    <description>Sample, proof of concept, ICC Profile plugin. Developed by the veraPDF team.</description>
+    <pluginJar>file://$INSTALL_PATH/plugins/iccprofileSample-plugin/iccprofileSample-plugin-0.1.0-SNAPSHOT.jar</pluginJar>
+  </plugin>
+  <plugin enabled="false">
+    <name>Image Sample</name>
+    <version>0.1.0-SNAPSHOT</version>
+    <description>Sample, proof of concept, image plugin. Developed by the veraPDF team.</description>
+    <pluginJar>file://$INSTALL_PATH/plugins/imageSample-plugin/imageSample-plugin-0.1.0-SNAPSHOT.jar</pluginJar>
+  </plugin>
+  <plugin enabled="false">
+    <name>METS metadata extraction Sample</name>
+    <version>0.1.0-SNAPSHOT</version>
+    <description>Sample, proof of concept, METS metadata extraction plugin. Developed by the veraPDF team.</description>
+    <pluginJar>file://$INSTALL_PATH/plugins/metsMetadata-plugin/metsMetadata-plugin-0.1.0-SNAPSHOT.jar</pluginJar>
+  </plugin>
+</pluginsConfig>
