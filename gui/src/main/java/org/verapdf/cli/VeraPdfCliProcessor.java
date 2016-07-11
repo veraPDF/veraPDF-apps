@@ -74,6 +74,7 @@ final class VeraPdfCliProcessor {
 			Path configFolderPath = ConfigIO.getConfigFolderPath();
 			if (!configFolderPath.toString().isEmpty()) {
 				config.setPluginsConfigPath(FileSystems.getDefault().getPath(configFolderPath.toString(), "plugins.xml"));
+				config.setFeaturesConfigPath(FileSystems.getDefault().getPath(configFolderPath.toString(), "features.xml"));
 			}
 		}
 
