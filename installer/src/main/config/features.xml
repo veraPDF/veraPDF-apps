@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<featuresConfig>
+    <informationDict>false</informationDict>
+    <informationDict>false</informationDict>
+    <metadata>false</metadata>
+    <documentSecurity>false</documentSecurity>
+    <signatures>false</signatures>
+    <lowLevelInfo>false</lowLevelInfo>
+    <embeddedFiles>false</embeddedFiles>
+    <iccProfiles>false</iccProfiles>
+    <outputIntents>false</outputIntents>
+    <outlines>false</outlines>
+    <annotations>false</annotations>
+    <pages>false</pages>
+    <graphicsStates>false</graphicsStates>
+    <colorSpaces>false</colorSpaces>
+    <patterns>false</patterns>
+    <shadings>false</shadings>
+    <xobjects>false</xobjects>
+    <fonts>false</fonts>
+    <propertiesDicts>false</propertiesDicts>
+</featuresConfig>
