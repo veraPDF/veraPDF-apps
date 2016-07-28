@@ -4,9 +4,7 @@
 package org.verapdf.cli;
 
 import org.apache.log4j.Logger;
-import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.verapdf.cli.commands.VeraCliArgParser;
-import org.verapdf.core.ModelParsingException;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.processor.Processor;
 import org.verapdf.processor.ProcessorImpl;
@@ -24,7 +22,6 @@ import java.util.List;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
- *
  */
 final class VeraPdfCliProcessor {
 
@@ -158,17 +155,8 @@ final class VeraPdfCliProcessor {
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
 		Processor processor = new ProcessorImpl();
 		OutputStream outputReportStream = this.getReportStream(item.getName());
-		
-		try {
-			processor.validate(toProcess, item, this.config, outputReportStream);
-		} catch (ModelParsingException e) {
-			if (e.getCause() instanceof InvalidPasswordException) {
-				System.err.println("Error: " + item.getName() + " is an encrypted PDF file.");
-			} else {
-				System.err.println("Error: " + item.getName() + " is not a PDF format file.");
-			}
-			System.out.println("Error in reading PDF file: " + e.getCause().getMessage());
-		}
+
+		processor.validate(toProcess, item, this.config, outputReportStream);
 
 		if (this.isStdOut == false) {
 			try {
@@ -178,7 +166,7 @@ final class VeraPdfCliProcessor {
 			}
 		}
 	}
-	
+
 	private OutputStream getReportStream(final String itemName) {
 		OutputStream reportStream = System.out;
 		String reportFileName = this.constructReportPath(itemName);
@@ -193,7 +181,7 @@ final class VeraPdfCliProcessor {
 		}
 		return reportStream;
 	}
-	
+
 	private String constructReportPath(final String itemName) {
 		String reportPath = "";
 		if (!config.getReportFolder().isEmpty()) {
