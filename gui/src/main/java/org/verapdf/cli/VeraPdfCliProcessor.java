@@ -73,6 +73,7 @@ final class VeraPdfCliProcessor {
 				config.setPluginsConfigPath(FileSystems.getDefault().getPath(configFolderPath.toString(), "plugins.xml"));
 				config.setFeaturesConfigPath(FileSystems.getDefault().getPath(configFolderPath.toString(), "features.xml"));
 			}
+			config.setOverwriteReportFile(args.isOverwriteReportFile());
 		}
 
 		if (!config.getReportFolder().isEmpty() && !config.getReportFile().isEmpty()) {
@@ -80,6 +81,19 @@ final class VeraPdfCliProcessor {
 			config.setReportFolderPath("");
 			config.setReportFilePath("");
 		}
+		
+		if (config.isOverwriteReportFile() && !config.getReportFile().isEmpty()) {
+			File file = new File(config.getReportFile());
+			if (file.exists()) {
+				try {
+					file.delete();
+				}
+				catch (SecurityException ex) {
+					LOGGER.warn("Cannot delete older report file.");
+				}
+			}
+		}
+
 	}
 
 	public Config getConfig() {
