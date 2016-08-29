@@ -2,6 +2,7 @@ package org.verapdf.gui;
 
 import org.apache.log4j.Logger;
 import org.verapdf.ReleaseDetails;
+import org.verapdf.features.config.FeaturesConfig;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.processor.config.Config;
 import org.verapdf.processor.config.ConfigIO;
@@ -10,11 +11,12 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.xml.bind.JAXBException;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 
 /**
  * Main frame of the PDFA Conformance Checker
@@ -43,6 +45,7 @@ public class PDFValidationApplication extends JFrame {
 	private AboutPanel aboutPanel;
 	private transient Config config;
 	private SettingsPanel settingsPanel;
+	private FeaturesConfigPanel featuresPanel;
 	private CheckerPanel checkerPanel;
 
 	private PDFValidationApplication() {
@@ -77,6 +80,9 @@ public class PDFValidationApplication extends JFrame {
 			LOGGER.error("Exception in reading logo image", e);
 		}
 
+		final JMenu file = new JMenu("File");
+		menuBar.add(file);
+
 		try {
 			settingsPanel = new SettingsPanel();
 		} catch (IOException e) {
@@ -102,7 +108,49 @@ public class PDFValidationApplication extends JFrame {
 			}
 		});
 
-		menuBar.add(sett);
+		file.add(sett);
+
+		try {
+			featuresPanel = new FeaturesConfigPanel();
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error initialising features config panel.", GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+			LOGGER.error("Exception in initialising features config panel", e);
+		}
+
+		final JMenuItem features = new JMenuItem("Features Config");
+		features.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Path featuresPath = PDFValidationApplication.this.config.getFeaturesConfigFilePath();
+				if (featuresPanel != null && featuresPanel.showDialog(PDFValidationApplication.this, "Features Config", featuresPath)) {
+					FeaturesConfig featuresConfig = featuresPanel.getFeaturesConfig();
+					File featuresFile = featuresPath.toFile();
+					try {
+						FileOutputStream outputStream =
+								new FileOutputStream(featuresFile);
+						FeaturesConfig.toXml(featuresConfig, outputStream, true);
+					} catch (FileNotFoundException | JAXBException exp) {
+						LOGGER.error("Exception in saving features config", exp);
+					}
+				}
+			}
+		});
+
+		file.add(features);
+
+		file.addSeparator();
+
+		final JMenuItem quit = new JMenuItem("Quit");
+		quit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				PDFValidationApplication.this.processWindowEvent(new WindowEvent(PDFValidationApplication.this, WindowEvent.WINDOW_CLOSING));
+			}
+		});
+
+		quit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK));
+
+		file.add(quit);
 
 		JMenuItem about = new JMenuItem("About");
 		about.addActionListener(new ActionListener() {
