@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <featuresConfig>
-    <informationDict>false</informationDict>
+    <informationDict>true</informationDict>
     <metadata>false</metadata>
     <documentSecurity>false</documentSecurity>
     <signatures>false</signatures>
