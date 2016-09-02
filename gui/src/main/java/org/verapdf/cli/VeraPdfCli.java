@@ -3,16 +3,15 @@
  */
 package org.verapdf.cli;
 
-import java.io.IOException;
-
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.ParameterException;
 import org.verapdf.ReleaseDetails;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.pdfa.validation.ProfileDirectory;
 import org.verapdf.pdfa.validation.Profiles;
 import org.verapdf.pdfa.validation.ValidationProfile;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
+import java.io.IOException;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -87,7 +86,7 @@ public final class VeraPdfCli {
 	}
 
 	private static void showVersionInfo() {
-		ReleaseDetails details = RELEASE_DETAILS.byId("gui");
+		ReleaseDetails details = ReleaseDetails.byId("gui");
 		System.out.println("Version: " + details.getVersion());
 		System.out.println("Built: " + details.getBuildDate());
 		System.out.println(details.getRights());
