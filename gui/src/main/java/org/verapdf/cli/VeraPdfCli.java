@@ -19,7 +19,6 @@ import java.io.IOException;
  */
 public final class VeraPdfCli {
 	private static final String APP_NAME = "veraPDF";
-	private static final ReleaseDetails RELEASE_DETAILS = ReleaseDetails.getInstance();
 	private static final String FLAVOURS_HEADING = APP_NAME + " supported PDF/A profiles:";
 	private static final ProfileDirectory PROFILES = Profiles.getVeraProfileDirectory();
 
