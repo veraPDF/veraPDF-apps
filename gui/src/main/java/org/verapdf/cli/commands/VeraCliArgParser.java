@@ -50,7 +50,8 @@ public class VeraCliArgParser {
 	final static String POLICY_PROFILE = OPTION_SEP + "policyProfile";
 	final static String REPORT_FILE = OPTION_SEP + "reportfile";
 	final static String REPORT_FOLDER = OPTION_SEP + "reportfolder";
-
+	final static String OVERWRITE_REPORT_FILE = OPTION_SEP + "overwriteReportFile";
+	
 	@Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
 	private boolean help = false;
 
@@ -110,6 +111,9 @@ public class VeraCliArgParser {
 
 	@Parameter(names = { REPORT_FILE }, description = "Save report to file")
 	private String reportFile = "";
+	
+	@Parameter(names = { OVERWRITE_REPORT_FILE }, description = "Overwrite report file.")
+	private boolean isOverwriteReportFile = false;
 
 	@Parameter(description = "FILES")
 	private List<String> pdfPaths = new ArrayList<>();
@@ -247,20 +251,28 @@ public class VeraCliArgParser {
 		return isLoadingConfig;
 	}
 
-        /**
-         * @author: Martin.Mancuska@gonitrom.com
-         * @return folder for reports
-         */
+	/**
+	 * @author: mancuska@digitaldocuments.org
+	 * @return folder for reports
+	 */
 	public String getReportFolder() {
 	    return this.reportFolder;
 	}
 
 	/**
-     * @author: Martin.Mancuska@gonitrom.com
+     * @author: mancuska@digitaldocuments.org
 	 * @return output file for report
 	 */
 	public String getReportFile() {
 	    return this.reportFile;
+	}
+	
+	/**
+	 * @author: mancuska@digitaldocuments.org
+	 * @return true if existing result file must be overwritten
+	 */
+	public boolean isOverwriteReportFile() {
+		return this.isOverwriteReportFile;
 	}
 
 	/**
