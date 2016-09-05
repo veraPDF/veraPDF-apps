@@ -57,7 +57,8 @@ public final class VeraPdfCli {
 		if (isProcess(cliArgParser)) {
 			try {
 				VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser);
-				processor.processPaths(cliArgParser.getPdfPaths());
+				if (args.length == 0) jCommander.usage();
+				processor.processPaths(cliArgParser.getPdfPaths(), args.length == 0);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
