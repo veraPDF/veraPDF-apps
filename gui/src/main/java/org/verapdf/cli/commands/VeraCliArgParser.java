@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class holds all command line options used by VeraPDF application.
+ * This class holds all command-line options used by VeraPDF application.
  *
  * @author Timur Kamalov
  */
@@ -55,28 +55,28 @@ public class VeraCliArgParser {
 	@Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
 	private boolean help = false;
 
-	@Parameter(names = { VERSION }, description = "Version information.")
+	@Parameter(names = { VERSION }, description = "Displays veraPDF version information.")
 	private boolean showVersion = false;
 
-	@Parameter(names = { FLAVOUR_FLAG, FLAVOUR }, description = "Choose built in Validation Profile flavour, e.g. 1b. Alternatively supply 0 to turn off PDF/A validation or supply auto to automatic flavour detection from file's metadata.", converter = FlavourConverter.class)
+	@Parameter(names = { FLAVOUR_FLAG, FLAVOUR }, description = "Chooses built-in Validation Profile flavour, e.g. '1b'. Alternatively, supply '0' to turn off PDF/A validation, or 'auto' for automatic flavour detection based on a file's metadata.", converter = FlavourConverter.class)
 	private PDFAFlavour flavour = PDFAFlavour.AUTO;
 
 	@Parameter(names = { SUCCESS, PASSED }, description = "Logs successful validation checks.")
 	private boolean passed = false;
 
-	@Parameter(names = { LIST_FLAG, LIST }, description = "List built in Validation Profiles.")
+	@Parameter(names = { LIST_FLAG, LIST }, description = "Lists built-in Validation Profiles.")
 	private boolean listProfiles = false;
 
-	@Parameter(names = { LOAD_PROFILE_FLAG, LOAD_PROFILE }, description = "Load a Validation Profile from given path and exit if loading fails. This overrides any choice or default implied by the -f / --flavour option.", validateWith = ProfileFileValidator.class)
+	@Parameter(names = { LOAD_PROFILE_FLAG, LOAD_PROFILE }, description = "Loads a Validation Profile from given path and exits if loading fails. This overrides any choice or default implied by the -f / --flavour option.", validateWith = ProfileFileValidator.class)
 	private File profileFile;
 
-	@Parameter(names = { EXTRACT_FLAG, EXTRACT }, description = "Extract and report PDF features.")
+	@Parameter(names = { EXTRACT_FLAG, EXTRACT }, description = "Extracts and reports PDF features.")
 	private boolean features = false;
 
-	@Parameter(names = { FORMAT }, description = "Choose output format:", converter = FormatConverter.class)
+	@Parameter(names = { FORMAT }, description = "Chooses output format.", converter = FormatConverter.class)
 	private FormatOption format = FormatOption.MRR;
 
-	@Parameter(names = { RECURSE_FLAG, RECURSE }, description = "Recurse directories, only files with a .pdf extension are processed.")
+	@Parameter(names = { RECURSE_FLAG, RECURSE }, description = "Recurses through directories. Only files with .pdf extensions are processed.")
 	private boolean isRecurse = false;
 
 	@Parameter(names = { VERBOSE_FLAG, VERBOSE }, description = "Adds failed test information to text output.")
@@ -88,31 +88,31 @@ public class VeraCliArgParser {
 	@Parameter(names = { MAX_FAILURES }, description = "Sets maximum amount of failed checks.")
 	private int maxFailures = -1;
 
-	@Parameter(names = { FIX_METADATA }, description = "Performs metadata fix.")
+	@Parameter(names = { FIX_METADATA }, description = "Performs metadata fixes.")
 	private boolean fixMetadata = false;
 
-	@Parameter(names = { FIX_METADATA_PREFIX }, description = "Prefix for the saved file.")
+	@Parameter(names = { FIX_METADATA_PREFIX }, description = "Sets file name prefix for any fixed files.")
 	private String prefix = "veraPDF_";
 
-	@Parameter(names = { FIX_METADATA_FOLDER }, description = "The folder to save the fixed file to.")
+	@Parameter(names = { FIX_METADATA_FOLDER }, description = "Sets output directory for any fixed files.")
 	private String saveFolder = "";
 
-	@Parameter(names = { PROFILES_WIKI_FLAG, PROFILES_WIKI }, description = "The path to the folder containing Validation Profiles wiki.")
+	@Parameter(names = { PROFILES_WIKI_FLAG, PROFILES_WIKI }, description = "Sets location of the Validation Profiles wiki.")
 	private String profilesWikiPath = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki";
 
-	@Parameter(names = {LOAD_CONFIG_FLAG, LOAD_CONFIG}, description = "Loads config form default file, all config flags are ignored.")
+	@Parameter(names = {LOAD_CONFIG_FLAG, LOAD_CONFIG}, description = "Loads config from default file. All config flags are ignored.")
 	private boolean isLoadingConfig = false;
 
-	@Parameter(names = {POLICY_PROFILE}, description = "Uses policy checks output with specified policy profile, output format option will be ignored.")
+	@Parameter(names = {POLICY_PROFILE}, description = "Uses policy check output with specified Policy Profile. Output format option will be ignored.")
 	private String policyProfilePath = "";
 
-	@Parameter(names = { REPORT_FOLDER }, description = "Save reports in folder.")
+	@Parameter(names = { REPORT_FOLDER }, description = "Sets output directory for any reports. If a directory hierarchy is being recursed, a duplicate hierarchy will be produced.")
 	private String reportFolder = "";
 
-	@Parameter(names = { REPORT_FILE }, description = "Save report to file")
+	@Parameter(names = { REPORT_FILE }, description = "Sets output file for any reports.")
 	private String reportFile = "";
 	
-	@Parameter(names = { OVERWRITE_REPORT_FILE }, description = "Overwrite report file.")
+	@Parameter(names = { OVERWRITE_REPORT_FILE }, description = "Overwrites report file.")
 	private boolean isOverwriteReportFile = false;
 
 	@Parameter(description = "FILES")
@@ -126,7 +126,7 @@ public class VeraCliArgParser {
 	}
 
 	/**
-	 * @return true if a list of supported profiles requested
+	 * @return true if list of supported profiles requested
 	 */
 	public boolean listProfiles() {
 		return this.listProfiles;
