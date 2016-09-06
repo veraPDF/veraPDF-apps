@@ -106,12 +106,6 @@ final class VeraPdfCliProcessor {
 	}
 
 	void processPaths(final List<String> pdfPaths) {
-		// If the path list is empty then
-		if (pdfPaths.isEmpty()) {
-			ItemDetails item = ItemDetails.fromValues("STDIN");
-			processStream(item, System.in);
-		}
-
 		for (String pdfPath : pdfPaths) {
 			File file = new File(pdfPath);
 			if (file.isDirectory()) {
