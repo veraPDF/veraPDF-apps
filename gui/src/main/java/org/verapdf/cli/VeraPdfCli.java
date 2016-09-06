@@ -54,7 +54,7 @@ public final class VeraPdfCli {
 			jCommander.usage();
 			System.exit(1);
 		}
-		if (cliArgParser.isHelp()) {
+		if (cliArgParser.isHelp() || cliArgParser.getPdfPaths().isEmpty() || args.length == 0) {
 			showVersionInfo();
 			jCommander.usage();
 			System.exit(0);
