@@ -105,7 +105,17 @@ final class VeraPdfCliProcessor {
 		return ProcessingType.getType(isValidating, args.extractFeatures());
 	}
 
-	void processPaths(final List<String> pdfPaths) {
+	void processPaths(final List<String> pdfPaths, boolean showStdinWarning) {
+		// If the path list is empty then
+		if (pdfPaths.isEmpty()) {
+			System.out.println("veraPDF is processing STDIN and is expecting an EOF marker.");
+			System.out.println("If this isn't your intention you can terminate by typing an EOF equivalent:");
+			System.out.println(" - Linux or Mac users should type CTRL-D");
+			System.out.println(" - Windows users should type CTRL-Z");
+			ItemDetails item = ItemDetails.fromValues("STDIN");
+			processStream(item, System.in);
+		}
+
 		for (String pdfPath : pdfPaths) {
 			File file = new File(pdfPath);
 			if (file.isDirectory()) {

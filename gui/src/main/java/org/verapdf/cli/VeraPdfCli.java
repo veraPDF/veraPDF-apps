@@ -54,7 +54,7 @@ public final class VeraPdfCli {
 			jCommander.usage();
 			System.exit(1);
 		}
-		if (cliArgParser.isHelp() || cliArgParser.getPdfPaths().isEmpty() || args.length == 0) {
+		if (cliArgParser.isHelp()) {
 			showVersionInfo();
 			jCommander.usage();
 			System.exit(0);
@@ -63,7 +63,8 @@ public final class VeraPdfCli {
 		if (isProcess(cliArgParser)) {
 			try {
 				VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser);
-				processor.processPaths(cliArgParser.getPdfPaths());
+				if (args.length == 0) jCommander.usage();
+				processor.processPaths(cliArgParser.getPdfPaths(), args.length == 0);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
