@@ -105,7 +105,7 @@ public final class VeraPdfCli {
 
 	private static void showVersionInfo() {
 		ReleaseDetails details = ReleaseDetails.byId("gui");
-		System.out.println("Version: " + details.getVersion());
+		System.out.println(APP_NAME + " " + details.getVersion());
 		System.out.println("Built: " + details.getBuildDate());
 		System.out.println(details.getRights());
 		System.out.println();
