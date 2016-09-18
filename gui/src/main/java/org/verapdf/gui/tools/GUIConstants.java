@@ -34,7 +34,7 @@ public final class GUIConstants {
 	public static final String REPORT = "Report";
 	public static final String ERROR_IN_SAVING_HTML_REPORT = "Some error in saving the HTML report: ";
 	public static final String ERROR_IN_SAVING_XML_REPORT = "Some error in saving the XML report.";
-	public static final String LABEL_TEXT = "     Please specify input PDF, Validation Profile and press \"" + VALIDATE_BUTTON_TEXT + "\"";
+	public static final String LABEL_TEXT = "     Please specify input PDF, Validation Profile and press \"" + VALIDATE_BUTTON_TEXT + "\".";
 	public static final String CONSORTIUM_TEXT = "© 2015 veraPDF Consortium";
 	public static final String TITLE = "PDF/A Conformance Checker";
 	public static final String ENCRYPTED_PDF = "Pdf document is encrypted.";
@@ -63,7 +63,7 @@ public final class GUIConstants {
 	public static final int EMPTY_BORDER_INSETS = 5;
 	public static final int FRAME_COORD_X = 100;
 	public static final int FRAME_COORD_Y = 100;
-	public static final int FRAME_WIDTH = 600;
+	public static final int FRAME_WIDTH = 625;
 	public static final int FRAME_HEIGHT = 350;
 
 	public static final int BORDER_WIDTH = 4;
