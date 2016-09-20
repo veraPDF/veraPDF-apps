@@ -3,6 +3,20 @@
  */
 package org.verapdf.cli;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
+
 import org.apache.log4j.Logger;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -12,13 +26,6 @@ import org.verapdf.processor.config.Config;
 import org.verapdf.processor.config.ConfigIO;
 import org.verapdf.processor.config.ProcessingType;
 import org.verapdf.report.ItemDetails;
-
-import javax.xml.bind.JAXBException;
-import java.io.*;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -33,11 +40,11 @@ final class VeraPdfCliProcessor {
 	private Config config;
 	private String baseDirectory = "";
 
-	private VeraPdfCliProcessor() throws IOException {
+	private VeraPdfCliProcessor() {
 		this(new VeraCliArgParser());
 	}
 
-	private VeraPdfCliProcessor(final VeraCliArgParser args) throws IOException {
+	private VeraPdfCliProcessor(final VeraCliArgParser args) {
 		this.recurse = args.isRecurse();
 
 		if (args.isLoadingConfig()) {
@@ -105,7 +112,7 @@ final class VeraPdfCliProcessor {
 		return ProcessingType.getType(isValidating, args.extractFeatures());
 	}
 
-	void processPaths(final List<String> pdfPaths, boolean showStdinWarning) {
+	void processPaths(final List<String> pdfPaths) {
 		// If the path list is empty then
 		if (pdfPaths.isEmpty()) {
 			System.out.println("veraPDF is processing STDIN and is expecting an EOF marker.");
@@ -127,8 +134,7 @@ final class VeraPdfCliProcessor {
 		}
 	}
 
-	static VeraPdfCliProcessor createProcessorFromArgs(final VeraCliArgParser args)
-			throws FileNotFoundException, IOException {
+	static VeraPdfCliProcessor createProcessorFromArgs(final VeraCliArgParser args) {
 		return new VeraPdfCliProcessor(args);
 	}
 

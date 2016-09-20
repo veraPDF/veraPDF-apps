@@ -1,18 +1,23 @@
 package org.verapdf.gui;
 
-import org.verapdf.ReleaseDetails;
-import org.verapdf.gui.tools.GUIConstants;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Properties;
+
+import javax.imageio.ImageIO;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import org.verapdf.ReleaseDetails;
+import org.verapdf.gui.tools.GUIConstants;
 
 /**
  * Panel with partners logo

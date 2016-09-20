@@ -1,14 +1,13 @@
 package org.verapdf.processor;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.verapdf.core.ModelParsingException;
-import org.verapdf.processor.config.Config;
-import org.verapdf.processor.config.ProcessingType;
-import org.verapdf.report.ItemDetails;
+import static org.junit.Assert.assertEquals;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -17,13 +16,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.verapdf.processor.config.Config;
+import org.verapdf.processor.config.ProcessingType;
+import org.verapdf.report.ItemDetails;
 
 /**
  * @author Sergey Shemyakov
  *
  */
-@SuppressWarnings("static-method")
 @RunWith(Parameterized.class)
 public class ProcessorImplExceptionsTest {
 
@@ -34,24 +37,24 @@ public class ProcessorImplExceptionsTest {
 	private static ArrayList<Boolean> fixMetadataValues = new ArrayList<>();
 
 	static {
-		fixMetadataValues.add(true);
-		fixMetadataValues.add(false);
+		fixMetadataValues.add(Boolean.TRUE);
+		fixMetadataValues.add(Boolean.FALSE);
 	}
 
 	@Parameterized.Parameters
 	public static Collection<Object[]> data() {
 		return Arrays.asList(new Object[][]{
-				{BAD_PROFILE_PATH, GOOD_PDF_PATH, false,
+				{BAD_PROFILE_PATH, GOOD_PDF_PATH, Boolean.FALSE,
 						ProcessingResult.ValidationSummary.ERROR_IN_VALIDATION,
 						ProcessingResult.FeaturesSummary.FEATURES_SUCCEED,
 						ProcessingResult.MetadataFixingSummary.ERROR_IN_FIXING,
 						ProcessingResult.ReportSummary.REPORT_SUCCEED},
-				{GOOD_PROFILE_PATH, BAD_PDF_PATH, false,
+				{GOOD_PROFILE_PATH, BAD_PDF_PATH, Boolean.FALSE,
 						ProcessingResult.ValidationSummary.ERROR_IN_VALIDATION,
 						ProcessingResult.FeaturesSummary.ERROR_IN_FEATURES,
 						ProcessingResult.MetadataFixingSummary.ERROR_IN_FIXING,
 						ProcessingResult.ReportSummary.REPORT_SUCCEED},
-				{GOOD_PROFILE_PATH, GOOD_PDF_PATH, true,
+				{GOOD_PROFILE_PATH, GOOD_PDF_PATH, Boolean.TRUE,
 						ProcessingResult.ValidationSummary.FILE_VALID,
 						ProcessingResult.FeaturesSummary.FEATURES_SUCCEED,
 						ProcessingResult.MetadataFixingSummary.FIXING_SUCCEED,
@@ -90,7 +93,7 @@ public class ProcessorImplExceptionsTest {
 	 */
 	@Test
 	public final void testValidate() throws
-			URISyntaxException, IOException, ModelParsingException {
+			URISyntaxException, IOException {
 		Config config = new Config();
 		config.setValidationProfilePath(
 				new File(getSystemIndependentPath(profilePath)).toPath());
@@ -99,12 +102,12 @@ public class ProcessorImplExceptionsTest {
 		xmlReport.deleteOnExit();
 		ProcessingResult processingResult;
 		for(ProcessingType type : ProcessingType.values()) {
-			for (Boolean fixMetadata : this.fixMetadataValues) {
-				if (!type.isValidating() && fixMetadata == true) {    // We can't fix metadata without validation
+			for (Boolean fixMetadata : ProcessorImplExceptionsTest.fixMetadataValues) {
+				if (!type.isValidating() && fixMetadata.booleanValue() == true) {    // We can't fix metadata without validation
 					continue;
 				}
 				config.setProcessingType(type);
-				config.setFixMetadata(fixMetadata);
+				config.setFixMetadata(fixMetadata.booleanValue());
 				try (InputStream toProcess = new FileInputStream(pdf);
 					OutputStream mrrReport = new FileOutputStream(xmlReport)) {
 					if(isCorruptedReportStream) {
@@ -126,7 +129,7 @@ public class ProcessorImplExceptionsTest {
 					assertEquals(expectedFeatures,
 							processingResult.getFeaturesSummary());
 
-					ProcessingResult.MetadataFixingSummary expectedMetadata = fixMetadata ?
+					ProcessingResult.MetadataFixingSummary expectedMetadata = fixMetadata.booleanValue() ?
 							expectedFixingSummary :
 							ProcessingResult.MetadataFixingSummary.FIXING_DISABLED;
 					assertEquals(expectedMetadata,
