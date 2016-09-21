@@ -36,7 +36,7 @@ class CheckerPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1290058869994329766L;
 
-	private static final Logger LOGGER = Logger.getLogger(CheckerPanel.class);
+	static final Logger LOGGER = Logger.getLogger(CheckerPanel.class);
 
 	private JFileChooser pdfChooser;
 	private JFileChooser xmlChooser;
@@ -645,6 +645,11 @@ class CheckerPanel extends JPanel {
 
 	private class ChooseFlavourRenderer extends JLabel implements ListCellRenderer<PDFAFlavour> {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 3740801661593829099L;
+
 		public ChooseFlavourRenderer() {
 			setOpaque(true);
 			setHorizontalAlignment(CENTER);
@@ -675,6 +680,11 @@ class CheckerPanel extends JPanel {
 	}
 
 	private class ProcessingTypeRenderer extends JLabel implements ListCellRenderer<ProcessingType> {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -2841316639915833315L;
 
 		public ProcessingTypeRenderer() {
 			setOpaque(true);

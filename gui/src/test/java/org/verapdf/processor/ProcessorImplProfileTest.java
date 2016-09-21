@@ -1,18 +1,24 @@
 package org.verapdf.processor;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import javax.xml.bind.JAXBException;
+
 import org.junit.Test;
-import org.verapdf.core.ProfileException;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.ProfileDirectory;
 import org.verapdf.pdfa.validation.Profiles;
 import org.verapdf.pdfa.validation.ValidationProfile;
 import org.verapdf.processor.config.Config;
-
-import javax.xml.bind.JAXBException;
-import java.io.*;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Sergey Shemyakov
@@ -34,7 +40,7 @@ public class ProcessorImplProfileTest {
 
     @Test
     public final void testCreateProcessorFromArgsNewProfile()
-            throws ProfileException, FileNotFoundException, IOException,
+            throws FileNotFoundException, IOException,
             JAXBException {
         Config config = new Config();
         assertTrue(new ProcessorImpl().profileFromConfig(config) == null);

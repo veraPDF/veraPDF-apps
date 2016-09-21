@@ -3,21 +3,18 @@
  */
 package org.verapdf.cli;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.verapdf.cli.commands.VeraCliArgParser;
-import org.verapdf.core.ProfileException;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.ProfileDirectory;
 import org.verapdf.pdfa.validation.Profiles;
 import org.verapdf.pdfa.validation.ValidationProfile;
 import org.verapdf.processor.config.FormatOption;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.beust.jcommander.JCommander;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -38,8 +35,7 @@ public class VeraPdfCliProcessorTest {
      * @throws ProfileException
      */
     @Test
-    public final void testCreateProcessorFromArgsFormat()
-            throws ProfileException, FileNotFoundException, IOException {
+    public final void testCreateProcessorFromArgsFormat() {
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = initialiseJCommander(parser);
         jCommander.parse(new String[] {});
@@ -65,8 +61,7 @@ public class VeraPdfCliProcessorTest {
      * @throws ProfileException
      */
     @Test
-    public final void testCreateProcessorFromArgsLogPassed()
-            throws ProfileException, FileNotFoundException, IOException {
+    public final void testCreateProcessorFromArgsLogPassed() {
         String[] argVals = new String[] { "--passed", "--success" };
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = initialiseJCommander(parser);
@@ -94,8 +89,7 @@ public class VeraPdfCliProcessorTest {
      * @throws ProfileException
      */
     @Test
-    public final void testCreateProcessorFromArgsExtract()
-            throws ProfileException, FileNotFoundException, IOException {
+    public final void testCreateProcessorFromArgsExtract() {
         String[] argVals = new String[] { "-x", "--extract" };
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = initialiseJCommander(parser);
@@ -123,8 +117,7 @@ public class VeraPdfCliProcessorTest {
      */
 
     @Test
-    public final void testCreateProcessorFromArgsFlavour()
-            throws ProfileException, FileNotFoundException, IOException {
+    public final void testCreateProcessorFromArgsFlavour() {
         String[] argVals = new String[] { "-f", "--flavour" };
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = initialiseJCommander(parser);

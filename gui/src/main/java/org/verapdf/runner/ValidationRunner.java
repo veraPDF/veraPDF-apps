@@ -1,6 +1,5 @@
 package org.verapdf.runner;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.bind.JAXBException;
@@ -30,7 +29,7 @@ public class ValidationRunner {
      * @throws IOException
      */
     public static ValidationResult runValidation(InputStream toValidate)
-            throws VeraPDFException, IOException {
+            throws VeraPDFException {
         try (ModelParser loader = ModelParser.createModelWithFlavour(
                 toValidate, PDFAFlavour.PDFA_1_B)) {
             loader.getRoot();

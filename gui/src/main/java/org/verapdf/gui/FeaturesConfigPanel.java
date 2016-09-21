@@ -20,6 +20,11 @@ import java.nio.file.Path;
  */
 public class FeaturesConfigPanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6602264333993164990L;
+
 	private static final Logger LOGGER = Logger.getLogger(FeaturesConfigPanel.class);
 
 	private JButton okButton;
@@ -44,7 +49,7 @@ public class FeaturesConfigPanel extends JPanel {
 	private JCheckBox fonts;
 	private JCheckBox propertiesDicts;
 
-	FeaturesConfigPanel() throws IOException {
+	FeaturesConfigPanel() {
 		setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS));
 		setLayout(new BorderLayout());
 
@@ -125,12 +130,14 @@ public class FeaturesConfigPanel extends JPanel {
 		FeaturesConfig config = null;
 
 		if (featuresConfigPath != null && !featuresConfigPath.toString().isEmpty()) {
-			try {
-				config = FeaturesConfig.fromXml(new FileInputStream(featuresConfigPath.toFile()));
+			try (FileInputStream fis = new FileInputStream(featuresConfigPath.toFile())) {
+				config = FeaturesConfig.fromXml(fis);
 			} catch (JAXBException e) {
 				LOGGER.error("Error during loading features config", e);
 			} catch (FileNotFoundException e) {
 				LOGGER.error("Features config file not found", e);
+			} catch (IOException excep) {
+				LOGGER.info("IOException caught when closing config file: " + featuresConfigPath, excep);
 			}
 		}
 
@@ -181,24 +188,24 @@ public class FeaturesConfigPanel extends JPanel {
 
 	FeaturesConfig getFeaturesConfig() {
 		FeaturesConfig.Builder builder = new FeaturesConfig.Builder();
-		builder.informationDict(this.infoDict.isSelected())
-				.metadata(this.metadata.isSelected())
-				.documentSecurity(this.documentSecurity.isSelected())
-				.signatures(this.signatures.isSelected())
-				.lowLevelInfo(this.lowLevelInfo.isSelected())
-				.embeddedFiles(this.embeddedFiles.isSelected())
-				.iccProfiles(this.iccProfiles.isSelected())
-				.outputIntents(this.outputIntents.isSelected())
-				.outlines(this.outlines.isSelected())
-				.annotations(this.annotations.isSelected())
-				.pages(this.pages.isSelected())
-				.graphicsStates(this.graphicsStates.isSelected())
-				.colorSpaces(this.colorSpaces.isSelected())
-				.patterns(this.patterns.isSelected())
-				.shadings(this.shadings.isSelected())
-				.xobjects(this.xobjects.isSelected())
-				.fonts(this.fonts.isSelected())
-				.propertiesDicts(this.propertiesDicts.isSelected());
+		builder.informationDict(Boolean.valueOf(this.infoDict.isSelected()))
+				.metadata(Boolean.valueOf(this.metadata.isSelected()))
+				.documentSecurity(Boolean.valueOf(this.documentSecurity.isSelected()))
+				.signatures(Boolean.valueOf(this.signatures.isSelected()))
+				.lowLevelInfo(Boolean.valueOf(this.lowLevelInfo.isSelected()))
+				.embeddedFiles(Boolean.valueOf(this.embeddedFiles.isSelected()))
+				.iccProfiles(Boolean.valueOf(this.iccProfiles.isSelected()))
+				.outputIntents(Boolean.valueOf(this.outputIntents.isSelected()))
+				.outlines(Boolean.valueOf(this.outlines.isSelected()))
+				.annotations(Boolean.valueOf(this.annotations.isSelected()))
+				.pages(Boolean.valueOf(this.pages.isSelected()))
+				.graphicsStates(Boolean.valueOf(this.graphicsStates.isSelected()))
+				.colorSpaces(Boolean.valueOf(this.colorSpaces.isSelected()))
+				.patterns(Boolean.valueOf(this.patterns.isSelected()))
+				.shadings(Boolean.valueOf(this.shadings.isSelected()))
+				.xobjects(Boolean.valueOf(this.xobjects.isSelected()))
+				.fonts(Boolean.valueOf(this.fonts.isSelected()))
+				.propertiesDicts(Boolean.valueOf(this.propertiesDicts.isSelected()));
 		return builder.build();
 	}
 }

@@ -3,7 +3,6 @@
  */
 package org.verapdf.cli;
 
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -64,11 +63,7 @@ public final class VeraPdfCli {
 			try {
 				VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser);
 				if (args.length == 0) jCommander.usage();
-				processor.processPaths(cliArgParser.getPdfPaths(), args.length == 0);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				System.exit(1);
+				processor.processPaths(cliArgParser.getPdfPaths());
 			} catch (OutOfMemoryError oome) {
 				MemoryUsage heapUsage = memoryMan.getHeapMemoryUsage();
 				long maxMemory = heapUsage.getMax() / MEGABYTE;
