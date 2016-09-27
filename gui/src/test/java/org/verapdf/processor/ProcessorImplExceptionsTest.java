@@ -19,6 +19,7 @@ import java.util.Collection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.verapdf.PdfBoxFoundry;
 import org.verapdf.processor.config.Config;
 import org.verapdf.processor.config.ProcessingType;
 import org.verapdf.report.ItemDetails;
@@ -39,6 +40,7 @@ public class ProcessorImplExceptionsTest {
 	static {
 		fixMetadataValues.add(Boolean.TRUE);
 		fixMetadataValues.add(Boolean.FALSE);
+		PdfBoxFoundry.initialise();
 	}
 
 	@Parameterized.Parameters

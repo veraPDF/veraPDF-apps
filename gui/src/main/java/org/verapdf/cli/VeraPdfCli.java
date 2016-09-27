@@ -7,6 +7,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 
+import org.verapdf.PdfBoxFoundry;
 import org.verapdf.ReleaseDetails;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.pdfa.validation.ProfileDirectory;
@@ -39,6 +40,7 @@ public final class VeraPdfCli {
 	 */
 	public static void main(final String[] args) {
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
+		PdfBoxFoundry.initialise();
 		ReleaseDetails.addDetailsFromResource(
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT);
 		VeraCliArgParser cliArgParser = new VeraCliArgParser();

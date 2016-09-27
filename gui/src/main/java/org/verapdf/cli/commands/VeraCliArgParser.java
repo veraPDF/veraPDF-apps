@@ -10,6 +10,7 @@ import org.verapdf.processor.config.FormatOption;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * This class holds all command-line options used by VeraPDF application.
@@ -289,7 +290,11 @@ public class VeraCliArgParser {
 		 */
 		@Override
 		public FormatOption convert(final String value) {
+			try {
 			return FormatOption.fromOption(value);
+			} catch (NoSuchElementException e) {
+				throw new ParameterException("Illegal format option value: " + value, e);
+			}
 		}
 
 	}
