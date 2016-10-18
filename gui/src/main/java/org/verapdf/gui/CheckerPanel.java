@@ -3,7 +3,7 @@ package org.verapdf.gui;
 import org.apache.log4j.Logger;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
-import org.verapdf.pdfa.validation.Profiles;
+import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.processor.ProcessingResult;
 import org.verapdf.processor.config.Config;
 import org.verapdf.processor.config.ConfigIO;

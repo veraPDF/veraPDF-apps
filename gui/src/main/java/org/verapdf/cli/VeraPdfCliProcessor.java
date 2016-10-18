@@ -15,15 +15,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.naming.Reference;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
-import org.verapdf.PdfBoxFoundry;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.pdfa.BatchValidator;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
-import org.verapdf.pdfa.validators.ReferenceBatchValidator;
+import org.verapdf.pdfa.validation.validators.ReferenceBatchValidator;
 import org.verapdf.processor.Processor;
 import org.verapdf.processor.ProcessorImpl;
 import org.verapdf.processor.config.Config;
