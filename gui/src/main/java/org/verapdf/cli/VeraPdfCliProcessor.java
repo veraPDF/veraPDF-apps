@@ -15,23 +15,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.naming.Reference;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
-import org.verapdf.PdfBoxFoundry;
 import org.verapdf.cli.commands.VeraCliArgParser;
-import org.verapdf.pdfa.BatchValidator;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
-import org.verapdf.pdfa.validators.ReferenceBatchValidator;
 import org.verapdf.processor.Processor;
 import org.verapdf.processor.ProcessorImpl;
 import org.verapdf.processor.config.Config;
 import org.verapdf.processor.config.ConfigIO;
-import org.verapdf.processor.config.FormatOption;
 import org.verapdf.processor.config.ProcessingType;
 import org.verapdf.report.ItemDetails;
-import org.verapdf.report.ValidationBatchReport;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -134,10 +128,7 @@ final class VeraPdfCliProcessor {
 			File file = new File(pdfPath);
 			if (file.isDirectory()) {
 				baseDirectory = file.getAbsolutePath();
-				if (this.config.getReportType() == FormatOption.BATCH)
-					batchProcessDir(file);
-				else
-					processDir(file);
+				processDir(file);
 			} else {
 				processFile(file);
 			}
@@ -146,18 +137,6 @@ final class VeraPdfCliProcessor {
 
 	static VeraPdfCliProcessor createProcessorFromArgs(final VeraCliArgParser args) {
 		return new VeraPdfCliProcessor(args);
-	}
-
-	private void batchProcessDir(final File dir) {
-		BatchValidator validator = new ReferenceBatchValidator(this.config.getFlavour(), this.recurse);
-		ValidationBatchReport report = validator.processDirectory(dir);
-		OutputStream reportStream = System.out;
-		try {
-			ValidationBatchReport.toXml(report, reportStream, Boolean.TRUE);
-		} catch (JAXBException excep) {
-			// TODO Auto-generated catch block
-			excep.printStackTrace();
-		}
 	}
 
 	private void processDir(final File dir) {

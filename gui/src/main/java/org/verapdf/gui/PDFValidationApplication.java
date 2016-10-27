@@ -28,7 +28,6 @@ import javax.swing.border.EmptyBorder;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
-import org.verapdf.PdfBoxFoundry;
 import org.verapdf.ReleaseDetails;
 import org.verapdf.features.config.FeaturesConfig;
 import org.verapdf.gui.tools.GUIConstants;
@@ -219,7 +218,6 @@ public class PDFValidationApplication extends JFrame {
 	 *            command line arguments
 	 */
 	public static void main(String[] args) {
-		PdfBoxFoundry.initialise();
 		ReleaseDetails.addDetailsFromResource(
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT);
 		EventQueue.invokeLater(new Runnable() {
