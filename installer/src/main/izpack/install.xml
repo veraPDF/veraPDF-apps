@@ -55,13 +55,11 @@
       <description>veraPDF GUI.</description>
       <updatecheck>
         <include name="bin/**"/>
-        <include name="config/**"/>
       </updatecheck>
       <file targetdir="$INSTALL_PATH/bin" src="bin/gui-${project.version}.jar"/>
       <executable targetfile="$INSTALL_PATH/bin/gui-${project.version}.jar"/>
       <file targetdir="$INSTALL_PATH/profiles" src="profiles/integration.zip" unpack="true"/>
       <file targetdir="$INSTALL_PATH/plugins" src="plugins/README.txt"/>
-      <file targetdir="$INSTALL_PATH/config" src="config/features.xml"/>
     </pack>
     <pack name="veraPDF Mac and *nix Scripts" required="yes" os="unix" executable="yes">
       <description>Scripts for using the veraPDF software.</description>

@@ -1,19 +1,31 @@
 package org.verapdf.gui;
 
-import org.apache.log4j.Logger;
-import org.verapdf.features.config.FeaturesConfig;
-import org.verapdf.gui.tools.GUIConstants;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.xml.bind.JAXBException;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.EnumMap;
+import java.util.EnumSet;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+import javax.xml.bind.JAXBException;
+
+import org.apache.log4j.Logger;
+import org.verapdf.features.FeatureExtractorConfig;
+import org.verapdf.features.FeatureFactory;
+import org.verapdf.features.FeatureObjectType;
+import org.verapdf.gui.tools.GUIConstants;
 
 /**
  * @author Maksim Bezrukov
@@ -30,24 +42,7 @@ public class FeaturesConfigPanel extends JPanel {
 	private JButton okButton;
 	boolean ok;
 	JDialog dialog;
-	private JCheckBox infoDict;
-	private JCheckBox metadata;
-	private JCheckBox documentSecurity;
-	private JCheckBox signatures;
-	private JCheckBox lowLevelInfo;
-	private JCheckBox embeddedFiles;
-	private JCheckBox iccProfiles;
-	private JCheckBox outputIntents;
-	private JCheckBox outlines;
-	private JCheckBox annotations;
-	private JCheckBox pages;
-	private JCheckBox graphicsStates;
-	private JCheckBox colorSpaces;
-	private JCheckBox patterns;
-	private JCheckBox shadings;
-	private JCheckBox xobjects;
-	private JCheckBox fonts;
-	private JCheckBox propertiesDicts;
+	private EnumMap<FeatureObjectType, JCheckBox> featureGrid = new EnumMap<>(FeatureObjectType.class);
 
 	FeaturesConfigPanel() {
 		setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS));
@@ -56,47 +51,10 @@ public class FeaturesConfigPanel extends JPanel {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(6, 3));
 
-		infoDict = new JCheckBox("Information Dictionary");
-		panel.add(infoDict);
-		iccProfiles = new JCheckBox("ICC Profiles");
-		panel.add(iccProfiles);
-		colorSpaces = new JCheckBox("Color Spaces");
-		panel.add(colorSpaces);
-
-		metadata = new JCheckBox("Metadata");
-		panel.add(metadata);
-		outputIntents = new JCheckBox("Output Intents");
-		panel.add(outputIntents);
-		patterns = new JCheckBox("Patterns");
-		panel.add(patterns);
-
-		documentSecurity = new JCheckBox("Document Security");
-		panel.add(documentSecurity);
-		outlines = new JCheckBox("Outlines");
-		panel.add(outlines);
-		shadings = new JCheckBox("Shadings");
-		panel.add(shadings);
-
-		signatures = new JCheckBox("Signatures");
-		panel.add(signatures);
-		annotations = new JCheckBox("Annotations");
-		panel.add(annotations);
-		xobjects = new JCheckBox("XObjects");
-		panel.add(xobjects);
-
-		lowLevelInfo = new JCheckBox("Low Level Info");
-		panel.add(lowLevelInfo);
-		pages = new JCheckBox("Pages");
-		panel.add(pages);
-		fonts = new JCheckBox("Fonts");
-		panel.add(fonts);
-
-		embeddedFiles = new JCheckBox("Embedded Files");
-		panel.add(embeddedFiles);
-		graphicsStates = new JCheckBox("Graphics States");
-		panel.add(graphicsStates);
-		propertiesDicts = new JCheckBox("Properties Dictionaries");
-		panel.add(propertiesDicts);
+		for (FeatureObjectType type : FeatureObjectType.values()) {
+			featureGrid.put(type, new JCheckBox(type.getNodeName()));
+			panel.add(featureGrid.get(type));
+		}
 
 		add(panel, BorderLayout.CENTER);
 
@@ -127,11 +85,11 @@ public class FeaturesConfigPanel extends JPanel {
 
 		this.ok = false;
 
-		FeaturesConfig config = null;
+		FeatureExtractorConfig config = FeatureFactory.defaultConfig();
 
 		if (featuresConfigPath != null && !featuresConfigPath.toString().isEmpty()) {
 			try (FileInputStream fis = new FileInputStream(featuresConfigPath.toFile())) {
-				config = FeaturesConfig.fromXml(fis);
+				config = FeatureFactory.createConfig(fis);
 			} catch (JAXBException e) {
 				LOGGER.error("Error during loading features config", e);
 			} catch (FileNotFoundException e) {
@@ -140,29 +98,10 @@ public class FeaturesConfigPanel extends JPanel {
 				LOGGER.info("IOException caught when closing config file: " + featuresConfigPath, excep);
 			}
 		}
-
-		if (config == null) {
-			config = new FeaturesConfig.Builder().build();
+		
+		for (FeatureObjectType type : config.getEnabledFeatures()) {
+			this.featureGrid.get(type).setSelected(true);
 		}
-
-		this.infoDict.setSelected(config.isInformationDictEnabled());
-		this.metadata.setSelected(config.isMetadataEnabled());
-		this.documentSecurity.setSelected(config.isDocumentSecurityEnabled());
-		this.signatures.setSelected(config.isSignaturesEnabled());
-		this.lowLevelInfo.setSelected(config.isLowLevelInfoEnabled());
-		this.embeddedFiles.setSelected(config.isEmbeddedFilesEnabled());
-		this.iccProfiles.setSelected(config.isIccProfilesEnabled());
-		this.outputIntents.setSelected(config.isOutputIntentsEnabled());
-		this.outlines.setSelected(config.isOutlinesEnabled());
-		this.annotations.setSelected(config.isAnnotationsEnabled());
-		this.pages.setSelected(config.isPagesEnabled());
-		this.graphicsStates.setSelected(config.isGraphicsStatesEnabled());
-		this.colorSpaces.setSelected(config.isColorSpacesEnabled());
-		this.patterns.setSelected(config.isPatternsEnabled());
-		this.shadings.setSelected(config.isShadingsEnabled());
-		this.xobjects.setSelected(config.isXobjectsEnabled());
-		this.fonts.setSelected(config.isFontsEnabled());
-		this.propertiesDicts.setSelected(config.isPropertiesDictsEnabled());
 
 		Frame owner;
 		if (parent instanceof Frame) {
@@ -186,26 +125,14 @@ public class FeaturesConfigPanel extends JPanel {
 		return this.ok;
 	}
 
-	FeaturesConfig getFeaturesConfig() {
-		FeaturesConfig.Builder builder = new FeaturesConfig.Builder();
-		builder.informationDict(Boolean.valueOf(this.infoDict.isSelected()))
-				.metadata(Boolean.valueOf(this.metadata.isSelected()))
-				.documentSecurity(Boolean.valueOf(this.documentSecurity.isSelected()))
-				.signatures(Boolean.valueOf(this.signatures.isSelected()))
-				.lowLevelInfo(Boolean.valueOf(this.lowLevelInfo.isSelected()))
-				.embeddedFiles(Boolean.valueOf(this.embeddedFiles.isSelected()))
-				.iccProfiles(Boolean.valueOf(this.iccProfiles.isSelected()))
-				.outputIntents(Boolean.valueOf(this.outputIntents.isSelected()))
-				.outlines(Boolean.valueOf(this.outlines.isSelected()))
-				.annotations(Boolean.valueOf(this.annotations.isSelected()))
-				.pages(Boolean.valueOf(this.pages.isSelected()))
-				.graphicsStates(Boolean.valueOf(this.graphicsStates.isSelected()))
-				.colorSpaces(Boolean.valueOf(this.colorSpaces.isSelected()))
-				.patterns(Boolean.valueOf(this.patterns.isSelected()))
-				.shadings(Boolean.valueOf(this.shadings.isSelected()))
-				.xobjects(Boolean.valueOf(this.xobjects.isSelected()))
-				.fonts(Boolean.valueOf(this.fonts.isSelected()))
-				.propertiesDicts(Boolean.valueOf(this.propertiesDicts.isSelected()));
-		return builder.build();
+	FeatureExtractorConfig getFeaturesConfig() {
+		EnumSet<FeatureObjectType> enabledFeatures = EnumSet.noneOf(FeatureObjectType.class);
+		for (FeatureObjectType type : this.featureGrid.keySet()) {
+			if (this.featureGrid.get(type).isSelected()) {
+				enabledFeatures.add(type);
+			}
+		}
+		return FeatureFactory.createConfig(enabledFeatures);
 	}
+	
 }

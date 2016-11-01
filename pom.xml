@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -59,6 +59,20 @@
         <groupId>com.beust</groupId>
         <artifactId>jcommander</artifactId>
         <version>1.48</version>
+      </dependency>
+
+      <dependency>
+        <groupId>nl.jqno.equalsverifier</groupId>
+        <artifactId>equalsverifier</artifactId>
+        <version>1.5.1</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>test</scope>
       </dependency>
 
     </dependencies>
@@ -174,7 +188,7 @@
                 <id>sources-dependencies</id>
                 <phase>package</phase>
                 <goals>
-                  <!-- use copy-dependencies instead if you don't want to explode
+                  <!-- use copy-dependencies instead if you don't want to explode 
                     the sources -->
                   <goal>unpack-dependencies</goal>
                 </goals>
@@ -182,7 +196,8 @@
                   <classifier>sources</classifier>
                   <failOnMissingClassifierArtifact>true</failOnMissingClassifierArtifact>
                   <outputDirectory>${project.build.directory}/sources/src/main/java</outputDirectory>
-                  <excludeArtifactIds>log4j, avalon-logkit, commons-io, commons-logging</excludeArtifactIds>
+                  <excludeArtifactIds>log4j, avalon-logkit, commons-io,
+                    commons-logging</excludeArtifactIds>
                   <includes>**/*.java</includes>
                   <excludes>**/*Test.java, **/test/**/*.java</excludes>
                 </configuration>
@@ -191,7 +206,7 @@
                 <id>resources-dependencies</id>
                 <phase>package</phase>
                 <goals>
-                  <!-- use copy-dependencies instead if you don't want to explode
+                  <!-- use copy-dependencies instead if you don't want to explode 
                     the sources -->
                   <goal>unpack-dependencies</goal>
                 </goals>
@@ -234,7 +249,7 @@
                 <id>src-vera</id>
                 <phase>package</phase>
                 <goals>
-                  <!-- use copy-dependencies instead if you don't want to explode
+                  <!-- use copy-dependencies instead if you don't want to explode 
                     the sources -->
                   <goal>jar-no-fork</goal>
                 </goals>

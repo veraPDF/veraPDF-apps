@@ -38,7 +38,7 @@ public class VeraCliGetPathsTest {
         // Test other flags & options don't change that
         parser = new VeraCliArgParser();
         jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--success", "--format", "html",
+        jCommander.parse(new String[] { "-l", "--success", "--format", "xml",
                 "-h" });
         assertEquals(VeraCliArgParser.DEFAULT_ARGS.getPdfPaths(),
                 parser.getPdfPaths());
@@ -61,7 +61,7 @@ public class VeraCliGetPathsTest {
         // Test flag works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--success", "--format", "html",
+        jCommander.parse(new String[] { "-l", "--success", "--format", "mrr",
                 "-h", "path 1", "path 2", "path 3" });
         assertNotEquals(parser.getPdfPaths(), VeraCliArgParser.DEFAULT_ARGS
                 .getPdfPaths());
