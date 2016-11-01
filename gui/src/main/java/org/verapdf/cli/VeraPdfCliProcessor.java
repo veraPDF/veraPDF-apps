@@ -10,111 +10,51 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.log4j.Logger;
+import org.verapdf.apps.ConfigManager;
+import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.cli.commands.VeraCliArgParser;
-import org.verapdf.pdfa.BatchValidator;
-import org.verapdf.pdfa.flavours.PDFAFlavour;
-import org.verapdf.pdfa.validation.validators.ReferenceBatchValidator;
-import org.verapdf.processor.Processor;
-import org.verapdf.processor.ProcessorImpl;
-import org.verapdf.processor.config.Config;
-import org.verapdf.processor.config.ConfigIO;
-import org.verapdf.processor.config.FormatOption;
-import org.verapdf.processor.config.ProcessingType;
+import org.verapdf.processor.ProcessorFactory;
+import org.verapdf.processor.VeraProcessor;
 import org.verapdf.report.ItemDetails;
-import org.verapdf.report.ValidationBatchReport;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
  */
 final class VeraPdfCliProcessor {
-
 	private static final Logger LOGGER = Logger.getLogger(VeraPdfCliProcessor.class);
 
-	private final boolean recurse;
+	private final ConfigManager configManager;
+	private final VeraAppConfig appConfig;
 	private boolean isStdOut = true;
 	private boolean appendData = true;
-	private Config config;
+	private final boolean recurse;
 	private String baseDirectory = "";
 
-	private VeraPdfCliProcessor() {
-		this(new VeraCliArgParser());
-	}
-
-	private VeraPdfCliProcessor(final VeraCliArgParser args) {
+	private VeraPdfCliProcessor(final VeraCliArgParser args, ConfigManager configManager) {
+		this.configManager = configManager;
+		this.appConfig = VeraCliArgParser.parseAppConfig(configManager.getApplicationConfig(), args);
 		this.recurse = args.isRecurse();
 
-		if (args.isLoadingConfig()) {
-			try {
-				config = ConfigIO.readConfig();
-			} catch (IOException e) {
-				LOGGER.error("Can not read config file. Using default config", e);
-				this.config = new Config();
-			} catch (JAXBException e) {
-				LOGGER.error("Cannot parse config XML. Using default config", e);
-				this.config = new Config();
-			}
-		} else {
-			config = new Config();
-			config.setShowPassedRules(args.logPassed());
-			config.setMaxNumberOfFailedChecks(args.maxFailures());
-			config.setMaxNumberOfDisplayedFailedChecks(args.maxFailuresDisplayed());
-			config.setMetadataFixerPrefix(args.prefix());
-			config.setFixMetadataPathFolder(FileSystems.getDefault().getPath(args.saveFolder()));
-			config.setPolicyProfilePath(FileSystems.getDefault().getPath(args.policyProfilePath()));
-			config.setProfileWikiPath(args.getProfilesWikiPath());
-			config.setFixMetadata(args.fixMetadata());
-			config.setProcessingType(processingTypeFromArgs(args));
-			config.setReportType(args.getFormat());
-			config.setValidationProfilePath(args.getProfileFile() == null ? FileSystems.getDefault().getPath("")
-					: args.getProfileFile().toPath());
-			config.setFlavour(args.getFlavour());
-			config.setVerboseCli(args.isVerbose());
-			config.setReportFolderPath(args.getReportFolder());
-			config.setReportFilePath(args.getReportFile());
-			Path configFolderPath = ConfigIO.getConfigFolderPath();
-			if (!configFolderPath.toString().isEmpty()) {
-				config.setPluginsConfigPath(
-						FileSystems.getDefault().getPath(configFolderPath.toString(), "plugins.xml"));
-				config.setFeaturesConfigPath(
-						FileSystems.getDefault().getPath(configFolderPath.toString(), "features.xml"));
-			}
-			config.setOverwriteReportFile(args.isOverwriteReportFile());
-		}
-
-		if (!config.getReportFolder().isEmpty() && !config.getReportFile().isEmpty()) {
-			LOGGER.error("Report folder and report file defined together, switching to STDOUT.");
-			config.setReportFolderPath("");
-			config.setReportFilePath("");
-		}
-
-		if (config.isOverwriteReportFile() && !config.getReportFile().isEmpty()) {
-			File file = new File(config.getReportFile());
+		if (this.configManager.getApplicationConfig().isOverwriteReport()) {
+			File file = new File(this.configManager.getApplicationConfig().getReportFile());
 			if (file.exists()) {
 				try {
 					file.delete();
 				} catch (SecurityException ex) {
-					LOGGER.warn("Cannot delete older report file.");
+					LOGGER.warn("Cannot delete older report file.", ex);
 				}
 			}
 		}
 
 	}
 
-	public Config getConfig() {
-		return config;
-	}
-
-	static ProcessingType processingTypeFromArgs(final VeraCliArgParser args) {
-		boolean isValidating = args.getFlavour() != PDFAFlavour.NO_FLAVOUR;
-		return ProcessingType.getType(isValidating, args.extractFeatures());
+	public VeraAppConfig getConfig() {
+		return this.appConfig;
 	}
 
 	void processPaths(final List<String> pdfPaths) {
@@ -131,31 +71,16 @@ final class VeraPdfCliProcessor {
 		for (String pdfPath : pdfPaths) {
 			File file = new File(pdfPath);
 			if (file.isDirectory()) {
-				baseDirectory = file.getAbsolutePath();
-				if (this.config.getReportType() == FormatOption.BATCH)
-					batchProcessDir(file);
-				else
-					processDir(file);
+				this.baseDirectory = file.getAbsolutePath();
+				processDir(file);
 			} else {
 				processFile(file);
 			}
 		}
 	}
 
-	static VeraPdfCliProcessor createProcessorFromArgs(final VeraCliArgParser args) {
-		return new VeraPdfCliProcessor(args);
-	}
-
-	private void batchProcessDir(final File dir) {
-		BatchValidator validator = new ReferenceBatchValidator(this.config.getFlavour(), this.recurse);
-		ValidationBatchReport report = validator.processDirectory(dir);
-		OutputStream reportStream = System.out;
-		try {
-			ValidationBatchReport.toXml(report, reportStream, Boolean.TRUE);
-		} catch (JAXBException excep) {
-			// TODO Auto-generated catch block
-			excep.printStackTrace();
-		}
+	static VeraPdfCliProcessor createProcessorFromArgs(final VeraCliArgParser args, ConfigManager config) {
+		return new VeraPdfCliProcessor(args, config);
 	}
 
 	private void processDir(final File dir) {
@@ -197,10 +122,10 @@ final class VeraPdfCliProcessor {
 	}
 
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
-		Processor processor = new ProcessorImpl();
+		VeraProcessor processor = ProcessorFactory.createProcessor(this.configManager.createProcessorConfig());
 		OutputStream outputReportStream = this.getReportStream(item.getName());
 
-		processor.validate(toProcess, item, this.config, outputReportStream);
+		processor.process(item, toProcess);
 
 		if (this.isStdOut == false) {
 			try {
@@ -211,6 +136,7 @@ final class VeraPdfCliProcessor {
 		}
 	}
 
+	@SuppressWarnings("resource")
 	private OutputStream getReportStream(final String itemName) {
 		OutputStream reportStream = System.out;
 		String reportFileName = this.constructReportPath(itemName);
@@ -219,6 +145,7 @@ final class VeraPdfCliProcessor {
 				reportStream = new FileOutputStream(reportFileName, this.appendData);
 				this.isStdOut = false;
 			} catch (FileNotFoundException ex) {
+				LOGGER.warn("Can't open report file:" + itemName, ex);
 				reportStream = System.out;
 				this.isStdOut = true;
 			}
@@ -228,19 +155,19 @@ final class VeraPdfCliProcessor {
 
 	private String constructReportPath(final String itemName) {
 		String reportPath = "";
-		if (!config.getReportFolder().isEmpty()) {
+		if (!this.configManager.getApplicationConfig().getReportFolder().toString().isEmpty()) {
 			Path fileAbsolutePath = Paths.get(itemName);
 			String pdfFileName = fileAbsolutePath.getFileName().toString();
 			String pdfFileDirectory = fileAbsolutePath.getParent().toString();
-			String extension = "." + config.getReportType().toString();
+			String extension = "." + this.configManager.getApplicationConfig().getFormat().toString();
 			String outputFileName = pdfFileName.replace(".pdf", extension);
-			String reportFolder = config.getReportFolder();
+			String reportFolder = this.configManager.getApplicationConfig().getReportFolder().toString();
 
-			if (pdfFileDirectory.length() > baseDirectory.length()) {
+			if (pdfFileDirectory.length() > this.baseDirectory.length()) {
 				StringBuilder reportFolderBuilder = new StringBuilder();
 				reportFolderBuilder.append(reportFolder);
 
-				String subDirectory = pdfFileDirectory.substring(baseDirectory.length());
+				String subDirectory = pdfFileDirectory.substring(this.baseDirectory.length());
 				reportFolderBuilder.append(subDirectory);
 
 				reportFolder = reportFolderBuilder.toString();
@@ -252,7 +179,7 @@ final class VeraPdfCliProcessor {
 						dir.mkdirs();
 					} catch (SecurityException ex) {
 						LOGGER.error("Cannot create subdirectories the: " + ex.toString() + "\n");
-						reportFolder = config.getReportFolder();
+						reportFolder = this.configManager.getApplicationConfig().getReportFolder().toString();
 					}
 				}
 			}
@@ -260,8 +187,8 @@ final class VeraPdfCliProcessor {
 			File reportFile = new File(reportFolder, outputFileName);
 			reportPath = reportFile.getAbsolutePath();
 			this.appendData = false;
-		} else if (!config.getReportFile().isEmpty()) {
-			File reportFile = new File(config.getReportFile());
+		} else if (!this.configManager.getApplicationConfig().getReportFile().toString().isEmpty()) {
+			File reportFile = new File(this.configManager.getApplicationConfig().getReportFile());
 			reportPath = reportFile.getAbsolutePath();
 			this.appendData = true;
 		}
