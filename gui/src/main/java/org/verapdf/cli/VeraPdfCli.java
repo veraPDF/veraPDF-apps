@@ -7,8 +7,12 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 
+import org.apache.log4j.Logger;
 import org.verapdf.ReleaseDetails;
+import org.verapdf.apps.Applications;
+import org.verapdf.apps.ConfigManager;
 import org.verapdf.cli.commands.VeraCliArgParser;
+import org.verapdf.pdfa.PdfBoxFoundryProvider;
 import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
@@ -18,10 +22,11 @@ import com.beust.jcommander.ParameterException;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
- *
  */
 public final class VeraPdfCli {
-	private static final int MEGABYTE = (1024*1024);
+	private static final Logger LOGGER = Logger.getLogger(VeraCliArgParser.class);
+	private static final ConfigManager configManager = Applications.createAppConfigManager();
+	private static final int MEGABYTE = (1024 * 1024);
 	private static final String APP_NAME = "veraPDF";
 	private static final String FLAVOURS_HEADING = APP_NAME + " supported PDF/A profiles:";
 	private static final ProfileDirectory PROFILES = Profiles.getVeraProfileDirectory();
@@ -38,6 +43,7 @@ public final class VeraPdfCli {
 	 *            using Apache commons CLI.
 	 */
 	public static void main(final String[] args) {
+		PdfBoxFoundryProvider.initialise();
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
 		ReleaseDetails.addDetailsFromResource(
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT);
@@ -61,16 +67,21 @@ public final class VeraPdfCli {
 		messagesFromParser(cliArgParser);
 		if (isProcess(cliArgParser)) {
 			try {
-				VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser);
-				if (args.length == 0) jCommander.usage();
+				VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser,
+						configManager);
+				if (args.length == 0)
+					jCommander.usage();
 				processor.processPaths(cliArgParser.getPdfPaths());
 			} catch (OutOfMemoryError oome) {
+				final String message = "The JVM appears to have run out of memory";
+				LOGGER.warn(message, oome);
 				MemoryUsage heapUsage = memoryMan.getHeapMemoryUsage();
 				long maxMemory = heapUsage.getMax() / MEGABYTE;
 				long usedMemory = heapUsage.getUsed() / MEGABYTE;
-				System.out.println("The JVM appears to have run out of memory");
+				System.out.println(message);
 				System.out.println("Memory Use: " + usedMemory + "M/" + maxMemory + "M");
-				System.out.println("To increase the memory available to the JVM please assign the JAVA_OPTS environment variable.");
+				System.out.println(
+						"To increase the memory available to the JVM please assign the JAVA_OPTS environment variable.");
 				System.out.println("The examples below increase the maximum heap available to the JVM to 2GB:");
 				System.out.println(" - Mac or Linux users: ");
 				System.out.println("   export JAVA_OPTS=\"-Xmx2048m\"");

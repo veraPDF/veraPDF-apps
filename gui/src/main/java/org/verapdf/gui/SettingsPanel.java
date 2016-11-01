@@ -1,11 +1,9 @@
 package org.verapdf.gui;
 
-import org.verapdf.gui.tools.GUIConstants;
-import org.verapdf.processor.config.Config;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -14,6 +12,21 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+
+import org.verapdf.apps.ConfigManager;
+import org.verapdf.gui.tools.GUIConstants;
 
 /**
  * Settings Panel
@@ -35,7 +48,8 @@ class SettingsPanel extends JPanel {
 	private JTextField profilesWikiPath;
 
 	SettingsPanel() throws IOException {
-		setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS));
+		setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS,
+				GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS));
 		setLayout(new BorderLayout());
 
 		JPanel panel = new JPanel();
@@ -75,8 +89,7 @@ class SettingsPanel extends JPanel {
 
 		panel.add(new JLabel(GUIConstants.SELECTED_PATH_FOR_FIXER_LABEL_TEXT));
 
-		File currentDir = new File(
-				new File(GUIConstants.DOT).getCanonicalPath());
+		File currentDir = new File(new File(GUIConstants.DOT).getCanonicalPath());
 
 		JButton choose2 = new JButton(GUIConstants.FIX_METADATA_FOLDER_CHOOSE_BUTTON);
 		this.folderChooser = new JFileChooser();
@@ -88,11 +101,11 @@ class SettingsPanel extends JPanel {
 				int resultChoose = SettingsPanel.this.folderChooser.showOpenDialog(SettingsPanel.this);
 				if (resultChoose == JFileChooser.APPROVE_OPTION) {
 					if (!SettingsPanel.this.folderChooser.getSelectedFile().isDirectory()) {
-						JOptionPane.showMessageDialog(SettingsPanel.this,
-								"Error. Selected directory doesn't exist.",
+						JOptionPane.showMessageDialog(SettingsPanel.this, "Error. Selected directory doesn't exist.",
 								GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 					} else {
-						SettingsPanel.this.fixMetadataFolder.setText(SettingsPanel.this.folderChooser.getSelectedFile().getAbsolutePath());
+						SettingsPanel.this.fixMetadataFolder
+								.setText(SettingsPanel.this.folderChooser.getSelectedFile().getAbsolutePath());
 					}
 				}
 
@@ -109,7 +122,7 @@ class SettingsPanel extends JPanel {
 		this.fixMetadataPrefix.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				if (!Config.isValidFileNameCharacter(e.getKeyChar())) {
+				if (isValidFileNameCharacter(e.getKeyChar())) {
 					e.consume();
 				}
 			}
@@ -124,17 +137,19 @@ class SettingsPanel extends JPanel {
 		this.profilesWikiPath = new JTextField(GUIConstants.SETTINGS_DIALOG_MAX_CHARS_TEXTFIELD);
 		panel.add(this.profilesWikiPath);
 
-
 		add(panel, BorderLayout.CENTER);
 
 		this.okButton = new JButton("Ok");
 		this.okButton.addActionListener(new ActionListener() {
 			@Override
-            public void actionPerformed(ActionEvent event) {
+			public void actionPerformed(ActionEvent event) {
 				boolean isEverythingValid = true;
-				if (!Config.isValidFolderPath(FileSystems.getDefault().getPath(SettingsPanel.this.fixMetadataFolder.getText()))) {
+				Path mdPath = FileSystems.getDefault().getPath(SettingsPanel.this.fixMetadataFolder.getText());
+				if (mdPath == null || mdPath.toString().isEmpty() || !mdPath.toFile().isDirectory()
+						|| !mdPath.toFile().canWrite()) {
 					isEverythingValid = false;
-					JOptionPane.showMessageDialog(SettingsPanel.this, "Invalid path for saving fixed files.", "Invalid data", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(SettingsPanel.this, "Invalid path for saving fixed files.",
+							"Invalid data", JOptionPane.INFORMATION_MESSAGE);
 				}
 				if (isEverythingValid) {
 					SettingsPanel.this.ok = true;
@@ -146,7 +161,7 @@ class SettingsPanel extends JPanel {
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
-            public void actionPerformed(ActionEvent event) {
+			public void actionPerformed(ActionEvent event) {
 				SettingsPanel.this.dialog.setVisible(false);
 			}
 		});
@@ -157,30 +172,30 @@ class SettingsPanel extends JPanel {
 		add(buttonPanel, BorderLayout.SOUTH);
 	}
 
-	boolean showDialog(Component parent, String title, Config settings) {
+	boolean showDialog(Component parent, String title, ConfigManager settings) {
 
 		this.ok = false;
 
-		this.hidePassedRules.setSelected(settings.isShowPassedRules());
+		this.hidePassedRules.setSelected(settings.createProcessorConfig().getValidatorConfig().isRecordPasses());
 
-		int numbOfFail = settings.getMaxNumberOfFailedChecks();
+		int numbOfFail = settings.createProcessorConfig().getValidatorConfig().getMaxFails();
 		if (numbOfFail == -1) {
 			this.numberOfFailed.setText("");
 		} else {
 			this.numberOfFailed.setText(String.valueOf(numbOfFail));
 		}
 
-		int numbOfFailDisp = settings.getMaxNumberOfDisplayedFailedChecks();
+		int numbOfFailDisp = settings.getApplicationConfig().getMaxFailsDisplayed();
 		if (numbOfFailDisp == -1) {
 			this.numberOfFailedDisplay.setText("");
 		} else {
 			this.numberOfFailedDisplay.setText(String.valueOf(numbOfFailDisp));
 		}
 
-		this.fixMetadataPrefix.setText(settings.getMetadataFixerPrefix());
-		this.fixMetadataFolder.setText(settings.getFixMetadataFolder().toString());
+		this.fixMetadataPrefix.setText(settings.createProcessorConfig().getFixerConfig().getFixesPrefix());
+		this.fixMetadataFolder.setText(settings.getApplicationConfig().getFixesFolder().toString());
 
-		this.profilesWikiPath.setText(settings.getProfileWikiPath());
+		this.profilesWikiPath.setText(settings.getApplicationConfig().getWikiPath().toString());
 
 		Frame owner;
 		if (parent instanceof Frame) {
@@ -207,17 +222,17 @@ class SettingsPanel extends JPanel {
 	private static KeyAdapter getKeyAdapter(final JTextField field, final boolean fromZero) {
 		return new KeyAdapter() {
 			@Override
-            public void keyTyped(KeyEvent e) {
+			public void keyTyped(KeyEvent e) {
 				char c = e.getKeyChar();
-				if ((field.getText().length() == 6) && ((field.getSelectedText() == null) || (field.getSelectedText().length() == 0)) &&
-						(c != KeyEvent.VK_BACK_SPACE) &&
-						(c != KeyEvent.VK_DELETE)) {
+				if ((field.getText().length() == 6)
+						&& ((field.getSelectedText() == null) || (field.getSelectedText().length() == 0))
+						&& (c != KeyEvent.VK_BACK_SPACE) && (c != KeyEvent.VK_DELETE)) {
 					e.consume();
-				} else if (c == '0' && ((!fromZero && field.getText().length() == 0) || field.getText().startsWith("0"))) {
+				} else if (c == '0'
+						&& ((!fromZero && field.getText().length() == 0) || field.getText().startsWith("0"))) {
 					e.consume();
-				} else if (!(((c >= '0') && (c <= '9')) ||
-						(c == KeyEvent.VK_BACK_SPACE) ||
-						(c == KeyEvent.VK_DELETE))) {
+				} else if (!(((c >= '0') && (c <= '9')) || (c == KeyEvent.VK_BACK_SPACE)
+						|| (c == KeyEvent.VK_DELETE))) {
 					e.consume();
 				}
 			}
@@ -264,4 +279,17 @@ class SettingsPanel extends JPanel {
 	String getProfilesWikiPath() {
 		return this.profilesWikiPath.getText();
 	}
+
+	private static final char[] FORBIDDEN_SYMBOLS_IN_FILE_NAME = new char[] { '\\', '/', ':', '*', '?', '\"', '<', '>',
+			'|', '+', '\0', '%' };
+
+	public static final boolean isValidFileNameCharacter(char c) {
+		for (char ch : FORBIDDEN_SYMBOLS_IN_FILE_NAME) {
+			if (ch == c) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }

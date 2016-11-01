@@ -25,7 +25,7 @@ public class VerCliFlavourTest {
     @Test
     public final void testGetFlavourDefault() {
         // Test default is 1b
-        assertTrue(VeraCliArgParser.DEFAULT_ARGS.getFlavour() == PDFAFlavour.AUTO);
+        assertTrue(VeraCliArgParser.DEFAULT_ARGS.getFlavour() == PDFAFlavour.NO_FLAVOUR);
 
         // Test empty String[] args doesn't change that
         VeraCliArgParser parser = new VeraCliArgParser();

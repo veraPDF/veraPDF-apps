@@ -304,7 +304,7 @@ public class VeraCliArgParserTest {
         // Test flag works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-x", "--format", "html", "-h" });
+        jCommander.parse(new String[] { "-x", "--format", "xml", "-h" });
         assertFalse(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
                 .extractFeatures());
     }

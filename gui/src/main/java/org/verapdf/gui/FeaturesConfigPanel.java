@@ -22,8 +22,9 @@ import javax.swing.border.EmptyBorder;
 import javax.xml.bind.JAXBException;
 
 import org.apache.log4j.Logger;
+import org.verapdf.features.FeatureExtractorConfig;
+import org.verapdf.features.FeatureFactory;
 import org.verapdf.features.FeatureObjectType;
-import org.verapdf.features.config.FeaturesConfig;
 import org.verapdf.gui.tools.GUIConstants;
 
 /**
@@ -84,11 +85,11 @@ public class FeaturesConfigPanel extends JPanel {
 
 		this.ok = false;
 
-		FeaturesConfig config = FeaturesConfig.defaultInstance();
+		FeatureExtractorConfig config = FeatureFactory.defaultConfig();
 
 		if (featuresConfigPath != null && !featuresConfigPath.toString().isEmpty()) {
 			try (FileInputStream fis = new FileInputStream(featuresConfigPath.toFile())) {
-				config = FeaturesConfig.fromXml(fis);
+				config = FeatureFactory.createConfig(fis);
 			} catch (JAXBException e) {
 				LOGGER.error("Error during loading features config", e);
 			} catch (FileNotFoundException e) {
@@ -124,14 +125,14 @@ public class FeaturesConfigPanel extends JPanel {
 		return this.ok;
 	}
 
-	FeaturesConfig getFeaturesConfig() {
+	FeatureExtractorConfig getFeaturesConfig() {
 		EnumSet<FeatureObjectType> enabledFeatures = EnumSet.noneOf(FeatureObjectType.class);
 		for (FeatureObjectType type : this.featureGrid.keySet()) {
 			if (this.featureGrid.get(type).isSelected()) {
 				enabledFeatures.add(type);
 			}
 		}
-		return FeaturesConfig.fromFeatureSet(enabledFeatures);
+		return FeatureFactory.createConfig(enabledFeatures);
 	}
 	
 }

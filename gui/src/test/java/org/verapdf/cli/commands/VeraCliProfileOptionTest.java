@@ -159,7 +159,7 @@ public class VeraCliProfileOptionTest {
         parser = new VeraCliArgParser();
         jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
         jCommander
-                .parse(new String[] { "-p", testFile.getAbsolutePath(), "--format", "html", "-h" });
+                .parse(new String[] { "-p", testFile.getAbsolutePath(), "--format", "text", "-h" });
         assertFalse(parser.getProfileFile() == VeraCliArgParser.DEFAULT_ARGS
                 .getProfileFile());
 }
@@ -184,7 +184,7 @@ public class VeraCliProfileOptionTest {
         parser = new VeraCliArgParser();
         jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
         jCommander
-                .parse(new String[] { "--profile", testFile.getAbsolutePath(), "--format", "html", "-h" });
+                .parse(new String[] { "--profile", testFile.getAbsolutePath(), "--format", "xml", "-h" });
         assertFalse(parser.getProfileFile() == VeraCliArgParser.DEFAULT_ARGS
                 .getProfileFile());
     }
