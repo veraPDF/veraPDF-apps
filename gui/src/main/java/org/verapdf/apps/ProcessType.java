@@ -17,11 +17,12 @@ import org.verapdf.processor.TaskType;
  */
 
 public enum ProcessType {
-	VALIDATE("validate", EnumSet.of(TaskType.VALIDATE)),
+	VALIDATE("Validation", EnumSet.of(TaskType.VALIDATE)),
 	FIX("fix", EnumSet.of(TaskType.VALIDATE, TaskType.FIX_METADATA)),
-	EXTRACT("extract", EnumSet.of(TaskType.EXTRACT_FEATURES)),
-	VALIDATE_EXTRACT("validate and extract", EnumSet.of(TaskType.VALIDATE, TaskType.EXTRACT_FEATURES)),
-	EXTRACT_FIX("extract and fix", EnumSet.of(TaskType.VALIDATE, TaskType.FIX_METADATA, TaskType.EXTRACT_FEATURES));
+	EXTRACT("Features", EnumSet.of(TaskType.EXTRACT_FEATURES)),
+	VALIDATE_EXTRACT("Validation and Features", EnumSet.of(TaskType.VALIDATE, TaskType.EXTRACT_FEATURES)),
+	EXTRACT_FIX("extract and fix", EnumSet.of(TaskType.VALIDATE, TaskType.FIX_METADATA, TaskType.EXTRACT_FEATURES)),
+	NO_PROCESS("", EnumSet.noneOf(TaskType.class));
 	
 	private final EnumSet<TaskType> tasks;
 	private final String value;
@@ -37,5 +38,25 @@ public enum ProcessType {
 	
 	public String getValue() {
 		return this.value;
+	}
+	
+	public static ProcessType addProcess(ProcessType base, ProcessType toAdd) {
+		if (base == NO_PROCESS) return toAdd;
+		if (toAdd == NO_PROCESS) return base;
+		if (base == VALIDATE) {
+			if (toAdd == EXTRACT) return VALIDATE_EXTRACT;
+		} else if (base == EXTRACT) {
+			if (toAdd == VALIDATE) return VALIDATE_EXTRACT;
+			else if (toAdd == FIX) return EXTRACT_FIX;
+		} else if (base == FIX) {
+			if (toAdd == EXTRACT || toAdd == VALIDATE_EXTRACT) return EXTRACT_FIX;
+		} else if (base == VALIDATE_EXTRACT) {
+			if (toAdd == FIX) return EXTRACT_FIX;
+		}
+		return toAdd;
+	}
+	
+	public static ProcessType[] getOptionValues() {
+		return new ProcessType[]{VALIDATE, EXTRACT, VALIDATE_EXTRACT};
 	}
 }

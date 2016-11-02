@@ -11,7 +11,6 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -126,7 +125,7 @@ public class PDFValidationApplication extends JFrame {
 
 					ValidatorConfig validConf = ValidatorFactory.createConfig(
 							configManager.getValidatorConfig().getFlavour(), settingsPanel.isDispPassedRules(),
-							settingsPanel.getFailedChecksNumber(), settingsPanel.getFailedChecksDisplayNumber());
+							settingsPanel.getFailedChecksNumber());
 					try {
 						configManager.updateValidatorConfig(validConf);
 					} catch (JAXBException | IOException excep) {

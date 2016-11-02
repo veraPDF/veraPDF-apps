@@ -1,19 +1,22 @@
 package org.verapdf.cli.commands;
 
 import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.verapdf.apps.Applications;
+import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
+import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.FormatOption;
+import org.verapdf.processor.ProcessorConfig;
+import org.verapdf.processor.ProcessorFactory;
 
 import com.beust.jcommander.IParameterValidator;
 import com.beust.jcommander.IStringConverter;
@@ -60,6 +63,8 @@ public class VeraCliArgParser {
 	final static String REPORT_FILE = OPTION_SEP + "reportfile";
 	final static String REPORT_FOLDER = OPTION_SEP + "reportfolder";
 	final static String OVERWRITE_REPORT_FILE = OPTION_SEP + "overwriteReportFile";
+	final static String VALID_OFF_FLAG = FLAG_SEP + "o";
+	final static String VALID_OFF = OPTION_SEP + "off";
 
 	@Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
 	private boolean help = false;
@@ -68,7 +73,7 @@ public class VeraCliArgParser {
 	private boolean showVersion = false;
 
 	@Parameter(names = { FLAVOUR_FLAG,
-			FLAVOUR }, description = "Chooses built-in Validation Profile flavour, e.g. '1b'. Alternatively, supply '0' to turn off PDF/A validation, or 'auto' for automatic flavour detection based on a file's metadata.", converter = FlavourConverter.class)
+			FLAVOUR }, description = "Chooses built-in Validation Profile flavour, e.g. '1b'. Alternatively, supply '0' or no argument for automatic flavour detection based on a file's metadata.", converter = FlavourConverter.class)
 	private PDFAFlavour flavour = PDFAFlavour.NO_FLAVOUR;
 
 	@Parameter(names = { SUCCESS, PASSED }, description = "Logs successful validation checks.")
@@ -127,6 +132,9 @@ public class VeraCliArgParser {
 
 	@Parameter(names = { OVERWRITE_REPORT_FILE }, description = "Overwrites report file.")
 	private boolean isOverwriteReportFile = false;
+
+	@Parameter(names = { VALID_OFF_FLAG, VALID_OFF }, description = "Turns off PDF/A validation")
+	private boolean isValidationOff = false;
 
 	@Parameter(description = "FILES")
 	private List<String> pdfPaths = new ArrayList<>();
@@ -281,6 +289,10 @@ public class VeraCliArgParser {
 		return this.isOverwriteReportFile;
 	}
 
+	public boolean isValidationOff() {
+		return this.isValidationOff;
+	}
+
 	/**
 	 * JCommander parameter converter for {@link FormatOption}, see
 	 * {@link IStringConverter} and {@link FormatOption#fromOption(String)}.
@@ -344,22 +356,36 @@ public class VeraCliArgParser {
 
 	}
 
-	public static ValidatorConfig parseValidatorConfig(final VeraCliArgParser parser) {
-		return ValidatorFactory.createConfig(parser.flavour, parser.logPassed(), parser.maxFailures,
-				parser.maxFailuresDisplayed);
+	public ValidatorConfig validatorConfig() {
+		return ValidatorFactory.createConfig(this.flavour, this.logPassed(), this.maxFailures);
 	}
 
-	public static MetadataFixerConfig parseFixerConfig(final VeraCliArgParser parser) {
-		return FixerFactory.fromValues(parser.prefix(), true);
+	public MetadataFixerConfig fixerConfig() {
+		return FixerFactory.fromValues(this.prefix, true);
 	}
 
-	public static VeraAppConfig parseAppConfig(final VeraAppConfig base, final VeraCliArgParser parser) {
+	public VeraAppConfig appConfig(final VeraAppConfig base) {
 		Applications.Builder configBuilder = Applications.Builder.fromConfig(base);
-		configBuilder.policyFile(parser.policyProfilePath())
-				.wikiPath(parser.getProfilesWikiPath()).format(parser.getFormat())
-				.reportFolder(parser.getReportFolder())
-				.reportFile(parser.getReportFile())
-				.overwrite(parser.isOverwriteReportFile());
+		configBuilder.policyFile(this.policyProfilePath()).wikiPath(this.getProfilesWikiPath()).format(this.getFormat())
+				.reportFolder(this.getReportFolder()).reportFile(this.getReportFile())
+				.overwrite(this.isOverwriteReportFile());
+		configBuilder.type(typeFromArgs(this));
 		return configBuilder.build();
+	}
+
+	public ProcessorConfig processorConfig(final ProcessType procType, FeatureExtractorConfig featConfig) {
+		return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, this.fixerConfig(),
+				procType.getTasks());
+	}
+
+	private static ProcessType typeFromArgs(VeraCliArgParser parser) {
+		ProcessType retVal = ProcessType.VALIDATE;
+		if (parser.isValidationOff())
+			retVal = ProcessType.NO_PROCESS;
+		if (parser.extractFeatures())
+			retVal = ProcessType.addProcess(retVal, ProcessType.EXTRACT);
+		if (parser.fixMetadata())
+			retVal = ProcessType.addProcess(retVal, ProcessType.FIX);
+		return retVal;
 	}
 }
