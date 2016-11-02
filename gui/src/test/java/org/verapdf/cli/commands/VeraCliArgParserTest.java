@@ -7,6 +7,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.verapdf.apps.Applications;
+import org.verapdf.apps.VeraAppConfig;
+import org.verapdf.processor.TaskType;
 
 import com.beust.jcommander.JCommander;
 
@@ -329,6 +332,30 @@ public class VeraCliArgParserTest {
         jCommander.parse(new String[] { "-l", "--extract", "--flavour", "3b" });
         assertFalse(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
                 .extractFeatures());
+    }
+
+    @Test
+    public final void testProcessTypeParsing() {
+        VeraCliArgParser parser = new VeraCliArgParser();
+        JCommander jCommander = initialiseJCommander(parser);
+
+        // Test flag works
+        jCommander.parse(new String[] {});
+        VeraAppConfig config = parser.appConfig(Applications.defaultConfig());
+        assertFalse(parser.isValidationOff());
+        assertTrue(config.getProcessType().getTasks().contains(TaskType.VALIDATE));
+
+        // Test flag works
+        jCommander.parse(new String[] { "-o" });
+        config = parser.appConfig(Applications.defaultConfig());
+        assertTrue(parser.isValidationOff());
+        assertFalse(config.getProcessType().getTasks().contains(TaskType.VALIDATE));
+
+        // Test flag works
+        jCommander.parse(new String[] { "--off" });
+        config = parser.appConfig(Applications.defaultConfig());
+        assertTrue(parser.isValidationOff());
+        assertFalse(config.getProcessType().getTasks().contains(TaskType.VALIDATE));
     }
 
     static final JCommander initialiseJCommander(final VeraCliArgParser parser) {

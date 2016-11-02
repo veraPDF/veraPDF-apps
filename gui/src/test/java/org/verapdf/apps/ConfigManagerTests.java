@@ -5,7 +5,6 @@ package org.verapdf.apps;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -107,7 +106,7 @@ public class ConfigManagerTests {
 		assertFalse(defaultConfig == newManager.getValidatorConfig());
 		assertTrue(defaultConfig.equals(newManager.getValidatorConfig()));
 		ValidatorConfig newConfig = ValidatorFactory.createConfig(PDFAFlavour.PDFA_1_A, !defaultConfig.isRecordPasses(),
-				defaultConfig.getMaxFails() + 20, defaultConfig.getMaxFailsPerRule() - 23);
+				defaultConfig.getMaxFails() + 20);
 		newManager.updateValidatorConfig(newConfig);
 		assertFalse(defaultConfig.equals(newManager.getValidatorConfig()));
 	}

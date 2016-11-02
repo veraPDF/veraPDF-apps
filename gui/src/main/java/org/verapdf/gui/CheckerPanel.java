@@ -79,7 +79,7 @@ class CheckerPanel extends JPanel {
 
 	private boolean isValidationErrorOccurred;
 
-	private JButton validate;
+	private JButton execute;
 	private JButton saveXML;
 	private JButton viewXML;
 	private JButton saveHTML;
@@ -92,6 +92,7 @@ class CheckerPanel extends JPanel {
 
 	CheckerPanel(final ConfigManager config) throws IOException {
 		CheckerPanel.config = config;
+		this.profilePath = FileSystems.getDefault().getPath("");
 		setPreferredSize(new Dimension(GUIConstants.PREFERRED_SIZE_WIDTH, GUIConstants.PREFERRED_SIZE_HEIGHT));
 
 		GridBagLayout gbl = new GridBagLayout();
@@ -125,7 +126,7 @@ class CheckerPanel extends JPanel {
 		gbl.setConstraints(processType, gbc);
 		this.add(processType);
 
-		this.ProcessTypes = new JComboBox<>(ProcessType.values());
+		this.ProcessTypes = new JComboBox<>(ProcessType.getOptionValues());
 		this.ProcessTypes.setSelectedItem(config.getApplicationConfig().getProcessType());
 		ProcessingTypeRenderer processingTypeRenderer = new ProcessingTypeRenderer();
 		this.ProcessTypes.setRenderer(processingTypeRenderer);
@@ -148,7 +149,7 @@ class CheckerPanel extends JPanel {
 				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.fixMetadata, gbc);
 		this.add(this.fixMetadata);
-		if (config.createProcessorConfig().getTasks().contains(TaskType.EXTRACT_FEATURES)) {
+		if (config.getApplicationConfig().getProcessType() == ProcessType.EXTRACT) {
 			this.fixMetadata.setEnabled(false);
 		}
 
@@ -226,14 +227,14 @@ class CheckerPanel extends JPanel {
 		gbl.setConstraints(this.progressBar, gbc);
 		this.add(this.progressBar);
 
-		this.validate = new JButton(GUIConstants.VALIDATE_BUTTON_TEXT);
-		this.validate.setEnabled(false);
+		this.execute = new JButton(GUIConstants.VALIDATE_BUTTON_TEXT);
+		this.execute.setEnabled(false);
 		setGridBagConstraintsParameters(gbc, GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_X,
 				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_Y, GUIConstants.VALIDATE_BUTTON_CONSTRAINT_WEIGHT_X,
 				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_WEIGHT_Y, GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_WIDTH,
 				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
-		gbl.setConstraints(this.validate, gbc);
-		this.add(this.validate);
+		gbl.setConstraints(this.execute, gbc);
+		this.add(this.execute);
 
 		JPanel reports = new JPanel();
 		reports.setBorder(BorderFactory.createTitledBorder(GUIConstants.REPORT));
@@ -291,6 +292,7 @@ class CheckerPanel extends JPanel {
 					CheckerPanel.this.fixMetadata.setEnabled(true);
 					break;
 				case EXTRACT:
+					CheckerPanel.this.fixMetadata.setSelected(false);
 					CheckerPanel.this.fixMetadata.setEnabled(false);
 					break;
 				default:
@@ -309,7 +311,7 @@ class CheckerPanel extends JPanel {
 					chooseProfile.setEnabled(false);
 					CheckerPanel.this.chosenProfile.setEnabled(false);
 				}
-				setValidationButtonEnability();
+				CheckerPanel.this.execute.setEnabled(isExecute());
 			}
 		});
 
@@ -320,7 +322,7 @@ class CheckerPanel extends JPanel {
 			}
 		});
 
-		this.validate.addActionListener(new ActionListener() {
+		this.execute.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -330,7 +332,7 @@ class CheckerPanel extends JPanel {
 					CheckerPanel.this.progressBar.setVisible(true);
 					CheckerPanel.this.resultLabel.setVisible(false);
 					setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-					CheckerPanel.this.validate.setEnabled(false);
+					CheckerPanel.this.execute.setEnabled(false);
 					CheckerPanel.this.isValidationErrorOccurred = false;
 					CheckerPanel.this.viewXML.setEnabled(false);
 					CheckerPanel.this.saveXML.setEnabled(false);
@@ -405,7 +407,7 @@ class CheckerPanel extends JPanel {
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
-		this.validate.setEnabled(true);
+		this.execute.setEnabled(true);
 
 		if (!this.isValidationErrorOccurred) {
 			try {
@@ -528,7 +530,7 @@ class CheckerPanel extends JPanel {
 					// This method used only for previous two cases.
 					// So do nothing.
 				}
-				setValidationButtonEnability();
+				this.execute.setEnabled(isExecute());
 			}
 		}
 	}
@@ -584,13 +586,9 @@ class CheckerPanel extends JPanel {
 		return builder.build();
 	}
 
-	private void setValidationButtonEnability() {
-		if (this.pdfFile != null && (!this.profilePath.toString().equals("")
-				|| this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR)) {
-			this.validate.setEnabled(true);
-		} else {
-			this.validate.setEnabled(false);
-		}
+	private boolean isExecute() {
+		return (this.pdfFile != null && (!this.profilePath.toString().equals("")
+				|| this.chooseFlavour.getSelectedItem() != PDFAFlavour.NO_FLAVOUR));
 	}
 
 	boolean isFixMetadata() {

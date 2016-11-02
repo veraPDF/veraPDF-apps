@@ -14,11 +14,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import javax.xml.bind.JAXBException;
+
 import org.apache.log4j.Logger;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.cli.commands.VeraCliArgParser;
+import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.ProcessorFactory;
+import org.verapdf.processor.ProcessorResult;
 import org.verapdf.processor.VeraProcessor;
 import org.verapdf.report.ItemDetails;
 
@@ -29,6 +33,7 @@ final class VeraPdfCliProcessor {
 	private static final Logger LOGGER = Logger.getLogger(VeraPdfCliProcessor.class);
 
 	private final ConfigManager configManager;
+	private final ProcessorConfig processorConfig;
 	private final VeraAppConfig appConfig;
 	private boolean isStdOut = true;
 	private boolean appendData = true;
@@ -37,7 +42,9 @@ final class VeraPdfCliProcessor {
 
 	private VeraPdfCliProcessor(final VeraCliArgParser args, ConfigManager configManager) {
 		this.configManager = configManager;
-		this.appConfig = VeraCliArgParser.parseAppConfig(configManager.getApplicationConfig(), args);
+		this.appConfig = args.appConfig(configManager.getApplicationConfig());
+		this.processorConfig = args.processorConfig(this.appConfig.getProcessType(),
+				this.configManager.getFeaturesConfig());
 		this.recurse = args.isRecurse();
 
 		if (this.configManager.getApplicationConfig().isOverwriteReport()) {
@@ -53,8 +60,12 @@ final class VeraPdfCliProcessor {
 
 	}
 
-	public VeraAppConfig getConfig() {
+	VeraAppConfig getConfig() {
 		return this.appConfig;
+	}
+
+	ProcessorConfig getProcessorConfig() {
+		return this.processorConfig;
 	}
 
 	void processPaths(final List<String> pdfPaths) {
@@ -122,10 +133,18 @@ final class VeraPdfCliProcessor {
 	}
 
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
-		VeraProcessor processor = ProcessorFactory.createProcessor(this.configManager.createProcessorConfig());
-		OutputStream outputReportStream = this.getReportStream(item.getName());
+		VeraProcessor processor = ProcessorFactory.createProcessor(this.processorConfig);
 
-		processor.process(item, toProcess);
+		ProcessorResult result = processor.process(item, toProcess);
+
+		OutputStream outputReportStream = this.getReportStream(item.getName());
+		try {
+			ProcessorFactory.resultToXml(result, System.out, Boolean.TRUE);
+			ProcessorFactory.configToXml(this.processorConfig, System.out, Boolean.TRUE);
+		} catch (JAXBException excep) {
+			// TODO Auto-generated catch block
+			excep.printStackTrace();
+		}
 
 		if (this.isStdOut == false) {
 			try {
