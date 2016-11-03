@@ -10,20 +10,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.log4j.Logger;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.cli.commands.VeraCliArgParser;
+import org.verapdf.processor.ItemProcessor;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.ProcessorFactory;
 import org.verapdf.processor.ProcessorResult;
-import org.verapdf.processor.VeraProcessor;
+import org.verapdf.processor.StreamingProcessor;
 import org.verapdf.report.ItemDetails;
 
 /**
@@ -93,8 +97,17 @@ final class VeraPdfCliProcessor {
 	static VeraPdfCliProcessor createProcessorFromArgs(final VeraCliArgParser args, ConfigManager config) {
 		return new VeraPdfCliProcessor(args, config);
 	}
-
 	private void processDir(final File dir) {
+		
+		try {
+			processBatch(dir);
+		} catch (XMLStreamException | JAXBException excep) {
+			// TODO Auto-generated catch block
+			excep.printStackTrace();
+		}
+	}
+
+	private void processDirectory(final File dir) {
 		for (File file : dir.listFiles()) {
 			if (file.isFile()) {
 				int extIndex = file.getName().lastIndexOf(".");
@@ -132,8 +145,14 @@ final class VeraPdfCliProcessor {
 		return true;
 	}
 
+	private void processBatch(File dir) throws XMLStreamException, JAXBException {
+		StreamingProcessor processor = ProcessorFactory.createStreamingProcessor(this.processorConfig);
+		Writer wrtStdOut = new PrintWriter(System.out);
+		processor.processDirectory(dir, wrtStdOut, this.recurse);
+	}
+
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
-		VeraProcessor processor = ProcessorFactory.createProcessor(this.processorConfig);
+		ItemProcessor processor = ProcessorFactory.createProcessor(this.processorConfig);
 
 		ProcessorResult result = processor.process(item, toProcess);
 

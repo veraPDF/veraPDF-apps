@@ -16,7 +16,7 @@ import org.verapdf.apps.ConfigManager;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.processor.ProcessorFactory;
 import org.verapdf.processor.ProcessorResult;
-import org.verapdf.processor.VeraProcessor;
+import org.verapdf.processor.ItemProcessor;
 import org.verapdf.report.HTMLReport;
 import org.verapdf.report.ItemDetails;
 
@@ -60,7 +60,7 @@ class ValidateWorker extends SwingWorker<ProcessorResult, Integer> {
 		}
 		try (InputStream toProcess = new FileInputStream(this.pdf);
 				OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
-			VeraProcessor processor = ProcessorFactory.createProcessor(this.configManager.createProcessorConfig());
+			ItemProcessor processor = ProcessorFactory.createProcessor(this.configManager.createProcessorConfig());
 			this.processingResult = processor.process(ItemDetails.fromFile(this.pdf), toProcess);
 		} catch (IOException e) {
 			LOGGER.error(ERROR_IN_OPEN_STREAMS, e);
