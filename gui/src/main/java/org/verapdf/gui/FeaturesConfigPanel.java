@@ -89,7 +89,7 @@ public class FeaturesConfigPanel extends JPanel {
 
 		if (featuresConfigPath != null && !featuresConfigPath.toString().isEmpty()) {
 			try (FileInputStream fis = new FileInputStream(featuresConfigPath.toFile())) {
-				config = FeatureFactory.createConfig(fis);
+				config = FeatureFactory.configFromXml(fis);
 			} catch (JAXBException e) {
 				LOGGER.error("Error during loading features config", e);
 			} catch (FileNotFoundException e) {
@@ -132,7 +132,7 @@ public class FeaturesConfigPanel extends JPanel {
 				enabledFeatures.add(type);
 			}
 		}
-		return FeatureFactory.createConfig(enabledFeatures);
+		return FeatureFactory.configFromValues(enabledFeatures);
 	}
 	
 }

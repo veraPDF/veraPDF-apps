@@ -158,8 +158,8 @@ final class VeraPdfCliProcessor {
 
 		OutputStream outputReportStream = this.getReportStream(item.getName());
 		try {
-			ProcessorFactory.resultToXml(result, System.out, Boolean.TRUE);
-			ProcessorFactory.configToXml(this.processorConfig, System.out, Boolean.TRUE);
+			ProcessorFactory.resultToXml(result, System.out, true);
+			ProcessorFactory.configToXml(this.processorConfig, System.out, true);
 		} catch (JAXBException excep) {
 			// TODO Auto-generated catch block
 			excep.printStackTrace();
