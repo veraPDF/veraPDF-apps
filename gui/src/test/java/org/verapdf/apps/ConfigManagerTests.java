@@ -116,16 +116,15 @@ public class ConfigManagerTests {
 	 * Test method for
 	 * {@link org.verapdf.apps.ConfigManagerImpl#updateFeaturesConfig(org.verapdf.features.FeatureExtractorConfig)}.
 	 */
-//	@Test
-//	public void testUpdateFeaturesConfig() throws JAXBException, IOException {
-//		FeatureExtractorConfig defaultConfig = FeatureFactory.defaultConfig();
-//		ConfigManager newManager = Applications.createTmpConfigManager();
-//		assertFalse(defaultConfig == newManager.getFeaturesConfig());
-//		assertTrue(defaultConfig.equals(newManager.getFeaturesConfig()));
-//		FeatureExtractorConfig newConfig = FeatureFactory.configFromValues(EnumSet.complementOf(defaultConfig.getEnabledFeatures()));
-//		newManager.updateFeaturesConfig(newConfig);
-//		assertFalse(defaultConfig.equals(newManager.getFeaturesConfig()));
-//	}
+	@Test
+	public void testUpdateFeaturesConfig() throws JAXBException, IOException {
+		FeatureExtractorConfig defaultConfig = FeatureFactory.defaultConfig();
+		ConfigManager newManager = Applications.createTmpConfigManager();
+		assertTrue(defaultConfig.equals(newManager.getFeaturesConfig()));
+		FeatureExtractorConfig newConfig = FeatureFactory.configFromValues(EnumSet.complementOf(defaultConfig.getEnabledFeatures()));
+		newManager.updateFeaturesConfig(newConfig);
+		assertFalse(defaultConfig.equals(newManager.getFeaturesConfig()));
+	}
 
 	/**
 	 * Test method for

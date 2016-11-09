@@ -95,11 +95,13 @@ final class VeraPdfCliProcessor {
 		}
 	}
 
-	static VeraPdfCliProcessor createProcessorFromArgs(final VeraCliArgParser args, ConfigManager config) throws VeraPDFException {
+	static VeraPdfCliProcessor createProcessorFromArgs(final VeraCliArgParser args, ConfigManager config)
+			throws VeraPDFException {
 		return new VeraPdfCliProcessor(args, config);
 	}
+
 	private void processDir(final File dir) {
-		
+
 		try {
 			processBatch(dir);
 		} catch (VeraPDFException excep) {
