@@ -12,6 +12,7 @@ import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.cli.commands.VeraCliArgParser;
+import org.verapdf.core.VeraPDFException;
 import org.verapdf.pdfa.PdfBoxFoundryProvider;
 import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
@@ -42,7 +43,7 @@ public final class VeraPdfCli {
 	 *            Java.lang.String array of command line args, to be processed
 	 *            using Apache commons CLI.
 	 */
-	public static void main(final String[] args) {
+	public static void main(final String[] args) throws VeraPDFException {
 		PdfBoxFoundryProvider.initialise();
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
 		ReleaseDetails.addDetailsFromResource(

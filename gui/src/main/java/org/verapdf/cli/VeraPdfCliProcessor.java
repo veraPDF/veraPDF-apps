@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.cli.commands.VeraCliArgParser;
+import org.verapdf.core.VeraPDFException;
 import org.verapdf.processor.ItemProcessor;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.ProcessorFactory;
@@ -44,7 +45,7 @@ final class VeraPdfCliProcessor {
 	private final boolean recurse;
 	private String baseDirectory = "";
 
-	private VeraPdfCliProcessor(final VeraCliArgParser args, ConfigManager configManager) {
+	private VeraPdfCliProcessor(final VeraCliArgParser args, ConfigManager configManager) throws VeraPDFException {
 		this.configManager = configManager;
 		this.appConfig = args.appConfig(configManager.getApplicationConfig());
 		this.processorConfig = args.processorConfig(this.appConfig.getProcessType(),
@@ -94,32 +95,16 @@ final class VeraPdfCliProcessor {
 		}
 	}
 
-	static VeraPdfCliProcessor createProcessorFromArgs(final VeraCliArgParser args, ConfigManager config) {
+	static VeraPdfCliProcessor createProcessorFromArgs(final VeraCliArgParser args, ConfigManager config) throws VeraPDFException {
 		return new VeraPdfCliProcessor(args, config);
 	}
 	private void processDir(final File dir) {
 		
 		try {
 			processBatch(dir);
-		} catch (XMLStreamException | JAXBException excep) {
+		} catch (VeraPDFException excep) {
 			// TODO Auto-generated catch block
 			excep.printStackTrace();
-		}
-	}
-
-	private void processDirectory(final File dir) {
-		for (File file : dir.listFiles()) {
-			if (file.isFile()) {
-				int extIndex = file.getName().lastIndexOf(".");
-				String ext = file.getName().substring(extIndex + 1);
-				if ("pdf".equalsIgnoreCase(ext)) {
-					processFile(file);
-				}
-			} else if (file.isDirectory()) {
-				if (this.recurse) {
-					processDir(file);
-				}
-			}
 		}
 	}
 
@@ -145,7 +130,7 @@ final class VeraPdfCliProcessor {
 		return true;
 	}
 
-	private void processBatch(File dir) throws XMLStreamException, JAXBException {
+	private void processBatch(File dir) throws VeraPDFException {
 		StreamingProcessor processor = ProcessorFactory.createStreamingProcessor(this.processorConfig);
 		Writer wrtStdOut = new PrintWriter(System.out);
 		processor.processDirectory(dir, wrtStdOut, this.recurse);

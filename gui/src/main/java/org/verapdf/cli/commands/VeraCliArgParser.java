@@ -1,17 +1,26 @@
 package org.verapdf.cli.commands;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.xml.bind.JAXBException;
+
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
+import org.verapdf.core.VeraPDFException;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+import org.verapdf.pdfa.validation.profiles.Profiles;
+import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.FormatOption;
@@ -373,9 +382,18 @@ public class VeraCliArgParser {
 		return configBuilder.build();
 	}
 
-	public ProcessorConfig processorConfig(final ProcessType procType, FeatureExtractorConfig featConfig) {
-		return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, this.fixerConfig(),
-				procType.getTasks());
+	public ProcessorConfig processorConfig(final ProcessType procType, FeatureExtractorConfig featConfig) throws VeraPDFException {
+		if (this.profileFile == null) {
+			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, this.fixerConfig(),
+					procType.getTasks());
+		}
+		try (InputStream fis = new FileInputStream(this.profileFile)) {
+			ValidationProfile customProfile = Profiles.profileFromXml(fis);
+			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, this.fixerConfig(),
+					procType.getTasks(), customProfile);
+		} catch (IOException | JAXBException excep) {
+			throw new VeraPDFException("Problem loading custom profile", excep);
+		}
 	}
 
 	private static ProcessType typeFromArgs(VeraCliArgParser parser) {

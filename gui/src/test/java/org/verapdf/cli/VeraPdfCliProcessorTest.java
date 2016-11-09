@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.cli.commands.VeraCliArgParser;
+import org.verapdf.core.VeraPDFException;
 import org.verapdf.processor.FormatOption;
 
 import com.beust.jcommander.JCommander;
@@ -36,7 +37,7 @@ public class VeraPdfCliProcessorTest {
      * @throws ProfileException
      */
     @Test
-    public final void testCreateProcessorFromArgsFormat() throws IOException {
+    public final void testCreateProcessorFromArgsFormat() throws IOException, VeraPDFException {
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = initialiseJCommander(parser);
         jCommander.parse(new String[] {});
