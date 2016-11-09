@@ -69,7 +69,7 @@ final class ConfigManagerImpl implements ConfigManager {
 	@Override
 	public FeatureExtractorConfig getFeaturesConfig() {
 		try (InputStream fis = new FileInputStream(this.featuresFile)) {
-			return FeatureFactory.createConfig(fis);
+			return FeatureFactory.configFromXml(fis);
 		} catch (IOException | JAXBException excep) {
 			excep.printStackTrace();
 			return FeatureFactory.defaultConfig();
@@ -82,7 +82,7 @@ final class ConfigManagerImpl implements ConfigManager {
 	@Override
 	public MetadataFixerConfig getFixerConfig() {
 		try (InputStream fis = new FileInputStream(this.fixerFile)) {
-			return FixerFactory.createConfig(fis);
+			return FixerFactory.configFromXml(fis);
 		} catch (IOException | JAXBException excep) {
 			excep.printStackTrace();
 			return FixerFactory.defaultConfig();

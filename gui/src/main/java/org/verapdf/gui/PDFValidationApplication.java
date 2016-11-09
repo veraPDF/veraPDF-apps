@@ -133,7 +133,7 @@ public class PDFValidationApplication extends JFrame {
 						excep.printStackTrace();
 					}
 
-					MetadataFixerConfig fixConf = FixerFactory.fromValues(settingsPanel.getFixMetadataPrefix(), true);
+					MetadataFixerConfig fixConf = FixerFactory.configFromValues(settingsPanel.getFixMetadataPrefix(), true);
 					try {
 						configManager.updateFixerConfig(fixConf);
 					} catch (JAXBException | IOException excep) {
