@@ -26,5 +26,6 @@ public interface VeraAppConfig {
 	public String getWikiPath();
 	public FormatOption getFormat();
 	public ProcessType getProcessType();
+	public boolean isVerbose();
 	public int getMaxFailsDisplayed();
 }
