@@ -1,9 +1,11 @@
 package org.verapdf.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Frame;
-import java.awt.GridLayout;
+import org.verapdf.apps.ConfigManager;
+import org.verapdf.gui.tools.GUIConstants;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -12,21 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
-
-import org.verapdf.apps.ConfigManager;
-import org.verapdf.gui.tools.GUIConstants;
 
 /**
  * Settings Panel
@@ -122,7 +109,7 @@ class SettingsPanel extends JPanel {
 		this.fixMetadataPrefix.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				if (isValidFileNameCharacter(e.getKeyChar())) {
+				if (!isValidFileNameCharacter(e.getKeyChar())) {
 					e.consume();
 				}
 			}
