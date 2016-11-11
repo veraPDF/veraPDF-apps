@@ -52,7 +52,7 @@ public class FeaturesConfigPanel extends JPanel {
 		panel.setLayout(new GridLayout(6, 3));
 
 		for (FeatureObjectType type : FeatureObjectType.values()) {
-			featureGrid.put(type, new JCheckBox(type.getNodeName()));
+			featureGrid.put(type, new JCheckBox(type.getFullName()));
 			panel.add(featureGrid.get(type));
 		}
 

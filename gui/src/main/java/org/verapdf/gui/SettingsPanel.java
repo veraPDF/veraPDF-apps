@@ -145,8 +145,8 @@ class SettingsPanel extends JPanel {
 			public void actionPerformed(ActionEvent event) {
 				boolean isEverythingValid = true;
 				Path mdPath = FileSystems.getDefault().getPath(SettingsPanel.this.fixMetadataFolder.getText());
-				if (mdPath == null || mdPath.toString().isEmpty() || !mdPath.toFile().isDirectory()
-						|| !mdPath.toFile().canWrite()) {
+				if (mdPath == null
+						|| (!mdPath.toString().isEmpty() && !(mdPath.toFile().isDirectory() && mdPath.toFile().canWrite()))) {
 					isEverythingValid = false;
 					JOptionPane.showMessageDialog(SettingsPanel.this, "Invalid path for saving fixed files.",
 							"Invalid data", JOptionPane.INFORMATION_MESSAGE);
@@ -193,9 +193,9 @@ class SettingsPanel extends JPanel {
 		}
 
 		this.fixMetadataPrefix.setText(settings.createProcessorConfig().getFixerConfig().getFixesPrefix());
-		this.fixMetadataFolder.setText(settings.getApplicationConfig().getFixesFolder().toString());
+		this.fixMetadataFolder.setText(settings.getApplicationConfig().getFixesFolder());
 
-		this.profilesWikiPath.setText(settings.getApplicationConfig().getWikiPath().toString());
+		this.profilesWikiPath.setText(settings.getApplicationConfig().getWikiPath());
 
 		Frame owner;
 		if (parent instanceof Frame) {

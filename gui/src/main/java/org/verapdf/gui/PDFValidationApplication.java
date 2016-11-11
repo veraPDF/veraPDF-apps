@@ -37,6 +37,7 @@ import org.verapdf.features.FeatureFactory;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
+import org.verapdf.pdfa.PdfBoxFoundryProvider;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 
@@ -231,6 +232,7 @@ public class PDFValidationApplication extends JFrame {
 	 *            command line arguments
 	 */
 	public static void main(String[] args) {
+		PdfBoxFoundryProvider.initialise();
 		ReleaseDetails.addDetailsFromResource(
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT);
 		EventQueue.invokeLater(new Runnable() {
