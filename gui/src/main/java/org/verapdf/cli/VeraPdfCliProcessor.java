@@ -127,9 +127,16 @@ final class VeraPdfCliProcessor {
 	}
 
 	private void processBatch(File dir) throws VeraPDFException {
-		BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
-		processor.process(dir, true, ProcessorFactory.getHandler(appConfig.getFormat(),
-				appConfig.isVerbose(), System.out));
+		String reportPath = this.appConfig.getReportFile();
+		try {
+			BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
+			OutputStream reportStream = reportPath.isEmpty() ? System.out :
+					new FileOutputStream(reportPath);
+			processor.process(dir, true, ProcessorFactory.getHandler(appConfig.getFormat(),
+					appConfig.isVerbose(), reportStream));
+		} catch (IOException e) {
+			throw new VeraPDFException("Error in creating report file " + reportPath, e);
+		}
 	}
 
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
