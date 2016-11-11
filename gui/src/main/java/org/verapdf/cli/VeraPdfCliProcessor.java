@@ -17,7 +17,6 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 
 import org.apache.log4j.Logger;
 import org.verapdf.apps.ConfigManager;
@@ -47,8 +46,8 @@ final class VeraPdfCliProcessor {
 		this.processorConfig = args.processorConfig(this.appConfig.getProcessType(),
 				this.configManager.getFeaturesConfig());
 		this.recurse = args.isRecurse();
-		if (this.configManager.getApplicationConfig().isOverwriteReport()) {
-			File file = new File(this.configManager.getApplicationConfig().getReportFile());
+		if (this.appConfig.isOverwriteReport()) {
+			File file = new File(this.appConfig.getReportFile());
 			if (file.exists()) {
 				try {
 					file.delete();
@@ -128,10 +127,16 @@ final class VeraPdfCliProcessor {
 	}
 
 	private void processBatch(File dir) throws VeraPDFException {
-		BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
-		Writer wrtStdOut = new PrintWriter(System.out);
-		processor.process(dir, true, ProcessorFactory.getHandler(appConfig.getFormat(),
-				appConfig.isVerbose(), System.out));
+		String reportPath = this.appConfig.getReportFile();
+		try {
+			BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
+			OutputStream reportStream = reportPath.isEmpty() ? System.out :
+					new FileOutputStream(reportPath);
+			processor.process(dir, true, ProcessorFactory.getHandler(appConfig.getFormat(),
+					appConfig.isVerbose(), reportStream));
+		} catch (IOException e) {
+			throw new VeraPDFException("Error in creating report file " + reportPath, e);
+		}
 	}
 
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
