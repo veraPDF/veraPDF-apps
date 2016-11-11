@@ -10,25 +10,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 
 import org.apache.log4j.Logger;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
+import org.verapdf.processor.BatchProcessor;
 import org.verapdf.processor.ItemProcessor;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.ProcessorFactory;
 import org.verapdf.processor.ProcessorResult;
-import org.verapdf.processor.StreamingProcessor;
 import org.verapdf.report.ItemDetails;
 
 /**
@@ -42,7 +39,6 @@ final class VeraPdfCliProcessor {
 	private final VeraAppConfig appConfig;
 	private boolean isStdOut = true;
 	private boolean appendData = true;
-	private final boolean recurse;
 	private String baseDirectory = "";
 
 	private VeraPdfCliProcessor(final VeraCliArgParser args, ConfigManager configManager) throws VeraPDFException {
@@ -50,8 +46,6 @@ final class VeraPdfCliProcessor {
 		this.appConfig = args.appConfig(configManager.getApplicationConfig());
 		this.processorConfig = args.processorConfig(this.appConfig.getProcessType(),
 				this.configManager.getFeaturesConfig());
-		this.recurse = args.isRecurse();
-
 		if (this.configManager.getApplicationConfig().isOverwriteReport()) {
 			File file = new File(this.configManager.getApplicationConfig().getReportFile());
 			if (file.exists()) {
@@ -133,9 +127,9 @@ final class VeraPdfCliProcessor {
 	}
 
 	private void processBatch(File dir) throws VeraPDFException {
-		StreamingProcessor processor = ProcessorFactory.createStreamingProcessor(this.processorConfig);
-		Writer wrtStdOut = new PrintWriter(System.out);
-		processor.processDirectory(dir, wrtStdOut, this.recurse);
+		BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
+		processor.process(dir, true, ProcessorFactory.getHandler(appConfig.getFormat(),
+				appConfig.isVerbose(), System.out));
 	}
 
 	private void processStream(final ItemDetails item, final InputStream toProcess) {

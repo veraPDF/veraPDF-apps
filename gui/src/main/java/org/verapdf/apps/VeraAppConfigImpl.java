@@ -38,6 +38,8 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	private final boolean isOverwrite;
 	@XmlAttribute
 	private final FormatOption format;
+	@XmlAttribute
+	private final boolean isVerbose;
 	@XmlElement
 	private final String fixerFolder;
 	@XmlElement
@@ -55,18 +57,19 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	VeraAppConfigImpl() {
 		this(defaultInstance.getProcessType(), defaultInstance.getMaxFailsDisplayed(),
 				defaultInstance.isOverwriteReport(), defaultInstance.getFixesFolder(), defaultInstance.getFormat(),
-				defaultInstance.getWikiPath(), defaultInstance.getReportFile(), defaultInstance.getReportFolder(),
-				defaultInstance.getPolicyFile(), defaultInstance.getPluginsFolder());
+				defaultInstance.isVerbose(), defaultInstance.getWikiPath(), defaultInstance.getReportFile(),
+				defaultInstance.getReportFolder(), defaultInstance.getPolicyFile(), defaultInstance.getPluginsFolder());
 	}
 
 	VeraAppConfigImpl(final ProcessType type, final int maxFails, final boolean isOverwrite, final String fixerFolder,
-			final FormatOption format, final String wikiPath, final String reportFile, final String reportFolder,
-			final String policyFile, final String pluginsFolder) {
+			final FormatOption format, final boolean isVerbose, final String wikiPath, final String reportFile,
+					  final String reportFolder, final String policyFile, final String pluginsFolder) {
 		super();
 		this.type = type;
 		this.maxFails = maxFails;
 		this.isOverwrite = isOverwrite;
 		this.format = format;
+		this.isVerbose = isVerbose;
 		this.wikiPath = wikiPath;
 		this.fixerFolder = fixerFolder;
 		this.reportFile = reportFile;
@@ -136,6 +139,11 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	}
 
 	@Override
+	public boolean isVerbose() {
+		return this.isVerbose;
+	}
+
+	@Override
 	public int getMaxFailsDisplayed() {
 		return this.maxFails;
 	}
@@ -150,18 +158,17 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((this.fixerFolder == null) ? 0 : this.fixerFolder.hashCode());
-		result = prime * result + ((this.format == null) ? 0 : this.format.hashCode());
-		result = prime * result + (this.isOverwrite ? 1231 : 1237);
-		result = prime * result + this.maxFails;
-		result = prime * result + ((this.pluginsFolder == null) ? 0 : this.pluginsFolder.hashCode());
-		result = prime * result + ((this.policyFile == null) ? 0 : this.policyFile.hashCode());
-		result = prime * result + ((this.reportFile == null) ? 0 : this.reportFile.hashCode());
-		result = prime * result + ((this.reportFolder == null) ? 0 : this.reportFolder.hashCode());
-		result = prime * result + ((this.type == null) ? 0 : this.type.hashCode());
-		result = prime * result + ((this.wikiPath == null) ? 0 : this.wikiPath.hashCode());
+		int result = type != null ? type.hashCode() : 0;
+		result = 31 * result + maxFails;
+		result = 31 * result + (isOverwrite ? 1 : 0);
+		result = 31 * result + (format != null ? format.hashCode() : 0);
+		result = 31 * result + (isVerbose ? 1 : 0);
+		result = 31 * result + (fixerFolder != null ? fixerFolder.hashCode() : 0);
+		result = 31 * result + (wikiPath != null ? wikiPath.hashCode() : 0);
+		result = 31 * result + (reportFile != null ? reportFile.hashCode() : 0);
+		result = 31 * result + (reportFolder != null ? reportFolder.hashCode() : 0);
+		result = 31 * result + (policyFile != null ? policyFile.hashCode() : 0);
+		result = 31 * result + (pluginsFolder != null ? pluginsFolder.hashCode() : 0);
 		return result;
 	}
 
@@ -188,6 +195,9 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 			return false;
 		}
 		if (this.format != other.format) {
+			return false;
+		}
+		if (this.isVerbose != other.isVerbose) {
 			return false;
 		}
 		if (this.isOverwrite != other.isOverwrite) {
@@ -243,9 +253,9 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	@Override
 	public String toString() {
 		return "VeraAppConfigImpl [type=" + this.type + ", maxFails=" + this.maxFails + ", isOverwrite="
-				+ this.isOverwrite + ", format=" + this.format + ", fixerFolder=" + this.fixerFolder + ", wikiPath="
-				+ this.wikiPath + ", reportFile=" + this.reportFile + ", reportFolder=" + this.reportFolder
-				+ ", policyFile=" + this.policyFile + ", pluginsFolder=" + this.pluginsFolder + "]";
+				+ this.isOverwrite + ", format=" + this.format + ", isVerbose=" + this.isVerbose + ", fixerFolder="
+				+ this.fixerFolder + ", wikiPath=" + this.wikiPath + ", reportFile=" + this.reportFile + ", reportFolder="
+				+ this.reportFolder + ", policyFile=" + this.policyFile + ", pluginsFolder=" + this.pluginsFolder + "]";
 	}
 
 	static String toXml(final VeraAppConfig toConvert, Boolean prettyXml) throws JAXBException, IOException {

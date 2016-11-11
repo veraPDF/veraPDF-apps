@@ -375,7 +375,7 @@ public class VeraCliArgParser {
 	public VeraAppConfig appConfig(final VeraAppConfig base) {
 		Applications.Builder configBuilder = Applications.Builder.fromConfig(base);
 		configBuilder.policyFile(this.policyProfilePath()).wikiPath(this.getProfilesWikiPath()).format(this.getFormat())
-				.reportFolder(this.getReportFolder()).reportFile(this.getReportFile())
+				.reportFolder(this.getReportFolder()).reportFile(this.getReportFile()).isVerbose(this.isVerbose())
 				.overwrite(this.isOverwriteReportFile());
 		configBuilder.type(typeFromArgs(this));
 		return configBuilder.build();

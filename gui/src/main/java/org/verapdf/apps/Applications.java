@@ -104,6 +104,7 @@ public final class Applications {
 		private String _reportFolder = FileSystems.getDefault().getPath("").toString();
 		private String _policyFile = FileSystems.getDefault().getPath("").toString();
 		private String _pluginsFolder = FileSystems.getDefault().getPath("").toString();
+		private boolean _isVerbose = false;
 
 		private Builder() {
 			super();
@@ -116,6 +117,7 @@ public final class Applications {
 			this._isOverwrite = config.isOverwriteReport();
 			this._fixerFolder = config.getFixesFolder();
 			this._format = config.getFormat();
+			this._isVerbose = config.isVerbose();
 			this._wikiPath = config.getWikiPath();
 			this._reportFile = config.getReportFile();
 			this._reportFolder = config.getReportFolder();
@@ -145,6 +147,11 @@ public final class Applications {
 
 		public Builder format(FormatOption format) {
 			this._format = format;
+			return this;
+		}
+
+		public Builder isVerbose(boolean isVerbose) {
+			this._isVerbose = isVerbose;
 			return this;
 		}
 
@@ -182,8 +189,8 @@ public final class Applications {
 		}
 
 		public VeraAppConfig build() {
-			return new VeraAppConfigImpl(_type, _maxFails, _isOverwrite, _fixerFolder, _format, _wikiPath,
-					_reportFile, _reportFolder, _policyFile, _pluginsFolder);
+			return new VeraAppConfigImpl(_type, _maxFails, _isOverwrite, _fixerFolder, _format, _isVerbose,
+					_wikiPath, _reportFile, _reportFolder, _policyFile, _pluginsFolder);
 		}
 	}
 
