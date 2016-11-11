@@ -49,7 +49,7 @@
     <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
     <sonar.language>java</sonar.language>
     <maven.failsafe.version>2.18.1</maven.failsafe.version>
-    <verapdf.pdfbox.validation.version>0.25.0-SNAPSHOT</verapdf.pdfbox.validation.version>
+    <verapdf.pdfbox.validation.version>[0.25.0,0.26.0)</verapdf.pdfbox.validation.version>
   </properties>
 
   <dependencyManagement>
