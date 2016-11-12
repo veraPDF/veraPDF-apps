@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
@@ -28,7 +30,7 @@ import org.verapdf.report.ItemDetails;
  *
  * @author Maksim Bezrukov
  */
-class ValidateWorker extends SwingWorker<Object, Integer> {
+class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 
 	private static final Logger LOGGER = Logger.getLogger(ValidateWorker.class);
 
@@ -43,7 +45,6 @@ class ValidateWorker extends SwingWorker<Object, Integer> {
 	private ConfigManager configManager;
 	private File xmlReport = null;
 	private File htmlReport = null;
-	private ProcessorResult processingResult = null;
 	private BatchSummary batchSummary = null;
 
 	ValidateWorker(CheckerPanel parent, File pdf, ConfigManager configManager, ValidationProfile customProfile) {
@@ -57,7 +58,7 @@ class ValidateWorker extends SwingWorker<Object, Integer> {
 	}
 
 	@Override
-	protected Object doInBackground() {
+	protected BatchSummary doInBackground() {
 		try {
 			this.xmlReport = File.createTempFile("veraPDF-tempXMLReport", ".xml");
 			this.xmlReport.deleteOnExit();
@@ -67,44 +68,42 @@ class ValidateWorker extends SwingWorker<Object, Integer> {
 			this.parent.errorInValidatingOccur(ERROR_IN_CREATING_TEMP_FILE + ": ", e);
 		}
 		try (OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
-			if (this.pdf.isFile()) {
-				try (InputStream toProcess = new FileInputStream(this.pdf)) {
-					ProcessorConfig processorConfig = this.configManager.createProcessorConfig();
-					ProcessorConfig resultConfig = this.customProfile == null ?
-							processorConfig :
-							ProcessorFactory.fromValues(this.configManager.getValidatorConfig(),
-									this.configManager.getFeaturesConfig(),
-									this.configManager.getFixerConfig(),
-									processorConfig.getTasks(),
-									customProfile);
-					ItemProcessor processor = ProcessorFactory.createProcessor(resultConfig);
-					this.processingResult = processor.process(ItemDetails.fromFile(this.pdf), toProcess);
-					ProcessorFactory.resultToXml(this.processingResult, mrrReport, true);
-				} catch (JAXBException e) {
-					LOGGER.error(ERROR_IN_SAVING_REPORT, e);
-					this.parent.errorInValidatingOccur(ERROR_IN_SAVING_REPORT + ": ", e);
-				}
-			} else if (this.pdf.isDirectory()) {
-				BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.configManager.createProcessorConfig());
-				VeraAppConfig applicationConfig = this.configManager.getApplicationConfig();
-				try {
-					this.batchSummary = processor.process(this.pdf, true, ProcessorFactory.getHandler(
-							applicationConfig.getFormat(),
-							applicationConfig.isVerbose(),
-							mrrReport));
-				}  catch (VeraPDFException e) {
-					LOGGER.error(ERROR_IN_PROCESSING, e);
-					this.parent.errorInValidatingOccur(ERROR_IN_PROCESSING + ": ", e);
-				}
+			ProcessorConfig processorConfig = this.configManager.createProcessorConfig();
+			ProcessorConfig resultConfig = this.customProfile == null ?
+					processorConfig :
+					ProcessorFactory.fromValues(this.configManager.getValidatorConfig(),
+							this.configManager.getFeaturesConfig(),
+							this.configManager.getFixerConfig(),
+							processorConfig.getTasks(),
+							customProfile);
+			BatchProcessor processor = ProcessorFactory.fileBatchProcessor(resultConfig);
+			VeraAppConfig applicationConfig = this.configManager.getApplicationConfig();
+			if (this.pdf.isDirectory()) {
+				this.batchSummary = processor.process(this.pdf, true, ProcessorFactory.getHandler(
+						FormatOption.MRR,
+						applicationConfig.isVerbose(),
+						mrrReport));
+			} else {
+				List<File> file = new ArrayList<>(1);
+				file.add(this.pdf);
+				this.batchSummary = processor.process(file, ProcessorFactory.getHandler(
+						FormatOption.MRR,
+						applicationConfig.isVerbose(),
+						mrrReport));
 			}
 		} catch (IOException e) {
 			LOGGER.error(ERROR_IN_OPEN_STREAMS, e);
 			this.parent.errorInValidatingOccur(ERROR_IN_OPEN_STREAMS + ": ", e);
+		} catch (VeraPDFException e) {
+			LOGGER.error(ERROR_IN_PROCESSING, e);
+			this.parent.errorInValidatingOccur(ERROR_IN_PROCESSING + ": ", e);
 		}
 
-		writeHtmlReport();
+		if (this.batchSummary.getJobs() == 1) {
+			writeHtmlReport();
+		}
 
-		return this.processingResult == null ? this.batchSummary : this.processingResult;
+		return this.batchSummary;
 	}
 
 	@Override
@@ -117,7 +116,7 @@ class ValidateWorker extends SwingWorker<Object, Integer> {
 			this.htmlReport = File.createTempFile("veraPDF-tempHTMLReport", ".html");
 			this.htmlReport.deleteOnExit();
 			try (InputStream xmlStream = new FileInputStream(this.xmlReport);
-					OutputStream htmlStream = new FileOutputStream(this.htmlReport)) {
+				 OutputStream htmlStream = new FileOutputStream(this.htmlReport)) {
 				HTMLReport.writeHTMLReport(xmlStream, htmlStream,
 						this.configManager.getApplicationConfig().getWikiPath(), true);
 
