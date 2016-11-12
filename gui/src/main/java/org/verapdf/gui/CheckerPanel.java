@@ -433,40 +433,29 @@ class CheckerPanel extends JPanel {
 
 		if (!this.isValidationErrorOccurred) {
 			try {
-				Object result = this.validateWorker.get();
-				if (result instanceof ProcessorResult) {
-					ProcessorResult processorResult = (ProcessorResult) result;
-					if (processorResult.getTaskTypes().contains(TaskType.VALIDATE)) {
-						TaskResult valTask = processorResult.getResultForTask(TaskType.VALIDATE);
-						if (valTask.isSuccess()) {
-							if (processorResult.getValidationResult().isCompliant()) {
-								this.resultLabel.setForeground(GUIConstants.VALIDATION_SUCCESS_COLOR);
-								this.resultLabel.setText(GUIConstants.VALIDATION_OK);
-							} else {
+				BatchSummary result = this.validateWorker.get();
+				if (result.getJobs() == 1) {
+					if (result.getValidPDFAJobs() == 1) {
+						this.resultLabel.setForeground(GUIConstants.VALIDATION_SUCCESS_COLOR);
+						this.resultLabel.setText(GUIConstants.VALIDATION_OK);
+					} else if (result.getInvalidPDFAJobs() == 1) {
 								this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
 								this.resultLabel.setText(GUIConstants.VALIDATION_FALSE);
-							}
-						} else {
+					} else if (result.getExceptionDuringValidationJobs() == 1) {
 							this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
 							this.resultLabel.setText(GUIConstants.ERROR_IN_VALIDATING);
-						}
-					}
-					if (processorResult.getTaskTypes().contains(TaskType.EXTRACT_FEATURES)) {
-						TaskResult valTask = processorResult.getResultForTask(TaskType.EXTRACT_FEATURES);
-						if (valTask.isSuccess()) {
+					} else if (result.getFeaturesSuccessJobs() == 1) {
 							this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
 							this.resultLabel.setText(GUIConstants.FEATURES_GENERATED_CORRECT);
-						} else {
+					} else {
 							this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
 							this.resultLabel.setText(GUIConstants.ERROR_IN_FEATURES);
-						}
 					}
-				} else if (result instanceof BatchSummary) {
-					BatchSummary batchSummary = (BatchSummary) result;
+				} else {
 					this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
-					this.resultLabel.setText("Items processed: " + batchSummary.getJobs()
-							+ ",   Succeed: " + (batchSummary.getJobs() - batchSummary.getFailedJobs())
-							+ ",   Failed: " + batchSummary.getFailedJobs());
+					this.resultLabel.setText("Items processed: " + result.getJobs()
+							+ ",   Succeed: " + (result.getJobs() - result.getFailedJobs())
+							+ ",   Failed: " + result.getFailedJobs());
 				}
 				this.resultLabel.setVisible(true);
 
