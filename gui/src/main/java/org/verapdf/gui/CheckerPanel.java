@@ -51,8 +51,7 @@ import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
-import org.verapdf.processor.ProcessorResult;
-import org.verapdf.processor.TaskResult;
+import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.TaskType;
 import org.verapdf.processor.reports.BatchSummary;
 
@@ -433,40 +432,29 @@ class CheckerPanel extends JPanel {
 
 		if (!this.isValidationErrorOccurred) {
 			try {
-				Object result = this.validateWorker.get();
-				if (result instanceof ProcessorResult) {
-					ProcessorResult processorResult = (ProcessorResult) result;
-					if (processorResult.getTaskTypes().contains(TaskType.VALIDATE)) {
-						TaskResult valTask = processorResult.getResultForTask(TaskType.VALIDATE);
-						if (valTask.isSuccess()) {
-							if (processorResult.getValidationResult().isCompliant()) {
-								this.resultLabel.setForeground(GUIConstants.VALIDATION_SUCCESS_COLOR);
-								this.resultLabel.setText(GUIConstants.VALIDATION_OK);
-							} else {
+				BatchSummary result = this.validateWorker.get();
+				if (result.getJobs() == 1) {
+					if (result.getValidPdfaCount() > 0) {
+						this.resultLabel.setForeground(GUIConstants.VALIDATION_SUCCESS_COLOR);
+						this.resultLabel.setText(GUIConstants.VALIDATION_OK);
+					} else if (result.getInvalidPdfaCount() > 0) {
 								this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
 								this.resultLabel.setText(GUIConstants.VALIDATION_FALSE);
-							}
-						} else {
+					} else if (result.getValidationExceptionCount() == 1) {
 							this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
 							this.resultLabel.setText(GUIConstants.ERROR_IN_VALIDATING);
-						}
-					}
-					if (processorResult.getTaskTypes().contains(TaskType.EXTRACT_FEATURES)) {
-						TaskResult valTask = processorResult.getResultForTask(TaskType.EXTRACT_FEATURES);
-						if (valTask.isSuccess()) {
+					} else if (result.getFeatureCount() > 0) {
 							this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
 							this.resultLabel.setText(GUIConstants.FEATURES_GENERATED_CORRECT);
-						} else {
+					} else {
 							this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
 							this.resultLabel.setText(GUIConstants.ERROR_IN_FEATURES);
-						}
 					}
-				} else if (result instanceof BatchSummary) {
-					BatchSummary batchSummary = (BatchSummary) result;
+				} else {
 					this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
-					this.resultLabel.setText("Items processed: " + batchSummary.getJobs()
-							+ ",   Succeed: " + (batchSummary.getJobs() - batchSummary.getFailedJobs())
-							+ ",   Failed: " + batchSummary.getFailedJobs());
+					this.resultLabel.setText("Items processed: " + result.getJobs()
+							+ ",   Succeed: " + (result.getJobs() - result.getFailedJobs())
+							+ ",   Failed: " + result.getFailedJobs());
 				}
 				this.resultLabel.setVisible(true);
 
@@ -615,7 +603,7 @@ class CheckerPanel extends JPanel {
 		config.updateAppConfig(appConfigFromState());
 	}
 
-	private VeraAppConfig appConfigFromState() {
+	VeraAppConfig appConfigFromState() {
 		Builder builder = Applications
 				.createConfigBuilder(CheckerPanel.config.getApplicationConfig());
 		ProcessType selectedItem = (ProcessType) this.ProcessTypes.getSelectedItem();
@@ -625,7 +613,7 @@ class CheckerPanel extends JPanel {
 		builder.type(selectedItem);
 		return builder.build();
 	}
-
+	
 	private PDFAFlavour getCurrentFlavour() {
 		String selectedItem = (String) this.chooseFlavour.getSelectedItem();
 		PDFAFlavour flavour = FLAVOURS_MAP.get(selectedItem);

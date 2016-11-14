@@ -6,6 +6,7 @@ package org.verapdf.cli;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
+import java.util.EnumSet;
 
 import org.apache.log4j.Logger;
 import org.verapdf.ReleaseDetails;
@@ -14,6 +15,7 @@ import org.verapdf.apps.ConfigManager;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.pdfa.PdfBoxFoundryProvider;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
@@ -106,7 +108,9 @@ public final class VeraPdfCli {
 
 	private static void listProfiles() {
 		System.out.println(FLAVOURS_HEADING);
-		for (ValidationProfile profile : PROFILES.getValidationProfiles()) {
+		EnumSet<PDFAFlavour> flavs = EnumSet.copyOf(PROFILES.getPDFAFlavours());
+		for (PDFAFlavour flav : flavs) {
+			ValidationProfile profile = PROFILES.getValidationProfileByFlavour(flav);
 			System.out.println("  " + profile.getPDFAFlavour().getId() + " - " + profile.getDetails().getName());
 		}
 		System.out.println();
