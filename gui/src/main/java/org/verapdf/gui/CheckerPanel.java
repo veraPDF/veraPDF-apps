@@ -51,8 +51,7 @@ import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
-import org.verapdf.processor.ProcessorResult;
-import org.verapdf.processor.TaskResult;
+import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.TaskType;
 import org.verapdf.processor.reports.BatchSummary;
 
@@ -435,16 +434,16 @@ class CheckerPanel extends JPanel {
 			try {
 				BatchSummary result = this.validateWorker.get();
 				if (result.getJobs() == 1) {
-					if (result.getValidPDFAJobs() == 1) {
+					if (result.getValidPdfaCount() > 0) {
 						this.resultLabel.setForeground(GUIConstants.VALIDATION_SUCCESS_COLOR);
 						this.resultLabel.setText(GUIConstants.VALIDATION_OK);
-					} else if (result.getInvalidPDFAJobs() == 1) {
+					} else if (result.getInvalidPdfaCount() > 0) {
 								this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
 								this.resultLabel.setText(GUIConstants.VALIDATION_FALSE);
-					} else if (result.getExceptionDuringValidationJobs() == 1) {
+					} else if (result.getValidationExceptionCount() == 1) {
 							this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
 							this.resultLabel.setText(GUIConstants.ERROR_IN_VALIDATING);
-					} else if (result.getFeaturesSuccessJobs() == 1) {
+					} else if (result.getFeatureCount() > 0) {
 							this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
 							this.resultLabel.setText(GUIConstants.FEATURES_GENERATED_CORRECT);
 					} else {
@@ -604,7 +603,7 @@ class CheckerPanel extends JPanel {
 		config.updateAppConfig(appConfigFromState());
 	}
 
-	private VeraAppConfig appConfigFromState() {
+	VeraAppConfig appConfigFromState() {
 		Builder builder = Applications
 				.createConfigBuilder(CheckerPanel.config.getApplicationConfig());
 		ProcessType selectedItem = (ProcessType) this.ProcessTypes.getSelectedItem();
@@ -614,7 +613,7 @@ class CheckerPanel extends JPanel {
 		builder.type(selectedItem);
 		return builder.build();
 	}
-
+	
 	private PDFAFlavour getCurrentFlavour() {
 		String selectedItem = (String) this.chooseFlavour.getSelectedItem();
 		PDFAFlavour flavour = FLAVOURS_MAP.get(selectedItem);

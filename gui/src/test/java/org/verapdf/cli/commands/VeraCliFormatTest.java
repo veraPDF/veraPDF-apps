@@ -114,27 +114,4 @@ public class VeraCliFormatTest {
                 "-f", "1a" });
         assertTrue(parser.getFormat() == FormatOption.MRR);
     }
-
-    /**
-     * Test method for
-     * {@link org.verapdf.cli.commands.VeraCliArgParser#getFormat()}.
-     */
-//    @Test
-//    public final void testGetFormatHtml() {
-//        VeraCliArgParser parser = new VeraCliArgParser();
-//        JCommander jCommander = VeraCliArgParserTest
-//                .initialiseJCommander(parser);
-//
-//        // Test that XML value selects XML
-//        jCommander.parse(new String[] { "--format", "html" });
-//        assertTrue(parser.getFormat() == FormatOption.HTML);
-//1
-//        // Test other flags & options doesn't change that
-//        parser = new VeraCliArgParser();
-//        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-//        jCommander.parse(new String[] { "-h", "--format", "html", "--list",
-//                "-f", "2b" });
-//        assertTrue(parser.getFormat() == FormatOption.HTML);
-//    }
-
 }
