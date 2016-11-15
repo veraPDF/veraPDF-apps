@@ -17,7 +17,7 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.metadata.fixer.FixerFactory;
-import org.verapdf.pdfa.PdfBoxFoundryProvider;
+import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
@@ -26,15 +26,13 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 
 /**
  * @author Sergey Shemyakov
- *
  */
 @SuppressWarnings("static-method")
 public class ProcessorImplProfileTest {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.processor.ProcessorImpl#profileFromConfig(Config)}
-	 * .
+	 * {@link org.verapdf.processor.ProcessorImpl#profileFromConfig(Config)} .
 	 *
 	 * @throws IOException
 	 * @throws FileNotFoundException
@@ -42,31 +40,31 @@ public class ProcessorImplProfileTest {
 	 * @throws JAXBException
 	 */
 
-    @Test
-    public final void testCreateProcessorFromArgsNewProfile()
-            throws FileNotFoundException, IOException,
-            JAXBException {
-    	PdfBoxFoundryProvider.initialise();
-        ProfileDirectory directory = Profiles.getVeraProfileDirectory();
-        assertTrue(directory.getValidationProfiles().size() > 0);
-        for (ValidationProfile profile : directory.getValidationProfiles()) {
-            File tmpProfile = File.createTempFile("verapdf", "profile");
+	@Test
+	public final void testCreateProcessorFromArgsNewProfile() throws FileNotFoundException, IOException, JAXBException {
+		VeraGreenfieldFoundryProvider.initialise();
+		ProfileDirectory directory = Profiles.getVeraProfileDirectory();
+		assertTrue(directory.getValidationProfiles().size() > 0);
+		for (ValidationProfile profile : directory.getValidationProfiles()) {
+			File tmpProfile = File.createTempFile("verapdf", "profile");
 			tmpProfile.deleteOnExit();
-            try (OutputStream os = new FileOutputStream(tmpProfile)) {
-                Profiles.profileToXml(profile, os, false, false);
-                testWithProfileFile(profile.getPDFAFlavour(), tmpProfile);
-            }
-        }
-    }
+			try (OutputStream os = new FileOutputStream(tmpProfile)) {
+				Profiles.profileToXml(profile, os, false, false);
+				testWithProfileFile(profile.getPDFAFlavour(), tmpProfile);
+			}
+		}
+	}
 
-    private static void testWithProfileFile(final PDFAFlavour flavour,
-            final File profileFile) throws FileNotFoundException, IOException, JAXBException {
+	private static void testWithProfileFile(final PDFAFlavour flavour, final File profileFile)
+			throws FileNotFoundException, IOException, JAXBException {
 		try (InputStream is = new FileInputStream(profileFile)) {
 			ValidationProfile profile = Profiles.profileFromXml(is);
-	        ProcessorConfig config = ProcessorFactory.fromValues(ValidatorFactory.defaultConfig(), FeatureFactory.defaultConfig(), FixerFactory.defaultConfig(), EnumSet.noneOf(TaskType.class), profile);
-			assertEquals(flavour, ProcessorFactory.fileBatchProcessor(config).getConfig().getCustomProfile().getPDFAFlavour());
+			ProcessorConfig config = ProcessorFactory.fromValues(ValidatorFactory.defaultConfig(),
+					FeatureFactory.defaultConfig(), FixerFactory.defaultConfig(), EnumSet.noneOf(TaskType.class),
+					profile);
+			assertEquals(flavour,
+					ProcessorFactory.fileBatchProcessor(config).getConfig().getCustomProfile().getPDFAFlavour());
 			assertTrue(profile.equals(ProcessorFactory.fileBatchProcessor(config).getConfig().getCustomProfile()));
 		}
-    }
+	}
 }
-

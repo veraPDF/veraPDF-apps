@@ -8,8 +8,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.swing.BoxLayout;
@@ -32,12 +30,10 @@ import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.VeraAppConfig;
-import org.verapdf.features.FeatureExtractorConfig;
-import org.verapdf.features.FeatureFactory;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
-import org.verapdf.pdfa.PdfBoxFoundryProvider;
+import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 
@@ -112,10 +108,9 @@ public class PDFValidationApplication extends JFrame {
 		sett.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (settingsPanel != null && settingsPanel.showDialog(PDFValidationApplication.this, "Settings",
-						configManager)) {
-					Builder confBuilder = Builder
-							.fromConfig(configManager.getApplicationConfig());
+				if (settingsPanel != null
+						&& settingsPanel.showDialog(PDFValidationApplication.this, "Settings", configManager)) {
+					Builder confBuilder = Builder.fromConfig(configManager.getApplicationConfig());
 					confBuilder.wikiPath(settingsPanel.getProfilesWikiPath());
 					try {
 						configManager.updateAppConfig(confBuilder.build());
@@ -134,7 +129,8 @@ public class PDFValidationApplication extends JFrame {
 						excep.printStackTrace();
 					}
 
-					MetadataFixerConfig fixConf = FixerFactory.configFromValues(settingsPanel.getFixMetadataPrefix(), true);
+					MetadataFixerConfig fixConf = FixerFactory.configFromValues(settingsPanel.getFixMetadataPrefix(),
+							true);
 					try {
 						configManager.updateFixerConfig(fixConf);
 					} catch (JAXBException | IOException excep) {
@@ -230,7 +226,7 @@ public class PDFValidationApplication extends JFrame {
 	 *            command line arguments
 	 */
 	public static void main(String[] args) {
-		PdfBoxFoundryProvider.initialise();
+		VeraGreenfieldFoundryProvider.initialise();
 		ReleaseDetails.addDetailsFromResource(
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT);
 		EventQueue.invokeLater(new Runnable() {
