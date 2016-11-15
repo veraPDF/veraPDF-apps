@@ -37,8 +37,6 @@ public class FeaturesConfigPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -6602264333993164990L;
 
-	private static final Logger LOGGER = Logger.getLogger(FeaturesConfigPanel.class);
-
 	private JButton okButton;
 	boolean ok;
 	JDialog dialog;
@@ -81,25 +79,11 @@ public class FeaturesConfigPanel extends JPanel {
 		add(buttonPanel, BorderLayout.SOUTH);
 	}
 
-	boolean showDialog(Component parent, String title, Path featuresConfigPath) {
+	boolean showDialog(Component parent, String title, FeatureExtractorConfig featureExtractorConfig) {
 
 		this.ok = false;
-
-		FeatureExtractorConfig config = FeatureFactory.defaultConfig();
-
-		if (featuresConfigPath != null && !featuresConfigPath.toString().isEmpty()) {
-			try (FileInputStream fis = new FileInputStream(featuresConfigPath.toFile())) {
-				config = FeatureFactory.configFromXml(fis);
-			} catch (JAXBException e) {
-				LOGGER.error("Error during loading features config", e);
-			} catch (FileNotFoundException e) {
-				LOGGER.error("Features config file not found", e);
-			} catch (IOException excep) {
-				LOGGER.info("IOException caught when closing config file: " + featuresConfigPath, excep);
-			}
-		}
 		
-		for (FeatureObjectType type : config.getEnabledFeatures()) {
+		for (FeatureObjectType type : featureExtractorConfig.getEnabledFeatures()) {
 			this.featureGrid.get(type).setSelected(true);
 		}
 

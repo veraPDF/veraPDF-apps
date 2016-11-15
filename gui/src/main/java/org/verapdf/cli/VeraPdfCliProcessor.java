@@ -161,7 +161,7 @@ final class VeraPdfCliProcessor {
 			excep.printStackTrace();
 		}
 
-		if (this.isStdOut == false) {
+		if (!this.isStdOut) {
 			try {
 				outputReportStream.close();
 			} catch (IOException ex) {
@@ -178,13 +178,13 @@ final class VeraPdfCliProcessor {
 
 	private String constructReportPath(final String itemName) {
 		String reportPath = "";
-		if (!this.configManager.getApplicationConfig().getReportFolder().toString().isEmpty()) {
+		if (!this.configManager.getApplicationConfig().getReportFolder().isEmpty()) {
 			Path fileAbsolutePath = Paths.get(itemName);
 			String pdfFileName = fileAbsolutePath.getFileName().toString();
 			String pdfFileDirectory = fileAbsolutePath.getParent().toString();
 			String extension = "." + this.configManager.getApplicationConfig().getFormat().toString();
 			String outputFileName = pdfFileName.replace(".pdf", extension);
-			String reportFolder = this.configManager.getApplicationConfig().getReportFolder().toString();
+			String reportFolder = this.configManager.getApplicationConfig().getReportFolder();
 
 			if (pdfFileDirectory.length() > this.baseDirectory.length()) {
 				StringBuilder reportFolderBuilder = new StringBuilder();
@@ -202,7 +202,7 @@ final class VeraPdfCliProcessor {
 						dir.mkdirs();
 					} catch (SecurityException ex) {
 						LOGGER.error("Cannot create subdirectories the: " + ex.toString() + "\n");
-						reportFolder = this.configManager.getApplicationConfig().getReportFolder().toString();
+						reportFolder = this.configManager.getApplicationConfig().getReportFolder();
 					}
 				}
 			}
@@ -210,7 +210,7 @@ final class VeraPdfCliProcessor {
 			File reportFile = new File(reportFolder, outputFileName);
 			reportPath = reportFile.getAbsolutePath();
 			this.appendData = false;
-		} else if (!this.configManager.getApplicationConfig().getReportFile().toString().isEmpty()) {
+		} else if (!this.configManager.getApplicationConfig().getReportFile().isEmpty()) {
 			File reportFile = new File(this.configManager.getApplicationConfig().getReportFile());
 			reportPath = reportFile.getAbsolutePath();
 			this.appendData = true;
