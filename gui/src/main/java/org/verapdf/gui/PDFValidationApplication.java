@@ -154,14 +154,12 @@ public class PDFValidationApplication extends JFrame {
 		features.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				File featuresFile = new File(PDFValidationApplication.this.config.getReportFile());
 				if (featuresPanel != null && featuresPanel.showDialog(PDFValidationApplication.this, "Features Config",
-						featuresFile.toPath())) {
-					FeatureExtractorConfig featuresConfig = featuresPanel.getFeaturesConfig();
-					try (FileOutputStream outputStream = new FileOutputStream(featuresFile)) {
-						FeatureFactory.configToXml(featuresConfig, outputStream);
+						configManager.getFeaturesConfig())) {
+					try {
+						configManager.updateFeaturesConfig(featuresPanel.getFeaturesConfig());
 					} catch (JAXBException | IOException exp) {
-						LOGGER.error("Exception in saving features config", exp);
+						LOGGER.error("Exception in updating features config", exp);
 					}
 				}
 			}
