@@ -1,44 +1,5 @@
 package org.verapdf.gui;
 
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-import java.util.concurrent.ExecutionException;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
-import javax.swing.SwingConstants;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.xml.bind.JAXBException;
-
 import org.apache.log4j.Logger;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
@@ -51,9 +12,23 @@ import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
-import org.verapdf.processor.ProcessorConfig;
-import org.verapdf.processor.TaskType;
 import org.verapdf.processor.reports.BatchSummary;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.bind.JAXBException;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Panel with functionality for checker.
@@ -135,7 +110,11 @@ class CheckerPanel extends JPanel {
 		this.add(processType);
 
 		this.ProcessTypes = new JComboBox<>(ProcessType.getOptionValues());
-		this.ProcessTypes.setSelectedItem(config.getApplicationConfig().getProcessType());
+		// TODO: uncomment and remove 2 and 3 lines when features will be available in GF
+//		this.ProcessTypes.setSelectedItem(config.getApplicationConfig().getProcessType());
+		this.ProcessTypes.setSelectedItem(ProcessType.VALIDATE);
+		this.ProcessTypes.setEnabled(false);
+
 		ProcessingTypeRenderer processingTypeRenderer = new ProcessingTypeRenderer();
 		this.ProcessTypes.setRenderer(processingTypeRenderer);
 		setGridBagConstraintsParameters(gbc, GUIConstants.PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_X,
@@ -148,7 +127,11 @@ class CheckerPanel extends JPanel {
 		this.add(this.ProcessTypes);
 
 		this.fixMetadata = new JCheckBox(GUIConstants.FIX_METADATA_LABEL_TEXT);
-		this.fixMetadata.setSelected(config.createProcessorConfig().getTasks().contains(TaskType.FIX_METADATA));
+		// TODO: uncomment and remove 2 and 3 lines when metadata fixes will be available in GF
+//		this.fixMetadata.setSelected(config.createProcessorConfig().getTasks().contains(TaskType.FIX_METADATA));
+		this.fixMetadata.setEnabled(false);
+		this.fixMetadata.setSelected(false);
+
 		setGridBagConstraintsParameters(gbc, GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_X,
 				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_Y,
 				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_WEIGHT_X,
@@ -303,14 +286,16 @@ class CheckerPanel extends JPanel {
 				ProcessType item = (ProcessType) CheckerPanel.this.ProcessTypes.getSelectedItem();
 				switch (item) {
 					case VALIDATE:
-						CheckerPanel.this.fixMetadata.setEnabled(true);
+						// TODO: uncomment line when metadata fixer will be available in GF
+//						CheckerPanel.this.fixMetadata.setEnabled(true);
 						break;
 					case EXTRACT:
 						CheckerPanel.this.fixMetadata.setSelected(false);
 						CheckerPanel.this.fixMetadata.setEnabled(false);
 						break;
 					case VALIDATE_EXTRACT:
-						CheckerPanel.this.fixMetadata.setEnabled(true);
+						// TODO: uncomment line when metadata fixer will be available in GF
+//						CheckerPanel.this.fixMetadata.setEnabled(true);
 						break;
 					default:
 						break;
