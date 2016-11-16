@@ -95,8 +95,8 @@ public class VeraCliArgParser {
 			LOAD_PROFILE }, description = "Loads a Validation Profile from given path and exits if loading fails. This overrides any choice or default implied by the -f / --flavour option.", validateWith = ProfileFileValidator.class)
 	private File profileFile;
 
-	@Parameter(names = { EXTRACT_FLAG, EXTRACT }, description = "Extracts and reports PDF features.")
-	private boolean features = false;
+//	@Parameter(names = { EXTRACT_FLAG, EXTRACT }, description = "Extracts and reports PDF features.")
+//	private boolean features = false;
 
 	@Parameter(names = { FORMAT }, description = "Chooses output format.", converter = FormatConverter.class)
 	private FormatOption format = Applications.defaultConfig().getFormat();
@@ -115,14 +115,14 @@ public class VeraCliArgParser {
 	@Parameter(names = { MAX_FAILURES }, description = "Sets maximum amount of failed checks.")
 	private int maxFailures = ValidatorFactory.defaultConfig().getMaxFails();
 
-	@Parameter(names = { FIX_METADATA }, description = "Performs metadata fixes.")
-	private boolean fixMetadata = false;
-
-	@Parameter(names = { FIX_METADATA_PREFIX }, description = "Sets file name prefix for any fixed files.")
-	private String prefix = FixerFactory.defaultConfig().getFixesPrefix();
-
-	@Parameter(names = { FIX_METADATA_FOLDER }, description = "Sets output directory for any fixed files.")
-	private String saveFolder = "";
+//	@Parameter(names = { FIX_METADATA }, description = "Performs metadata fixes.")
+//	private boolean fixMetadata = false;
+//
+//	@Parameter(names = { FIX_METADATA_PREFIX }, description = "Sets file name prefix for any fixed files.")
+//	private String prefix = FixerFactory.defaultConfig().getFixesPrefix();
+//
+//	@Parameter(names = { FIX_METADATA_FOLDER }, description = "Sets output directory for any fixed files.")
+//	private String saveFolder = "";
 
 	// @Parameter(names = { PROFILES_WIKI_FLAG,
 	// PROFILES_WIKI }, description = "Sets location of the Validation Profiles
@@ -190,27 +190,27 @@ public class VeraCliArgParser {
 		return this.maxFailures;
 	}
 
-	/**
-	 * @return true if metadata fix is enabled
-	 */
-	public boolean fixMetadata() {
-		return this.fixMetadata;
-	}
-
-	/**
-	 * @return the prefix of the saved file
-	 */
-	public String prefix() {
-		return this.prefix;
-	}
-
-	/**
-	 * @return the folder to save the fixed file to
-	 */
-	public String saveFolder() {
-		return this.saveFolder;
-	}
-
+//	/**
+//	 * @return true if metadata fix is enabled
+//	 */
+//	public boolean fixMetadata() {
+//		return this.fixMetadata;
+//	}
+//
+//	/**
+//	 * @return the prefix of the saved file
+//	 */
+//	public String prefix() {
+//		return this.prefix;
+//	}
+//
+//	/**
+//	 * @return the folder to save the fixed file to
+//	 */
+//	public String saveFolder() {
+//		return this.saveFolder;
+//	}
+//
 	// /**
 	// * @return the policy profile path
 	// */
@@ -246,12 +246,12 @@ public class VeraCliArgParser {
 		return this.passed;
 	}
 
-	/**
-	 * @return true if PDF Feature extraction requested
-	 */
-	public boolean extractFeatures() {
-		return this.features;
-	}
+//	/**
+//	 * @return true if PDF Feature extraction requested
+//	 */
+//	public boolean extractFeatures() {
+//		return this.features;
+//	}
 
 	/**
 	 * @return the validation flavour string id
@@ -377,12 +377,12 @@ public class VeraCliArgParser {
 	}
 
 	public MetadataFixerConfig fixerConfig() {
-		return FixerFactory.configFromValues(this.prefix, true);
+		return FixerFactory.defaultConfig();
 	}
 
 	public VeraAppConfig appConfig(final VeraAppConfig base) {
 		Applications.Builder configBuilder = Applications.Builder.fromConfig(base);
-		configBuilder.format(this.getFormat()).isVerbose(this.isVerbose()).fixerFolder(this.saveFolder);
+		configBuilder.format(this.getFormat()).isVerbose(this.isVerbose());
 		configBuilder.type(typeFromArgs(this));
 		return configBuilder.build();
 	}
@@ -391,12 +391,12 @@ public class VeraCliArgParser {
 			throws VeraPDFException {
 		if (this.profileFile == null) {
 			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, this.fixerConfig(),
-					procType.getTasks(), this.saveFolder);
+					procType.getTasks());
 		}
 		try (InputStream fis = new FileInputStream(this.profileFile)) {
 			ValidationProfile customProfile = Profiles.profileFromXml(fis);
 			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, this.fixerConfig(),
-					procType.getTasks(), customProfile, this.saveFolder);
+					procType.getTasks(), customProfile);
 		} catch (IOException | JAXBException excep) {
 			throw new VeraPDFException("Problem loading custom profile", excep);
 		}
@@ -406,10 +406,10 @@ public class VeraCliArgParser {
 		ProcessType retVal = ProcessType.VALIDATE;
 		if (parser.isValidationOff())
 			retVal = ProcessType.NO_PROCESS;
-		if (parser.extractFeatures())
-			retVal = ProcessType.addProcess(retVal, ProcessType.EXTRACT);
-		if (parser.fixMetadata())
-			retVal = ProcessType.addProcess(retVal, ProcessType.FIX);
+//		if (parser.extractFeatures())
+//			retVal = ProcessType.addProcess(retVal, ProcessType.EXTRACT);
+//		if (parser.fixMetadata())
+//			retVal = ProcessType.addProcess(retVal, ProcessType.FIX);
 		return retVal;
 	}
 }
