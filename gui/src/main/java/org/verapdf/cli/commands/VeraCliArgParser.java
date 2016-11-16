@@ -63,14 +63,15 @@ public class VeraCliArgParser {
 	final static String FIX_METADATA = OPTION_SEP + "fixmetadata";
 	final static String FIX_METADATA_PREFIX = OPTION_SEP + "prefix";
 	final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder";
-	final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
-	final static String LOAD_CONFIG_FLAG = FLAG_SEP + "c";
-	final static String LOAD_CONFIG = OPTION_SEP + "config";
-	final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
-	final static String POLICY_PROFILE = OPTION_SEP + "policyProfile";
-	final static String REPORT_FILE = OPTION_SEP + "reportfile";
-	final static String REPORT_FOLDER = OPTION_SEP + "reportfolder";
-	final static String OVERWRITE_REPORT_FILE = OPTION_SEP + "overwriteReportFile";
+	// final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
+	// final static String LOAD_CONFIG_FLAG = FLAG_SEP + "c";
+	// final static String LOAD_CONFIG = OPTION_SEP + "config";
+	// final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
+	// final static String POLICY_PROFILE = OPTION_SEP + "policyProfile";
+	// final static String REPORT_FILE = OPTION_SEP + "reportfile";
+	// final static String REPORT_FOLDER = OPTION_SEP + "reportfolder";
+	// final static String OVERWRITE_REPORT_FILE = OPTION_SEP +
+	// "overwriteReportFile";
 	final static String VALID_OFF_FLAG = FLAG_SEP + "o";
 	final static String VALID_OFF = OPTION_SEP + "off";
 
@@ -123,23 +124,30 @@ public class VeraCliArgParser {
 	@Parameter(names = { FIX_METADATA_FOLDER }, description = "Sets output directory for any fixed files.")
 	private String saveFolder = "";
 
-	@Parameter(names = { PROFILES_WIKI_FLAG,
-			PROFILES_WIKI }, description = "Sets location of the Validation Profiles wiki.")
-	private String profilesWikiPath = Applications.defaultConfig().getWikiPath();
-
-	@Parameter(names = {
-			POLICY_PROFILE }, description = "Uses policy check output with specified Policy Profile. Output format option will be ignored.")
-	private String policyProfilePath = "";
-
-	@Parameter(names = {
-			REPORT_FOLDER }, description = "Sets output directory for any reports. If a directory hierarchy is being recursed, a duplicate hierarchy will be produced.")
-	private String reportFolder = "";
-
-	@Parameter(names = { REPORT_FILE }, description = "Sets output file for any reports.")
-	private String reportFile = "";
-
-	@Parameter(names = { OVERWRITE_REPORT_FILE }, description = "Overwrites report file.")
-	private boolean isOverwriteReportFile = false;
+	// @Parameter(names = { PROFILES_WIKI_FLAG,
+	// PROFILES_WIKI }, description = "Sets location of the Validation Profiles
+	// wiki.")
+	// private String profilesWikiPath =
+	// Applications.defaultConfig().getWikiPath();
+	//
+	// @Parameter(names = {
+	// POLICY_PROFILE }, description = "Uses policy check output with specified
+	// Policy Profile. Output format option will be ignored.")
+	// private String policyProfilePath = "";
+	//
+	// @Parameter(names = {
+	// REPORT_FOLDER }, description = "Sets output directory for any reports. If
+	// a directory hierarchy is being recursed, a duplicate hierarchy will be
+	// produced.")
+	// private String reportFolder = "";
+	//
+	// @Parameter(names = { REPORT_FILE }, description = "Sets output file for
+	// any reports.")
+	// private String reportFile = "";
+	//
+	// @Parameter(names = { OVERWRITE_REPORT_FILE }, description = "Overwrites
+	// report file.")
+	// private boolean isOverwriteReportFile = false;
 
 	@Parameter(names = { VALID_OFF_FLAG, VALID_OFF }, description = "Turns off PDF/A validation")
 	private boolean isValidationOff = false;
@@ -203,12 +211,12 @@ public class VeraCliArgParser {
 		return this.saveFolder;
 	}
 
-	/**
-	 * @return the policy profile path
-	 */
-	public String policyProfilePath() {
-		return this.policyProfilePath;
-	}
+	// /**
+	// * @return the policy profile path
+	// */
+	// public String policyProfilePath() {
+	// return this.policyProfilePath;
+	// }
 
 	/**
 	 * @return true if to recursively process sub-dirs
@@ -266,36 +274,36 @@ public class VeraCliArgParser {
 		return this.pdfPaths;
 	}
 
-	/**
-	 * @return path to validation profiles wiki
-	 */
-	public String getProfilesWikiPath() {
-		return this.profilesWikiPath;
-	}
+	// /**
+	// * @return path to validation profiles wiki
+	// */
+	// public String getProfilesWikiPath() {
+	// return this.profilesWikiPath;
+	// }
+	//
+	// /**
+	// * @author: mancuska@digitaldocuments.org
+	// * @return folder for reports
+	// */
+	// public String getReportFolder() {
+	// return this.reportFolder;
+	// }
+	//
+	// /**
+	// * @author: mancuska@digitaldocuments.org
+	// * @return output file for report
+	// */
+	// public String getReportFile() {
+	// return this.reportFile;
+	// }
 
-	/**
-	 * @author: mancuska@digitaldocuments.org
-	 * @return folder for reports
-	 */
-	public String getReportFolder() {
-		return this.reportFolder;
-	}
-
-	/**
-	 * @author: mancuska@digitaldocuments.org
-	 * @return output file for report
-	 */
-	public String getReportFile() {
-		return this.reportFile;
-	}
-
-	/**
-	 * @author: mancuska@digitaldocuments.org
-	 * @return true if existing result file must be overwritten
-	 */
-	public boolean isOverwriteReportFile() {
-		return this.isOverwriteReportFile;
-	}
+	// /**
+	// * @author: mancuska@digitaldocuments.org
+	// * @return true if existing result file must be overwritten
+	// */
+	// public boolean isOverwriteReportFile() {
+	// return this.isOverwriteReportFile;
+	// }
 
 	public boolean isValidationOff() {
 		return this.isValidationOff;
@@ -374,22 +382,21 @@ public class VeraCliArgParser {
 
 	public VeraAppConfig appConfig(final VeraAppConfig base) {
 		Applications.Builder configBuilder = Applications.Builder.fromConfig(base);
-		configBuilder.policyFile(this.policyProfilePath()).wikiPath(this.getProfilesWikiPath()).format(this.getFormat())
-				.reportFolder(this.getReportFolder()).reportFile(this.getReportFile()).isVerbose(this.isVerbose())
-				.overwrite(this.isOverwriteReportFile());
+		configBuilder.format(this.getFormat()).isVerbose(this.isVerbose()).fixerFolder(this.saveFolder);
 		configBuilder.type(typeFromArgs(this));
 		return configBuilder.build();
 	}
 
-	public ProcessorConfig processorConfig(final ProcessType procType, FeatureExtractorConfig featConfig) throws VeraPDFException {
+	public ProcessorConfig processorConfig(final ProcessType procType, FeatureExtractorConfig featConfig)
+			throws VeraPDFException {
 		if (this.profileFile == null) {
 			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, this.fixerConfig(),
-					procType.getTasks());
+					procType.getTasks(), this.saveFolder);
 		}
 		try (InputStream fis = new FileInputStream(this.profileFile)) {
 			ValidationProfile customProfile = Profiles.profileFromXml(fis);
 			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, this.fixerConfig(),
-					procType.getTasks(), customProfile);
+					procType.getTasks(), customProfile, this.saveFolder);
 		} catch (IOException | JAXBException excep) {
 			throw new VeraPDFException("Problem loading custom profile", excep);
 		}
