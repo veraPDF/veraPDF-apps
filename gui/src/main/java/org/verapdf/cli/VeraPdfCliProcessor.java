@@ -109,7 +109,7 @@ final class VeraPdfCliProcessor {
 	private void processFiles(final List<File> files) {
 		try {
 			BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
-			OutputStream reportStream = this.getReportStream();
+			OutputStream reportStream = VeraPdfCliProcessor.getReportStream();
 			processor.process(files,
 					ProcessorFactory.getHandler(appConfig.getFormat(), appConfig.isVerbose(), reportStream));
 		} catch (VeraPDFException e) {
@@ -131,14 +131,10 @@ final class VeraPdfCliProcessor {
 
 	private void processBatch(File dir) throws VeraPDFException {
 		String reportPath = this.appConfig.getReportFile();
-		try {
-			BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
-			OutputStream reportStream = reportPath.isEmpty() ? System.out : new FileOutputStream(reportPath);
-			processor.process(dir, true,
-					ProcessorFactory.getHandler(appConfig.getFormat(), appConfig.isVerbose(), reportStream));
-		} catch (IOException e) {
-			throw new VeraPDFException("Error in creating report file " + reportPath, e);
-		}
+		BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
+		OutputStream reportStream = System.out;
+		processor.process(dir, true,
+				ProcessorFactory.getHandler(appConfig.getFormat(), appConfig.isVerbose(), reportStream));
 	}
 
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
@@ -146,7 +142,7 @@ final class VeraPdfCliProcessor {
 
 		ProcessorResult result = processor.process(item, toProcess);
 
-		OutputStream outputReportStream = this.getReportStream();
+		OutputStream outputReportStream = VeraPdfCliProcessor.getReportStream();
 		try {
 			if (result.isValidPdf() && !result.isEncryptedPdf())
 				ProcessorFactory.resultToXml(result, outputReportStream, true);
@@ -172,8 +168,7 @@ final class VeraPdfCliProcessor {
 
 	@SuppressWarnings("resource")
 	private static OutputStream getReportStream() {
-		OutputStream reportStream = System.out;
-		return reportStream;
+		return System.out;
 	}
 
 	private String constructReportPath(final String itemName) {
