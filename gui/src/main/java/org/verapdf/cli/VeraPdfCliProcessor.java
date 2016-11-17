@@ -111,7 +111,7 @@ final class VeraPdfCliProcessor {
 			BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
 			OutputStream reportStream = VeraPdfCliProcessor.getReportStream();
 			processor.process(files,
-					ProcessorFactory.getHandler(appConfig.getFormat(), appConfig.isVerbose(), reportStream));
+					ProcessorFactory.getHandler(appConfig.getFormat(), appConfig.isVerbose(), reportStream, appConfig.getMaxFailsDisplayed(), this.processorConfig.getValidatorConfig().isRecordPasses()));
 		} catch (VeraPDFException e) {
 			System.err.println("Exception raised while processing batch");
 			e.printStackTrace();
@@ -134,7 +134,7 @@ final class VeraPdfCliProcessor {
 		BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
 		OutputStream reportStream = System.out;
 		processor.process(dir, true,
-				ProcessorFactory.getHandler(appConfig.getFormat(), appConfig.isVerbose(), reportStream));
+				ProcessorFactory.getHandler(appConfig.getFormat(), appConfig.isVerbose(), reportStream, appConfig.getMaxFailsDisplayed(), this.processorConfig.getValidatorConfig().isRecordPasses()));
 	}
 
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
