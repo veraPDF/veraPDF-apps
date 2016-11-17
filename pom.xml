@@ -11,7 +11,7 @@
 
   <groupId>org.verapdf</groupId>
   <artifactId>verapdf-apps</artifactId>
-  <version>0.25.0-SNAPSHOT</version>
+  <version>0.26.0</version>
   <packaging>pom</packaging>
 
   <name>veraPDF PDF/A Validation Applications</name>
@@ -49,7 +49,7 @@
     <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
     <sonar.language>java</sonar.language>
     <maven.failsafe.version>2.18.1</maven.failsafe.version>
-    <verapdf.pdfbox.validation.version>[0.25.0,0.26.0)</verapdf.pdfbox.validation.version>
+    <verapdf.pdfbox.validation.version>[0.26.0,0.27.0)</verapdf.pdfbox.validation.version>
   </properties>
 
   <dependencyManagement>
@@ -188,7 +188,7 @@
                 <id>sources-dependencies</id>
                 <phase>package</phase>
                 <goals>
-                  <!-- use copy-dependencies instead if you don't want to explode 
+                  <!-- use copy-dependencies instead if you don't want to explode
                     the sources -->
                   <goal>unpack-dependencies</goal>
                 </goals>
@@ -206,7 +206,7 @@
                 <id>resources-dependencies</id>
                 <phase>package</phase>
                 <goals>
-                  <!-- use copy-dependencies instead if you don't want to explode 
+                  <!-- use copy-dependencies instead if you don't want to explode
                     the sources -->
                   <goal>unpack-dependencies</goal>
                 </goals>
@@ -249,7 +249,7 @@
                 <id>src-vera</id>
                 <phase>package</phase>
                 <goals>
-                  <!-- use copy-dependencies instead if you don't want to explode 
+                  <!-- use copy-dependencies instead if you don't want to explode
                     the sources -->
                   <goal>jar-no-fork</goal>
                 </goals>
