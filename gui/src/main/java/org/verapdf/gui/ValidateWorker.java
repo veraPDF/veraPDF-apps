@@ -20,6 +20,7 @@ import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
+import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.processor.BatchProcessor;
 import org.verapdf.processor.FormatOption;
 import org.verapdf.processor.ProcessorConfig;
@@ -72,22 +73,23 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 		}
 		try (OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
 			EnumSet<TaskType> tasks = parent.appConfigFromState().getProcessType().getTasks();
+			ValidatorConfig validatorConfig = this.configManager.getValidatorConfig();
 			ProcessorConfig resultConfig = this.customProfile == null
-					? ProcessorFactory.fromValues(this.configManager.getValidatorConfig(),
+					? ProcessorFactory.fromValues(validatorConfig,
 							this.configManager.getFeaturesConfig(), this.configManager.getFixerConfig(), tasks)
-					: ProcessorFactory.fromValues(this.configManager.getValidatorConfig(),
+					: ProcessorFactory.fromValues(validatorConfig,
 							this.configManager.getFeaturesConfig(), this.configManager.getFixerConfig(), tasks,
 							customProfile);
 			BatchProcessor processor = ProcessorFactory.fileBatchProcessor(resultConfig);
 			VeraAppConfig applicationConfig = this.configManager.getApplicationConfig();
 			if (this.pdf.isDirectory()) {
 				this.batchSummary = processor.process(this.pdf, true,
-						ProcessorFactory.getHandler(FormatOption.MRR, applicationConfig.isVerbose(), mrrReport));
+						ProcessorFactory.getHandler(FormatOption.MRR, applicationConfig.isVerbose(), mrrReport, applicationConfig.getMaxFailsDisplayed(), validatorConfig.isRecordPasses()));
 			} else {
 				List<File> file = new ArrayList<>(1);
 				file.add(this.pdf);
 				this.batchSummary = processor.process(file,
-						ProcessorFactory.getHandler(FormatOption.MRR, applicationConfig.isVerbose(), mrrReport));
+						ProcessorFactory.getHandler(FormatOption.MRR, applicationConfig.isVerbose(), mrrReport, applicationConfig.getMaxFailsDisplayed(), validatorConfig.isRecordPasses()));
 			}
 		} catch (IOException e) {
 			LOGGER.error(ERROR_IN_OPEN_STREAMS, e);
