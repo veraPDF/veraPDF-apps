@@ -118,6 +118,7 @@ public class PDFValidationApplication extends JFrame {
 							.fromConfig(configManager.getApplicationConfig());
 					confBuilder.wikiPath(settingsPanel.getProfilesWikiPath());
 					confBuilder.maxFails(settingsPanel.getFailedChecksDisplayNumber());
+					confBuilder.fixerFolder(settingsPanel.getFixMetadataDirectory().toString());
 					try {
 						configManager.updateAppConfig(confBuilder.build());
 					} catch (JAXBException | IOException excep) {

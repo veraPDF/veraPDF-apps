@@ -72,14 +72,16 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			this.parent.errorInValidatingOccur(ERROR_IN_CREATING_TEMP_FILE + ": ", e);
 		}
 		try (OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
-			EnumSet<TaskType> tasks = parent.appConfigFromState().getProcessType().getTasks();
+			VeraAppConfig veraAppConfig = parent.appConfigFromState();
+			EnumSet<TaskType> tasks = veraAppConfig.getProcessType().getTasks();
 			ValidatorConfig validatorConfig = this.configManager.getValidatorConfig();
 			ProcessorConfig resultConfig = this.customProfile == null
 					? ProcessorFactory.fromValues(validatorConfig,
-							this.configManager.getFeaturesConfig(), this.configManager.getFixerConfig(), tasks)
+					this.configManager.getFeaturesConfig(), this.configManager.getFixerConfig(),
+					tasks, veraAppConfig.getFixesFolder())
 					: ProcessorFactory.fromValues(validatorConfig,
-							this.configManager.getFeaturesConfig(), this.configManager.getFixerConfig(), tasks,
-							customProfile);
+					this.configManager.getFeaturesConfig(), this.configManager.getFixerConfig(),
+					tasks, customProfile, veraAppConfig.getFixesFolder());
 			BatchProcessor processor = ProcessorFactory.fileBatchProcessor(resultConfig);
 			VeraAppConfig applicationConfig = this.configManager.getApplicationConfig();
 			if (this.pdf.isDirectory()) {
@@ -116,7 +118,7 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			this.htmlReport = File.createTempFile("veraPDF-tempHTMLReport", ".html");
 			this.htmlReport.deleteOnExit();
 			try (InputStream xmlStream = new FileInputStream(this.xmlReport);
-					OutputStream htmlStream = new FileOutputStream(this.htmlReport)) {
+				 OutputStream htmlStream = new FileOutputStream(this.htmlReport)) {
 				HTMLReport.writeHTMLReport(xmlStream, htmlStream,
 						this.configManager.getApplicationConfig().getWikiPath(), true);
 
