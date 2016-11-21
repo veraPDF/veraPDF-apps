@@ -94,7 +94,8 @@ final class ConfigManagerImpl implements ConfigManager {
 	 */
 	@Override
 	public ProcessorConfig createProcessorConfig() {
-		return createProcessorConfig(this.getApplicationConfig().getProcessType().getTasks());
+		VeraAppConfig applicationConfig = this.getApplicationConfig();
+		return createProcessorConfig(applicationConfig.getProcessType().getTasks(), applicationConfig.getFixesFolder());
 	}
 
 	/**
@@ -104,6 +105,15 @@ final class ConfigManagerImpl implements ConfigManager {
 	public ProcessorConfig createProcessorConfig(EnumSet<TaskType> tasks) {
 		if (tasks == null) throw new NullPointerException("Arg tasks can not be null");
 		return ProcessorFactory.fromValues(getValidatorConfig(), getFeaturesConfig(), getFixerConfig(), tasks);
+	}
+
+	/**
+	 * @see org.verapdf.apps.ConfigManager#getProcessorConfig(EnumSet<TaskType>)
+	 */
+	@Override
+	public ProcessorConfig createProcessorConfig(EnumSet<TaskType> tasks, String mdFolder) {
+		if (tasks == null) throw new NullPointerException("Arg tasks can not be null");
+		return ProcessorFactory.fromValues(getValidatorConfig(), getFeaturesConfig(), getFixerConfig(), tasks, mdFolder);
 	}
 
 	/**
