@@ -30,6 +30,7 @@ public interface ConfigManager {
 	public MetadataFixerConfig getFixerConfig();
 	public ProcessorConfig createProcessorConfig();
 	public ProcessorConfig createProcessorConfig(EnumSet<TaskType> tasks);
+	public ProcessorConfig createProcessorConfig(EnumSet<TaskType> tasks, String mdFolder);
 	public VeraAppConfig getApplicationConfig();
 	public File getConfigDir();
 	public void updateValidatorConfig(ValidatorConfig config) throws JAXBException, IOException;
