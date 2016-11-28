@@ -101,7 +101,8 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			this.parent.errorInValidatingOccur(ERROR_IN_PROCESSING + ": ", e);
 		}
 
-		if (this.batchSummary.getJobs() == 1) {
+		// TODO: change "== 1" to "> 0" when HTML report will work in case of multiply files
+		if (this.batchSummary.getValidPdfaCount() + this.batchSummary.getInvalidPdfaCount() == 1) {
 			writeHtmlReport();
 		}
 
