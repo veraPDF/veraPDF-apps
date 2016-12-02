@@ -9,9 +9,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -80,6 +78,7 @@ class CheckerPanel extends JPanel {
 	private JLabel resultLabel;
 	private File xmlReport;
 	private File htmlReport;
+	private File pdfReport;
 
 	private JComboBox<ProcessType> ProcessTypes;
 	private JCheckBox fixMetadata;
@@ -92,6 +91,9 @@ class CheckerPanel extends JPanel {
 	private JButton viewXML;
 	private JButton saveHTML;
 	private JButton viewHTML;
+	private JButton savePDF;
+	private JButton viewPDF;
+
 
 	private transient Path profilePath;
 
@@ -285,6 +287,19 @@ class CheckerPanel extends JPanel {
 		this.viewHTML.setEnabled(false);
 		reports.add(this.viewHTML);
 
+		LogoPanel pdfLogo = new LogoPanel(GUIConstants.PDF_LOGO_NAME, reports.getBackground(),
+				GUIConstants.PDF_LOGO_BORDER_WIDTH);
+		reports.add(pdfLogo);
+
+		this.savePDF = new JButton(GUIConstants.SAVE_PDF_REPORT_BUTTON_TEXT);
+		this.savePDF.setEnabled(false);
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		reports.add(this.savePDF);
+
+		this.viewPDF = new JButton(GUIConstants.VIEW_PDF_REPORT_BUTTON_TEXT);
+		this.viewPDF.setEnabled(false);
+		reports.add(this.viewPDF);
+
 		this.pdfChooser = getChooser(GUIConstants.PDF);
 		this.pdfChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		this.xmlChooser = getChooser(GUIConstants.XML);
@@ -359,6 +374,8 @@ class CheckerPanel extends JPanel {
 					CheckerPanel.this.saveXML.setEnabled(false);
 					CheckerPanel.this.viewHTML.setEnabled(false);
 					CheckerPanel.this.saveHTML.setEnabled(false);
+					CheckerPanel.this.viewPDF.setEnabled(false);
+					CheckerPanel.this.savePDF.setEnabled(false);
 					CheckerPanel.this.validateWorker.execute();
 				} catch (IllegalArgumentException | JAXBException | IOException exep) {
 					JOptionPane.showMessageDialog(CheckerPanel.this, exep.getMessage(), "Error",
@@ -378,10 +395,16 @@ class CheckerPanel extends JPanel {
 		this.saveHTML.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				saveReport(CheckerPanel.this.htmlChooser, GUIConstants.HTML, CheckerPanel.this.htmlReport);
+			saveReport(CheckerPanel.this.htmlChooser, GUIConstants.HTML, CheckerPanel.this.htmlReport);
 			}
 		});
+		this.savePDF.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
 
+			saveReport(CheckerPanel.this.pdfChooser, GUIConstants.PDF, CheckerPanel.this.pdfReport);
+			}
+		});
 		this.viewXML.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -421,10 +444,28 @@ class CheckerPanel extends JPanel {
 				}
 			}
 		});
+		this.viewPDF.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (CheckerPanel.this.pdfReport == null) {
+					JOptionPane.showMessageDialog(CheckerPanel.this, "PDF report hasn't been saved.",
+							GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+				} else {
+					try {
+						Desktop.getDesktop().open(CheckerPanel.this.pdfReport);
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(CheckerPanel.this, "Some error in opening the PDF report.",
+								GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+						LOGGER.error("Exception in opening the PDF report", e1);
+					}
+				}
+			}
+		});
 
 	}
 
-	void validationEnded(File xmlReport, File htmlReport) {
+
+	void validationEnded(File xmlReport, File htmlReport,File pdfReport) {
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
@@ -460,7 +501,7 @@ class CheckerPanel extends JPanel {
 
 				this.xmlReport = xmlReport;
 				this.htmlReport = htmlReport;
-
+				this.pdfReport = pdfReport;
 				if (xmlReport != null) {
 					this.saveXML.setEnabled(true);
 					this.viewXML.setEnabled(true);
@@ -469,6 +510,10 @@ class CheckerPanel extends JPanel {
 				if (htmlReport != null) {
 					this.saveHTML.setEnabled(true);
 					this.viewHTML.setEnabled(true);
+				}
+				if(pdfReport != null){
+					this.savePDF.setEnabled(true);
+					this.viewPDF.setEnabled(true);
 				}
 			} catch (InterruptedException e) {
 				errorInValidatingOccur("Process has been interrupted: ", e);
@@ -532,10 +577,13 @@ class CheckerPanel extends JPanel {
 				this.resultLabel.setText("");
 				this.xmlReport = null;
 				this.htmlReport = null;
+				this.pdfReport = null;
 				this.saveXML.setEnabled(false);
 				this.viewXML.setEnabled(false);
 				this.saveHTML.setEnabled(false);
 				this.viewHTML.setEnabled(false);
+				this.savePDF.setEnabled(false);
+				this.viewPDF.setEnabled(false);
 
 				switch (extension) {
 					case GUIConstants.PDF:

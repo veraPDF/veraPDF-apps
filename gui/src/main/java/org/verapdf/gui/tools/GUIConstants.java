@@ -16,6 +16,7 @@ public final class GUIConstants {
 	public static final String ERROR = "Error";
 	public static final String XML_LOGO_NAME = "xml-logo.png";
 	public static final String HTML_LOGO_NAME = "html-logo.png";
+	public static final String PDF_LOGO_NAME = "pdf-logo.png";
 	public static final String CHOOSE_PDF_BUTTON_TEXT = "Choose PDF";
 	public static final String PDF_NOT_CHOSEN_TEXT = "PDF file not chosen";
 	public static final String FIX_METADATA_FOLDER_CHOOSE_BUTTON = "Choose";
@@ -31,8 +32,11 @@ public final class GUIConstants {
 	public static final String VIEW_REPORT_BUTTON_TEXT = "View XML";
 	public static final String SAVE_HTML_REPORT_BUTTON_TEXT = "Save HTML";
 	public static final String VIEW_HTML_REPORT_BUTTON_TEXT = "View HTML";
+	public static final String SAVE_PDF_REPORT_BUTTON_TEXT = "Save PDF";
+	public static final String VIEW_PDF_REPORT_BUTTON_TEXT = "View PDF";
 	public static final String REPORT = "Report";
 	public static final String ERROR_IN_SAVING_HTML_REPORT = "Some error in saving the HTML report: ";
+	public static final String ERROR_IN_SAVING_PDF_REPORT = "Some error in saving the PDF report: ";
 	public static final String ERROR_IN_SAVING_XML_REPORT = "Some error in saving the XML report.";
 	public static final String LABEL_TEXT = "     Please specify input PDF, Validation Profile and press \"" + VALIDATE_BUTTON_TEXT + "\"";
 	public static final String CONSORTIUM_TEXT = "© 2015 veraPDF Consortium";
@@ -70,6 +74,7 @@ public final class GUIConstants {
 	public static final int LOGO_PANEL_BORDER_WIDTH = 10;
 	public static final int XML_LOGO_BORDER_WIDTH = 4;
 	public static final int HTML_LOGO_BORDER_WIDTH = 4;
+	public static final int PDF_LOGO_BORDER_WIDTH = 4;
 	public static final int ABOUT_DIALOG_COORD_X = 150;
 	public static final int ABOUT_DIALOG_COORD_Y = 150;
 	public static final int SETTINGS_DIALOG_COORD_X = 150;
@@ -167,7 +172,7 @@ public final class GUIConstants {
 	public static final int REPORT_PANEL_CONSTRAINT_GRID_WIDTH = 4;
 	public static final int REPORT_PANEL_CONSTRAINT_GRID_HEIGHT = 1;
 
-	public static final int REPORT_PANEL_LINES_NUMBER = 2;
+	public static final int REPORT_PANEL_LINES_NUMBER = 3;
 	public static final int REPORT_PANEL_COLUMNS_NUMBER = 3;
 
 	public static final double SCALE = 0.5;
