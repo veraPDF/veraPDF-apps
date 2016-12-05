@@ -1,11 +1,8 @@
 package org.verapdf.gui;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -49,6 +46,7 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 	private ConfigManager configManager;
 	private File xmlReport = null;
 	private File htmlReport = null;
+	private File pdfReport = null;
 	private BatchSummary batchSummary = null;
 
 	ValidateWorker(CheckerPanel parent, File pdf, ConfigManager configManager, ValidationProfile customProfile) {
@@ -67,6 +65,7 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			this.xmlReport = File.createTempFile("veraPDF-tempXMLReport", ".xml");
 			this.xmlReport.deleteOnExit();
 			this.htmlReport = null;
+			this.pdfReport = null;
 		} catch (IOException e) {
 			LOGGER.error(ERROR_IN_CREATING_TEMP_FILE, e);
 			this.parent.errorInValidatingOccur(ERROR_IN_CREATING_TEMP_FILE + ": ", e);
@@ -104,6 +103,9 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 		// TODO: change "== 1" to "> 0" when HTML report will work in case of multiply files
 		if (this.batchSummary.getValidPdfaCount() + this.batchSummary.getInvalidPdfaCount() == 1) {
 			writeHtmlReport();
+			if(this.htmlReport!=null){
+				writePDFReport();
+			}
 		}
 
 		return this.batchSummary;
@@ -111,7 +113,7 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 
 	@Override
 	protected void done() {
-		this.parent.validationEnded(this.xmlReport, this.htmlReport);
+		this.parent.validationEnded(this.xmlReport, this.htmlReport,this.pdfReport);
 	}
 
 	private void writeHtmlReport() {
@@ -135,5 +137,66 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			LOGGER.error("Exception saving the HTML report", e);
 			this.htmlReport = null;
 		}
+	}
+	private void writePDFReport(){
+		try  {
+			executeScript(this.htmlReport.toPath());
+			this.pdfReport = new File(this.htmlReport.toPath().toString().substring(0,this.htmlReport.toPath().toString().length()-5)+".pdf");
+			this.pdfReport.deleteOnExit();
+
+		} catch (IOException  e) {
+			JOptionPane.showMessageDialog(this.parent, GUIConstants.ERROR_IN_SAVING_PDF_REPORT + e.getMessage(),
+					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+			LOGGER.error("Exception saving pdf report", e);
+			this.pdfReport = null;
+			}
+	}
+
+	void executeScript(Path path) throws IOException {
+
+		File tempScript = createTempScript(path.toString());
+		try {
+			Process initProcess = Runtime.getRuntime().exec("chmod +x " + tempScript.toPath().toString());
+			initProcess.waitFor();
+
+			ProcessBuilder pb = new ProcessBuilder(tempScript.toPath().toString(),path.toString());
+			pb.inheritIO();
+			pb.directory(new File(path.getParent().toString()));
+			Process process = pb.start();
+			process.waitFor();
+		}
+		catch (Exception e){
+
+		}
+		finally {
+			Files.delete(tempScript.toPath());
+		}
+	}
+
+	File createTempScript(String path) throws IOException {
+		File tempScript = new File(path+".sh");
+
+		Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
+				tempScript));
+		PrintWriter printWriter = new PrintWriter(streamWriter);
+
+		printWriter.write("#!/bin/bash\n"+
+				"filename=$1\n"+
+				"if [[ $1 == *\".html\" ]]; then\n"+
+				"filename=${filename%\".html\"}\n"+
+				"fi\n"+
+				"while IFS='' read -r line || [[ -n \"$line\" ]]; do\n"+
+				"	if [[ $line == *\"class=\\\"hideable\"* ]]; then\n"+
+				"		read -r line\n"+
+				"		read -r line\n"+
+				"	else\n"+
+				"		echo $line >> \"$1.html\"\n"+
+				"	fi\n"+
+				"done < \"$1\"\n"+
+				"eval \"$(weasyprint $1.html $filename.pdf)\"\n"+
+				"eval \"$(rm $1.html)\"");
+		printWriter.close();
+
+		return tempScript;
 	}
 }
