@@ -4,7 +4,6 @@
 package org.verapdf.cli;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -25,7 +24,7 @@ import org.verapdf.processor.ItemProcessor;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.ProcessorFactory;
 import org.verapdf.processor.ProcessorResult;
-import org.verapdf.report.ItemDetails;
+import org.verapdf.processor.reports.ItemDetails;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
