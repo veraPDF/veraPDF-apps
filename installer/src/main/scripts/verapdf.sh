@@ -14,6 +14,7 @@ done
 
 PRGDIR=`dirname "$PRG"`
 BASEDIR=`cd "$PRGDIR/" >/dev/null; pwd`
+CONFDIR="$HOME/.verapdf"
 
 # Reset the REPO variable. If you need to influence this use the environment setup file.
 REPO=
@@ -94,15 +95,18 @@ if $cygwin; then
   [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --path --windows "$JAVA_HOME"`
   [ -n "$HOME" ] && HOME=`cygpath --path --windows "$HOME"`
   [ -n "$BASEDIR" ] && BASEDIR=`cygpath --path --windows "$BASEDIR"`
+  [ -n "$CONFDIR" ] && CONFDIR=`cygpath --path --windows "$CONFDIR"`
   [ -n "$REPO" ] && REPO=`cygpath --path --windows "$REPO"`
 fi
+
+mkdir -p "$CONFDIR"
 
 exec "$JAVACMD" $JAVA_OPTS  \
   -classpath "$CLASSPATH" \
   -Dapp.name="VeraPDF validation CLI" \
   -Dapp.pid="$$" \
   -Dapp.repo="$REPO" \
-  -Dapp.home="$BASEDIR" \
+  -Dapp.home="$CONFDIR" \
   -Dbasedir="$BASEDIR" \
   org.verapdf.cli.VeraPdfCli \
   "$@"
