@@ -82,9 +82,9 @@ public class FeaturesConfigPanel extends JPanel {
 	boolean showDialog(Component parent, String title, FeatureExtractorConfig featureExtractorConfig) {
 
 		this.ok = false;
-		
-		for (FeatureObjectType type : featureExtractorConfig.getEnabledFeatures()) {
-			this.featureGrid.get(type).setSelected(true);
+
+		for (FeatureObjectType type : FeatureObjectType.values()) {
+			this.featureGrid.get(type).setSelected(featureExtractorConfig.isFeatureEnabled(type));
 		}
 
 		Frame owner;
