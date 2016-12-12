@@ -68,7 +68,7 @@ public final class GUIConstants {
 	public static final int FRAME_COORD_X = 100;
 	public static final int FRAME_COORD_Y = 100;
 	public static final int FRAME_WIDTH = 600;
-	public static final int FRAME_HEIGHT = 350;
+	public static final int FRAME_HEIGHT = 380;
 
 	public static final int BORDER_WIDTH = 4;
 	public static final int LOGO_PANEL_BORDER_WIDTH = 10;

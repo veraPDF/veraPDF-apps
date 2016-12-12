@@ -103,7 +103,7 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 		// TODO: change "== 1" to "> 0" when HTML report will work in case of multiply files
 		if (this.batchSummary.getValidPdfaCount() + this.batchSummary.getInvalidPdfaCount() == 1) {
 			writeHtmlReport();
-			if(this.htmlReport!=null){
+			if (this.htmlReport != null) {
 				writePDFReport();
 			}
 		}
@@ -113,7 +113,7 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 
 	@Override
 	protected void done() {
-		this.parent.validationEnded(this.xmlReport, this.htmlReport,this.pdfReport);
+		this.parent.validationEnded(this.xmlReport, this.htmlReport, this.pdfReport);
 	}
 
 	private void writeHtmlReport() {
@@ -138,62 +138,65 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			this.htmlReport = null;
 		}
 	}
-	private void writePDFReport(){
-		try  {
-			executeScript(this.htmlReport.toPath());
-			this.pdfReport = new File(this.htmlReport.toPath().toString().substring(0,this.htmlReport.toPath().toString().length()-5)+".pdf");
-			this.pdfReport.deleteOnExit();
 
-		} catch (IOException  e) {
+	private void writePDFReport() {
+		try {
+			executeScript(this.htmlReport.toPath());
+			this.pdfReport = new File(this.htmlReport.toPath().toString().substring(0, this.htmlReport.toPath().toString().length() - 5) + ".pdf");
+			if (this.pdfReport.exists()) {
+				this.pdfReport.deleteOnExit();
+			} else {
+				this.pdfReport = null;
+			}
+
+		} catch (IOException e) {
 			JOptionPane.showMessageDialog(this.parent, GUIConstants.ERROR_IN_SAVING_PDF_REPORT + e.getMessage(),
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 			LOGGER.error("Exception saving pdf report", e);
 			this.pdfReport = null;
-			}
+		}
 	}
 
-	void executeScript(Path path) throws IOException {
+	private void executeScript(Path path) throws IOException {
 
 		File tempScript = createTempScript(path.toString());
 		try {
 			Process initProcess = Runtime.getRuntime().exec("chmod +x " + tempScript.toPath().toString());
 			initProcess.waitFor();
 
-			ProcessBuilder pb = new ProcessBuilder(tempScript.toPath().toString(),path.toString());
+			ProcessBuilder pb = new ProcessBuilder(tempScript.toPath().toString(), path.toString());
 			pb.inheritIO();
 			pb.directory(new File(path.getParent().toString()));
 			Process process = pb.start();
 			process.waitFor();
-		}
-		catch (Exception e){
+		} catch (Exception e) {
 
-		}
-		finally {
+		} finally {
 			Files.delete(tempScript.toPath());
 		}
 	}
 
-	File createTempScript(String path) throws IOException {
-		File tempScript = new File(path+".sh");
+	private File createTempScript(String path) throws IOException {
+		File tempScript = new File(path + ".sh");
 
 		Writer streamWriter = new OutputStreamWriter(new FileOutputStream(
 				tempScript));
 		PrintWriter printWriter = new PrintWriter(streamWriter);
 
-		printWriter.write("#!/bin/bash\n"+
-				"filename=$1\n"+
-				"if [[ $1 == *\".html\" ]]; then\n"+
-				"filename=${filename%\".html\"}\n"+
-				"fi\n"+
-				"while IFS='' read -r line || [[ -n \"$line\" ]]; do\n"+
-				"	if [[ $line == *\"class=\\\"hideable\"* ]]; then\n"+
-				"		read -r line\n"+
-				"		read -r line\n"+
-				"	else\n"+
-				"		echo $line >> \"$1.html\"\n"+
-				"	fi\n"+
-				"done < \"$1\"\n"+
-				"eval \"$(weasyprint $1.html $filename.pdf)\"\n"+
+		printWriter.write("#!/bin/bash\n" +
+				"filename=$1\n" +
+				"if [[ $1 == *\".html\" ]]; then\n" +
+				"filename=${filename%\".html\"}\n" +
+				"fi\n" +
+				"while IFS='' read -r line || [[ -n \"$line\" ]]; do\n" +
+				"	if [[ $line == *\"class=\\\"hideable\"* ]]; then\n" +
+				"		read -r line\n" +
+				"		read -r line\n" +
+				"	else\n" +
+				"		echo $line >> \"$1.html\"\n" +
+				"	fi\n" +
+				"done < \"$1\"\n" +
+				"eval \"$(weasyprint $1.html $filename.pdf)\"\n" +
 				"eval \"$(rm $1.html)\"");
 		printWriter.close();
 
