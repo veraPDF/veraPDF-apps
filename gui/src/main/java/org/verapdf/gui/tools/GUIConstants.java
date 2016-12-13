@@ -20,10 +20,12 @@ public final class GUIConstants {
 	public static final String PDF_NOT_CHOSEN_TEXT = "PDF file not chosen";
 	public static final String FIX_METADATA_FOLDER_CHOOSE_BUTTON = "Choose";
 	public static final String CHOOSE_PROFILE_BUTTON_TEXT = "Choose Profile";
+	public static final String CHOOSE_POLICY_BUTTON_TEXT = "Choose Policy";
 	public static final String CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT = "Please, specify validation profile";
 	public static final String CUSTOM_PROFILE_COMBOBOX_TEXT = "Custom profile";
 	public static final String AUTO_FLAVOUR_COMBOBOX_TEXT = "Auto-detection";
 	public static final String VALIDATION_PROFILE_NOT_CHOSEN = "Validation profile not chosen";
+	public static final String POLICY_PROFILE_NOT_CHOSEN = "Policy file not chosen";
 	public static final String VALIDATE_BUTTON_TEXT = "Execute";
 	public static final String VALIDATION_OK = "PDF file is compliant with Validation Profile requirements";
 	public static final String VALIDATION_FALSE = "PDF file is not compliant with Validation Profile requirements";
@@ -45,13 +47,16 @@ public final class GUIConstants {
 	public static final String PDF = "pdf";
 	public static final String XML = "xml";
 	public static final String HTML = "html";
+	public static final String SCH = "sch";
+	public static final String XSL = "xsl";
+	public static final String XSLT = "xslt";
 	public static final String DOT = ".";
 	public static final String PROCESSING_TYPE = " Report type: ";
 	public static final String DISPLAY_PASSED_RULES = "Include passed rules:";
 	public static final String PLUGINS_ENABLED_TEXT = "Use plugins in feature extracting:";
 	public static final String MAX_NUMBER_FAILED_DISPLAYED_CHECKS = "Display failed checks for rule: ";
 	public static final String MAX_NUMBER_FAILED_CHECKS = "Stop validating after failed checks:";
-	public static final String FEATURES_GENERATED_CORRECT = "Features report generating finished correctly";
+	public static final String FEATURES_GENERATED_CORRECT = "Features report generated";
 	public static final String MAX_FAILED_CHECKS_SETTING_TIP = "1 to 999999 or empty for unlimited";
 	public static final String MAX_FAILED_CHECKS_DISP_SETTING_TIP = "0 to 999999 or empty for unlimited";
 	public static final String FIX_METADATA_LABEL_TEXT = "Fix metadata";
@@ -64,7 +69,7 @@ public final class GUIConstants {
 	public static final int FRAME_COORD_X = 100;
 	public static final int FRAME_COORD_Y = 100;
 	public static final int FRAME_WIDTH = 600;
-	public static final int FRAME_HEIGHT = 350;
+	public static final int FRAME_HEIGHT = 370;
 
 	public static final int BORDER_WIDTH = 4;
 	public static final int LOGO_PANEL_BORDER_WIDTH = 10;
@@ -98,28 +103,28 @@ public final class GUIConstants {
 	public static final int CHOOSE_PDF_BUTTON_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_GRID_X = 0;
-	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_GRID_Y = 2;
+	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_GRID_Y = 3;
 	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_WEIGHT_X = 0;
 	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_X = 1;
-	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_Y = 2;
+	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_Y = 3;
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_WEIGHT_X = 0;
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_X = 2;
-	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_Y = 2;
+	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_Y = 3;
 	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_WEIGHT_X = 0;
 	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_X = 3;
-	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_Y = 2;
+	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_Y = 3;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_WEIGHT_X = 0;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_WIDTH = 1;
@@ -139,29 +144,43 @@ public final class GUIConstants {
 	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_HEIGHT = 1;
 
+	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_X = 0;
+	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_Y = 2;
+	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_WEIGHT_X = 3;
+	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_WEIGHT_Y = 1;
+	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_WIDTH = 3;
+	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_HEIGHT = 1;
+
+	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_GRID_X = 3;
+	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_GRID_Y = 2;
+	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_WEIGHT_X = 0;
+	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_WEIGHT_Y = 1;
+	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_GRID_WIDTH = 1;
+	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_GRID_HEIGHT = 1;
+
 	public static final int RESULT_LABEL_CONSTRAINT_GRID_X = 0;
-	public static final int RESULT_LABEL_CONSTRAINT_GRID_Y = 3;
+	public static final int RESULT_LABEL_CONSTRAINT_GRID_Y = 4;
 	public static final int RESULT_LABEL_CONSTRAINT_WEIGHT_X = 3;
 	public static final int RESULT_LABEL_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int RESULT_LABEL_CONSTRAINT_GRID_WIDTH = 3;
 	public static final int RESULT_LABEL_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int PROGRESSBAR_CONSTRAINT_GRID_X = 0;
-	public static final int PROGRESSBAR_CONSTRAINT_GRID_Y = 3;
+	public static final int PROGRESSBAR_CONSTRAINT_GRID_Y = 4;
 	public static final int PROGRESSBAR_CONSTRAINT_WEIGHT_X = 3;
 	public static final int PROGRESSBAR_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int PROGRESSBAR_CONSTRAINT_GRID_WIDTH = 3;
 	public static final int PROGRESSBAR_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int VALIDATE_BUTTON_CONSTRAINT_GRID_X = 3;
-	public static final int VALIDATE_BUTTON_CONSTRAINT_GRID_Y = 3;
+	public static final int VALIDATE_BUTTON_CONSTRAINT_GRID_Y = 4;
 	public static final int VALIDATE_BUTTON_CONSTRAINT_WEIGHT_X = 0;
 	public static final int VALIDATE_BUTTON_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int VALIDATE_BUTTON_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int VALIDATE_BUTTON_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int REPORT_PANEL_CONSTRAINT_GRID_X = 0;
-	public static final int REPORT_PANEL_CONSTRAINT_GRID_Y = 4;
+	public static final int REPORT_PANEL_CONSTRAINT_GRID_Y = 5;
 	public static final int REPORT_PANEL_CONSTRAINT_WEIGHT_X = 4;
 	public static final int REPORT_PANEL_CONSTRAINT_WEIGHT_Y = 3;
 	public static final int REPORT_PANEL_CONSTRAINT_GRID_WIDTH = 4;

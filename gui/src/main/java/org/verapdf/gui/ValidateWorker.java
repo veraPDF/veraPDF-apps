@@ -43,22 +43,24 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 	private static final String ERROR_IN_CREATING_TEMP_FILE = "Can't create temporary file for XML report";
 	private static final String ERROR_IN_SAVING_REPORT = "Can't serialize xml report";
 
-	private File pdf;
+	private List<File> pdfs;
 	private ValidationProfile customProfile;
+	private File policy;
 	private CheckerPanel parent;
 	private ConfigManager configManager;
 	private File xmlReport = null;
 	private File htmlReport = null;
 	private BatchSummary batchSummary = null;
 
-	ValidateWorker(CheckerPanel parent, File pdf, ConfigManager configManager, ValidationProfile customProfile) {
-		if (pdf == null || !pdf.canRead()) {
-			throw new IllegalArgumentException("PDF file doesn't exist or it can not be read");
+	ValidateWorker(CheckerPanel parent, List<File> pdfs, ConfigManager configManager, ValidationProfile customProfile, File policy) {
+		if (pdfs == null) {
+			throw new IllegalArgumentException("List of pdf files can not be null");
 		}
 		this.parent = parent;
-		this.pdf = pdf;
+		this.pdfs = pdfs;
 		this.configManager = configManager;
 		this.customProfile = customProfile;
+		this.policy = policy;
 	}
 
 	@Override
@@ -84,15 +86,8 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 					tasks, customProfile, veraAppConfig.getFixesFolder());
 			BatchProcessor processor = ProcessorFactory.fileBatchProcessor(resultConfig);
 			VeraAppConfig applicationConfig = this.configManager.getApplicationConfig();
-			if (this.pdf.isDirectory()) {
-				this.batchSummary = processor.process(this.pdf, true,
+			this.batchSummary = processor.process(this.pdfs,
 						ProcessorFactory.getHandler(FormatOption.MRR, applicationConfig.isVerbose(), mrrReport, applicationConfig.getMaxFailsDisplayed(), validatorConfig.isRecordPasses()));
-			} else {
-				List<File> file = new ArrayList<>(1);
-				file.add(this.pdf);
-				this.batchSummary = processor.process(file,
-						ProcessorFactory.getHandler(FormatOption.MRR, applicationConfig.isVerbose(), mrrReport, applicationConfig.getMaxFailsDisplayed(), validatorConfig.isRecordPasses()));
-			}
 		} catch (IOException e) {
 			LOGGER.error(ERROR_IN_OPEN_STREAMS, e);
 			this.parent.errorInValidatingOccur(ERROR_IN_OPEN_STREAMS + ": ", e);
