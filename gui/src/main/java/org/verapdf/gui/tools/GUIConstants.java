@@ -7,15 +7,16 @@ import java.awt.*;
  */
 public final class GUIConstants {
 
-	public static final String LOGO_NAME = "veraPDF-logo.jpg";
+	private static final String imgRoot = "org/verapdf/gui/images/"; //$NON-NLS-1$
+	public static final String LOGO_NAME = imgRoot + "veraPDF-logo.jpg"; //$NON-NLS-1$
 	public static final Color LOGO_BACKGROUND = Color.WHITE;
-	public static final String PARTNERS_NAME = "partners.png";
+	public static final String PARTNERS_NAME = imgRoot + "partners.png"; //$NON-NLS-1$
 	public static final Color PARTNERS_BACKGROUND = Color.WHITE;
-	public static final String LOGO_LINK_TEXT = "Visit veraPDF.org";
-	public static final String LOGO_LINK_URL = "http://www.verapdf.org";
+	public static final String LOGO_LINK_TEXT = "Visit veraPDF.org"; //$NON-NLS-1$
+	public static final String LOGO_LINK_URL = "http://www.verapdf.org"; //$NON-NLS-1$
 	public static final String ERROR = "Error";
-	public static final String XML_LOGO_NAME = "xml-logo.png";
-	public static final String HTML_LOGO_NAME = "html-logo.png";
+	public static final String XML_LOGO_NAME = imgRoot + "xml-logo.png"; //$NON-NLS-1$
+	public static final String HTML_LOGO_NAME = imgRoot + "html-logo.png"; //$NON-NLS-1$
 	public static final String CHOOSE_PDF_BUTTON_TEXT = "Choose PDF";
 	public static final String PDF_NOT_CHOSEN_TEXT = "PDF file not chosen";
 	public static final String FIX_METADATA_FOLDER_CHOOSE_BUTTON = "Choose";
@@ -35,17 +36,17 @@ public final class GUIConstants {
 	public static final String ERROR_IN_SAVING_HTML_REPORT = "Some error in saving the HTML report: ";
 	public static final String ERROR_IN_SAVING_XML_REPORT = "Some error in saving the XML report.";
 	public static final String LABEL_TEXT = "     Please specify input PDF, Validation Profile and press \"" + VALIDATE_BUTTON_TEXT + "\"";
-	public static final String CONSORTIUM_TEXT = "© 2015 veraPDF Consortium";
+	public static final String CONSORTIUM_TEXT = "© 2015 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String TITLE = "PDF/A Conformance Checker";
 	public static final String ENCRYPTED_PDF = "Pdf document is encrypted.";
 	public static final String ERROR_IN_PARSING = "Failed to parse pdf document.";
 	public static final String ERROR_IN_VALIDATING = "Could not finish validation due to unexpected error.";
 	public static final String ERROR_IN_FEATURES = "Could not finish features collecting due to unexpected error.";
 	public static final String ERROR_IN_INCREMETAL_SAVE = "Some error in saving changes";
-	public static final String PDF = "pdf";
-	public static final String XML = "xml";
-	public static final String HTML = "html";
-	public static final String DOT = ".";
+	public static final String PDF = "pdf"; //$NON-NLS-1$
+	public static final String XML = "xml"; //$NON-NLS-1$
+	public static final String HTML = "html"; //$NON-NLS-1$
+	public static final String DOT = "."; //$NON-NLS-1$
 	public static final String PROCESSING_TYPE = " Report type: ";
 	public static final String DISPLAY_PASSED_RULES = "Include passed rules:";
 	public static final String PLUGINS_ENABLED_TEXT = "Use plugins in feature extracting:";
