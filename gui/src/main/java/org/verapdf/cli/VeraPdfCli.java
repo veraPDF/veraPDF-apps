@@ -3,6 +3,7 @@
  */
 package org.verapdf.cli;
 
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -30,8 +31,8 @@ public final class VeraPdfCli {
 	private static final Logger LOGGER = Logger.getLogger(VeraCliArgParser.class);
 	private static final ConfigManager configManager = Applications.createAppConfigManager();
 	private static final int MEGABYTE = (1024 * 1024);
-	private static final String APP_NAME = "veraPDF";
-	private static final String FLAVOURS_HEADING = APP_NAME + " supported PDF/A profiles:";
+	private static final String APP_NAME = "veraPDF"; //$NON-NLS-1$
+	private static final String FLAVOURS_HEADING = APP_NAME + " supported PDF/A profiles:"; //$NON-NLS-1$
 	private static final ProfileDirectory PROFILES = Profiles.getVeraProfileDirectory();
 
 	private VeraPdfCli() {
@@ -45,11 +46,11 @@ public final class VeraPdfCli {
 	 *            Java.lang.String array of command line args, to be processed
 	 *            using Apache commons CLI.
 	 */
-	public static void main(final String[] args) throws VeraPDFException {
+   public static void main(final String[] args) throws VeraPDFException, IOException {
 		VeraGreenfieldFoundryProvider.initialise();
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
 		ReleaseDetails.addDetailsFromResource(
-				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT);
+				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
 		VeraCliArgParser cliArgParser = new VeraCliArgParser();
 		JCommander jCommander = new JCommander(cliArgParser);
 		jCommander.setProgramName(APP_NAME);
@@ -74,6 +75,7 @@ public final class VeraPdfCli {
 						configManager);
 				if (args.length == 0)
 					jCommander.usage();
+				// FIXME: trap policy IO Exception (deliberately left un-caught for development)
 				processor.processPaths(cliArgParser.getPdfPaths());
 			} catch (OutOfMemoryError oome) {
 				final String message = "The JVM appears to have run out of memory";
@@ -111,15 +113,15 @@ public final class VeraPdfCli {
 		EnumSet<PDFAFlavour> flavs = EnumSet.copyOf(PROFILES.getPDFAFlavours());
 		for (PDFAFlavour flav : flavs) {
 			ValidationProfile profile = PROFILES.getValidationProfileByFlavour(flav);
-			System.out.println("  " + profile.getPDFAFlavour().getId() + " - " + profile.getDetails().getName());
+			System.out.println("  " + profile.getPDFAFlavour().getId() + " - " + profile.getDetails().getName());  //$NON-NLS-1$//$NON-NLS-2$
 		}
 		System.out.println();
 	}
 
 	private static void showVersionInfo() {
-		ReleaseDetails details = ReleaseDetails.byId("gui");
-		System.out.println(APP_NAME + " " + details.getVersion());
-		System.out.println("Built: " + details.getBuildDate());
+		ReleaseDetails details = ReleaseDetails.byId("gui"); //$NON-NLS-1$
+		System.out.println(APP_NAME + " " + details.getVersion()); //$NON-NLS-1$
+		System.out.println("Built: " + details.getBuildDate()); //$NON-NLS-1$
 		System.out.println(ReleaseDetails.rightsStatement());
 		System.out.println();
 	}

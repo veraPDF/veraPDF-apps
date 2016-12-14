@@ -23,8 +23,8 @@ import org.verapdf.processor.FormatOption;
  */
 
 public final class Applications {
-	public static final String APP_HOME_PROPERTY = "app.home";
-	public static final String DEFAULT_CONFIG_ROOT_NAME = "config";
+	public static final String APP_HOME_PROPERTY = "app.home"; //$NON-NLS-1$
+	public static final String DEFAULT_CONFIG_ROOT_NAME = "config"; //$NON-NLS-1$
 	private Applications() {
 		assert (false);
 	}
@@ -97,13 +97,13 @@ public final class Applications {
 		private ProcessType _type = ProcessType.VALIDATE;
 		private int _maxFails = 100;
 		private boolean _isOverwrite = false;
-		private String _fixerFolder = FileSystems.getDefault().getPath("").toString();
+		private String _fixerFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
 		private FormatOption _format = FormatOption.MRR;
-		private String _wikiPath = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki/";
-		private String _reportFile = FileSystems.getDefault().getPath("").toString();
-		private String _reportFolder = FileSystems.getDefault().getPath("").toString();
-		private String _policyFile = FileSystems.getDefault().getPath("").toString();
-		private String _pluginsFolder = FileSystems.getDefault().getPath("").toString();
+		private String _wikiPath = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki/"; //$NON-NLS-1$
+		private String _reportFile = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
+		private String _reportFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
+		private String _policyFile = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
+		private String _pluginsFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
 		private boolean _isVerbose = false;
 
 		private Builder() {

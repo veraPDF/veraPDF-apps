@@ -33,7 +33,7 @@ import org.verapdf.gui.tools.GUIConstants;
 public class FeaturesConfigPanel extends JPanel {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -6602264333993164990L;
 
@@ -82,17 +82,15 @@ public class FeaturesConfigPanel extends JPanel {
 	boolean showDialog(Component parent, String title, FeatureExtractorConfig featureExtractorConfig) {
 
 		this.ok = false;
-		
-		for (FeatureObjectType type : featureExtractorConfig.getEnabledFeatures()) {
+
+		for (FeatureObjectType type : FeatureObjectType.values()) {
 			this.featureGrid.get(type).setSelected(true);
+			this.featureGrid.get(type).setSelected(featureExtractorConfig.isFeatureEnabled(type));
 		}
 
-		Frame owner;
-		if (parent instanceof Frame) {
-			owner = (Frame) parent;
-		} else {
-			owner = (Frame) SwingUtilities.getAncestorOfClass(Frame.class, parent);
-		}
+		Frame owner = parent instanceof Frame ?
+				(Frame) parent :
+				(Frame) SwingUtilities.getAncestorOfClass(Frame.class, parent);
 
 		if (this.dialog == null || this.dialog.getOwner() != owner) {
 			this.dialog = new JDialog(owner, true);
@@ -118,5 +116,5 @@ public class FeaturesConfigPanel extends JPanel {
 		}
 		return FeatureFactory.configFromValues(enabledFeatures);
 	}
-	
+
 }
