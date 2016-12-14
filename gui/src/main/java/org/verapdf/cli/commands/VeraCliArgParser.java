@@ -38,31 +38,32 @@ import com.beust.jcommander.ParameterException;
  */
 public class VeraCliArgParser {
 	final static VeraCliArgParser DEFAULT_ARGS = new VeraCliArgParser();
-	final static String FLAG_SEP = "-";
-	final static String OPTION_SEP = "--";
-	final static String HELP_FLAG = FLAG_SEP + "h";
-	final static String HELP = OPTION_SEP + "help";
-	final static String VERSION = OPTION_SEP + "version";
-	final static String FLAVOUR_FLAG = FLAG_SEP + "f";
-	final static String FLAVOUR = OPTION_SEP + "flavour";
-	final static String SUCCESS = OPTION_SEP + "success";
-	final static String PASSED = OPTION_SEP + "passed";
-	final static String LIST_FLAG = FLAG_SEP + "l";
-	final static String LIST = OPTION_SEP + "list";
-	final static String LOAD_PROFILE_FLAG = FLAG_SEP + "p";
-	final static String LOAD_PROFILE = OPTION_SEP + "profile";
-	final static String EXTRACT_FLAG = FLAG_SEP + "x";
-	final static String EXTRACT = OPTION_SEP + "extract";
-	final static String FORMAT = OPTION_SEP + "format";
-	final static String RECURSE_FLAG = FLAG_SEP + "r";
-	final static String RECURSE = OPTION_SEP + "recurse";
-	final static String VERBOSE_FLAG = FLAG_SEP + "v";
-	final static String VERBOSE = OPTION_SEP + "verbose";
-	final static String MAX_FAILURES_DISPLAYED = OPTION_SEP + "maxfailuresdisplayed";
-	final static String MAX_FAILURES = OPTION_SEP + "maxfailures";
-	final static String FIX_METADATA = OPTION_SEP + "fixmetadata";
-	final static String FIX_METADATA_PREFIX = OPTION_SEP + "prefix";
-	final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder";
+	final static String FLAG_SEP = "-"; //$NON-NLS-1$
+	final static String OPTION_SEP = "--"; //$NON-NLS-1$
+	final static String HELP_FLAG = FLAG_SEP + "h"; //$NON-NLS-1$
+	final static String HELP = OPTION_SEP + "help"; //$NON-NLS-1$
+	final static String VERSION = OPTION_SEP + "version"; //$NON-NLS-1$
+	final static String FLAVOUR_FLAG = FLAG_SEP + "f"; //$NON-NLS-1$
+	final static String FLAVOUR = OPTION_SEP + "flavour"; //$NON-NLS-1$
+	final static String SUCCESS = OPTION_SEP + "success"; //$NON-NLS-1$
+	final static String PASSED = OPTION_SEP + "passed"; //$NON-NLS-1$
+	final static String LIST_FLAG = FLAG_SEP + "l"; //$NON-NLS-1$
+	final static String LIST = OPTION_SEP + "list"; //$NON-NLS-1$
+	final static String LOAD_PROFILE_FLAG = FLAG_SEP + "p"; //$NON-NLS-1$
+	final static String LOAD_PROFILE = OPTION_SEP + "profile"; //$NON-NLS-1$
+	final static String EXTRACT_FLAG = FLAG_SEP + "x"; //$NON-NLS-1$
+	final static String EXTRACT = OPTION_SEP + "extract"; //$NON-NLS-1$
+	final static String FORMAT = OPTION_SEP + "format"; //$NON-NLS-1$
+	final static String RECURSE_FLAG = FLAG_SEP + "r"; //$NON-NLS-1$
+	final static String RECURSE = OPTION_SEP + "recurse"; //$NON-NLS-1$
+	final static String VERBOSE_FLAG = FLAG_SEP + "v"; //$NON-NLS-1$
+	final static String VERBOSE = OPTION_SEP + "verbose"; //$NON-NLS-1$
+	final static String MAX_FAILURES_DISPLAYED = OPTION_SEP + "maxfailuresdisplayed"; //$NON-NLS-1$
+	final static String MAX_FAILURES = OPTION_SEP + "maxfailures"; //$NON-NLS-1$
+	final static String FIX_METADATA = OPTION_SEP + "fixmetadata"; //$NON-NLS-1$
+	final static String FIX_METADATA_PREFIX = OPTION_SEP + "prefix"; //$NON-NLS-1$
+	final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder"; //$NON-NLS-1$
+	final static String POLICY_FILE = OPTION_SEP + "policyfile"; //$NON-NLS-1$
 	// final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
 	// final static String LOAD_CONFIG_FLAG = FLAG_SEP + "c";
 	// final static String LOAD_CONFIG = OPTION_SEP + "config";
@@ -72,8 +73,8 @@ public class VeraCliArgParser {
 	// final static String REPORT_FOLDER = OPTION_SEP + "reportfolder";
 	// final static String OVERWRITE_REPORT_FILE = OPTION_SEP +
 	// "overwriteReportFile";
-	final static String VALID_OFF_FLAG = FLAG_SEP + "o";
-	final static String VALID_OFF = OPTION_SEP + "off";
+	final static String VALID_OFF_FLAG = FLAG_SEP + "o"; //$NON-NLS-1$
+	final static String VALID_OFF = OPTION_SEP + "off"; //$NON-NLS-1$
 
 	@Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
 	private boolean help = false;
@@ -92,7 +93,7 @@ public class VeraCliArgParser {
 	private boolean listProfiles = false;
 
 	@Parameter(names = { LOAD_PROFILE_FLAG,
-			LOAD_PROFILE }, description = "Loads a Validation Profile from given path and exits if loading fails. This overrides any choice or default implied by the -f / --flavour option.", validateWith = ProfileFileValidator.class)
+			LOAD_PROFILE }, description = "Loads a Validation Profile from given path and exits if loading fails. This overrides any choice or default implied by the -f / --flavour option.", validateWith = FileValidator.class)
 	private File profileFile;
 
 	@Parameter(names = { EXTRACT_FLAG, EXTRACT }, description = "Extracts and reports PDF features.")
@@ -122,7 +123,10 @@ public class VeraCliArgParser {
 	private String prefix = FixerFactory.defaultConfig().getFixesPrefix();
 
 	@Parameter(names = { FIX_METADATA_FOLDER }, description = "Sets output directory for any fixed files.")
-	private String saveFolder = "";
+	private String saveFolder = ""; //$NON-NLS-1$
+
+	@Parameter(names = { POLICY_FILE }, description = "Select a policy schematron or XSL file.", validateWith = FileValidator.class)
+	private File policyFile;
 
 	// @Parameter(names = { PROFILES_WIKI_FLAG,
 	// PROFILES_WIKI }, description = "Sets location of the Validation Profiles
@@ -250,7 +254,7 @@ public class VeraCliArgParser {
 	 * @return true if PDF Feature extraction requested
 	 */
 	public boolean extractFeatures() {
-		return this.features;
+		return this.features | this.isPolicy();
 	}
 
 	/**
@@ -267,6 +271,16 @@ public class VeraCliArgParser {
 		return this.profileFile;
 	}
 
+	/**
+	 * @return the {@link File} object for the validation profile
+	 */
+	public File getPolicyFile() {
+		return this.policyFile;
+	}
+
+	public boolean isPolicy() {
+		return this.policyFile != null;
+	}
 	/**
 	 * @return the list of file paths
 	 */
@@ -306,7 +320,7 @@ public class VeraCliArgParser {
 	// }
 
 	public boolean isValidationOff() {
-		return this.isValidationOff;
+		return this.isValidationOff | this.isPolicy();
 	}
 
 	/**
@@ -357,7 +371,7 @@ public class VeraCliArgParser {
 	 *
 	 * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
 	 */
-	public static final class ProfileFileValidator implements IParameterValidator {
+	public static final class FileValidator implements IParameterValidator {
 		/**
 		 * { @inheritDoc }
 		 */

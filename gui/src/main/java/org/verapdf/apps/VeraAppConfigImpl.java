@@ -53,7 +53,6 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	@XmlElement
 	private final String pluginsFolder;
 
-	@SuppressWarnings("unused")
 	VeraAppConfigImpl() {
 		this(defaultInstance.getProcessType(), defaultInstance.getMaxFailsDisplayed(),
 				defaultInstance.isOverwriteReport(), defaultInstance.getFixesFolder(), defaultInstance.getFormat(),
@@ -158,17 +157,17 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	 */
 	@Override
 	public int hashCode() {
-		int result = type != null ? type.hashCode() : 0;
-		result = 31 * result + maxFails;
-		result = 31 * result + (isOverwrite ? 1 : 0);
-		result = 31 * result + (format != null ? format.hashCode() : 0);
-		result = 31 * result + (isVerbose ? 1 : 0);
-		result = 31 * result + (fixerFolder != null ? fixerFolder.hashCode() : 0);
-		result = 31 * result + (wikiPath != null ? wikiPath.hashCode() : 0);
-		result = 31 * result + (reportFile != null ? reportFile.hashCode() : 0);
-		result = 31 * result + (reportFolder != null ? reportFolder.hashCode() : 0);
-		result = 31 * result + (policyFile != null ? policyFile.hashCode() : 0);
-		result = 31 * result + (pluginsFolder != null ? pluginsFolder.hashCode() : 0);
+		int result = this.type != null ? this.type.hashCode() : 0;
+		result = 31 * result + this.maxFails;
+		result = 31 * result + (this.isOverwrite ? 1 : 0);
+		result = 31 * result + (this.format != null ? this.format.hashCode() : 0);
+		result = 31 * result + (this.isVerbose ? 1 : 0);
+		result = 31 * result + (this.fixerFolder != null ? this.fixerFolder.hashCode() : 0);
+		result = 31 * result + (this.wikiPath != null ? this.wikiPath.hashCode() : 0);
+		result = 31 * result + (this.reportFile != null ? this.reportFile.hashCode() : 0);
+		result = 31 * result + (this.reportFolder != null ? this.reportFolder.hashCode() : 0);
+		result = 31 * result + (this.policyFile != null ? this.policyFile.hashCode() : 0);
+		result = 31 * result + (this.pluginsFolder != null ? this.pluginsFolder.hashCode() : 0);
 		return result;
 	}
 
@@ -252,14 +251,14 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	 */
 	@Override
 	public String toString() {
-		return "VeraAppConfigImpl [type=" + this.type + ", maxFails=" + this.maxFails + ", isOverwrite="
-				+ this.isOverwrite + ", format=" + this.format + ", isVerbose=" + this.isVerbose + ", fixerFolder="
-				+ this.fixerFolder + ", wikiPath=" + this.wikiPath + ", reportFile=" + this.reportFile + ", reportFolder="
-				+ this.reportFolder + ", policyFile=" + this.policyFile + ", pluginsFolder=" + this.pluginsFolder + "]";
+		return "VeraAppConfigImpl [type=" + this.type + ", maxFails=" + this.maxFails + ", isOverwrite=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ this.isOverwrite + ", format=" + this.format + ", isVerbose=" + this.isVerbose + ", fixerFolder=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ this.fixerFolder + ", wikiPath=" + this.wikiPath + ", reportFile=" + this.reportFile + ", reportFolder=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ this.reportFolder + ", policyFile=" + this.policyFile + ", pluginsFolder=" + this.pluginsFolder + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	static String toXml(final VeraAppConfig toConvert, Boolean prettyXml) throws JAXBException, IOException {
-		String retVal = "";
+		String retVal = ""; //$NON-NLS-1$
 		try (StringWriter writer = new StringWriter()) {
 			toXml(toConvert, writer, prettyXml);
 			retVal = writer.toString();

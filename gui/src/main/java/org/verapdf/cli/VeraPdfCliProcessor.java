@@ -4,6 +4,8 @@
 package org.verapdf.cli;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +22,7 @@ import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
+import org.verapdf.policy.PolicyChecker;
 import org.verapdf.processor.BatchProcessor;
 import org.verapdf.processor.ItemProcessor;
 import org.verapdf.processor.ProcessorConfig;
@@ -36,12 +39,22 @@ final class VeraPdfCliProcessor {
 	private final ConfigManager configManager;
 	private final ProcessorConfig processorConfig;
 	private final VeraAppConfig appConfig;
+	private final boolean isPolicy;
+	private final File tempMrrFile;
+	private final File policyFile;
 	private boolean isStdOut = true;
 	private boolean appendData = true;
 	private String baseDirectory = "";
 
 	private VeraPdfCliProcessor(final VeraCliArgParser args, ConfigManager configManager) throws VeraPDFException {
 		this.configManager = configManager;
+		this.isPolicy = args.isPolicy();
+		try {
+			this.tempMrrFile = (this.isPolicy) ? File.createTempFile("mrr", "veraPDF") : null; //$NON-NLS-1$//$NON-NLS-2$
+		} catch (IOException excep) {
+			throw new VeraPDFException();
+		}
+		this.policyFile = args.getPolicyFile();
 		this.appConfig = args.appConfig(configManager.getApplicationConfig());
 		this.processorConfig = args.processorConfig(this.appConfig.getProcessType(),
 				this.configManager.getFeaturesConfig());
@@ -66,7 +79,7 @@ final class VeraPdfCliProcessor {
 		return this.processorConfig;
 	}
 
-	void processPaths(final List<String> pdfPaths) {
+	void processPaths(final List<String> pdfPaths) throws VeraPDFException, IOException {
 		// If the path list is empty then
 		if (pdfPaths.isEmpty()) {
 			System.out.println("veraPDF is processing STDIN and is expecting an EOF marker.");
@@ -89,6 +102,10 @@ final class VeraPdfCliProcessor {
 			if (!toProcess.isEmpty())
 				processFiles(toProcess);
 		}
+
+		if (this.isPolicy) {
+			applyPolicy();
+		}
 	}
 
 	static VeraPdfCliProcessor createProcessorFromArgs(final VeraCliArgParser args, ConfigManager config)
@@ -107,14 +124,17 @@ final class VeraPdfCliProcessor {
 	}
 
 	private void processFiles(final List<File> files) {
-		try {
-			BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
-			OutputStream reportStream = VeraPdfCliProcessor.getReportStream();
+		try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
+			OutputStream reportStream = this.getReportStream()) {
 			processor.process(files,
-					ProcessorFactory.getHandler(appConfig.getFormat(), appConfig.isVerbose(), reportStream, appConfig.getMaxFailsDisplayed(), this.processorConfig.getValidatorConfig().isRecordPasses()));
+					ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), reportStream,
+							this.appConfig.getMaxFailsDisplayed(),
+							this.processorConfig.getValidatorConfig().isRecordPasses()));
 		} catch (VeraPDFException e) {
 			System.err.println("Exception raised while processing batch");
 			e.printStackTrace();
+		} catch (IOException excep) {
+			LOGGER.debug(excep);
 		}
 	}
 
@@ -134,7 +154,9 @@ final class VeraPdfCliProcessor {
 		BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
 		OutputStream reportStream = System.out;
 		processor.process(dir, true,
-				ProcessorFactory.getHandler(appConfig.getFormat(), appConfig.isVerbose(), reportStream, appConfig.getMaxFailsDisplayed(), this.processorConfig.getValidatorConfig().isRecordPasses()));
+				ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), reportStream,
+						this.appConfig.getMaxFailsDisplayed(),
+						this.processorConfig.getValidatorConfig().isRecordPasses()));
 	}
 
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
@@ -142,7 +164,7 @@ final class VeraPdfCliProcessor {
 
 		ProcessorResult result = processor.process(item, toProcess);
 
-		OutputStream outputReportStream = VeraPdfCliProcessor.getReportStream();
+		OutputStream outputReportStream = this.getReportStream();
 		try {
 			if (result.isValidPdf() && !result.isEncryptedPdf())
 				ProcessorFactory.resultToXml(result, outputReportStream, true);
@@ -166,9 +188,27 @@ final class VeraPdfCliProcessor {
 		}
 	}
 
-	@SuppressWarnings("resource")
-	private static OutputStream getReportStream() {
+	private OutputStream getReportStream() {
+		if (this.isPolicy) {
+			if (this.tempMrrFile == null)
+				throw new IllegalStateException("Policy enabled BUT no temp destination");
+			try {
+				this.isStdOut = false;
+				return new FileOutputStream(this.tempMrrFile);
+			} catch (FileNotFoundException excep) {
+				throw new IllegalStateException("Policy enabled BUT no temp destination");
+			}
+		}
 		return System.out;
+	}
+
+	private void applyPolicy() throws VeraPDFException, IOException {
+		File tempPolicyResult = File.createTempFile("policyResult", "veraPDF");
+		try (InputStream mrrIs = new FileInputStream(this.tempMrrFile);
+				OutputStream policyResultOs = new FileOutputStream(tempPolicyResult)) {
+			PolicyChecker.applyPolicy(this.policyFile, mrrIs, policyResultOs);
+		}
+		PolicyChecker.insertPolicyReport(tempPolicyResult, this.tempMrrFile, System.out);
 	}
 
 	private String constructReportPath(final String itemName) {

@@ -30,11 +30,12 @@ import org.verapdf.processor.TaskType;
  */
 
 final class ConfigManagerImpl implements ConfigManager {
-	private static final String defaultConfExt = ".xml";
-	private static final String defaultValidName = "validator" + defaultConfExt;
-	private static final String defaultFixerName = "fixer" + defaultConfExt;
-	private static final String defaultFeaturesName = "features" + defaultConfExt;
-	private static final String defaultAppName = "app" + defaultConfExt;
+	private static final String nullArgMessage = "Arg tasks can not be null";
+	private static final String defaultConfExt = ".xml"; //$NON-NLS-1$
+	private static final String defaultValidName = "validator" + defaultConfExt; //$NON-NLS-1$
+	private static final String defaultFixerName = "fixer" + defaultConfExt; //$NON-NLS-1$
+	private static final String defaultFeaturesName = "features" + defaultConfExt; //$NON-NLS-1$
+	private static final String defaultAppName = "app" + defaultConfExt; //$NON-NLS-1$
 	private final File root;
 	private final File validatorFile;
 	private final File fixerFile;
@@ -103,7 +104,7 @@ final class ConfigManagerImpl implements ConfigManager {
 	 */
 	@Override
 	public ProcessorConfig createProcessorConfig(EnumSet<TaskType> tasks) {
-		if (tasks == null) throw new NullPointerException("Arg tasks can not be null");
+		if (tasks == null) throw new NullPointerException(nullArgMessage);
 		return ProcessorFactory.fromValues(getValidatorConfig(), getFeaturesConfig(), getFixerConfig(), tasks);
 	}
 
@@ -112,7 +113,7 @@ final class ConfigManagerImpl implements ConfigManager {
 	 */
 	@Override
 	public ProcessorConfig createProcessorConfig(EnumSet<TaskType> tasks, String mdFolder) {
-		if (tasks == null) throw new NullPointerException("Arg tasks can not be null");
+		if (tasks == null) throw new NullPointerException(nullArgMessage);
 		return ProcessorFactory.fromValues(getValidatorConfig(), getFeaturesConfig(), getFixerConfig(), tasks, mdFolder);
 	}
 
