@@ -48,6 +48,9 @@ public final class GUIConstants {
 	public static final String PDF = "pdf";
 	public static final String XML = "xml";
 	public static final String HTML = "html";
+	public static final String SCH = "sch";
+	public static final String XSL = "xsl";
+	public static final String XSLT = "xslt";
 	public static final String DOT = ".";
 	public static final String PROCESSING_TYPE = " Report type: ";
 	public static final String DISPLAY_PASSED_RULES = "Include passed rules:";
