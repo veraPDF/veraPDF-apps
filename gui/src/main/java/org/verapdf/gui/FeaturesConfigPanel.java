@@ -47,11 +47,13 @@ public class FeaturesConfigPanel extends JPanel {
 		setLayout(new BorderLayout());
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(6, 3));
+		panel.setLayout(new GridLayout(5, 3));
 
 		for (FeatureObjectType type : FeatureObjectType.values()) {
-			featureGrid.put(type, new JCheckBox(type.getFullName()));
-			panel.add(featureGrid.get(type));
+			if (type != FeatureObjectType.ERROR) {
+				featureGrid.put(type, new JCheckBox(type.getFullName()));
+				panel.add(featureGrid.get(type));
+			}
 		}
 
 		add(panel, BorderLayout.CENTER);
@@ -84,8 +86,10 @@ public class FeaturesConfigPanel extends JPanel {
 		this.ok = false;
 
 		for (FeatureObjectType type : FeatureObjectType.values()) {
-			this.featureGrid.get(type).setSelected(true);
-			this.featureGrid.get(type).setSelected(featureExtractorConfig.isFeatureEnabled(type));
+			if (type != FeatureObjectType.ERROR) {
+				this.featureGrid.get(type).setSelected(true);
+				this.featureGrid.get(type).setSelected(featureExtractorConfig.isFeatureEnabled(type));
+			}
 		}
 
 		Frame owner = parent instanceof Frame ?
