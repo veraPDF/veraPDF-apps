@@ -1,36 +1,5 @@
 package org.verapdf.gui;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.*;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
-import javax.swing.SwingConstants;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.xml.bind.JAXBException;
-
 import org.apache.log4j.Logger;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
@@ -43,9 +12,22 @@ import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
-import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.TaskType;
 import org.verapdf.processor.reports.BatchSummary;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.bind.JAXBException;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Panel with functionality for checker.
@@ -602,6 +584,7 @@ class CheckerPanel extends JPanel {
 
 				switch (extensions[0]) {
 					case GUIConstants.PDF:
+						// TODO: change that manual collecting to library one when it will be finished
 						this.pdfFile = getAllPDFFiles(selectedFiles);
 						this.chosenPDF.setText(getSelectedPathsMessage(selectedFiles));
 						break;
