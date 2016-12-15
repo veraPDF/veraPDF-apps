@@ -56,12 +56,12 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
     @Override
     protected BatchSummary doInBackground() {
         try {
-            this.xmlReport = File.createTempFile("veraPDF-tempXMLReport", ".xml");
+            this.xmlReport = File.createTempFile("veraPDF-tempXMLReport", ".xml");  //$NON-NLS-1$//$NON-NLS-2$
             this.xmlReport.deleteOnExit();
             this.htmlReport = null;
         } catch (IOException e) {
             LOGGER.error(ERROR_IN_CREATING_TEMP_FILE, e);
-            this.parent.errorInValidatingOccur(ERROR_IN_CREATING_TEMP_FILE + ": ", e);
+            this.parent.errorInValidatingOccur(ERROR_IN_CREATING_TEMP_FILE + ": ", e); //$NON-NLS-1$
         }
         try (OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
             VeraAppConfig veraAppConfig = parent.appConfigFromState();
@@ -85,14 +85,14 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
             }
         } catch (IOException e) {
             LOGGER.error(ERROR_IN_OPEN_STREAMS, e);
-            this.parent.errorInValidatingOccur(ERROR_IN_OPEN_STREAMS + ": ", e);
+            this.parent.errorInValidatingOccur(ERROR_IN_OPEN_STREAMS + ": ", e); //$NON-NLS-1$
         } catch (VeraPDFException e) {
             LOGGER.error(ERROR_IN_PROCESSING, e);
-            this.parent.errorInValidatingOccur(ERROR_IN_PROCESSING + ": ", e);
+            this.parent.errorInValidatingOccur(ERROR_IN_PROCESSING + ": ", e); //$NON-NLS-1$
         }
 
         // TODO: change "== 1" to "> 0" when HTML report will work in case of multiply files
-        if (this.batchSummary.getValidPdfaCount() + this.batchSummary.getInvalidPdfaCount() == 1) {
+        if (this.batchSummary.getValidPdfaCount() + this.batchSummary.getInvalidPdfaCount() > 0) {
             writeHtmlReport();
         }
 
@@ -101,9 +101,9 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 
     private void applyPolicy() throws IOException, VeraPDFException {
         File tempMrrFile = this.xmlReport;
-        this.xmlReport = File.createTempFile("veraPDF-tempXMLReport", ".xml");
+        this.xmlReport = File.createTempFile("veraPDF-tempXMLReport", ".xml"); //$NON-NLS-1$ //$NON-NLS-2$
         this.xmlReport.deleteOnExit();
-        File tempPolicyResult = File.createTempFile("policyResult", "veraPDF");
+        File tempPolicyResult = File.createTempFile("policyResult", "veraPDF"); //$NON-NLS-1$ //$NON-NLS-2$
         tempPolicyResult.deleteOnExit();
         try (InputStream mrrIs = new FileInputStream(tempMrrFile);
              OutputStream policyResultOs = new FileOutputStream(tempPolicyResult);
@@ -120,11 +120,11 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 
     private void writeHtmlReport() {
         try {
-            this.htmlReport = File.createTempFile("veraPDF-tempHTMLReport", ".html");
+            this.htmlReport = File.createTempFile("veraPDF-tempHTMLReport", ".html"); //$NON-NLS-1$ //$NON-NLS-2$
             this.htmlReport.deleteOnExit();
             try (InputStream xmlStream = new FileInputStream(this.xmlReport);
                  OutputStream htmlStream = new FileOutputStream(this.htmlReport)) {
-                HTMLReport.writeHTMLReport(xmlStream, htmlStream,
+                HTMLReport.writeHTMLReport(xmlStream, htmlStream, this.batchSummary,
                         this.configManager.getApplicationConfig().getWikiPath(), true);
 
             } catch (IOException | TransformerException e) {
