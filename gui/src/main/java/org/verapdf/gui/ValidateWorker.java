@@ -91,7 +91,9 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
             this.parent.errorInValidatingOccur(ERROR_IN_PROCESSING + ": ", e); //$NON-NLS-1$
         }
 
-        writeHtmlReport();
+        if (this.batchSummary != null) {
+            writeHtmlReport();
+        }
 
         return this.batchSummary;
     }
