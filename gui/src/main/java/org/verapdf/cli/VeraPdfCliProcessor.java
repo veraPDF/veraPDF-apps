@@ -44,7 +44,7 @@ final class VeraPdfCliProcessor {
 	private final File policyFile;
 	private boolean isStdOut = true;
 	private boolean appendData = true;
-	private String baseDirectory = "";
+	private String baseDirectory = ""; //$NON-NLS-1$
 
 	private VeraPdfCliProcessor(final VeraCliArgParser args, ConfigManager configManager) throws VeraPDFException {
 		this.configManager = configManager;
@@ -52,7 +52,7 @@ final class VeraPdfCliProcessor {
 		try {
 			this.tempMrrFile = (this.isPolicy) ? File.createTempFile("mrr", "veraPDF") : null; //$NON-NLS-1$//$NON-NLS-2$
 		} catch (IOException excep) {
-			throw new VeraPDFException();
+			throw new VeraPDFException("Failed to create temporary MRR file", excep);
 		}
 		this.policyFile = args.getPolicyFile();
 		this.appConfig = args.appConfig(configManager.getApplicationConfig());
@@ -79,7 +79,7 @@ final class VeraPdfCliProcessor {
 		return this.processorConfig;
 	}
 
-	void processPaths(final List<String> pdfPaths) throws VeraPDFException, IOException {
+	void processPaths(final List<String> pdfPaths) throws VeraPDFException {
 		// If the path list is empty then
 		if (pdfPaths.isEmpty()) {
 			System.out.println("veraPDF is processing STDIN and is expecting an EOF marker.");
@@ -93,10 +93,12 @@ final class VeraPdfCliProcessor {
 		List<File> toProcess = new ArrayList<>();
 		for (String pdfPath : pdfPaths) {
 			File file = new File(pdfPath);
-			if (file.isDirectory()) {
+			if (!isFileProcessable(file)) {
+				throw new VeraPDFException("Could not process file " + pdfPath);
+			} else if (file.isDirectory()) {
 				this.baseDirectory = file.getAbsolutePath();
 				processDir(file);
-			} else if (checkFileCanBeProcessed(file)) {
+			} else if (isFileProcessable(file)) {
 				toProcess.add(file);
 			}
 			if (!toProcess.isEmpty())
@@ -125,7 +127,7 @@ final class VeraPdfCliProcessor {
 
 	private void processFiles(final List<File> files) {
 		try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
-			OutputStream reportStream = this.getReportStream()) {
+				OutputStream reportStream = this.getReportStream()) {
 			processor.process(files,
 					ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), reportStream,
 							this.appConfig.getMaxFailsDisplayed(),
@@ -134,16 +136,16 @@ final class VeraPdfCliProcessor {
 			System.err.println("Exception raised while processing batch");
 			e.printStackTrace();
 		} catch (IOException excep) {
-			LOGGER.debug(excep);
+			LOGGER.debug("Exception raised closing MRR temp file.", excep);
 		}
 	}
 
-	private static boolean checkFileCanBeProcessed(final File file) {
-		if (!file.isFile()) {
-			System.err.println("Path " + file.getAbsolutePath() + " is not an existing file.");
+	private static boolean isFileProcessable(final File file) {
+		if (!file.exists()) {
+			System.err.println("Path " + file.getAbsolutePath() + " cannot be found.");
 			return false;
 		} else if (!file.canRead()) {
-			System.err.println("Path " + file.getAbsolutePath() + " is not a readable file.");
+			System.err.println("Path " + file.getAbsolutePath() + " is not readable.");
 			return false;
 		}
 		return true;
@@ -151,12 +153,15 @@ final class VeraPdfCliProcessor {
 
 	private void processBatch(File dir) throws VeraPDFException {
 		String reportPath = this.appConfig.getReportFile();
-		BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
-		OutputStream reportStream = System.out;
-		processor.process(dir, true,
-				ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), reportStream,
-						this.appConfig.getMaxFailsDisplayed(),
-						this.processorConfig.getValidatorConfig().isRecordPasses()));
+		try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
+				OutputStream reportStream = this.getReportStream()) {
+			processor.process(dir, true,
+					ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), reportStream,
+							this.appConfig.getMaxFailsDisplayed(),
+							this.processorConfig.getValidatorConfig().isRecordPasses()));
+		} catch (IOException excep) {
+			LOGGER.debug("Exception raised closing MRR temp file.", excep);
+		}
 	}
 
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
@@ -196,19 +201,28 @@ final class VeraPdfCliProcessor {
 				this.isStdOut = false;
 				return new FileOutputStream(this.tempMrrFile);
 			} catch (FileNotFoundException excep) {
-				throw new IllegalStateException("Policy enabled BUT no temp destination");
+				throw new IllegalStateException("Policy enabled BUT no temp destination", excep);
 			}
 		}
 		return System.out;
 	}
 
-	private void applyPolicy() throws VeraPDFException, IOException {
-		File tempPolicyResult = File.createTempFile("policyResult", "veraPDF");
+	private void applyPolicy() throws VeraPDFException {
+		File tempPolicyResult = null;
+		try {
+			tempPolicyResult = File.createTempFile("policyResult", "veraPDF");
+		} catch (IOException excep) {
+			throw new VeraPDFException("Could not create temporary policy result file.", excep);
+		}
 		try (InputStream mrrIs = new FileInputStream(this.tempMrrFile);
 				OutputStream policyResultOs = new FileOutputStream(tempPolicyResult)) {
 			PolicyChecker.applyPolicy(this.policyFile, mrrIs, policyResultOs);
+			PolicyChecker.insertPolicyReport(tempPolicyResult, this.tempMrrFile, System.out);
+		} catch (FileNotFoundException excep) {
+			throw new VeraPDFException("Could not find temporary policy result file.", excep);
+		} catch (IOException excep) {
+			LOGGER.debug("Exception raised closing temporary policy file.", excep);
 		}
-		PolicyChecker.insertPolicyReport(tempPolicyResult, this.tempMrrFile, System.out);
 	}
 
 	private String constructReportPath(final String itemName) {
