@@ -125,7 +125,8 @@ public class VeraCliArgParser {
 	@Parameter(names = { FIX_METADATA_FOLDER }, description = "Sets output directory for any fixed files.")
 	private String saveFolder = ""; //$NON-NLS-1$
 
-	@Parameter(names = { POLICY_FILE }, description = "Select a policy schematron or XSL file.", validateWith = FileValidator.class)
+	@Parameter(names = {
+			POLICY_FILE }, description = "Select a policy schematron or XSL file.", validateWith = FileValidator.class)
 	private File policyFile;
 
 	// @Parameter(names = { PROFILES_WIKI_FLAG,
@@ -281,6 +282,7 @@ public class VeraCliArgParser {
 	public boolean isPolicy() {
 		return this.policyFile != null;
 	}
+
 	/**
 	 * @return the list of file paths
 	 */
@@ -417,10 +419,9 @@ public class VeraCliArgParser {
 	}
 
 	private static ProcessType typeFromArgs(VeraCliArgParser parser) {
-		ProcessType retVal = ProcessType.VALIDATE;
-		if (parser.isValidationOff())
-			retVal = ProcessType.NO_PROCESS;
-		if (parser.extractFeatures())
+		ProcessType retVal = (parser.isValidationOff() && !parser.isPolicy()) ? ProcessType.NO_PROCESS
+				: ProcessType.VALIDATE;
+		if (parser.extractFeatures() || parser.isPolicy())
 			retVal = ProcessType.addProcess(retVal, ProcessType.EXTRACT);
 		if (parser.fixMetadata())
 			retVal = ProcessType.addProcess(retVal, ProcessType.FIX);
