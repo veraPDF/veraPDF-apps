@@ -99,6 +99,7 @@ fi
 
 exec "$JAVACMD" $JAVA_OPTS  \
   -classpath "$CLASSPATH" \
+  -Dfile.encoding="UTF8" \
   -Dapp.name="VeraPDF validation CLI" \
   -Dapp.pid="$$" \
   -Dapp.repo="$REPO" \
