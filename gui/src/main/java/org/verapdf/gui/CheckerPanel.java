@@ -330,6 +330,7 @@ class CheckerPanel extends JPanel {
 				CheckerPanel.this.fixMetadata.setEnabled(fixMetadata);
 				CheckerPanel.this.chosenPolicy.setEnabled(policy);
 				choosePolicy.setEnabled(policy);
+				CheckerPanel.this.execute.setEnabled(isExecute());
 			}
 		});
 
@@ -751,7 +752,8 @@ class CheckerPanel extends JPanel {
 
 	private boolean isExecute() {
 		return (this.pdfFile != null && (!this.profilePath.toString().equals("")
-				|| !this.chooseFlavour.getSelectedItem().equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT)));
+				|| !this.chooseFlavour.getSelectedItem().equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT))
+		&& (this.ProcessTypes.getSelectedItem() != ProcessType.POLICY || this.policy != null));
 	}
 
 	boolean isFixMetadata() {
