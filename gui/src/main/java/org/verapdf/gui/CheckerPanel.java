@@ -1,6 +1,5 @@
 package org.verapdf.gui;
 
-import org.apache.log4j.Logger;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
 import org.verapdf.apps.ConfigManager;
@@ -28,6 +27,8 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Panel with functionality for checker.
@@ -41,7 +42,7 @@ class CheckerPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1290058869994329766L;
 
-	static final Logger LOGGER = Logger.getLogger(CheckerPanel.class);
+	static final Logger logger = Logger.getLogger(CheckerPanel.class.getCanonicalName());
 
 	private static final Map<String, PDFAFlavour> FLAVOURS_MAP = new HashMap<>();
 
@@ -383,10 +384,10 @@ class CheckerPanel extends JPanel {
 					CheckerPanel.this.viewHTML.setEnabled(false);
 					CheckerPanel.this.saveHTML.setEnabled(false);
 					CheckerPanel.this.validateWorker.execute();
-				} catch (IllegalArgumentException | JAXBException | IOException exep) {
-					JOptionPane.showMessageDialog(CheckerPanel.this, exep.getMessage(), "Error",
+				} catch (IllegalArgumentException | JAXBException | IOException excep) {
+					JOptionPane.showMessageDialog(CheckerPanel.this, excep.getMessage(), "Error",
 							JOptionPane.ERROR_MESSAGE);
-					LOGGER.error(exep);
+					logger.log(Level.SEVERE, excep.getMessage(), excep);
 				}
 			}
 		});
@@ -419,10 +420,10 @@ class CheckerPanel extends JPanel {
 			private void openXMLReport() {
 				try {
 					Desktop.getDesktop().open(CheckerPanel.this.xmlReport);
-				} catch (IOException e1) {
+				} catch (IOException excep) {
 					JOptionPane.showMessageDialog(CheckerPanel.this, "Some error in opening the XML report.",
 							GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-					LOGGER.error("Exception in opening the XML report", e1);
+					logger.log(Level.SEVERE, "Exception in opening the XML report", excep);
 				}
 			}
 		});
@@ -436,10 +437,10 @@ class CheckerPanel extends JPanel {
 				} else {
 					try {
 						Desktop.getDesktop().open(CheckerPanel.this.htmlReport);
-					} catch (IOException e1) {
+					} catch (IOException excep) {
 						JOptionPane.showMessageDialog(CheckerPanel.this, "Some error in opening the HTML report.",
 								GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-						LOGGER.error("Exception in opening the HTML report", e1);
+						logger.log(Level.SEVERE, "Exception in opening the HTML report", excep);
 					}
 				}
 			}
@@ -516,7 +517,7 @@ class CheckerPanel extends JPanel {
 	}
 
 	void errorInValidatingOccur(String message, Throwable e) {
-		LOGGER.error(e);
+		logger.log(Level.SEVERE, message, e);
 		e.printStackTrace();
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
@@ -702,8 +703,8 @@ class CheckerPanel extends JPanel {
 				try {
 					try {
 						Files.copy(report.toPath(), temp.toPath());
-					} catch (FileAlreadyExistsException e1) {
-						LOGGER.debug("File already exists, conform overwrite with user", e1);
+					} catch (FileAlreadyExistsException excep) {
+						logger.log(Level.FINE, "File already exists, conform overwrite with user", excep);
 						int resultOption = JOptionPane.showConfirmDialog(CheckerPanel.this,
 								extension.toUpperCase()
 										+ " file with the same name already exists. Do you want to overwrite it?",
@@ -712,11 +713,11 @@ class CheckerPanel extends JPanel {
 							Files.copy(report.toPath(), temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
 						}
 					}
-				} catch (IOException e) {
+				} catch (IOException excep) {
 					JOptionPane.showMessageDialog(CheckerPanel.this,
-							GUIConstants.ERROR_IN_SAVING_HTML_REPORT + e.getMessage(), GUIConstants.ERROR,
+							GUIConstants.ERROR_IN_SAVING_HTML_REPORT + excep.getMessage(), GUIConstants.ERROR,
 							JOptionPane.ERROR_MESSAGE);
-					LOGGER.error("Exception saving " + extension.toUpperCase() + " report", e);
+					logger.log(Level.SEVERE, "Exception saving " + extension.toUpperCase() + " report", excep);
 				}
 			}
 		}

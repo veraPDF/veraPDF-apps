@@ -14,10 +14,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.bind.JAXBException;
 
-import org.apache.log4j.Logger;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.cli.commands.VeraCliArgParser;
@@ -34,7 +35,7 @@ import org.verapdf.processor.reports.ItemDetails;
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
  */
 final class VeraPdfCliProcessor {
-	private static final Logger LOGGER = Logger.getLogger(VeraPdfCliProcessor.class);
+	private static final Logger logger = Logger.getLogger(VeraPdfCliProcessor.class.getCanonicalName());
 
 	private final ConfigManager configManager;
 	private final ProcessorConfig processorConfig;
@@ -64,7 +65,7 @@ final class VeraPdfCliProcessor {
 				try {
 					file.delete();
 				} catch (SecurityException ex) {
-					LOGGER.warn("Cannot delete older report file.", ex);
+					logger.log(Level.WARNING, "Cannot delete older report file.", ex);
 				}
 			}
 		}
@@ -136,7 +137,7 @@ final class VeraPdfCliProcessor {
 			System.err.println("Exception raised while processing batch");
 			e.printStackTrace();
 		} catch (IOException excep) {
-			LOGGER.debug("Exception raised closing MRR temp file.", excep);
+			logger.log(Level.FINE, "Exception raised closing MRR temp file.", excep);
 		}
 	}
 
@@ -160,7 +161,7 @@ final class VeraPdfCliProcessor {
 							this.appConfig.getMaxFailsDisplayed(),
 							this.processorConfig.getValidatorConfig().isRecordPasses()));
 		} catch (IOException excep) {
-			LOGGER.debug("Exception raised closing MRR temp file.", excep);
+			logger.log(Level.FINE, "Exception raised closing MRR temp file.", excep);
 		}
 	}
 
@@ -188,7 +189,7 @@ final class VeraPdfCliProcessor {
 			try {
 				outputReportStream.close();
 			} catch (IOException ex) {
-				LOGGER.error("Cannot close the report file: " + ex.toString() + "\n");
+				logger.log(Level.SEVERE, "Cannot close the report file: " + ex.toString() + "\n");
 			}
 		}
 	}
@@ -221,7 +222,7 @@ final class VeraPdfCliProcessor {
 		} catch (FileNotFoundException excep) {
 			throw new VeraPDFException("Could not find temporary policy result file.", excep);
 		} catch (IOException excep) {
-			LOGGER.debug("Exception raised closing temporary policy file.", excep);
+			logger.log(Level.FINE, "Exception raised closing temporary policy file.", excep);
 		}
 	}
 
@@ -250,7 +251,7 @@ final class VeraPdfCliProcessor {
 					try {
 						dir.mkdirs();
 					} catch (SecurityException ex) {
-						LOGGER.error("Cannot create subdirectories the: " + ex.toString() + "\n");
+						logger.log(Level.SEVERE, "Cannot create subdirectories the: " + ex.toString() + "\n");
 						reportFolder = this.configManager.getApplicationConfig().getReportFolder();
 					}
 				}

@@ -1,6 +1,5 @@
 package org.verapdf.gui;
 
-import org.apache.log4j.Logger;
 import org.verapdf.gui.tools.GUIConstants;
 
 import javax.swing.*;
@@ -12,6 +11,8 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * About Panel
@@ -25,8 +26,7 @@ class AboutPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -4011118192914036216L;
 
-	static final Logger LOGGER = Logger
-			.getLogger(AboutPanel.class);
+	static final Logger logger = Logger.getLogger(AboutPanel.class.getCanonicalName());
 
 	private JButton okButton;
 	JDialog dialog;
@@ -65,7 +65,7 @@ class AboutPanel extends JPanel {
 					Desktop.getDesktop().browse(new URI(GUIConstants.LOGO_LINK_URL));
 				} catch (IOException | URISyntaxException excep) {
 					JOptionPane.showMessageDialog(AboutPanel.this, GUIConstants.ERROR, GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-					LOGGER.error("Exception in opening link " + GUIConstants.LOGO_LINK_URL, excep);
+					logger.log(Level.SEVERE, "Exception in opening link " + GUIConstants.LOGO_LINK_URL, excep);
 				}
 
 			}
