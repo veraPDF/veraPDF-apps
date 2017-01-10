@@ -219,7 +219,7 @@
                   <failOnMissingClassifierArtifact>true</failOnMissingClassifierArtifact>
                   <outputDirectory>${project.build.directory}/sources/src/main/java</outputDirectory>
                   <excludeArtifactIds>log4j, avalon-logkit, commons-io,
-                    commons-logging</excludeArtifactIds>
+                    commons-logging, junit, equalsverifier</excludeArtifactIds>
                   <includes>**/*.java</includes>
                   <excludes>**/*Test.java, **/test/**/*.java</excludes>
                 </configuration>
@@ -254,10 +254,9 @@
                   <goal>wget</goal>
                 </goals>
                 <configuration>
-                  <url>http://downloads.verapdf.org/resources.zip</url>
-                  <unpack>true</unpack>
+                  <url>http://downloads.verapdf.org/pom.xml</url>
+                  <skipCache>true</skipCache>
                   <outputDirectory>${project.build.directory}/sources</outputDirectory>
-                  <md5>31a208084cbe19c8617af67efcd68e70</md5>
                 </configuration>
               </execution>
             </executions>
