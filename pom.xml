@@ -255,9 +255,10 @@
                 </goals>
                 <configuration>
                   <url>http://downloads.verapdf.org/resources.zip</url>
+                  <skipCache>true</skipCache>
                   <unpack>true</unpack>
                   <outputDirectory>${project.build.directory}/sources</outputDirectory>
-                  <md5>31a208084cbe19c8617af67efcd68e70</md5>
+                  <md5>dd9f91d455608fe64ace05567c127485</md5>
                 </configuration>
               </execution>
             </executions>
