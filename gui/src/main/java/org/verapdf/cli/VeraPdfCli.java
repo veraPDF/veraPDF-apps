@@ -35,15 +35,13 @@ import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.cli.commands.VeraCliArgParser;
+import org.verapdf.cli.commands.VeraCliArgs;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
-
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -72,21 +70,11 @@ public final class VeraPdfCli {
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
 		ReleaseDetails.addDetailsFromResource(
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
-		VeraCliArgParser cliArgParser = new VeraCliArgParser();
-		JCommander jCommander = new JCommander(cliArgParser);
-		jCommander.setProgramName(APP_NAME);
+		VeraCliArgParser cliArgParser = new VeraCliArgParser(args);
 
-		try {
-			jCommander.parse(args);
-		} catch (ParameterException e) {
-			System.err.println(e.getMessage());
-			showVersionInfo();
-			jCommander.usage();
-			System.exit(1);
-		}
 		if (cliArgParser.isHelp()) {
 			showVersionInfo();
-			jCommander.usage();
+			cliArgParser.showHelp(System.out);
 			System.exit(0);
 		}
 		messagesFromParser(cliArgParser);
@@ -95,7 +83,7 @@ public final class VeraPdfCli {
 				VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser,
 						configManager);
 				if (args.length == 0)
-					jCommander.usage();
+					cliArgParser.showHelp(System.out);
 				// FIXME: trap policy IO Exception (deliberately left un-caught for development)
 				processor.processPaths(cliArgParser.getPdfPaths());
 			} catch (OutOfMemoryError oome) {
@@ -118,7 +106,7 @@ public final class VeraPdfCli {
 		}
 	}
 
-	private static void messagesFromParser(final VeraCliArgParser parser) {
+	private static void messagesFromParser(final VeraCliArgs parser) {
 
 		if (parser.listProfiles()) {
 			listProfiles();
@@ -147,7 +135,7 @@ public final class VeraPdfCli {
 		System.out.println();
 	}
 
-	private static boolean isProcess(final VeraCliArgParser parser) {
+	private static boolean isProcess(final VeraCliArgs parser) {
 		if (parser.getPdfPaths().isEmpty() && (parser.isHelp() || parser.listProfiles() || parser.showVersion())) {
 			return false;
 		}

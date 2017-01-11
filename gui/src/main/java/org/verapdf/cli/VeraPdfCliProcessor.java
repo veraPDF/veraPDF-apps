@@ -42,6 +42,8 @@ import javax.xml.bind.JAXBException;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.cli.commands.VeraCliArgParser;
+import org.verapdf.cli.commands.VeraConfigGenerator;
+import org.verapdf.cli.commands.VeraConfigGeneratorImpl;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.policy.PolicyChecker;
 import org.verapdf.processor.BatchProcessor;
@@ -76,8 +78,9 @@ final class VeraPdfCliProcessor {
 			throw new VeraPDFException("Failed to create temporary MRR file", excep);
 		}
 		this.policyFile = args.getPolicyFile();
-		this.appConfig = args.appConfig(configManager.getApplicationConfig());
-		this.processorConfig = args.processorConfig(this.appConfig.getProcessType(),
+		VeraConfigGenerator configGen = new VeraConfigGeneratorImpl();
+		this.appConfig = configGen.appConfigFromArgs(args, configManager.getApplicationConfig());
+		this.processorConfig = configGen.processorConfigFromArgs(args, this.appConfig.getProcessType(),
 				this.configManager.getFeaturesConfig());
 		if (this.configManager.getApplicationConfig().isOverwriteReport()) {
 			File file = new File(this.configManager.getApplicationConfig().getReportFile());
@@ -100,9 +103,9 @@ final class VeraPdfCliProcessor {
 		return this.processorConfig;
 	}
 
-	void processPaths(final List<String> pdfPaths) throws VeraPDFException {
+	void processPaths(final List<File> pdfFiles) throws VeraPDFException {
 		// If the path list is empty then
-		if (pdfPaths.isEmpty()) {
+		if (pdfFiles.isEmpty()) {
 			System.out.println("veraPDF is processing STDIN and is expecting an EOF marker.");
 			System.out.println("If this isn't your intention you can terminate by typing an EOF equivalent:");
 			System.out.println(" - Linux or Mac users should type CTRL-D");
@@ -112,10 +115,9 @@ final class VeraPdfCliProcessor {
 		}
 
 		List<File> toProcess = new ArrayList<>();
-		for (String pdfPath : pdfPaths) {
-			File file = new File(pdfPath);
+		for (File file : pdfFiles) {
 			if (!isFileProcessable(file)) {
-				throw new VeraPDFException("Could not process file " + pdfPath);
+				throw new VeraPDFException("Could not process file " + file.getPath());
 			} else if (file.isDirectory()) {
 				this.baseDirectory = file.getAbsolutePath();
 				processDir(file);

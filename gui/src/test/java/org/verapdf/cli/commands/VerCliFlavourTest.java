@@ -23,8 +23,6 @@
  */
 package org.verapdf.cli.commands;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
 import org.junit.Test;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
@@ -44,100 +42,67 @@ public class VerCliFlavourTest {
      */
     @Test
     public final void testGetFlavourDefault() {
-        // Test default is 1b
-        assertTrue(VeraCliArgParser.DEFAULT_ARGS.getFlavour() == PDFAFlavour.NO_FLAVOUR);
-
         // Test empty String[] args doesn't change that
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] {});
-        assertTrue(parser.getFlavour() == VeraCliArgParser.DEFAULT_ARGS
-                .getFlavour());
+        VeraCliArgs parser = new VeraCliArgParser(new String[] {});
+        assertTrue(parser.getFlavour() == PDFAFlavour.NO_FLAVOUR);
 
         // Test other flags & options doesn't change that
-        parser = new VeraCliArgParser();
-        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--version", "-h" });
-        assertTrue(parser.getFlavour() == VeraCliArgParser.DEFAULT_ARGS
-                .getFlavour());
+        parser = new VeraCliArgParser(new String[] { "-l", "--version", "-h" });
+        assertTrue(parser.getFlavour() == PDFAFlavour.NO_FLAVOUR);
     }
 
     /**
      * Test method for
      * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
      */
-    @Test(expected=ParameterException.class)
+    @Test(expected=joptsimple.OptionException.class)
     public final void testGetFlavourNoFlag() {
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-
-        // Test flag works
-        jCommander.parse(new String[] { "-f" });
+        VeraCliArgs parser = new VeraCliArgParser(new String[] { "-f" });
     }
 
     /**
      * Test method for
      * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
      */
-    @Test(expected=ParameterException.class)
+    @Test(expected=joptsimple.OptionException.class)
     public final void testGetFlavourNoFlagMultiParam() {
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-
-        // Test flag works
-        jCommander.parse(new String[] { "-f", "-h" });
+        VeraCliArgs parser = new VeraCliArgParser(new String[] { "-f", "-h" });
     }
 
     /**
      * Test method for
      * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
      */
-    @Test(expected=ParameterException.class)
+    @Test(expected=joptsimple.OptionException.class)
     public final void testGetFlavourNoOption() {
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-
-        // Test flag works
-        jCommander.parse(new String[] { "--flavour" });
+        VeraCliArgs parser = new VeraCliArgParser(new String[] { "--flavour" });
     }
 
     /**
      * Test method for
      * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
      */
-    @Test(expected=ParameterException.class)
+    @Test(expected=joptsimple.OptionException.class)
     public final void testGetFlavourNoOptionMultiPararm() {
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-
-        // Test flag works
-        jCommander.parse(new String[] { "--flavour", "--version", "-h" });
+        VeraCliArgs parser = new VeraCliArgParser(new String[] { "--flavour", "--version", "-h" });
     }
 
     /**
      * Test method for
      * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
      */
-    @Test(expected=ParameterException.class)
+    @Test(expected=joptsimple.OptionException.class)
     public final void testGetFlavourFlagInvalid() {
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-
-        // Test flag works
-        jCommander.parse(new String[] { "-f", "5t" });
+        VeraCliArgs parser = new VeraCliArgParser(new String[] { "-f", "5t" });
     }
 
     /**
      * Test method for
      * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
      */
-    @Test(expected=ParameterException.class)
+    @Test(expected=joptsimple.OptionException.class)
     public final void testGetFlavourOptionInvalid() {
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-
-        // Test flag works
-        jCommander.parse(new String[] { "--flavour", "9u" });
+        VeraCliArgs parser = new VeraCliArgParser(new String[] { "--flavour", "9u" });
     }
 
     /**
@@ -288,17 +253,11 @@ public class VerCliFlavourTest {
     }
 
     private static final void testFlavour(final String flag, final String flavour, final PDFAFlavour expected) {
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-
-        // Test flag works
-        jCommander.parse(new String[] { flag, flavour });
+        VeraCliArgs parser = new VeraCliArgParser(new String[] { flag, flavour });
         assertTrue(parser.getFlavour() == expected);
 
         // Test flag works with other options & flags
-        parser = new VeraCliArgParser();
-        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", flag, flavour, "--format", "xml"});
+        parser = new VeraCliArgParser(new String[] { "-l", flag, flavour, "--format", "xml"});
         assertTrue(parser.getFlavour() == expected);
     }
 

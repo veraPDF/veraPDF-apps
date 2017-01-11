@@ -92,8 +92,8 @@
     </dependency>
 
     <dependency>
-      <groupId>com.beust</groupId>
-      <artifactId>jcommander</artifactId>
+      <groupId>net.sf.jopt-simple</groupId>
+      <artifactId>jopt-simple</artifactId>
     </dependency>
 
     <dependency>

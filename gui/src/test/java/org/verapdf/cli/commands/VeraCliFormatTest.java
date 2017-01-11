@@ -26,10 +26,8 @@ package org.verapdf.cli.commands;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+import org.verapdf.apps.Applications;
 import org.verapdf.processor.FormatOption;
-
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.ParameterException;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -44,39 +42,22 @@ public class VeraCliFormatTest {
      */
     @Test
     public final void testGetFormatDefault() {
-        // Test default is XML
-        assertTrue(VeraCliArgParser.DEFAULT_ARGS.getFormat() == FormatOption.MRR);
-
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = VeraCliArgParserTest
-                .initialiseJCommander(parser);
-
-        // Test empty String[] args doesn't change that
-        jCommander.parse(new String[] {});
-        assertTrue(parser.getFormat() == VeraCliArgParser.DEFAULT_ARGS
-                .getFormat());
+        VeraCliArgs parser = new VeraCliArgParser(new String[] {});
+        assertTrue(parser.getFormat() == Applications.defaultConfig().getFormat());
 
         // Test other flags & options don't change that
-        parser = new VeraCliArgParser();
-        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--version", "--success", "-f",
+        parser = new VeraCliArgParser(new String[] { "-l", "--version", "--success", "-f",
                 "1b" });
-        assertTrue(parser.getFormat() == VeraCliArgParser.DEFAULT_ARGS
-                .getFormat());
+        assertTrue(parser.getFormat() == Applications.defaultConfig().getFormat());
     }
 
     /**
      * Test method for
      * {@link org.verapdf.cli.commands.VeraCliArgParser#getFormat()}.
      */
-    @Test(expected=ParameterException.class)
+    @Test(expected=joptsimple.OptionException.class)
     public final void testGetFormatGarbage() {
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = VeraCliArgParserTest
-                .initialiseJCommander(parser);
-
-        // Test that "rub" value throws exception
-        jCommander.parse(new String[] { "--format", "somerubbish" });
+        VeraCliArgs parser = new VeraCliArgParser(new String[] { "--format", "somerubbish" });
     }
 
     /**
@@ -85,24 +66,15 @@ public class VeraCliFormatTest {
      */
     @Test
     public final void testGetFormatXml() {
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = VeraCliArgParserTest
-                .initialiseJCommander(parser);
-
-        // Test that "xml" value selects XML
-        jCommander.parse(new String[] { "--format", "xml" });
+        VeraCliArgs parser = new VeraCliArgParser(new String[] { "--format", "xml" });
         assertTrue(parser.getFormat() == FormatOption.XML);
 
         // Test that "XML" value selects XML
-        parser = new VeraCliArgParser();
-        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "--format", "XML" });
+        parser = new VeraCliArgParser(new String[] { "--format", "XML" });
         assertTrue(parser.getFormat() == FormatOption.XML);
 
         // Test other flags & options doesn't change that
-        parser = new VeraCliArgParser();
-        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--format", "xml", "--success",
+        parser = new VeraCliArgParser(new String[] { "-l", "--format", "xml", "--success",
                 "-f", "1b" });
         assertTrue(parser.getFormat() == FormatOption.XML);
     }
@@ -113,24 +85,15 @@ public class VeraCliFormatTest {
      */
     @Test
     public final void testGetFormatMrr() {
-        VeraCliArgParser parser = new VeraCliArgParser();
-        JCommander jCommander = VeraCliArgParserTest
-                .initialiseJCommander(parser);
-
-        // Test that "mrr" value selects MRR
-        jCommander.parse(new String[] { "--format", "mrr" });
+        VeraCliArgs parser = new VeraCliArgParser(new String[] { "--format", "mrr" });
         assertTrue(parser.getFormat() == FormatOption.MRR);
 
         // Test that "MRR" value selects MRR
-        parser = new VeraCliArgParser();
-        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "--format", "MRR" });
+        parser = new VeraCliArgParser(new String[] { "--format", "MRR" });
         assertTrue(parser.getFormat() == FormatOption.MRR);
 
         // Test other flags & options doesn't change that
-        parser = new VeraCliArgParser();
-        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--format", "mrr", "--passed",
+        parser = new VeraCliArgParser(new String[] { "-l", "--format", "mrr", "--passed",
                 "-f", "1a" });
         assertTrue(parser.getFormat() == FormatOption.MRR);
     }
