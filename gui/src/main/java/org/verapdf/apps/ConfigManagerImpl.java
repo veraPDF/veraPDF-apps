@@ -23,16 +23,6 @@
  */
 package org.verapdf.apps;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.EnumSet;
-
-import javax.xml.bind.JAXBException;
-
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.metadata.fixer.FixerFactory;
@@ -42,6 +32,11 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.ProcessorFactory;
 import org.verapdf.processor.TaskType;
+import org.verapdf.processor.plugins.PluginsCollectionConfig;
+
+import javax.xml.bind.JAXBException;
+import java.io.*;
+import java.util.EnumSet;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -55,11 +50,13 @@ final class ConfigManagerImpl implements ConfigManager {
 	private static final String defaultValidName = "validator" + defaultConfExt; //$NON-NLS-1$
 	private static final String defaultFixerName = "fixer" + defaultConfExt; //$NON-NLS-1$
 	private static final String defaultFeaturesName = "features" + defaultConfExt; //$NON-NLS-1$
+	private static final String defaultPluginsName = "plugins" + defaultConfExt; //$NON-NLS-1$
 	private static final String defaultAppName = "app" + defaultConfExt; //$NON-NLS-1$
 	private final File root;
 	private final File validatorFile;
 	private final File fixerFile;
 	private final File featuresFile;
+	private final File pluginsFile;
 	private final File appFile;
 
 	private ConfigManagerImpl(final File root) {
@@ -67,6 +64,7 @@ final class ConfigManagerImpl implements ConfigManager {
 		this.validatorFile = getConfigFile(defaultValidName);
 		this.fixerFile = getConfigFile(defaultFixerName);
 		this.featuresFile = getConfigFile(defaultFeaturesName);
+		this.pluginsFile = getConfigFile(defaultPluginsName);
 		this.appFile = getConfigFile(defaultAppName);
 		this.initialise();
 	}
@@ -97,6 +95,16 @@ final class ConfigManagerImpl implements ConfigManager {
 		}
 	}
 
+	@Override
+	public PluginsCollectionConfig getPluginsCollectionConfig() {
+		try (InputStream fis = new FileInputStream(this.pluginsFile)) {
+			return PluginsCollectionConfig.create(fis);
+		} catch (IOException | JAXBException excep) {
+			excep.printStackTrace();
+			return PluginsCollectionConfig.defaultConfig();
+		}
+	}
+
 	/**
 	 * @see org.verapdf.apps.ConfigManager#getFixerConfig()
 	 */
@@ -111,7 +119,7 @@ final class ConfigManagerImpl implements ConfigManager {
 	}
 
 	/**
-	 * @see org.verapdf.apps.ConfigManager#getProcessorConfig()
+	 * @see org.verapdf.apps.ConfigManager#createProcessorConfig()
 	 */
 	@Override
 	public ProcessorConfig createProcessorConfig() {
@@ -120,21 +128,21 @@ final class ConfigManagerImpl implements ConfigManager {
 	}
 
 	/**
-	 * @see org.verapdf.apps.ConfigManager#getProcessorConfig(EnumSet<TaskType>)
+	 * @see org.verapdf.apps.ConfigManager#createProcessorConfig(EnumSet<TaskType>)
 	 */
 	@Override
 	public ProcessorConfig createProcessorConfig(EnumSet<TaskType> tasks) {
 		if (tasks == null) throw new NullPointerException(nullArgMessage);
-		return ProcessorFactory.fromValues(getValidatorConfig(), getFeaturesConfig(), getFixerConfig(), tasks);
+		return ProcessorFactory.fromValues(getValidatorConfig(), getFeaturesConfig(), getPluginsCollectionConfig(), getFixerConfig(), tasks);
 	}
 
 	/**
-	 * @see org.verapdf.apps.ConfigManager#getProcessorConfig(EnumSet<TaskType>)
+	 * @see org.verapdf.apps.ConfigManager#createProcessorConfig(EnumSet<TaskType>)
 	 */
 	@Override
 	public ProcessorConfig createProcessorConfig(EnumSet<TaskType> tasks, String mdFolder) {
 		if (tasks == null) throw new NullPointerException(nullArgMessage);
-		return ProcessorFactory.fromValues(getValidatorConfig(), getFeaturesConfig(), getFixerConfig(), tasks, mdFolder);
+		return ProcessorFactory.fromValues(getValidatorConfig(), getFeaturesConfig(), getPluginsCollectionConfig(), getFixerConfig(), tasks, mdFolder);
 	}
 
 	/**
