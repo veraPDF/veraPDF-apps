@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.verapdf</groupId>
     <artifactId>verapdf-apps</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>installer</artifactId>
   <name>veraPDF Installer</name>
@@ -58,7 +58,7 @@
             <configuration>
               <outputDirectory>${izpack.staging}</outputDirectory>
 
-              <!-- recursive copy of all resource under src/main/izpack. this is 
+              <!-- recursive copy of all resource under src/main/izpack. this is
                 the stuff to install as well as install.xml and panel data and such -->
               <resources>
                 <resource>
@@ -88,7 +88,7 @@
             <configuration>
               <outputDirectory>${izpack.staging}</outputDirectory>
 
-              <!-- recursive copy of all resource under src/main/izpack. this is 
+              <!-- recursive copy of all resource under src/main/izpack. this is
                 the stuff to install as well as install.xml and panel data and such -->
               <resources>
                 <resource>
@@ -130,7 +130,7 @@
         <executions>
 
           <execution>
-            <!-- copy izpack custom (custom panels, etc.) jars to izpack staging 
+            <!-- copy izpack custom (custom panels, etc.) jars to izpack staging
               custom -->
             <id>copy-izpack-dependencies</id>
             <phase>prepare-package</phase>
@@ -208,7 +208,7 @@
         </executions>
       </plugin>
 
-      <!-- We need to tell the izpack-maven-plugin what to use as the base directory 
+      <!-- We need to tell the izpack-maven-plugin what to use as the base directory
         (this is our staging area), and also tell it the install file to use: -->
       <plugin>
         <groupId>org.codehaus.izpack</groupId>
@@ -231,8 +231,8 @@
             </configuration>
           </execution>
         </executions>
-        <!-- must have a dependency here on any code used in the installer, otherwise 
-          the classloader will not find it. So in this case we need our panels and then the 
+        <!-- must have a dependency here on any code used in the installer, otherwise
+          the classloader will not find it. So in this case we need our panels and then the
           package that contains the base classes for the panels -->
         <dependencies>
           <dependency>
