@@ -44,12 +44,15 @@ import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.policy.PolicyChecker;
-import org.verapdf.processor.BatchProcessor;
-import org.verapdf.processor.ItemProcessor;
-import org.verapdf.processor.ProcessorConfig;
-import org.verapdf.processor.ProcessorFactory;
-import org.verapdf.processor.ProcessorResult;
+import org.verapdf.processor.*;
 import org.verapdf.processor.reports.ItemDetails;
+
+import javax.xml.bind.JAXBException;
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -78,7 +81,7 @@ final class VeraPdfCliProcessor {
 		this.policyFile = args.getPolicyFile();
 		this.appConfig = args.appConfig(configManager.getApplicationConfig());
 		this.processorConfig = args.processorConfig(this.appConfig.getProcessType(),
-				this.configManager.getFeaturesConfig());
+				this.configManager.getFeaturesConfig(), this.configManager.getPluginsCollectionConfig());
 		if (this.configManager.getApplicationConfig().isOverwriteReport()) {
 			File file = new File(this.configManager.getApplicationConfig().getReportFile());
 			if (file.exists()) {

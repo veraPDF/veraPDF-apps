@@ -23,18 +23,12 @@
  */
 package org.verapdf.apps;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
+import org.verapdf.processor.FormatOption;
 
 import javax.xml.bind.JAXBException;
-
-import org.verapdf.processor.FormatOption;
+import java.io.*;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -123,7 +117,6 @@ public final class Applications {
 		private String _reportFile = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
 		private String _reportFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
 		private String _policyFile = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
-		private String _pluginsFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
 		private boolean _isVerbose = false;
 
 		private Builder() {
@@ -142,7 +135,6 @@ public final class Applications {
 			this._reportFile = config.getReportFile();
 			this._reportFolder = config.getReportFolder();
 			this._policyFile = config.getPolicyFile();
-			this._pluginsFolder = config.getPluginsFolder();
 		}
 
 		public Builder type(ProcessType type) {
@@ -195,11 +187,6 @@ public final class Applications {
 			return this;
 		}
 
-		public Builder pluginsFolder(String plugins) {
-			this._pluginsFolder = plugins;
-			return this;
-		}
-
 		public static Builder fromConfig(VeraAppConfig config) {
 			return new Builder(config);
 		}
@@ -210,7 +197,7 @@ public final class Applications {
 
 		public VeraAppConfig build() {
 			return new VeraAppConfigImpl(_type, _maxFails, _isOverwrite, _fixerFolder, _format, _isVerbose,
-					_wikiPath, _reportFile, _reportFolder, _policyFile, _pluginsFolder);
+					_wikiPath, _reportFile, _reportFolder, _policyFile);
 		}
 	}
 

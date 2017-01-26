@@ -72,6 +72,7 @@
     <sonar.language>java</sonar.language>
     <maven.failsafe.version>2.18.1</maven.failsafe.version>
     <verapdf.validation.version>[1.0.0,2.0.0)</verapdf.validation.version>
+    <verapdf.pdfbox.validation.version>[1.0.0,2.0.0)</verapdf.pdfbox.validation.version>
   </properties>
 
   <dependencyManagement>
