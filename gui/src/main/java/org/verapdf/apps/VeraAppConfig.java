@@ -23,9 +23,9 @@
  */
 package org.verapdf.apps;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.verapdf.processor.FormatOption;
+
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -39,7 +39,6 @@ import org.verapdf.processor.FormatOption;
 public interface VeraAppConfig {
 	public boolean isOverwriteReport();
 	public String getFixesFolder();
-	public String getPluginsFolder();
 	public String getReportFile();
 	public String getReportFolder();
 	public String getPolicyFile();

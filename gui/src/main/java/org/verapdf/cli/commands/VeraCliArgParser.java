@@ -20,16 +20,10 @@
  */
 package org.verapdf.cli.commands;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-import javax.xml.bind.JAXBException;
-
+import com.beust.jcommander.IParameterValidator;
+import com.beust.jcommander.IStringConverter;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
@@ -45,11 +39,16 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.FormatOption;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.ProcessorFactory;
+import org.verapdf.processor.plugins.PluginsCollectionConfig;
 
-import com.beust.jcommander.IParameterValidator;
-import com.beust.jcommander.IStringConverter;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * This class holds all command-line options used by VeraPDF application.
@@ -423,15 +422,16 @@ public class VeraCliArgParser {
 		return configBuilder.build();
 	}
 
-	public ProcessorConfig processorConfig(final ProcessType procType, FeatureExtractorConfig featConfig)
+	public ProcessorConfig processorConfig(final ProcessType procType, FeatureExtractorConfig featConfig,
+										   PluginsCollectionConfig plugConfig)
 			throws VeraPDFException {
 		if (this.profileFile == null) {
-			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, this.fixerConfig(),
+			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, plugConfig, this.fixerConfig(),
 					procType.getTasks(), this.saveFolder);
 		}
 		try (InputStream fis = new FileInputStream(this.profileFile)) {
 			ValidationProfile customProfile = Profiles.profileFromXml(fis);
-			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, this.fixerConfig(),
+			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, plugConfig, this.fixerConfig(),
 					procType.getTasks(), customProfile, this.saveFolder);
 		} catch (IOException | JAXBException excep) {
 			throw new VeraPDFException("Problem loading custom profile", excep);

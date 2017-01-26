@@ -20,20 +20,6 @@
  */
 package org.verapdf.processor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.EnumSet;
-
-import javax.xml.bind.JAXBException;
-
 import org.junit.Test;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.metadata.fixer.FixerFactory;
@@ -43,6 +29,14 @@ import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
+import org.verapdf.processor.plugins.PluginsCollectionConfig;
+
+import javax.xml.bind.JAXBException;
+import java.io.*;
+import java.util.EnumSet;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Sergey Shemyakov
@@ -58,7 +52,6 @@ public class ProcessorImplProfileTest {
 	 *
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProfileException
 	 * @throws JAXBException
 	 */
 
@@ -83,7 +76,7 @@ public class ProcessorImplProfileTest {
             final File profileFile) throws FileNotFoundException, IOException, JAXBException {
 		try (InputStream is = new FileInputStream(profileFile)) {
 			ValidationProfile profile = Profiles.profileFromXml(is);
-	        ProcessorConfig config = ProcessorFactory.fromValues(ValidatorFactory.defaultConfig(), FeatureFactory.defaultConfig(), FixerFactory.defaultConfig(), EnumSet.noneOf(TaskType.class), profile);
+	        ProcessorConfig config = ProcessorFactory.fromValues(ValidatorFactory.defaultConfig(), FeatureFactory.defaultConfig(), PluginsCollectionConfig.defaultConfig(), FixerFactory.defaultConfig(), EnumSet.noneOf(TaskType.class), profile);
 			assertEquals(flavour, ProcessorFactory.fileBatchProcessor(config).getConfig().getCustomProfile().getPDFAFlavour());
 			assertTrue(profile.equals(ProcessorFactory.fileBatchProcessor(config).getConfig().getCustomProfile()));
 		}

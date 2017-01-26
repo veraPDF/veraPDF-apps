@@ -23,18 +23,17 @@
  */
 package org.verapdf.cli.commands;
 
-import static org.junit.Assert.*;
-
+import com.beust.jcommander.JCommander;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.apps.Applications;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.features.FeatureFactory;
-import org.verapdf.processor.FormatOption;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.TaskType;
+import org.verapdf.processor.plugins.PluginsCollectionConfig;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -121,6 +120,7 @@ public class VeraCliTasksTest {
         // Test that "xml" value selects XML
         jCommander.parse(args);
         
-        return parser.processorConfig(parser.appConfig(Applications.defaultConfig()).getProcessType(), FeatureFactory.defaultConfig());
+        return parser.processorConfig(parser.appConfig(Applications.defaultConfig()).getProcessType(),
+				FeatureFactory.defaultConfig(), PluginsCollectionConfig.defaultConfig());
 	}
 }
