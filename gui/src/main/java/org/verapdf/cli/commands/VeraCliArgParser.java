@@ -1,15 +1,29 @@
+/**
+ * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * VeraPDF Library GUI is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * VeraPDF Library GUI as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
 package org.verapdf.cli.commands;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-import javax.xml.bind.JAXBException;
-
+import com.beust.jcommander.IParameterValidator;
+import com.beust.jcommander.IStringConverter;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
@@ -25,11 +39,16 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.FormatOption;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.ProcessorFactory;
+import org.verapdf.processor.plugins.PluginsCollectionConfig;
 
-import com.beust.jcommander.IParameterValidator;
-import com.beust.jcommander.IStringConverter;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * This class holds all command-line options used by VeraPDF application.
@@ -403,15 +422,16 @@ public class VeraCliArgParser {
 		return configBuilder.build();
 	}
 
-	public ProcessorConfig processorConfig(final ProcessType procType, FeatureExtractorConfig featConfig)
+	public ProcessorConfig processorConfig(final ProcessType procType, FeatureExtractorConfig featConfig,
+										   PluginsCollectionConfig plugConfig)
 			throws VeraPDFException {
 		if (this.profileFile == null) {
-			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, this.fixerConfig(),
+			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, plugConfig, this.fixerConfig(),
 					procType.getTasks(), this.saveFolder);
 		}
 		try (InputStream fis = new FileInputStream(this.profileFile)) {
 			ValidationProfile customProfile = Profiles.profileFromXml(fis);
-			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, this.fixerConfig(),
+			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, plugConfig, this.fixerConfig(),
 					procType.getTasks(), customProfile, this.saveFolder);
 		} catch (IOException | JAXBException excep) {
 			throw new VeraPDFException("Problem loading custom profile", excep);

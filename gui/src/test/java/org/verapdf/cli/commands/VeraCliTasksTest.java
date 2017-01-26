@@ -1,20 +1,39 @@
 /**
+ * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * VeraPDF Library GUI is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * VeraPDF Library GUI as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
+/**
  * 
  */
 package org.verapdf.cli.commands;
 
-import static org.junit.Assert.*;
-
+import com.beust.jcommander.JCommander;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.apps.Applications;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.features.FeatureFactory;
-import org.verapdf.processor.FormatOption;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.TaskType;
+import org.verapdf.processor.plugins.PluginsCollectionConfig;
 
-import com.beust.jcommander.JCommander;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -101,6 +120,7 @@ public class VeraCliTasksTest {
         // Test that "xml" value selects XML
         jCommander.parse(args);
         
-        return parser.processorConfig(parser.appConfig(Applications.defaultConfig()).getProcessType(), FeatureFactory.defaultConfig());
+        return parser.processorConfig(parser.appConfig(Applications.defaultConfig()).getProcessType(),
+				FeatureFactory.defaultConfig(), PluginsCollectionConfig.defaultConfig());
 	}
 }

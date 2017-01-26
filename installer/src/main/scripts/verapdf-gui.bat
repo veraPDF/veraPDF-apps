@@ -1,3 +1,24 @@
+@REM
+@REM This file is part of veraPDF Installer, a module of the veraPDF project.
+@REM Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+@REM All rights reserved.
+@REM
+@REM veraPDF Installer is free software: you can redistribute it and/or modify
+@REM it under the terms of either:
+@REM
+@REM The GNU General public license GPLv3+.
+@REM You should have received a copy of the GNU General Public License
+@REM along with veraPDF Installer as the LICENSE.GPL file in the root of the source
+@REM tree.  If not, see http://www.gnu.org/licenses/ or
+@REM https://www.gnu.org/licenses/gpl-3.0.en.html.
+@REM
+@REM The Mozilla Public License MPLv2+.
+@REM You should have received a copy of the Mozilla Public License along with
+@REM veraPDF Installer as the LICENSE.MPL file in the root of the source tree.
+@REM If a copy of the MPL was not distributed with this file, you can obtain one at
+@REM http://mozilla.org/MPL/2.0/.
+@REM
+
 @echo off
 
 set ERROR_CODE=0

@@ -1,20 +1,34 @@
 /**
+ * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * VeraPDF Library GUI is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * VeraPDF Library GUI as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
+ */
+/**
  * 
  */
 package org.verapdf.apps;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
+import org.verapdf.processor.FormatOption;
 
 import javax.xml.bind.JAXBException;
-
-import org.verapdf.processor.FormatOption;
+import java.io.*;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -103,7 +117,6 @@ public final class Applications {
 		private String _reportFile = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
 		private String _reportFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
 		private String _policyFile = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
-		private String _pluginsFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
 		private boolean _isVerbose = false;
 
 		private Builder() {
@@ -122,7 +135,6 @@ public final class Applications {
 			this._reportFile = config.getReportFile();
 			this._reportFolder = config.getReportFolder();
 			this._policyFile = config.getPolicyFile();
-			this._pluginsFolder = config.getPluginsFolder();
 		}
 
 		public Builder type(ProcessType type) {
@@ -175,11 +187,6 @@ public final class Applications {
 			return this;
 		}
 
-		public Builder pluginsFolder(String plugins) {
-			this._pluginsFolder = plugins;
-			return this;
-		}
-
 		public static Builder fromConfig(VeraAppConfig config) {
 			return new Builder(config);
 		}
@@ -190,7 +197,7 @@ public final class Applications {
 
 		public VeraAppConfig build() {
 			return new VeraAppConfigImpl(_type, _maxFails, _isOverwrite, _fixerFolder, _format, _isVerbose,
-					_wikiPath, _reportFile, _reportFolder, _policyFile, _pluginsFolder);
+					_wikiPath, _reportFile, _reportFolder, _policyFile);
 		}
 	}
 
