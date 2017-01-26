@@ -23,17 +23,17 @@
  */
 package org.verapdf.apps;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.EnumSet;
-
-import javax.xml.bind.JAXBException;
-
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.TaskType;
+import org.verapdf.processor.plugins.PluginsCollectionConfig;
+
+import javax.xml.bind.JAXBException;
+import java.io.File;
+import java.io.IOException;
+import java.util.EnumSet;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -47,6 +47,7 @@ import org.verapdf.processor.TaskType;
 public interface ConfigManager {
 	public ValidatorConfig getValidatorConfig();
 	public FeatureExtractorConfig getFeaturesConfig();
+	public PluginsCollectionConfig getPluginsCollectionConfig();
 	public MetadataFixerConfig getFixerConfig();
 	public ProcessorConfig createProcessorConfig();
 	public ProcessorConfig createProcessorConfig(EnumSet<TaskType> tasks);

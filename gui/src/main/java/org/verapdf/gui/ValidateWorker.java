@@ -91,11 +91,11 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
             ValidatorConfig validatorConfig = this.configManager.getValidatorConfig();
             ProcessorConfig resultConfig = this.customProfile == null
                     ? ProcessorFactory.fromValues(validatorConfig,
-                    this.configManager.getFeaturesConfig(), this.configManager.getFixerConfig(),
-                    tasks, veraAppConfig.getFixesFolder())
+                    this.configManager.getFeaturesConfig(), this.configManager.getPluginsCollectionConfig(),
+                    this.configManager.getFixerConfig(), tasks, veraAppConfig.getFixesFolder())
                     : ProcessorFactory.fromValues(validatorConfig,
-                    this.configManager.getFeaturesConfig(), this.configManager.getFixerConfig(),
-                    tasks, customProfile, veraAppConfig.getFixesFolder());
+                    this.configManager.getFeaturesConfig(), this.configManager.getPluginsCollectionConfig(),
+                    this.configManager.getFixerConfig(), tasks, customProfile, veraAppConfig.getFixesFolder());
             BatchProcessor processor = ProcessorFactory.fileBatchProcessor(resultConfig);
             VeraAppConfig applicationConfig = this.configManager.getApplicationConfig();
             this.batchSummary = processor.process(this.pdfs,

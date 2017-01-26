@@ -22,6 +22,7 @@ import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.ProcessorFactory;
+import org.verapdf.processor.plugins.PluginsCollectionConfig;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -65,12 +66,12 @@ public class VeraConfigGeneratorImpl implements VeraConfigGenerator {
 	public ProcessorConfig processorConfigFromArgs(VeraCliArgs cliArgs, ProcessType procType,
 			FeatureExtractorConfig featConfig) throws VeraPDFException {
 		if (cliArgs.getProfileFile() == null) {
-			return ProcessorFactory.fromValues(this.validatorConfigFromArgs(cliArgs), featConfig,
+			return ProcessorFactory.fromValues(this.validatorConfigFromArgs(cliArgs), featConfig, PluginsCollectionConfig.defaultConfig(),
 					this.fixerConfigFromArgs(cliArgs), procType.getTasks(), cliArgs.saveFolder());
 		}
 		try (InputStream fis = new FileInputStream(cliArgs.getProfileFile())) {
 			ValidationProfile customProfile = Profiles.profileFromXml(fis);
-			return ProcessorFactory.fromValues(this.validatorConfigFromArgs(cliArgs), featConfig,
+			return ProcessorFactory.fromValues(this.validatorConfigFromArgs(cliArgs), featConfig, PluginsCollectionConfig.defaultConfig(),
 					this.fixerConfigFromArgs(cliArgs), procType.getTasks(), customProfile, cliArgs.saveFolder());
 		} catch (IOException | JAXBException excep) {
 			throw new VeraPDFException("Problem loading custom profile", excep);

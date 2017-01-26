@@ -23,13 +23,7 @@
  */
 package org.verapdf.apps;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import org.verapdf.processor.FormatOption;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -39,8 +33,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-
-import org.verapdf.processor.FormatOption;
+import java.io.*;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -70,19 +63,17 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	private final String reportFolder;
 	@XmlElement
 	private final String policyFile;
-	@XmlElement
-	private final String pluginsFolder;
 
 	VeraAppConfigImpl() {
 		this(defaultInstance.getProcessType(), defaultInstance.getMaxFailsDisplayed(),
 				defaultInstance.isOverwriteReport(), defaultInstance.getFixesFolder(), defaultInstance.getFormat(),
 				defaultInstance.isVerbose(), defaultInstance.getWikiPath(), defaultInstance.getReportFile(),
-				defaultInstance.getReportFolder(), defaultInstance.getPolicyFile(), defaultInstance.getPluginsFolder());
+				defaultInstance.getReportFolder(), defaultInstance.getPolicyFile());
 	}
 
 	VeraAppConfigImpl(final ProcessType type, final int maxFails, final boolean isOverwrite, final String fixerFolder,
 			final FormatOption format, final boolean isVerbose, final String wikiPath, final String reportFile,
-					  final String reportFolder, final String policyFile, final String pluginsFolder) {
+					  final String reportFolder, final String policyFile) {
 		super();
 		this.type = type;
 		this.maxFails = maxFails;
@@ -94,7 +85,6 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 		this.reportFile = reportFile;
 		this.reportFolder = reportFolder;
 		this.policyFile = policyFile;
-		this.pluginsFolder = pluginsFolder;
 	}
 
 	/**
@@ -106,19 +96,11 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	}
 
 	/**
-	 * @see org.verapdf.apps.VeraAppConfig#getFixerFolder()
+	 * @see org.verapdf.apps.VeraAppConfig#getFixesFolder()
 	 */
 	@Override
 	public String getFixesFolder() {
 		return this.fixerFolder;
-	}
-
-	/**
-	 * @see org.verapdf.apps.VeraAppConfig#getPluginsFolder()
-	 */
-	@Override
-	public String getPluginsFolder() {
-		return this.pluginsFolder;
 	}
 
 	/**
@@ -187,7 +169,6 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 		result = 31 * result + (this.reportFile != null ? this.reportFile.hashCode() : 0);
 		result = 31 * result + (this.reportFolder != null ? this.reportFolder.hashCode() : 0);
 		result = 31 * result + (this.policyFile != null ? this.policyFile.hashCode() : 0);
-		result = 31 * result + (this.pluginsFolder != null ? this.pluginsFolder.hashCode() : 0);
 		return result;
 	}
 
@@ -223,13 +204,6 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 			return false;
 		}
 		if (this.maxFails != other.maxFails) {
-			return false;
-		}
-		if (this.pluginsFolder == null) {
-			if (other.pluginsFolder != null) {
-				return false;
-			}
-		} else if (!this.pluginsFolder.equals(other.pluginsFolder)) {
 			return false;
 		}
 		if (this.policyFile == null) {
@@ -274,7 +248,7 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 		return "VeraAppConfigImpl [type=" + this.type + ", maxFails=" + this.maxFails + ", isOverwrite=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ this.isOverwrite + ", format=" + this.format + ", isVerbose=" + this.isVerbose + ", fixerFolder=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ this.fixerFolder + ", wikiPath=" + this.wikiPath + ", reportFile=" + this.reportFile + ", reportFolder=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				+ this.reportFolder + ", policyFile=" + this.policyFile + ", pluginsFolder=" + this.pluginsFolder + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ this.reportFolder + ", policyFile=" + this.policyFile + "]"; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	static String toXml(final VeraAppConfig toConvert, Boolean prettyXml) throws JAXBException, IOException {

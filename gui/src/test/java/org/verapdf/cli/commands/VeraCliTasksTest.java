@@ -26,6 +26,7 @@ import org.verapdf.core.VeraPDFException;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.TaskType;
+import org.verapdf.processor.plugins.PluginsCollectionConfig;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>

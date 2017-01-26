@@ -15,17 +15,32 @@
 package org.verapdf.cli.commands;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import javax.xml.bind.JAXBException;
+
 import org.verapdf.apps.Applications;
+import org.verapdf.apps.ProcessType;
+import org.verapdf.apps.VeraAppConfig;
+import org.verapdf.core.VeraPDFException;
+import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.metadata.fixer.FixerFactory;
+import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+import org.verapdf.pdfa.validation.profiles.Profiles;
+import org.verapdf.pdfa.validation.profiles.ValidationProfile;
+import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.FormatOption;
+import org.verapdf.processor.ProcessorConfig;
+import org.verapdf.processor.ProcessorFactory;
+import org.verapdf.processor.plugins.PluginsCollectionConfig;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -407,4 +422,44 @@ public class VeraCliArgParser implements VeraCliArgs {
 
 	}
 
+	public ValidatorConfig validatorConfig() {
+		return ValidatorFactory.createConfig(this.flavour, this.logPassed(), this.maxFailures);
+	}
+
+	public MetadataFixerConfig fixerConfig() {
+		return FixerFactory.configFromValues(this.prefix, true);
+	}
+
+	public VeraAppConfig appConfig(final VeraAppConfig base) {
+		Applications.Builder configBuilder = Applications.Builder.fromConfig(base);
+		configBuilder.format(this.getFormat()).isVerbose(this.isVerbose()).fixerFolder(this.saveFolder);
+		configBuilder.type(typeFromArgs(this));
+		return configBuilder.build();
+	}
+
+	public ProcessorConfig processorConfig(final ProcessType procType, FeatureExtractorConfig featConfig,
+										   PluginsCollectionConfig plugConfig)
+			throws VeraPDFException {
+		if (this.profileFile == null) {
+			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, plugConfig, this.fixerConfig(),
+					procType.getTasks(), this.saveFolder);
+		}
+		try (InputStream fis = new FileInputStream(this.profileFile)) {
+			ValidationProfile customProfile = Profiles.profileFromXml(fis);
+			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, plugConfig, this.fixerConfig(),
+					procType.getTasks(), customProfile, this.saveFolder);
+		} catch (IOException | JAXBException excep) {
+			throw new VeraPDFException("Problem loading custom profile", excep);
+		}
+	}
+
+	private static ProcessType typeFromArgs(VeraCliArgParser parser) {
+		ProcessType retVal = (parser.isValidationOff() && !parser.isPolicy()) ? ProcessType.NO_PROCESS
+				: ProcessType.VALIDATE;
+		if (parser.extractFeatures() || parser.isPolicy())
+			retVal = ProcessType.addProcess(retVal, ProcessType.EXTRACT);
+		if (parser.fixMetadata())
+			retVal = ProcessType.addProcess(retVal, ProcessType.FIX);
+		return retVal;
+	}
 }
