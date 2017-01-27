@@ -43,9 +43,10 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
+          <finalName>core-${project.version}</finalName>
           <archive>
             <manifest>
-              <mainClass>org.verapdf.gui.PDFValidationApplication</mainClass>
+              <mainClass>org.verapdf.cli.VeraPdfCli</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>
