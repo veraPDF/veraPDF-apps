@@ -230,6 +230,11 @@ final class ConfigManagerImpl implements ConfigManager {
 					Applications.toXml(Applications.defaultConfig(), fos, Boolean.TRUE);
 				}
 			}
+			if ((!this.pluginsFile.exists() && this.pluginsFile.createNewFile()) || this.pluginsFile.length() == 0) {
+				try (OutputStream fos = new FileOutputStream(this.pluginsFile, false)) {
+					PluginsCollectionConfig.configToXml(PluginsCollectionConfig.defaultConfig(), fos);
+				}
+			}
 		} catch (IOException | JAXBException excep) {
 			excep.printStackTrace();
 			throw new IllegalStateException("Couldn't setup config", excep);
