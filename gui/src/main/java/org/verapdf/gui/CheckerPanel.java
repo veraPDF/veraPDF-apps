@@ -158,6 +158,17 @@ class CheckerPanel extends JPanel {
 			this.fixMetadata.setEnabled(false);
 		}
 
+		final JLabel chooseFlavourLabel = new JLabel(GUIConstants.CHOOSE_FLAVOUR);
+		setGridBagConstraintsParameters(gbc, GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_X,
+				GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_Y,
+				GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_WEIGHT_X,
+				GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_HEIGHT,
+				GridBagConstraints.HORIZONTAL);
+		gbl.setConstraints(chooseFlavourLabel, gbc);
+		this.add(chooseFlavourLabel);
+
 		Vector<String> availableFlavours = new Vector<>();
 		availableFlavours.add(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
 		availableFlavours.add(GUIConstants.AUTO_FLAVOUR_COMBOBOX_TEXT);
