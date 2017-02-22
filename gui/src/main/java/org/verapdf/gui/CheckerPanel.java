@@ -129,6 +129,7 @@ class CheckerPanel extends JPanel {
 				GUIConstants.PROCESS_TYPE_LABEL_CONSTRAINT_GRID_WIDTH,
 				GUIConstants.PROCESS_TYPE_LABEL_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(processType, gbc);
+		processType.setHorizontalAlignment(SwingConstants.RIGHT);
 		this.add(processType);
 
 		this.ProcessTypes = new JComboBox<>(ProcessType.getOptionValues());
@@ -145,6 +146,7 @@ class CheckerPanel extends JPanel {
 		this.add(this.ProcessTypes);
 
 		this.fixMetadata = new JCheckBox(GUIConstants.FIX_METADATA_LABEL_TEXT);
+		this.fixMetadata.setHorizontalTextPosition(SwingConstants.LEFT);
 		this.fixMetadata.setSelected(config.createProcessorConfig().getTasks().contains(TaskType.FIX_METADATA));
 		setGridBagConstraintsParameters(gbc, GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_X,
 				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_Y,
@@ -154,6 +156,7 @@ class CheckerPanel extends JPanel {
 				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.fixMetadata, gbc);
 		this.add(this.fixMetadata);
+		this.fixMetadata.setHorizontalAlignment(SwingConstants.RIGHT);
 		if (config.getApplicationConfig().getProcessType() == ProcessType.EXTRACT) {
 			this.fixMetadata.setEnabled(false);
 		}
@@ -166,6 +169,7 @@ class CheckerPanel extends JPanel {
 				GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_WIDTH,
 				GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_HEIGHT,
 				GridBagConstraints.HORIZONTAL);
+		chooseFlavourLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		gbl.setConstraints(chooseFlavourLabel, gbc);
 		this.add(chooseFlavourLabel);
 
