@@ -157,7 +157,7 @@ class CheckerPanel extends JPanel {
 				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.fixMetadata, gbc);
 		this.add(this.fixMetadata);
-		this.fixMetadata.setHorizontalAlignment(SwingConstants.RIGHT);
+		this.fixMetadata.setHorizontalAlignment(SwingConstants.CENTER);
 		if (config.getApplicationConfig().getProcessType() == ProcessType.EXTRACT) {
 			this.fixMetadata.setEnabled(false);
 		}
