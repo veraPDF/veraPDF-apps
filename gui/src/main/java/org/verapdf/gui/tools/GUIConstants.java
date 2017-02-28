@@ -140,7 +140,7 @@ public final class GUIConstants {
 
 	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_X = 2;
 	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_Y = 3;
-	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_WEIGHT_X = 0;
+	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_WEIGHT_X = 1;
 	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_HEIGHT = 1;
