@@ -131,8 +131,7 @@
         <include name="plugins/**"/>
         <include name="config/**"/>
       </updatecheck>
-      <file targetdir="$INSTALL_PATH/plugins" src="plugins/veraPDF-sample-plugin-pack.zip" unpack="true"/>
-      <file targetdir="$INSTALL_PATH/config" src="config/plugins.xml"/>
+      <file targetdir="$INSTALL_PATH" src="plugins/veraPDF-sample-plugin-pack.zip" unpack="true"/>
       <parsable targetfile="$INSTALL_PATH/config/plugins.xml" type="xml"/>
     </pack>
   </packs>
