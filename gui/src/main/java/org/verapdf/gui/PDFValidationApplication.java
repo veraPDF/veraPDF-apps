@@ -92,6 +92,7 @@ public class PDFValidationApplication extends JFrame {
 	private FeaturesConfigPanel featuresPanel;
 	private CheckerPanel checkerPanel;
 	private VeraAppConfig config;
+	private PolicyPanel policyConfig;
 
 	private PDFValidationApplication() {
 		addWindowListener(new ExitWindowAdapter());
@@ -170,6 +171,23 @@ public class PDFValidationApplication extends JFrame {
 
 		file.add(sett);
 
+		file.addSeparator();
+
+		final JMenuItem quit = new JMenuItem("Quit");
+		quit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				PDFValidationApplication.this
+						.processWindowEvent(new WindowEvent(PDFValidationApplication.this, WindowEvent.WINDOW_CLOSING));
+			}
+		});
+
+		quit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK));
+
+		file.add(quit);
+
+		final JMenu policy = new JMenu("Policy");
+
 		featuresPanel = new FeaturesConfigPanel();
 
 		final JMenuItem features = new JMenuItem("Features Config");
@@ -187,22 +205,22 @@ public class PDFValidationApplication extends JFrame {
 			}
 		});
 
-		file.add(features);
+		menuBar.add(policy);
+		policy.add(features);
 
-		file.addSeparator();
+		policyConfig = new PolicyPanel();
 
-		final JMenuItem quit = new JMenuItem("Quit");
-		quit.addActionListener(new ActionListener() {
+		final JMenuItem policyPanel = new JMenuItem("Policy Config");
+		policyPanel.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				PDFValidationApplication.this
-						.processWindowEvent(new WindowEvent(PDFValidationApplication.this, WindowEvent.WINDOW_CLOSING));
+			public void actionPerformed(ActionEvent e) {
+				if (policyConfig != null && policyConfig.showDialog(PDFValidationApplication.this)) {
+					// TODO: save schematron file and edit configs
+				}
 			}
 		});
 
-		quit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK));
-
-		file.add(quit);
+		policy.add(policyPanel);
 
 		JMenuItem about = new JMenuItem("About");
 		about.addActionListener(new ActionListener() {
