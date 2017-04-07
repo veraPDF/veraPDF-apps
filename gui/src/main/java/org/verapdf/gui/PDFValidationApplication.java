@@ -32,17 +32,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.xml.bind.JAXBException;
 
@@ -209,13 +199,21 @@ public class PDFValidationApplication extends JFrame {
 		policy.add(features);
 
 		policyConfig = new PolicyPanel();
-
 		final JMenuItem policyPanel = new JMenuItem("Policy Config");
 		policyPanel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (policyConfig != null && policyConfig.showDialog(PDFValidationApplication.this)) {
-					// TODO: save schematron file and edit configs
+					try {
+						JFileChooser jfc = new JFileChooser(new File(GUIConstants.DOT).getCanonicalPath());
+						jfc.showDialog(PDFValidationApplication.this, "Save policy config file");
+						PDFValidationApplication.this.policyConfig.setPoilcyFile(
+								jfc.getCurrentDirectory());
+					} catch (IOException ex) {
+						JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in saving policy config file.",
+								GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+						LOGGER.error("Error in saving policy config file.", ex);
+					}
 				}
 			}
 		});

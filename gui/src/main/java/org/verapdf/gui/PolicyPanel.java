@@ -65,7 +65,7 @@ public class PolicyPanel extends JPanel {
         buttonPanel.add(cancelButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        addLineButton = new JButton("New policy");
+        addLineButton = new JButton("New assertion");
         addLineButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -73,7 +73,7 @@ public class PolicyPanel extends JPanel {
             }
         });
 
-        removeLineButton = new JButton("Delete last policy");
+        removeLineButton = new JButton("Delete last assertion");
         removeLineButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -110,6 +110,10 @@ public class PolicyPanel extends JPanel {
 
     public File getPolicyFile() {
         return policyFile;
+    }
+
+    public void setPoilcyFile(File poilcyFile) {
+        this.policyFile = policyFile;
     }
 
     private void addLineToMainPanel() {
