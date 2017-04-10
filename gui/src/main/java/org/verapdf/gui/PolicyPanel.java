@@ -1,15 +1,20 @@
 package org.verapdf.gui;
 
 import org.verapdf.features.FeatureObjectType;
+import org.verapdf.features.objects.Feature;
+import org.verapdf.features.objects.FeaturesStructureContainer;
 import org.verapdf.gui.tools.GUIConstants;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * @author Sergey Shemyakov
@@ -24,11 +29,10 @@ public class PolicyPanel extends JPanel {
     private JPanel mainPanel;
     private GridLayout mainPanelLayout;
 
-    private List<JComboBox<FeatureObjectType>> featureTypes;
+    private List<JLabeledComboBox<FeatureObjectType>> featureTypes;
     private List<JTextField> arguments;
-    //TODO: add other comboboxes
-    private List<JComboBox<Example>> comboBoxes2;   // TODO: remove; just for testing purposes
-    private List<JComboBox<Example>> comboBoxes3;   // TODO: remove; just for testing purposes
+    private List<JLabeledComboBox<Feature>> features;
+    private List<JLabeledComboBox<Example>> comboBoxes3;   // TODO: remove; just for testing purposes
 
     private JButton addLineButton;
     private JButton removeLineButton;
@@ -38,7 +42,7 @@ public class PolicyPanel extends JPanel {
 
         this.featureTypes = new ArrayList<>();
         this.arguments = new ArrayList<>();
-        this.comboBoxes2 = new ArrayList<>();   // TODO: remove; just for testing purposes
+        this.features = new ArrayList<>();
         this.comboBoxes3 = new ArrayList<>();   // TODO: remove; just for testing purposes
 
         this.okButton = new JButton("Ok");
@@ -54,6 +58,7 @@ public class PolicyPanel extends JPanel {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
+                org.verapdf.gui.PolicyPanel.this.ok = false;
                 org.verapdf.gui.PolicyPanel.this.dialog.setVisible(false);
             }
         });
@@ -126,15 +131,20 @@ public class PolicyPanel extends JPanel {
         Rectangle oldBorder = dialog.getBounds();
         dialog.setBounds(oldBorder.x, oldBorder.y - 28, oldBorder.width, oldBorder.height);
 
-        JComboBox<FeatureObjectType> featuresTypeComboBox = new JComboBox<>(FeatureObjectType.values());
+        JLabeledComboBox<FeatureObjectType> featuresTypeComboBox = getFeatureTypeComboBox();
+        featuresTypeComboBox.setLabel(featureTypes.size());
         this.featureTypes.add(featuresTypeComboBox);
         mainPanel.add(featuresTypeComboBox);
 
-        JComboBox<Example> testComboBox = new JComboBox<>(Example.values());    // TODO: remove; just for testing purposes
-        this.comboBoxes2.add(testComboBox);
-        mainPanel.add(testComboBox);    // TODO: whatever goes next
+        JLabeledComboBox<Feature> featuresComboBox = new JLabeledComboBox<>();
+        setFeaturesComboBoxForFeature(featuresComboBox,
+                (FeatureObjectType) featuresTypeComboBox.getSelectedItem());
+        featuresComboBox.setLabel(features.size());
+        featuresComboBox.setRenderer(new FeatureRenderer());
+        this.features.add(featuresComboBox);
+        mainPanel.add(featuresComboBox);
 
-        JComboBox<Example> anotherTestComboBox = new JComboBox<>(Example.values()); // TODO: remove; just for testing purposes
+        JLabeledComboBox<Example> anotherTestComboBox = new JLabeledComboBox<>(Example.values()); // TODO: remove; just for testing purposes
         this.comboBoxes3.add(anotherTestComboBox);
         mainPanel.add(anotherTestComboBox);    // TODO: we need operators here?
 
@@ -155,7 +165,7 @@ public class PolicyPanel extends JPanel {
             mainPanel.remove(addLineButton);
 
             this.mainPanel.remove(this.featureTypes.get(linesNum - 1));
-            this.mainPanel.remove(this.comboBoxes2.get(linesNum - 1));
+            this.mainPanel.remove(this.features.get(linesNum - 1));
             this.mainPanel.remove(this.comboBoxes3.get(linesNum - 1));
             this.mainPanel.remove(this.arguments.get(linesNum - 1));
 
@@ -168,7 +178,7 @@ public class PolicyPanel extends JPanel {
             dialog.setBounds(oldBorder.x, oldBorder.y - 28, oldBorder.width, oldBorder.height);
 
             this.featureTypes.remove(linesNum - 1);
-            this.comboBoxes2.remove(linesNum - 1);
+            this.features.remove(linesNum - 1);
             this.comboBoxes3.remove(linesNum - 1);
             this.arguments.remove(linesNum - 1);
 
@@ -177,6 +187,80 @@ public class PolicyPanel extends JPanel {
 
             this.dialog.revalidate();
             this.dialog.repaint();
+        }
+    }
+
+    private JLabeledComboBox<FeatureObjectType> getFeatureTypeComboBox() {
+        JLabeledComboBox<FeatureObjectType> featuresTypeComboBox = new JLabeledComboBox<>(FeatureObjectType.values());
+        featuresTypeComboBox.setRenderer(new FeatureObjectTypeRenderer());
+        featuresTypeComboBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getItemSelectable() instanceof JLabeledComboBox) {
+                    int index = ((JLabeledComboBox<FeatureObjectType>) e.getItemSelectable()).getLabel();
+                    PolicyPanel.setFeaturesComboBoxForFeature(PolicyPanel.this.features.get(index),
+                            (FeatureObjectType) e.getItem());
+                }
+            }
+        });
+        return featuresTypeComboBox;
+    }
+
+    private static void setFeaturesComboBoxForFeature(JLabeledComboBox<Feature> comboBox,
+                                                      FeatureObjectType type) {
+        List<Feature> features = FeaturesStructureContainer.getFeaturesListForType(type);
+        comboBox.removeAllItems();
+        for (Feature feature : features) {
+            comboBox.addItem(feature);
+        }
+    }
+
+    private class FeatureObjectTypeRenderer extends JLabel implements ListCellRenderer<FeatureObjectType> {
+        @Override
+        public Component getListCellRendererComponent(JList<? extends FeatureObjectType> list, FeatureObjectType value,
+                                                      int index, boolean isSelected, boolean cellHasFocus) {
+            if (value != null) {
+                this.setText(value.getFullName());
+            }
+            return this;
+        }
+    }
+
+    private class FeatureRenderer extends JLabel implements ListCellRenderer<Feature> {
+        @Override
+        public Component getListCellRendererComponent(JList<? extends Feature> list, Feature value,
+                                                      int index, boolean isSelected, boolean cellHasFocus) {
+            if (value != null) {
+                this.setText(value.getFeatureName());
+            }
+            return this;
+        }
+    }
+
+    private class JLabeledComboBox<E> extends JComboBox<E> {
+        private int label;
+
+        public JLabeledComboBox(ComboBoxModel<E> aModel) {
+            super(aModel);
+        }
+
+        public JLabeledComboBox(E[] items) {
+            super(items);
+        }
+
+        public JLabeledComboBox(Vector<E> items) {
+            super(items);
+        }
+
+        public JLabeledComboBox() {
+        }
+
+        public int getLabel() {
+            return label;
+        }
+
+        public void setLabel(int label) {
+            this.label = label;
         }
     }
 

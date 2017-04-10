@@ -227,7 +227,7 @@ public final class GUIConstants {
 	public static final Color VALIDATION_FAILED_COLOR = new Color(
 			VALIDATION_FAILED_COLOR_RGB_RED, 0, 0);
 
-	public static final int PREFERRED_POLICY_SIZE_WIDTH = 600;
+	public static final int PREFERRED_POLICY_SIZE_WIDTH = 700;
 	public static final int PREFERRED_POLICY_SIZE_HEIGHT = 65;
 	public static final int POLICY_DIALOG_COORD_X = 150;
 	public static final int POLICY_DIALOG_COORD_Y = 150;
