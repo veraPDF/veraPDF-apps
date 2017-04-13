@@ -35,6 +35,7 @@ import java.io.IOException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.log4j.Logger;
 import org.verapdf.ReleaseDetails;
@@ -176,7 +177,7 @@ public class PDFValidationApplication extends JFrame {
 
 		file.add(quit);
 
-		final JMenu policy = new JMenu("Policy");
+		final JMenu policy = new JMenu("Configurations");
 
 		featuresPanel = new FeaturesConfigPanel();
 
@@ -208,8 +209,11 @@ public class PDFValidationApplication extends JFrame {
 						JFileChooser jfc = new JFileChooser(new File(GUIConstants.DOT).getCanonicalPath());
 						jfc.showDialog(PDFValidationApplication.this, "Save policy config file");
 						PDFValidationApplication.this.policyConfig.setPoilcyFile(
-								jfc.getCurrentDirectory());
-					} catch (IOException ex) {
+								jfc.getSelectedFile());
+						policyConfig.writeSchematronFile();
+						PDFValidationApplication.this.checkerPanel.setPolicyFile(
+								policyConfig.getPolicyFile());
+					} catch (IOException | XMLStreamException ex) {
 						JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in saving policy config file.",
 								GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 						LOGGER.error("Error in saving policy config file.", ex);
