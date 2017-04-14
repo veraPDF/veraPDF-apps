@@ -98,7 +98,6 @@ public class PolicyPanel extends JPanel {
                 org.verapdf.gui.PolicyPanel.this.addLineToMainPanel();
             }
         });
-        addLineButton.setBackground(GUIConstants.POLICY_PANEL_ADD_LINE_COLOR);
         addLineButton.setPreferredSize(new Dimension(GUIConstants.PREFERRED_POLICY_SIZE_WIDTH / 20,
                 GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
 
@@ -204,7 +203,8 @@ public class PolicyPanel extends JPanel {
         linePanel.add(argumentsTextField);
 
         JButton removeButton = new JButton("x");
-        removeButton.setBackground(GUIConstants.POLICY_PANEL_REMOVE_LINE_COLOR);
+        removeButton.setPreferredSize(new Dimension(GUIConstants.PREFERRED_POLICY_SIZE_WIDTH / 20,
+                GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
         removeButton.addActionListener(new RemoveLineButtonListener());
         this.removeLineButtons.add(removeButton);
         linePanelLayout.setConstraints(removeButton, getButtonConstraints());
@@ -439,11 +439,11 @@ public class PolicyPanel extends JPanel {
 
     private static <E> void setOptimalSizeForComboBox(JComboBox<E> comboBox) {
         comboBox.setMinimumSize(new Dimension(GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH,
-                GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_HEIGHT));
+                GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
         comboBox.setPreferredSize(new Dimension(GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH,
-                GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_HEIGHT));
+                GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
         comboBox.setMaximumSize(new Dimension(GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH,
-                GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_HEIGHT));
+                GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
     }
 
     private class FeatureRenderer extends JLabel implements ListCellRenderer<Feature> {
