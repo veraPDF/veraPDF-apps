@@ -32,19 +32,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.log4j.Logger;
 import org.verapdf.ReleaseDetails;
@@ -92,6 +83,7 @@ public class PDFValidationApplication extends JFrame {
 	private FeaturesConfigPanel featuresPanel;
 	private CheckerPanel checkerPanel;
 	private VeraAppConfig config;
+	private PolicyPanel policyConfig;
 
 	private PDFValidationApplication() {
 		addWindowListener(new ExitWindowAdapter());
@@ -170,6 +162,23 @@ public class PDFValidationApplication extends JFrame {
 
 		file.add(sett);
 
+		file.addSeparator();
+
+		final JMenuItem quit = new JMenuItem("Quit");
+		quit.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				PDFValidationApplication.this
+						.processWindowEvent(new WindowEvent(PDFValidationApplication.this, WindowEvent.WINDOW_CLOSING));
+			}
+		});
+
+		quit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK));
+
+		file.add(quit);
+
+		final JMenu policy = new JMenu("Configs");
+
 		featuresPanel = new FeaturesConfigPanel();
 
 		final JMenuItem features = new JMenuItem("Features Config");
@@ -187,22 +196,36 @@ public class PDFValidationApplication extends JFrame {
 			}
 		});
 
-		file.add(features);
+		menuBar.add(policy);
+		policy.add(features);
 
-		file.addSeparator();
-
-		final JMenuItem quit = new JMenuItem("Quit");
-		quit.addActionListener(new ActionListener() {
+		policyConfig = new PolicyPanel();
+		final JMenuItem policyPanel = new JMenuItem("Policy Config");
+		policyPanel.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent actionEvent) {
-				PDFValidationApplication.this
-						.processWindowEvent(new WindowEvent(PDFValidationApplication.this, WindowEvent.WINDOW_CLOSING));
+			public void actionPerformed(ActionEvent e) {
+				if (policyConfig != null && policyConfig.showDialog(PDFValidationApplication.this)) {
+					try {
+						JFileChooser jfc = new JFileChooser(new File(GUIConstants.DOT).getCanonicalPath());
+						int dialogRes = jfc.showDialog(PDFValidationApplication.this,
+								"Save policy config file");
+						if (dialogRes == JFileChooser.APPROVE_OPTION) {
+							PDFValidationApplication.this.policyConfig.setPoilcyFile(
+									jfc.getSelectedFile());
+							policyConfig.writeSchematronFile();
+							PDFValidationApplication.this.checkerPanel.setPolicyFile(
+									policyConfig.getPolicyFile());
+						}
+					} catch (IOException | XMLStreamException ex) {
+						JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in saving policy config file.",
+								GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+						LOGGER.error("Error in saving policy config file.", ex);
+					}
+				}
 			}
 		});
 
-		quit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK));
-
-		file.add(quit);
+		policy.add(policyPanel);
 
 		JMenuItem about = new JMenuItem("About");
 		about.addActionListener(new ActionListener() {
