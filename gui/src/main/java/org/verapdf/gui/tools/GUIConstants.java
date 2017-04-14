@@ -59,6 +59,7 @@ public final class GUIConstants {
 	public static final String ERROR_IN_SAVING_XML_REPORT = "Some error in saving the XML report.";
 	public static final String LABEL_TEXT = "     Please specify input PDF, Validation Profile and press \"" + VALIDATE_BUTTON_TEXT + "\"";
 	public static final String CONSORTIUM_TEXT = "© 2015 veraPDF Consortium"; //$NON-NLS-1$
+	public static final String PREFORMA_FUNDED_TEXT = "Funded by the European Commission’s PREFORMA Project";
 	public static final String TITLE = "PDF/A Conformance Checker";
 	public static final String ENCRYPTED_PDF = "Pdf document is encrypted.";
 	public static final String ERROR_IN_PARSING = "Failed to parse pdf document.";
@@ -218,8 +219,9 @@ public final class GUIConstants {
 	public static final int REPORT_PANEL_LINES_NUMBER = 2;
 	public static final int REPORT_PANEL_COLUMNS_NUMBER = 3;
 
-	public static final double SCALE = 0.5;
+	public static final double SCALE = 0.6;
 	public static final double CONSORTIUM_FONT_SCALE = 1.3;
+	public static final double PREFORMA_FUNDED_FONT_SCALE = 1;
 
 	public static final Color BEFORE_VALIDATION_COLOR = Color.BLACK;
 	public static final Color VALIDATION_SUCCESS_COLOR = new Color(0,

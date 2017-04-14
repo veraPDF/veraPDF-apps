@@ -53,6 +53,7 @@ class PartnersPanel extends JPanel {
 	private final transient BufferedImage partnersLogo;
 	private Color background;
 	private JLabel consortium;
+	private JLabel preforma;
 	private JLabel version;
 
 	PartnersPanel(String logoName, Color backgroundColor) throws IOException {
@@ -71,6 +72,15 @@ class PartnersPanel extends JPanel {
 
 		add(this.consortium);
 
+		this.preforma = new JLabel(GUIConstants.PREFORMA_FUNDED_TEXT);
+
+		this.preforma.setHorizontalTextPosition(SwingConstants.CENTER);
+		this.preforma.setFont(new Font(this.preforma.getFont().getName(), this.preforma.getFont().getStyle(), (int) (this.preforma.getFont().getSize() * GUIConstants.PREFORMA_FUNDED_FONT_SCALE)));
+		Rectangle2D rec2 = new TextLayout(GUIConstants.PREFORMA_FUNDED_TEXT, this.preforma.getFont(), new FontRenderContext(null, true, true)).getBounds();
+		this.preforma.setSize((int) (rec2.getWidth()) + GUIConstants.BORDER_WIDTH * 2, (int) (rec2.getHeight() + GUIConstants.BORDER_WIDTH));
+
+		add(this.preforma);
+
 		ReleaseDetails details = ReleaseDetails.byId("gui");
 		String versionText = "Version: " + details.getVersion();
 
@@ -84,7 +94,7 @@ class PartnersPanel extends JPanel {
 
 		setBackground(backgroundColor);
 
-		int height = (int) (this.partnersLogo.getHeight() * GUIConstants.SCALE + this.consortium.getHeight() * 2 + this.version.getHeight() * 2);
+		int height = (int) (this.partnersLogo.getHeight() * GUIConstants.SCALE + this.consortium.getHeight() * 2 + this.version.getHeight() * 2 + this.preforma.getHeight());
 		setPreferredSize(new Dimension(GUIConstants.PREFERRED_WIDTH, height + GUIConstants.BORDER_WIDTH * 2));
 	}
 
@@ -99,12 +109,13 @@ class PartnersPanel extends JPanel {
 
 		int imageHeight = (int) (this.partnersLogo.getHeight() * GUIConstants.SCALE);
 		int imageWidth = (int) (this.partnersLogo.getWidth() * GUIConstants.SCALE);
-		int imageStartY = GUIConstants.BORDER_WIDTH * 2 + this.consortium.getHeight();
+		int imageStartY = GUIConstants.BORDER_WIDTH * 2 + this.consortium.getHeight() + this.preforma.getHeight();
 		int imageStartX = (getWidth() - imageWidth) / 2;
 
 		g.setColor(this.background);
 
 		this.consortium.setLocation((getWidth() - this.consortium.getWidth()) / 2, GUIConstants.BORDER_WIDTH);
+		this.preforma.setLocation((getWidth() - this.preforma.getWidth()) / 2, GUIConstants.BORDER_WIDTH + this.consortium.getHeight());
 
 		g.drawImage(this.partnersLogo, imageStartX, imageStartY, imageStartX + imageWidth, imageStartY + imageHeight, 0, 0, this.partnersLogo.getWidth(), this.partnersLogo.getHeight(), this);
 
