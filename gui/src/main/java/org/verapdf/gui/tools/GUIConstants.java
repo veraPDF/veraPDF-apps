@@ -231,7 +231,7 @@ public final class GUIConstants {
 	public static final int PREFERRED_POLICY_SIZE_HEIGHT = 250;
 	public static final int POLICY_DIALOG_COORD_X = 150;
 	public static final int POLICY_DIALOG_COORD_Y = 150;
-	public static final int PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT = 20;
+	public static final int PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT = 25;
 	public static final Color POLICY_PANEL_REMOVE_LINE_COLOR = new Color(
 			VALIDATION_FAILED_COLOR_RGB_RED, 0, 0);
 	public static final Color POLICY_PANEL_ADD_LINE_COLOR = new Color(0,
