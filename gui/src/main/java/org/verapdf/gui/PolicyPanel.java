@@ -1,5 +1,6 @@
 package org.verapdf.gui;
 
+import org.apache.commons.io.FilenameUtils;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.objects.Feature;
 import org.verapdf.features.objects.FeaturesStructureContainer;
@@ -30,7 +31,9 @@ public class PolicyPanel extends JPanel {
     private JDialog dialog;
     private boolean ok;
     private JPanel mainPanel;
+    private JPanel assertionsPanel;
     private LayoutManager mainPanelLayout;
+    private JScrollPane scrollPane;
 
     private List<JComboBox<FeatureObjectType>> featureTypes;
     private List<JTextField> arguments;
@@ -41,7 +44,6 @@ public class PolicyPanel extends JPanel {
 
     private JPanel buttonPanel;
     private JButton addLineButton;
-    private JButton clearButton;
 
     public PolicyPanel() {
         setPreferredSize(new Dimension(GUIConstants.PREFERRED_POLICY_SIZE_WIDTH, GUIConstants.PREFERRED_POLICY_SIZE_HEIGHT));
@@ -77,7 +79,6 @@ public class PolicyPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent event) {
                 if (cancelButton.hasFocus()) {
-                    org.verapdf.gui.PolicyPanel.this.ok = false;
                     org.verapdf.gui.PolicyPanel.this.dialog.setVisible(false);
                 }
             }
@@ -90,7 +91,7 @@ public class PolicyPanel extends JPanel {
         okButtonPanel.add(cancelButton);
         add(okButtonPanel, BorderLayout.SOUTH);
 
-        addLineButton = new JButton("Add assertion");
+        addLineButton = new JButton("+");
         addLineButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -98,27 +99,20 @@ public class PolicyPanel extends JPanel {
             }
         });
         addLineButton.setBackground(GUIConstants.POLICY_PANEL_ADD_LINE_COLOR);
-        clearButton = new JButton("Clear");
-        clearButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                while (!layoutPanels.isEmpty()) {
-                    removeLineFromMainPanel(layoutPanels.size() - 1);
-                }
-                PolicyPanel.this.dialog.revalidate();
-                PolicyPanel.this.dialog.repaint();
-            }
-        });
+        addLineButton.setPreferredSize(new Dimension(GUIConstants.PREFERRED_POLICY_SIZE_WIDTH / 20,
+                GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
 
-        buttonPanel = new JPanel();
+        buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(addLineButton);
-        buttonPanel.add(clearButton);
 
-        mainPanel = new JPanel();
-        mainPanelLayout = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanel.add(buttonPanel);
-        this.add(mainPanel, BorderLayout.CENTER);
+        assertionsPanel = new JPanel();
+        mainPanelLayout = new BoxLayout(assertionsPanel, BoxLayout.Y_AXIS);
+        assertionsPanel.setLayout(mainPanelLayout);
+        mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        mainPanel.add(assertionsPanel, BorderLayout.NORTH);
+        scrollPane = new JScrollPane(mainPanel);
+        this.add(scrollPane, BorderLayout.CENTER);
     }
 
     public boolean showDialog(Component parent) {
@@ -126,6 +120,7 @@ public class PolicyPanel extends JPanel {
                 (Frame) parent :
                 (Frame) SwingUtilities.getAncestorOfClass(Frame.class, parent);
 
+        this.ok = false;
         if (this.dialog == null || this.dialog.getOwner() != owner) {
             this.dialog = new JDialog(owner, true);
             this.dialog.setResizable(false);
@@ -137,10 +132,6 @@ public class PolicyPanel extends JPanel {
 
         this.dialog.setLocation(GUIConstants.POLICY_DIALOG_COORD_X, GUIConstants.POLICY_DIALOG_COORD_Y);
         this.dialog.setVisible(true);
-        clearButton.setPreferredSize(new Dimension(GUIConstants.PREFERRED_POLICY_SIZE_WIDTH / 6,
-                GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
-        addLineButton.setPreferredSize(new Dimension(GUIConstants.PREFERRED_POLICY_SIZE_WIDTH / 6,
-                GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
         this.dialog.repaint();
         return this.ok;
     }
@@ -150,12 +141,16 @@ public class PolicyPanel extends JPanel {
     }
 
     public void writeSchematronFile() throws IOException, XMLStreamException {
-        FileOutputStream outputStream = new FileOutputStream(this.policyFile);
+        FileOutputStream outputStream = new FileOutputStream(policyFile);
         SchematronGenerator.writeSchematron(getAssertions(), outputStream);
         outputStream.close();
     }
 
     public void setPoilcyFile(File policyFile) {
+        if (!FilenameUtils.getExtension(policyFile.getName()).equalsIgnoreCase("sch")) {
+            policyFile = new File(policyFile.getParentFile(),
+                    FilenameUtils.getBaseName(policyFile.getName()) + ".sch");
+        }
         this.policyFile = policyFile;
     }
 
@@ -176,14 +171,6 @@ public class PolicyPanel extends JPanel {
         JPanel linePanel = new JPanel();
         GridBagLayout linePanelLayout = new GridBagLayout();
         linePanel.setLayout(linePanelLayout);
-
-        mainPanel.remove(buttonPanel);
-        this.dialog.setSize(new Dimension(this.getWidth(),
-                this.getHeight() + GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
-
-        // For some weird reason setSize moves dialog 28 down.
-        Rectangle oldBorder = dialog.getBounds();
-        dialog.setBounds(oldBorder.x, oldBorder.y - 28, oldBorder.width, oldBorder.height);
 
         JTextField argumentsTextField = new JTextField();
         this.arguments.add(argumentsTextField);
@@ -216,7 +203,7 @@ public class PolicyPanel extends JPanel {
         linePanelLayout.setConstraints(argumentsTextField, getArgumentConstraints());
         linePanel.add(argumentsTextField);
 
-        JButton removeButton = new JButton("X");
+        JButton removeButton = new JButton("x");
         removeButton.setBackground(GUIConstants.POLICY_PANEL_REMOVE_LINE_COLOR);
         removeButton.addActionListener(new RemoveLineButtonListener());
         this.removeLineButtons.add(removeButton);
@@ -224,24 +211,17 @@ public class PolicyPanel extends JPanel {
         linePanel.add(removeButton);
 
         this.layoutPanels.add(linePanel);
-        mainPanel.add(linePanel);
+        assertionsPanel.add(linePanel);
 
-        mainPanel.add(buttonPanel);
         this.dialog.revalidate();
         this.dialog.repaint();
+        JScrollBar vertical = scrollPane.getVerticalScrollBar();
+        vertical.setValue(vertical.getMaximum());
     }
 
     private void removeLineFromMainPanel(int index) {
         if (index >= 0 && index < this.layoutPanels.size()) {
-            mainPanel.remove(index);
-
-            this.dialog.getBounds();
-            this.dialog.setSize(new Dimension(this.getWidth(),
-                    this.getHeight() - GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
-
-            // For some weird reason setSize moves dialog 28 down.
-            Rectangle oldBorder = dialog.getBounds();
-            dialog.setBounds(oldBorder.x, oldBorder.y - 28, oldBorder.width, oldBorder.height);
+            assertionsPanel.remove(index);
 
             this.featureTypes.remove(index);
             this.features.remove(index);
@@ -268,9 +248,7 @@ public class PolicyPanel extends JPanel {
                 }
             }
         });
-        featuresTypeComboBox.setMinimumSize(new Dimension(150, 30));
-        featuresTypeComboBox.setPreferredSize(new Dimension(150, 30));
-        featuresTypeComboBox.setMaximumSize(new Dimension(150, 30));
+        setOptimalSizeForComboBox(featuresTypeComboBox);
         return featuresTypeComboBox;
     }
 
@@ -289,9 +267,7 @@ public class PolicyPanel extends JPanel {
                 }
             }
         });
-        featuresComboBox.setMinimumSize(new Dimension(150, 30));
-        featuresComboBox.setPreferredSize(new Dimension(150, 30));
-        featuresComboBox.setMaximumSize(new Dimension(150, 30));
+        setOptimalSizeForComboBox(featuresComboBox);
         return featuresComboBox;
     }
 
@@ -311,9 +287,7 @@ public class PolicyPanel extends JPanel {
                 }
             }
         });
-        operationsComboBox.setMinimumSize(new Dimension(150, 30));
-        operationsComboBox.setPreferredSize(new Dimension(150, 30));
-        operationsComboBox.setMaximumSize(new Dimension(150, 30));
+        setOptimalSizeForComboBox(operationsComboBox);
         return operationsComboBox;
     }
 
@@ -464,7 +438,12 @@ public class PolicyPanel extends JPanel {
     }
 
     private static <E> void setOptimalSizeForComboBox(JComboBox<E> comboBox) {
-
+        comboBox.setMinimumSize(new Dimension(GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH,
+                GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_HEIGHT));
+        comboBox.setPreferredSize(new Dimension(GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH,
+                GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_HEIGHT));
+        comboBox.setMaximumSize(new Dimension(GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH,
+                GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_HEIGHT));
     }
 
     private class FeatureRenderer extends JLabel implements ListCellRenderer<Feature> {

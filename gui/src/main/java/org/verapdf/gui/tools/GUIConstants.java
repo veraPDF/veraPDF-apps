@@ -228,7 +228,7 @@ public final class GUIConstants {
 			VALIDATION_FAILED_COLOR_RGB_RED, 0, 0);
 
 	public static final int PREFERRED_POLICY_SIZE_WIDTH = 850;
-	public static final int PREFERRED_POLICY_SIZE_HEIGHT = 74;
+	public static final int PREFERRED_POLICY_SIZE_HEIGHT = 250;
 	public static final int POLICY_DIALOG_COORD_X = 150;
 	public static final int POLICY_DIALOG_COORD_Y = 150;
 	public static final int PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT = 30;
@@ -236,6 +236,8 @@ public final class GUIConstants {
 			VALIDATION_FAILED_COLOR_RGB_RED, 0, 0);
 	public static final Color POLICY_PANEL_ADD_LINE_COLOR = new Color(0,
 			VALIDATION_SUCCESS_COLOR_RGB_GREEN, 0);
+	public static final int POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH = 150;
+	public static final int POLICY_PANEL_PREFERRED_COMBO_BOX_HEIGHT = 30;
 
 	private GUIConstants() {
 		// Disable default constructor
