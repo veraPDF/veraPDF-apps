@@ -14,8 +14,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -23,21 +22,26 @@ import java.util.List;
  */
 public class PolicyPanel extends JPanel {
 
+    private static final String ERROR_IDS = "Error IDs";
+
     private File policyFile;
 
     private JButton okButton;
     private JDialog dialog;
     private boolean ok;
     private JPanel mainPanel;
-    private GridLayout mainPanelLayout;
+    private LayoutManager mainPanelLayout;
 
-    private List<JLabeledComboBox<FeatureObjectType>> featureTypes;
-    private List<JLabeledTextField> arguments;
-    private List<JLabeledComboBox<Feature>> features;
-    private List<JLabeledComboBox<SchematronOperation>> operations;
+    private List<JComboBox<FeatureObjectType>> featureTypes;
+    private List<JTextField> arguments;
+    private List<JComboBox<Feature>> features;
+    private List<JComboBox<SchematronOperation>> operations;
+    private List<JButton> removeLineButtons;
+    private List<JPanel> layoutPanels;
 
+    private JPanel buttonPanel;
     private JButton addLineButton;
-    private JButton removeLineButton;
+    private JButton clearButton;
 
     public PolicyPanel() {
         setPreferredSize(new Dimension(GUIConstants.PREFERRED_POLICY_SIZE_WIDTH, GUIConstants.PREFERRED_POLICY_SIZE_HEIGHT));
@@ -46,6 +50,8 @@ public class PolicyPanel extends JPanel {
         this.arguments = new LinkedList<>();
         this.features = new LinkedList<>();
         this.operations = new LinkedList<>();
+        this.removeLineButtons = new LinkedList<>();
+        this.layoutPanels = new LinkedList<>();
 
         this.okButton = new JButton("Ok");
         this.okButton.addActionListener(new ActionListener() {
@@ -54,7 +60,9 @@ public class PolicyPanel extends JPanel {
                 if (okButton.hasFocus()) {
                     JTextField emptyArguments = PolicyPanel.this.findEmptyNumberArguments();
                     if (emptyArguments == null) {
-                        org.verapdf.gui.PolicyPanel.this.ok = true;
+                        if (layoutPanels.size() > 0) {
+                            org.verapdf.gui.PolicyPanel.this.ok = true;
+                        }
                         org.verapdf.gui.PolicyPanel.this.dialog.setVisible(false);
                     } else {
                         emptyArguments.requestFocus();
@@ -77,31 +85,39 @@ public class PolicyPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(this.okButton);
-        buttonPanel.add(cancelButton);
-        add(buttonPanel, BorderLayout.SOUTH);
+        JPanel okButtonPanel = new JPanel();
+        okButtonPanel.add(this.okButton);
+        okButtonPanel.add(cancelButton);
+        add(okButtonPanel, BorderLayout.SOUTH);
 
-        addLineButton = new JButton("New assertion");
+        addLineButton = new JButton("Add assertion");
         addLineButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 org.verapdf.gui.PolicyPanel.this.addLineToMainPanel();
             }
         });
-
-        removeLineButton = new JButton("Delete last assertion");
-        removeLineButton.addActionListener(new ActionListener() {
+        addLineButton.setBackground(GUIConstants.POLICY_PANEL_ADD_LINE_COLOR);
+        clearButton = new JButton("Clear");
+        clearButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                org.verapdf.gui.PolicyPanel.this.removeLineFromMainPanel();
+                while (!layoutPanels.isEmpty()) {
+                    removeLineFromMainPanel(layoutPanels.size() - 1);
+                }
+                PolicyPanel.this.dialog.revalidate();
+                PolicyPanel.this.dialog.repaint();
             }
         });
 
-        mainPanelLayout = new GridLayout(0, 4, 10, 10);
-        mainPanel = new JPanel(mainPanelLayout);
-        mainPanel.add(addLineButton);
-        mainPanel.add(removeLineButton);
+        buttonPanel = new JPanel();
+        buttonPanel.add(addLineButton);
+        buttonPanel.add(clearButton);
+
+        mainPanel = new JPanel();
+        mainPanelLayout = new BoxLayout(mainPanel, BoxLayout.Y_AXIS);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanel.add(buttonPanel);
         this.add(mainPanel, BorderLayout.CENTER);
     }
 
@@ -121,7 +137,11 @@ public class PolicyPanel extends JPanel {
 
         this.dialog.setLocation(GUIConstants.POLICY_DIALOG_COORD_X, GUIConstants.POLICY_DIALOG_COORD_Y);
         this.dialog.setVisible(true);
-
+        clearButton.setPreferredSize(new Dimension(GUIConstants.PREFERRED_POLICY_SIZE_WIDTH / 6,
+                GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
+        addLineButton.setPreferredSize(new Dimension(GUIConstants.PREFERRED_POLICY_SIZE_WIDTH / 6,
+                GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
+        this.dialog.repaint();
         return this.ok;
     }
 
@@ -153,8 +173,11 @@ public class PolicyPanel extends JPanel {
     }
 
     private void addLineToMainPanel() {
-        mainPanel.remove(removeLineButton);
-        mainPanel.remove(addLineButton);
+        JPanel linePanel = new JPanel();
+        GridBagLayout linePanelLayout = new GridBagLayout();
+        linePanel.setLayout(linePanelLayout);
+
+        mainPanel.remove(buttonPanel);
         this.dialog.setSize(new Dimension(this.getWidth(),
                 this.getHeight() + GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
 
@@ -162,53 +185,55 @@ public class PolicyPanel extends JPanel {
         Rectangle oldBorder = dialog.getBounds();
         dialog.setBounds(oldBorder.x, oldBorder.y - 28, oldBorder.width, oldBorder.height);
 
-        JLabeledTextField argumentsTextField = new JLabeledTextField();
-        argumentsTextField.setLabel(this.arguments.size());
+        JTextField argumentsTextField = new JTextField();
         this.arguments.add(argumentsTextField);
         argumentsTextField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
-                JLabeledTextField textField = (JLabeledTextField) e.getSource();
-                Feature feature = (Feature) PolicyPanel.this.features.get(
-                        textField.getLabel()).getSelectedItem();
+                JTextField textField = (JTextField) e.getSource();
+                int index = PolicyPanel.this.arguments.indexOf(textField);
+                Feature feature = (Feature) PolicyPanel.this.features.get(index).getSelectedItem();
                 validateArgumentTextBox(textField, feature.getFeatureType());
             }
         });
 
-        JLabeledComboBox<FeatureObjectType> featuresTypeComboBox = getFeatureTypeComboBox();
-        featuresTypeComboBox.setLabel(featureTypes.size());
+        JComboBox<FeatureObjectType> featuresTypeComboBox = getFeatureTypeComboBox();
         this.featureTypes.add(featuresTypeComboBox);
-        mainPanel.add(featuresTypeComboBox);
+        linePanelLayout.setConstraints(featuresTypeComboBox, getFeatureObjectTypeConstraints());
+        linePanel.add(featuresTypeComboBox);
 
-        JLabeledComboBox<Feature> featuresComboBox = getFeatureComboBox(featuresTypeComboBox);
-        featuresComboBox.setLabel(features.size());
+        JComboBox<Feature> featuresComboBox = getFeatureComboBox(featuresTypeComboBox);
         this.features.add(featuresComboBox);
-        mainPanel.add(featuresComboBox);
+        linePanelLayout.setConstraints(featuresComboBox, getFeatureConstraints());
+        linePanel.add(featuresComboBox);
 
-        JLabeledComboBox<SchematronOperation> operationsComboBox = getOperationsComboBox(featuresComboBox);
-        operationsComboBox.setLabel(this.operations.size());
+        JComboBox<SchematronOperation> operationsComboBox = getOperationsComboBox(featuresComboBox);
         this.operations.add(operationsComboBox);
-        mainPanel.add(operationsComboBox);
+        linePanelLayout.setConstraints(operationsComboBox, getOperationConstraints());
+        linePanel.add(operationsComboBox);
 
         setAvailabilityForArgumentTextBox(argumentsTextField, (SchematronOperation) operationsComboBox.getSelectedItem());
-        mainPanel.add(argumentsTextField);
+        linePanelLayout.setConstraints(argumentsTextField, getArgumentConstraints());
+        linePanel.add(argumentsTextField);
 
-        mainPanel.add(addLineButton);
-        mainPanel.add(removeLineButton);
+        JButton removeButton = new JButton("X");
+        removeButton.setBackground(GUIConstants.POLICY_PANEL_REMOVE_LINE_COLOR);
+        removeButton.addActionListener(new RemoveLineButtonListener());
+        this.removeLineButtons.add(removeButton);
+        linePanelLayout.setConstraints(removeButton, getButtonConstraints());
+        linePanel.add(removeButton);
+
+        this.layoutPanels.add(linePanel);
+        mainPanel.add(linePanel);
+
+        mainPanel.add(buttonPanel);
         this.dialog.revalidate();
         this.dialog.repaint();
     }
 
-    private void removeLineFromMainPanel() {
-        int linesNum = this.featureTypes.size();
-        if (linesNum > 0) {
-            mainPanel.remove(removeLineButton);
-            mainPanel.remove(addLineButton);
-
-            this.mainPanel.remove(this.featureTypes.get(linesNum - 1));
-            this.mainPanel.remove(this.features.get(linesNum - 1));
-            this.mainPanel.remove(this.operations.get(linesNum - 1));
-            this.mainPanel.remove(this.arguments.get(linesNum - 1));
+    private void removeLineFromMainPanel(int index) {
+        if (index >= 0 && index < this.layoutPanels.size()) {
+            mainPanel.remove(index);
 
             this.dialog.getBounds();
             this.dialog.setSize(new Dimension(this.getWidth(),
@@ -218,101 +243,108 @@ public class PolicyPanel extends JPanel {
             Rectangle oldBorder = dialog.getBounds();
             dialog.setBounds(oldBorder.x, oldBorder.y - 28, oldBorder.width, oldBorder.height);
 
-            this.featureTypes.remove(linesNum - 1);
-            this.features.remove(linesNum - 1);
-            this.operations.remove(linesNum - 1);
-            this.arguments.remove(linesNum - 1);
-
-            mainPanel.add(addLineButton);
-            mainPanel.add(removeLineButton);
+            this.featureTypes.remove(index);
+            this.features.remove(index);
+            this.operations.remove(index);
+            this.arguments.remove(index);
+            this.removeLineButtons.remove(index);
+            this.layoutPanels.remove(index);
 
             this.dialog.revalidate();
             this.dialog.repaint();
         }
     }
 
-    private JLabeledComboBox<FeatureObjectType> getFeatureTypeComboBox() {
-        JLabeledComboBox<FeatureObjectType> featuresTypeComboBox = new JLabeledComboBox<>(FeatureObjectType.values());
+    private JComboBox<FeatureObjectType> getFeatureTypeComboBox() {
+        JComboBox<FeatureObjectType> featuresTypeComboBox = new JComboBox<>(getFeatureObjectTypes());
         featuresTypeComboBox.setRenderer(new FeatureObjectTypeRenderer());
         featuresTypeComboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (e.getItemSelectable() instanceof JLabeledComboBox) {
-                    int index = ((JLabeledComboBox<FeatureObjectType>) e.getItemSelectable()).getLabel();
+                if (e.getItemSelectable() instanceof JComboBox) {
+                    int index = PolicyPanel.this.featureTypes.indexOf(e.getItemSelectable());
                     PolicyPanel.setFeaturesComboBoxForFeature(PolicyPanel.this.features.get(index),
                             (FeatureObjectType) e.getItem());
                 }
             }
         });
+        featuresTypeComboBox.setMinimumSize(new Dimension(150, 30));
+        featuresTypeComboBox.setPreferredSize(new Dimension(150, 30));
+        featuresTypeComboBox.setMaximumSize(new Dimension(150, 30));
         return featuresTypeComboBox;
     }
 
-    private JLabeledComboBox<Feature> getFeatureComboBox(JComboBox<FeatureObjectType> featuresTypeComboBox) {
-        JLabeledComboBox<Feature> featuresComboBox = new JLabeledComboBox<>();
+    private JComboBox<Feature> getFeatureComboBox(JComboBox<FeatureObjectType> featuresTypeComboBox) {
+        JComboBox<Feature> featuresComboBox = new JComboBox<>();
         setFeaturesComboBoxForFeature(featuresComboBox,
                 (FeatureObjectType) featuresTypeComboBox.getSelectedItem());
         featuresComboBox.setRenderer(new FeatureRenderer());
         featuresComboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (e.getItemSelectable() instanceof JLabeledComboBox) {
-                    int index = ((JLabeledComboBox<Feature>) e.getItemSelectable()).getLabel();
+                if (e.getItemSelectable() instanceof JComboBox) {
+                    int index = PolicyPanel.this.features.indexOf(e.getItemSelectable());
                     PolicyPanel.setOperationsComboBoxForFeatureType(PolicyPanel.this.operations.get(index),
                             (Feature) e.getItem());
                 }
             }
         });
+        featuresComboBox.setMinimumSize(new Dimension(150, 30));
+        featuresComboBox.setPreferredSize(new Dimension(150, 30));
+        featuresComboBox.setMaximumSize(new Dimension(150, 30));
         return featuresComboBox;
     }
 
-    private JLabeledComboBox<SchematronOperation> getOperationsComboBox(JComboBox<Feature> featuresComboBox) {
-        JLabeledComboBox<SchematronOperation> operationsComboBox = new JLabeledComboBox<>();
+    private JComboBox<SchematronOperation> getOperationsComboBox(JComboBox<Feature> featuresComboBox) {
+        final JComboBox<SchematronOperation> operationsComboBox = new JComboBox<>();
         operationsComboBox.setRenderer(new OperationsRenderer());
         setOperationsComboBoxForFeatureType(operationsComboBox, (Feature) featuresComboBox.getSelectedItem());
-        operationsComboBox.setLabel(this.operations.size());
         operationsComboBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                if (e.getItemSelectable() instanceof JLabeledComboBox) {
-                    JLabeledComboBox<SchematronOperation> comboBox =
-                            (JLabeledComboBox<SchematronOperation>) e.getItemSelectable();
-                    int index = (comboBox).getLabel();
+                if (e.getItemSelectable() instanceof JComboBox) {
+                    JComboBox<SchematronOperation> comboBox =
+                            (JComboBox<SchematronOperation>) e.getItemSelectable();
+                    int index = PolicyPanel.this.operations.indexOf(comboBox);
                     SchematronOperation operation = (SchematronOperation) comboBox.getSelectedItem();
                     setAvailabilityForArgumentTextBox(PolicyPanel.this.arguments.get(index), operation);
                 }
             }
         });
+        operationsComboBox.setMinimumSize(new Dimension(150, 30));
+        operationsComboBox.setPreferredSize(new Dimension(150, 30));
+        operationsComboBox.setMaximumSize(new Dimension(150, 30));
         return operationsComboBox;
     }
 
-    private static void setFeaturesComboBoxForFeature(JLabeledComboBox<Feature> comboBox,
+    private static void setFeaturesComboBoxForFeature(JComboBox<Feature> comboBox,
                                                       FeatureObjectType type) {
         List<Feature> features = FeaturesStructureContainer.getFeaturesListForType(type);
         comboBox.removeAllItems();
         for (Feature feature : features) {
-            if (!feature.getFeatureName().equals("Error IDs")) {
+            if (!feature.getFeatureName().equals(ERROR_IDS)) {
                 comboBox.addItem(feature);
             }
         }
     }
 
-    private static void setOperationsComboBoxForFeatureType(JLabeledComboBox<SchematronOperation> comboBox,
+    private static void setOperationsComboBoxForFeatureType(JComboBox<SchematronOperation> comboBox,
                                                             Feature type) {
-        List<SchematronOperation> operations = SchematronOperation.getOperationsForType(type.getFeatureType());
+        Set<SchematronOperation> operations = type.getFeatureType().getLegalOperations();
         comboBox.removeAllItems();
         for (SchematronOperation operation : operations) {
             comboBox.addItem(operation);
         }
     }
 
-    private static void setAvailabilityForArgumentTextBox(JLabeledTextField argument, SchematronOperation operation) {
+    private static void setAvailabilityForArgumentTextBox(JTextField argument, SchematronOperation operation) {
         if (operation != null) {
             argument.setEditable(operation.hasArguments());
             argument.setEnabled(operation.hasArguments());
         }
     }
 
-    private boolean validateArgumentTextBox(JLabeledTextField argument, Feature.FeatureType type) {
+    private boolean validateArgumentTextBox(JTextField argument, Feature.FeatureType type) {
         if (type == Feature.FeatureType.NUMBER) {
             String argumentValue = argument.getText();
             try {
@@ -328,10 +360,11 @@ public class PolicyPanel extends JPanel {
         return true;
     }
 
-    private JLabeledTextField findEmptyNumberArguments() {
-        for (JLabeledTextField textField : this.arguments) {
+    private JTextField findEmptyNumberArguments() {
+        for (JTextField textField : this.arguments) {
+            int index = this.arguments.indexOf(textField);
             Feature.FeatureType argType = ((Feature)
-                    this.features.get(textField.getLabel()).getSelectedItem()).getFeatureType();
+                    this.features.get(index).getSelectedItem()).getFeatureType();
             if (textField.isEnabled() && textField.getText().isEmpty() &&
                     argType != Feature.FeatureType.STRING) {
                 return textField;
@@ -345,15 +378,93 @@ public class PolicyPanel extends JPanel {
                 GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 
+    private static Vector<FeatureObjectType> getFeatureObjectTypes() {
+        Vector<FeatureObjectType> res = new Vector<>();
+        for (FeatureObjectType type : FeatureObjectType.values()) {
+            List<Feature> features = FeaturesStructureContainer.getFeaturesListForType(type);
+            if (!(features.size() == 1 && features.get(0).getFeatureName().equals(ERROR_IDS)) &&
+                    features.size() != 0) {
+                res.add(type);
+            }
+        }
+        return res;
+    }
+
+    private static GridBagConstraints getFeatureObjectTypeConstraints() {
+        GridBagConstraints res = new GridBagConstraints();
+        res.gridheight = 1;
+        res.gridwidth = 1;
+        res.gridx = 0;
+        res.gridy = 0;
+        res.weighty = 0;
+        res.weightx = 2;
+        res.fill = GridBagConstraints.HORIZONTAL;
+        return res;
+    }
+
+    private static GridBagConstraints getFeatureConstraints() {
+        GridBagConstraints res = new GridBagConstraints();
+        res.gridheight = 1;
+        res.gridwidth = 1;
+        res.gridx = 1;
+        res.gridy = 0;
+        res.weighty = 0;
+        res.weightx = 2;
+        res.fill = GridBagConstraints.HORIZONTAL;
+        return res;
+    }
+
+    private static GridBagConstraints getOperationConstraints() {
+        GridBagConstraints res = new GridBagConstraints();
+        res.gridheight = 1;
+        res.gridwidth = 1;
+        res.gridx = 2;
+        res.gridy = 0;
+        res.weighty = 0;
+        res.weightx = 2;
+        res.fill = GridBagConstraints.HORIZONTAL;
+        return res;
+    }
+
+    private static GridBagConstraints getArgumentConstraints() {
+        GridBagConstraints res = new GridBagConstraints();
+        res.gridheight = 1;
+        res.gridwidth = 1;
+        res.gridx = 3;
+        res.gridy = 0;
+        res.weighty = 0;
+        res.weightx = 6;
+        res.fill = GridBagConstraints.HORIZONTAL;
+        return res;
+    }
+
+    private static GridBagConstraints getButtonConstraints() {
+        GridBagConstraints res = new GridBagConstraints();
+        res.gridheight = 1;
+        res.gridwidth = 1;
+        res.gridx = 4;
+        res.gridy = 0;
+        res.weighty = 0;
+        res.weightx = 1;
+        res.fill = GridBagConstraints.HORIZONTAL;
+        return res;
+    }
+
     private class FeatureObjectTypeRenderer extends JLabel implements ListCellRenderer<FeatureObjectType> {
         @Override
         public Component getListCellRendererComponent(JList<? extends FeatureObjectType> list, FeatureObjectType value,
                                                       int index, boolean isSelected, boolean cellHasFocus) {
             if (value != null) {
                 this.setText(value.getFullName());
+                this.setHorizontalAlignment(CENTER);
+                this.setVerticalAlignment(CENTER);
             }
             return this;
         }
+    }
+
+    private static <E> void setOptimalSizeForComboBox(JComboBox<E> comboBox) {
+
     }
 
     private class FeatureRenderer extends JLabel implements ListCellRenderer<Feature> {
@@ -362,6 +473,8 @@ public class PolicyPanel extends JPanel {
                                                       int index, boolean isSelected, boolean cellHasFocus) {
             if (value != null) {
                 this.setText(value.getFeatureName());
+                this.setHorizontalAlignment(CENTER);
+                this.setVerticalAlignment(CENTER);
             }
             return this;
         }
@@ -374,46 +487,18 @@ public class PolicyPanel extends JPanel {
                                                       boolean isSelected, boolean cellHasFocus) {
             if (value != null) {
                 this.setText(value.getDescription());
+                this.setHorizontalAlignment(CENTER);
+                this.setVerticalAlignment(CENTER);
             }
             return this;
         }
     }
 
-    private class JLabeledComboBox<E> extends JComboBox<E> {
-        private int label;
-
-        public JLabeledComboBox(E[] items) {
-            super(items);
-        }
-
-        public JLabeledComboBox() {
-        }
-
-        private int getLabel() {
-            return label;
-        }
-
-        private void setLabel(int label) {
-            this.label = label;
-        }
-    }
-
-    private class JLabeledTextField extends JTextField {
-        private int label;
-
-        public JLabeledTextField() {
-        }
-
-        public JLabeledTextField(String text) {
-            super(text);
-        }
-
-        private int getLabel() {
-            return label;
-        }
-
-        private void setLabel(int label) {
-            this.label = label;
+    private class RemoveLineButtonListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int index = PolicyPanel.this.removeLineButtons.indexOf(e.getSource());
+            PolicyPanel.this.removeLineFromMainPanel(index);
         }
     }
 }

@@ -177,7 +177,7 @@ public class PDFValidationApplication extends JFrame {
 
 		file.add(quit);
 
-		final JMenu policy = new JMenu("Configurations");
+		final JMenu policy = new JMenu("Configs");
 
 		featuresPanel = new FeaturesConfigPanel();
 
@@ -207,12 +207,15 @@ public class PDFValidationApplication extends JFrame {
 				if (policyConfig != null && policyConfig.showDialog(PDFValidationApplication.this)) {
 					try {
 						JFileChooser jfc = new JFileChooser(new File(GUIConstants.DOT).getCanonicalPath());
-						jfc.showDialog(PDFValidationApplication.this, "Save policy config file");
-						PDFValidationApplication.this.policyConfig.setPoilcyFile(
-								jfc.getSelectedFile());
-						policyConfig.writeSchematronFile();
-						PDFValidationApplication.this.checkerPanel.setPolicyFile(
-								policyConfig.getPolicyFile());
+						int dialogRes = jfc.showDialog(PDFValidationApplication.this,
+								"Save policy config file");
+						if (dialogRes == JFileChooser.APPROVE_OPTION) {
+							PDFValidationApplication.this.policyConfig.setPoilcyFile(
+									jfc.getSelectedFile());
+							policyConfig.writeSchematronFile();
+							PDFValidationApplication.this.checkerPanel.setPolicyFile(
+									policyConfig.getPolicyFile());
+						}
 					} catch (IOException | XMLStreamException ex) {
 						JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in saving policy config file.",
 								GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
