@@ -68,7 +68,7 @@ class AboutPanel extends JPanel {
 
 		mainPanel.add(partners);
 
-		this.okButton = new JButton("Ok");
+		this.okButton = new JButton(GUIConstants.OK);
 		this.okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
@@ -85,7 +85,7 @@ class AboutPanel extends JPanel {
 					Desktop.getDesktop().browse(new URI(GUIConstants.LOGO_LINK_URL));
 				} catch (IOException | URISyntaxException excep) {
 					JOptionPane.showMessageDialog(AboutPanel.this, GUIConstants.ERROR, GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-					LOGGER.error("Exception in opening link " + GUIConstants.LOGO_LINK_URL, excep);
+					LOGGER.error("Exception in opening link " + GUIConstants.LOGO_LINK_URL, excep); //$NON-NLS-1$
 				}
 
 			}

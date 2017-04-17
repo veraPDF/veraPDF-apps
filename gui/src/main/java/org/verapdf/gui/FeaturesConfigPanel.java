@@ -26,10 +26,6 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.EnumSet;
 
@@ -39,9 +35,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import javax.xml.bind.JAXBException;
 
-import org.apache.log4j.Logger;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.features.FeatureObjectType;
@@ -71,14 +65,14 @@ public class FeaturesConfigPanel extends JPanel {
 
 		for (FeatureObjectType type : FeatureObjectType.values()) {
 			if (type != FeatureObjectType.ERROR) {
-				featureGrid.put(type, new JCheckBox(type.getFullName()));
-				panel.add(featureGrid.get(type));
+				this.featureGrid.put(type, new JCheckBox(type.getFullName()));
+				panel.add(this.featureGrid.get(type));
 			}
 		}
 
 		add(panel, BorderLayout.CENTER);
 
-		this.okButton = new JButton("Ok");
+		this.okButton = new JButton(GUIConstants.OK);
 		this.okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
@@ -87,7 +81,7 @@ public class FeaturesConfigPanel extends JPanel {
 			}
 		});
 
-		JButton cancelButton = new JButton("Cancel");
+		JButton cancelButton = new JButton(GUIConstants.CANCEL);
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {

@@ -48,10 +48,10 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 
     private static final Logger LOGGER = Logger.getLogger(ValidateWorker.class);
 
-    private static final String ERROR_IN_OPEN_STREAMS = "Can't open stream from PDF file or can't open stream to temporary XML report file";
-    private static final String ERROR_IN_PROCESSING = "Error during the processing";
-    private static final String ERROR_IN_CREATING_TEMP_FILE = "Can't create temporary file for XML report";
-    private static final String ERROR_IN_SAVING_REPORT = "Can't serialize xml report";
+    private static final String ERROR_IN_OPEN_STREAMS = "Can't open stream from PDF file or can't open stream to temporary XML report file"; //$NON-NLS-1$
+    private static final String ERROR_IN_PROCESSING = "Error during the processing"; //$NON-NLS-1$
+    private static final String ERROR_IN_CREATING_TEMP_FILE = "Can't create temporary file for XML report"; //$NON-NLS-1$
+    private static final String ERROR_IN_SAVING_REPORT = "Can't serialize xml report"; //$NON-NLS-1$
 
     private List<File> pdfs;
     private ValidationProfile customProfile;
@@ -64,7 +64,7 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 
     ValidateWorker(CheckerPanel parent, List<File> pdfs, ConfigManager configManager, ValidationProfile customProfile, File policy) {
         if (pdfs == null) {
-            throw new IllegalArgumentException("List of pdf files can not be null");
+            throw new IllegalArgumentException("List of pdf files can not be null"); //$NON-NLS-1$
         }
         this.parent = parent;
         this.pdfs = pdfs;
@@ -149,13 +149,13 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
             } catch (IOException | TransformerException e) {
                 JOptionPane.showMessageDialog(this.parent, GUIConstants.ERROR_IN_SAVING_HTML_REPORT + e.getMessage(),
                         GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-                LOGGER.error("Exception saving the HTML report", e);
+                LOGGER.error("Exception saving the HTML report", e); //$NON-NLS-1$
                 this.htmlReport = null;
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this.parent, GUIConstants.ERROR_IN_SAVING_HTML_REPORT + e.getMessage(),
                     GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-            LOGGER.error("Exception saving the HTML report", e);
+            LOGGER.error("Exception saving the HTML report", e); //$NON-NLS-1$
             this.htmlReport = null;
         }
     }

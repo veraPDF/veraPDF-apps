@@ -146,7 +146,7 @@ class SettingsPanel extends JPanel {
 
 		add(panel, BorderLayout.CENTER);
 
-		this.okButton = new JButton("Ok");
+		this.okButton = new JButton(GUIConstants.OK);
 		this.okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
