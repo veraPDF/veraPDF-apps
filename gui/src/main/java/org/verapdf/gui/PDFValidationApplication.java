@@ -20,24 +20,6 @@
  */
 package org.verapdf.gui;
 
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
-
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
@@ -49,6 +31,17 @@ import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Main frame of the PDFA Conformance Checker
@@ -234,8 +227,10 @@ public class PDFValidationApplication extends JFrame {
 				}
 			}
 		});
+		JMenu info = new JMenu("Info");
+		info.add(about);
 
-		menuBar.add(about);
+		menuBar.add(info);
 
 		JPanel contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS,
