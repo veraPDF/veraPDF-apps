@@ -146,8 +146,7 @@ public class PolicyPanel extends JPanel {
 
     public void setPoilcyFile(File policyFile) {
         if (!getFileExtension(policyFile).equalsIgnoreCase("sch")) {
-            policyFile = new File(policyFile.getParentFile(),
-                    getBaseName(policyFile) + ".sch");
+            policyFile = new File(getBaseName(policyFile) + ".sch");
         }
         this.policyFile = policyFile;
     }
