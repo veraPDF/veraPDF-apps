@@ -1,6 +1,5 @@
 package org.verapdf.gui;
 
-import org.apache.commons.io.FilenameUtils;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.objects.Feature;
 import org.verapdf.features.objects.FeaturesStructureContainer;
@@ -146,9 +145,9 @@ public class PolicyPanel extends JPanel {
     }
 
     public void setPoilcyFile(File policyFile) {
-        if (!FilenameUtils.getExtension(policyFile.getName()).equalsIgnoreCase("sch")) {
+        if (!getFileExtension(policyFile).equalsIgnoreCase("sch")) {
             policyFile = new File(policyFile.getParentFile(),
-                    FilenameUtils.getBaseName(policyFile.getName()) + ".sch");
+                    getBaseName(policyFile) + ".sch");
         }
         this.policyFile = policyFile;
     }
@@ -422,6 +421,24 @@ public class PolicyPanel extends JPanel {
         res.weightx = 1;
         res.fill = GridBagConstraints.HORIZONTAL;
         return res;
+    }
+
+    private static String getFileExtension(File f) {
+        String path = f.getAbsolutePath();
+        int lastIndex = path.lastIndexOf('.');
+        if (lastIndex == -1) {
+            return "";
+        }
+        return path.substring(lastIndex + 1);
+    }
+
+    private static String getBaseName(File f) {
+        String path = f.getAbsolutePath();
+        int lastIndex = path.lastIndexOf('.');
+        if (lastIndex == -1) {
+            return path;
+        }
+        return path.substring(0, lastIndex);
     }
 
     private class FeatureObjectTypeRenderer extends JLabel implements ListCellRenderer<FeatureObjectType> {

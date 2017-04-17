@@ -28,6 +28,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,7 +74,7 @@ public class PDFValidationApplication extends JFrame {
 
 	private static final long serialVersionUID = -5569669411392145783L;
 
-	private static final Logger logger = Logger.getLogger(PDFValidationApplication.class.getCanonicalName());
+	private static final Logger LOGGER = Logger.getLogger(PDFValidationApplication.class.getCanonicalName());
 
 	private AboutPanel aboutPanel;
 	private SettingsPanel settingsPanel;
@@ -103,7 +104,7 @@ public class PDFValidationApplication extends JFrame {
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(this, "Error in reading logo image.", GUIConstants.ERROR,
 					JOptionPane.ERROR_MESSAGE);
-			logger.log(Level.SEVERE, "Exception in reading logo image", e);
+			LOGGER.log(Level.SEVERE, "Exception in reading logo image", e);
 		}
 
 		final JMenu file = new JMenu("File");
@@ -114,7 +115,7 @@ public class PDFValidationApplication extends JFrame {
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error initialising settings panel.",
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			logger.log(Level.SEVERE, "Exception in initialising settings panel", e);
+			LOGGER.log(Level.SEVERE, "Exception in initialising settings panel", e);
 		}
 
 		final JMenuItem sett = new JMenuItem("Settings");
@@ -187,7 +188,7 @@ public class PDFValidationApplication extends JFrame {
 					try {
 						configManager.updateFeaturesConfig(featuresPanel.getFeaturesConfig());
 					} catch (JAXBException | IOException exp) {
-						logger.log(Level.SEVERE, "Exception in updating features config", exp);
+						LOGGER.log(Level.SEVERE, "Exception in updating features config", exp);
 					}
 				}
 			}
@@ -216,7 +217,7 @@ public class PDFValidationApplication extends JFrame {
 					} catch (IOException | XMLStreamException ex) {
 						JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in saving policy config file.",
 								GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-						LOGGER.error("Error in saving policy config file.", ex);
+						LOGGER.log(Level.SEVERE, "Error in saving policy config file.", ex);
 					}
 				}
 			}
@@ -248,7 +249,7 @@ public class PDFValidationApplication extends JFrame {
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in creating mini logo.",
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			logger.log(Level.SEVERE, "Exception in creating mini logo", e);
+			LOGGER.log(Level.SEVERE, "Exception in creating mini logo", e);
 		}
 
 		contentPane.add(logoPanel);
@@ -259,7 +260,7 @@ public class PDFValidationApplication extends JFrame {
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in loading xml or html image.",
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			logger.log(Level.SEVERE, "Exception in loading xml or html image", e);
+			LOGGER.log(Level.SEVERE, "Exception in loading xml or html image", e);
 		}
 		contentPane.add(checkerPanel);
 
@@ -282,13 +283,13 @@ public class PDFValidationApplication extends JFrame {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException
 						| InstantiationException e) {
-					logger.log(Level.SEVERE, "Exception in configuring UI manager", e);
+					LOGGER.log(Level.SEVERE, "Exception in configuring UI manager", e);
 				}
 				try {
 					PDFValidationApplication frame = new PDFValidationApplication();
 					frame.setVisible(true);
 				} catch (Exception e) {
-					logger.log(Level.SEVERE, "Exception", e);
+					LOGGER.log(Level.SEVERE, "Exception", e);
 				}
 			}
 		});
