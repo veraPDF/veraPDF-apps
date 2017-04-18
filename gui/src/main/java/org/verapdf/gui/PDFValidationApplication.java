@@ -244,7 +244,10 @@ public class PDFValidationApplication extends JFrame {
 			}
 		});
 
-		menuBar.add(about);
+		JMenu info = new JMenu("Info");
+		info.add(about);
+
+		menuBar.add(info);
 
 		JPanel contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS,
