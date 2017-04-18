@@ -192,7 +192,8 @@ public class PolicyPanel extends JPanel {
 			FeatureObjectType assertionType = (FeatureObjectType) this.featureTypes.get(i).getSelectedItem();
 			Feature assertionFeature = (Feature) this.features.get(i).getSelectedItem();
 			SchematronOperation assertionOperation = (SchematronOperation) this.operations.get(i).getSelectedItem();
-			String assertionArgument = this.arguments.get(i).getText();
+			JTextField argumentTextField = this.arguments.get(i);
+			String assertionArgument = argumentTextField.isEditable() ? argumentTextField.getText() : "";
 			res.add(new SchematronGenerator.Assertion(assertionType, assertionFeature, assertionOperation,
 					assertionArgument));
 		}
