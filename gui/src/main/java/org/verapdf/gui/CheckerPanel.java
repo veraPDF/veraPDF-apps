@@ -47,6 +47,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -64,7 +66,6 @@ import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBException;
 
-import org.apache.log4j.Logger;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
 import org.verapdf.apps.ConfigManager;
@@ -93,7 +94,7 @@ class CheckerPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = 1290058869994329766L;
 
-	static final Logger LOGGER = Logger.getLogger(CheckerPanel.class);
+	static final Logger logger = Logger.getLogger(CheckerPanel.class.getCanonicalName());
 
 	private static final Map<String, PDFAFlavour> FLAVOURS_MAP = new HashMap<>();
 	private static final String emptyString = ""; //$NON-NLS-1$
@@ -456,7 +457,7 @@ class CheckerPanel extends JPanel {
 				} catch (IllegalArgumentException | JAXBException | IOException exep) {
 					JOptionPane.showMessageDialog(CheckerPanel.this, exep.getMessage(), "Error",
 							JOptionPane.ERROR_MESSAGE);
-					LOGGER.error(exep);
+					logger.log(Level.SEVERE, exep.getMessage(), exep);
 				}
 			}
 		});
@@ -492,7 +493,7 @@ class CheckerPanel extends JPanel {
 				} catch (IOException e1) {
 					JOptionPane.showMessageDialog(CheckerPanel.this, "Some error in opening the XML report.",
 							GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-					LOGGER.error("Exception in opening the XML report", e1);
+					logger.log(Level.SEVERE, "Exception in opening the XML report", e1);
 				}
 			}
 		});
@@ -509,7 +510,7 @@ class CheckerPanel extends JPanel {
 					} catch (IOException e1) {
 						JOptionPane.showMessageDialog(CheckerPanel.this, "Some error in opening the HTML report.",
 								GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-						LOGGER.error("Exception in opening the HTML report", e1);
+						logger.log(Level.SEVERE, "Exception in opening the HTML report", e1);
 					}
 				}
 			}
@@ -586,7 +587,7 @@ class CheckerPanel extends JPanel {
 	}
 
 	void errorInValidatingOccur(String message, Throwable e) {
-		LOGGER.error(e);
+		logger.log(Level.SEVERE, message, e);
 		e.printStackTrace();
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
@@ -772,7 +773,7 @@ class CheckerPanel extends JPanel {
 					try {
 						Files.copy(report.toPath(), temp.toPath());
 					} catch (FileAlreadyExistsException e1) {
-						LOGGER.debug("File already exists, conform overwrite with user", e1);
+						logger.log(Level.FINEST, "File already exists, conform overwrite with user", e1);
 						int resultOption = JOptionPane.showConfirmDialog(CheckerPanel.this,
 								extension.toUpperCase()
 										+ " file with the same name already exists. Do you want to overwrite it?",
@@ -785,7 +786,7 @@ class CheckerPanel extends JPanel {
 					JOptionPane.showMessageDialog(CheckerPanel.this,
 							GUIConstants.ERROR_IN_SAVING_HTML_REPORT + e.getMessage(), GUIConstants.ERROR,
 							JOptionPane.ERROR_MESSAGE);
-					LOGGER.error("Exception saving " + extension.toUpperCase() + " report", e);
+					logger.log(Level.SEVERE, "Exception saving " + extension.toUpperCase() + " report", e);
 				}
 			}
 		}
