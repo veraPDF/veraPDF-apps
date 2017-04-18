@@ -42,6 +42,11 @@ public class PolicyPanel extends JPanel {
     private List<JButton> removeLineButtons;
     private List<JPanel> layoutPanels;
 
+    private JLabel featureTypeLabel = new JLabel("Feature type");
+    private JLabel featureLabel = new JLabel("Feature");
+    private JLabel operationLabel = new JLabel("Logical condition");
+    private JLabel argumentLabel = new JLabel("Argument");
+
     private JPanel buttonPanel;
     private JButton addLineButton;
 

@@ -206,7 +206,11 @@ public class PDFValidationApplication extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (policyConfig != null && policyConfig.showDialog(PDFValidationApplication.this)) {
 					try {
-						JFileChooser jfc = new JFileChooser(new File(GUIConstants.DOT).getCanonicalPath());
+						File fileChooserStartingFile = PDFValidationApplication.this.policyConfig.getPolicyFile();
+						if (fileChooserStartingFile == null) {
+							fileChooserStartingFile = new File(GUIConstants.DOT);
+						}
+						JFileChooser jfc = new JFileChooser(fileChooserStartingFile);
 						int dialogRes = jfc.showDialog(PDFValidationApplication.this,
 								"Save policy config file");
 						if (dialogRes == JFileChooser.APPROVE_OPTION) {
