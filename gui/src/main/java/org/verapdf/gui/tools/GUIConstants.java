@@ -42,10 +42,17 @@ public final class GUIConstants {
 	public static final String FIX_METADATA_FOLDER_CHOOSE_BUTTON = "Choose";
 	public static final String CHOOSE_PROFILE_BUTTON_TEXT = "Choose Profile";
 	public static final String CHOOSE_POLICY_BUTTON_TEXT = "Choose Policy";
+	public static final String POLICY_TITLE = "Policy Creator";
 	public static final String CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT = "Please, specify validation profile";
 	public static final String CUSTOM_PROFILE_COMBOBOX_TEXT = "Custom profile";
 	public static final String AUTO_FLAVOUR_COMBOBOX_TEXT = "Auto-detect";
 	public static final String VALIDATION_PROFILE_NOT_CHOSEN = "Validation profile not chosen";
+	public static final String OK = "OK"; //$NON-NLS-1$
+	public static final String CANCEL = "Cancel";
+	public static final String PLUS = "+";
+	public static final String CROSS = "x";
+	public static final String NUM_VALIDATION_ERROR = "Please enter a valid number";
+	public static final String ARG_REQUIRED ="Argument required";
 	public static final String POLICY_PROFILE_NOT_CHOSEN = "Policy file not chosen";
 	public static final String VALIDATE_BUTTON_TEXT = "Execute";
 	public static final String VALIDATION_OK = "PDF file is compliant with Validation Profile requirements";

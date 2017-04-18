@@ -1,31 +1,23 @@
 /**
  * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
- * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
- * All rights reserved.
- *
- * VeraPDF Library GUI is free software: you can redistribute it and/or modify
- * it under the terms of either:
- *
- * The GNU General public license GPLv3+.
- * You should have received a copy of the GNU General Public License
- * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the source
- * tree.  If not, see http://www.gnu.org/licenses/ or
- * https://www.gnu.org/licenses/gpl-3.0.en.html.
- *
- * The Mozilla Public License MPLv2+.
- * You should have received a copy of the Mozilla Public License along with
- * VeraPDF Library GUI as the LICENSE.MPL file in the root of the source tree.
- * If a copy of the MPL was not distributed with this file, you can obtain one at
- * http://mozilla.org/MPL/2.0/.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org> All rights
+ * reserved. VeraPDF Library GUI is free software: you can redistribute it
+ * and/or modify it under the terms of either: The GNU General public license
+ * GPLv3+. You should have received a copy of the GNU General Public License
+ * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the
+ * source tree. If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html. The Mozilla Public License
+ * MPLv2+. You should have received a copy of the Mozilla Public License along
+ * with VeraPDF Library GUI as the LICENSE.MPL file in the root of the source
+ * tree. If a copy of the MPL was not distributed with this file, you can obtain
+ * one at http://mozilla.org/MPL/2.0/.
  */
 package org.verapdf.gui;
 
-import org.verapdf.apps.ConfigManager;
-import org.verapdf.gui.tools.GUIConstants;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -34,6 +26,21 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
+
+import org.verapdf.apps.ConfigManager;
+import org.verapdf.gui.tools.GUIConstants;
 
 /**
  * Settings Panel
@@ -146,14 +153,14 @@ class SettingsPanel extends JPanel {
 
 		add(panel, BorderLayout.CENTER);
 
-		this.okButton = new JButton("Ok");
+		this.okButton = new JButton(GUIConstants.OK);
 		this.okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				boolean isEverythingValid = true;
 				Path mdPath = FileSystems.getDefault().getPath(SettingsPanel.this.fixMetadataFolder.getText());
-				if (mdPath == null
-						|| (!mdPath.toString().isEmpty() && !(mdPath.toFile().isDirectory() && mdPath.toFile().canWrite()))) {
+				if (mdPath == null || (!mdPath.toString().isEmpty()
+						&& !(mdPath.toFile().isDirectory() && mdPath.toFile().canWrite()))) {
 					isEverythingValid = false;
 					JOptionPane.showMessageDialog(SettingsPanel.this, "Invalid path for saving fixed files.",
 							"Invalid data", JOptionPane.INFORMATION_MESSAGE);
@@ -165,7 +172,7 @@ class SettingsPanel extends JPanel {
 			}
 		});
 
-		JButton cancelButton = new JButton("Cancel");
+		JButton cancelButton = new JButton(GUIConstants.CANCEL);
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {

@@ -20,11 +20,58 @@
  */
 package org.verapdf.gui;
 
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.xml.bind.JAXBException;
+
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
+import org.verapdf.core.utils.FileUtils;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
@@ -34,27 +81,12 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.TaskType;
 import org.verapdf.processor.reports.BatchSummary;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.xml.bind.JAXBException;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.nio.file.*;
-import java.util.*;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Panel with functionality for checker.
  *
  * @author Maksim Bezrukov
  */
+@SuppressWarnings("synthetic-access")
 class CheckerPanel extends JPanel {
 	private static transient ConfigManager config;
 	/**
@@ -65,6 +97,7 @@ class CheckerPanel extends JPanel {
 	static final Logger logger = Logger.getLogger(CheckerPanel.class.getCanonicalName());
 
 	private static final Map<String, PDFAFlavour> FLAVOURS_MAP = new HashMap<>();
+	private static final String emptyString = ""; //$NON-NLS-1$
 
 	private JFileChooser pdfChooser;
 	private JFileChooser xmlChooser;
@@ -98,7 +131,7 @@ class CheckerPanel extends JPanel {
 
 	CheckerPanel(final ConfigManager config) throws IOException {
 		CheckerPanel.config = config;
-		this.profilePath = FileSystems.getDefault().getPath("");
+		this.profilePath = FileSystems.getDefault().getPath(emptyString);
 		setPreferredSize(new Dimension(GUIConstants.PREFERRED_SIZE_WIDTH, GUIConstants.PREFERRED_SIZE_HEIGHT));
 
 		GridBagLayout gbl = new GridBagLayout();
@@ -216,7 +249,7 @@ class CheckerPanel extends JPanel {
 				GUIConstants.CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.chosenProfile, gbc);
 		this.add(this.chosenProfile);
-		if (!this.profilePath.toString().equals("")) {
+		if (!this.profilePath.toString().isEmpty()) {
 			this.chosenProfile.setText(this.profilePath.toString());
 		} else {
 			this.chosenProfile.setText(GUIConstants.CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT);
@@ -405,7 +438,9 @@ class CheckerPanel extends JPanel {
 					changeConfig();
 					ValidationProfile customProfile = null;
 					if (CheckerPanel.this.chooseFlavour.getSelectedItem().equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT)) {
-						customProfile = Profiles.profileFromXml(new FileInputStream(CheckerPanel.this.profilePath.toFile()));
+						try (InputStream is = new FileInputStream(CheckerPanel.this.profilePath.toFile())) {
+						customProfile = Profiles.profileFromXml(is);
+						}
 					}
 					CheckerPanel.this.validateWorker = new ValidateWorker(CheckerPanel.this, CheckerPanel.this.pdfFile,
 							CheckerPanel.config, customProfile, CheckerPanel.this.policy);
@@ -677,12 +712,31 @@ class CheckerPanel extends JPanel {
 		}
 	}
 
-	private boolean areAllExists(File[] files) {
+	private static boolean areAllExists(File[] files) {
 		if (files == null || files.length == 0) {
 			return false;
-		} else {
-			for (File file : files) {
-				if (file == null || !file.exists()) {
+		}
+		for (File file : files) {
+			if (file == null || !file.exists()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static boolean areAllExtensionsRight(File[] files, String... extensions) {
+		if (files == null || files.length == 0) {
+			return true;
+		}
+		for (File file : files) {
+			if (file.isFile()) {
+				boolean isExtMatch = false;
+				for (String extension : extensions) {
+					if (FileUtils.hasExtNoCase(file.getName(), extension)) {
+						isExtMatch = true;
+					}
+				}
+				if (!isExtMatch) {
 					return false;
 				}
 			}
@@ -690,27 +744,7 @@ class CheckerPanel extends JPanel {
 		return true;
 	}
 
-	private boolean areAllExtensionsRight(File[] files, String... extensions) {
-		if (files != null) {
-			for (File file : files) {
-				if (file.isFile()) {
-					boolean isWrongFile = true;
-					for (String extension : extensions) {
-						if (file.getName().toLowerCase()
-								.endsWith(GUIConstants.DOT + extension.toLowerCase())) {
-							isWrongFile = false;
-						}
-					}
-					if (isWrongFile) {
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-
-	private String getSelectedPathsMessage(File[] files) {
+	private static String getSelectedPathsMessage(File[] files) {
 		if (files != null && files.length > 0) {
 			StringBuilder builder = new StringBuilder(files[0].getAbsolutePath());
 			for (int i = 1; i < files.length; ++i) {
@@ -718,7 +752,7 @@ class CheckerPanel extends JPanel {
 			}
 			return builder.toString();
 		}
-		return "";
+		return emptyString;
 	}
 
 	private void saveReport(JFileChooser chooser, String extension, File report) {
@@ -743,7 +777,7 @@ class CheckerPanel extends JPanel {
 						int resultOption = JOptionPane.showConfirmDialog(CheckerPanel.this,
 								extension.toUpperCase()
 										+ " file with the same name already exists. Do you want to overwrite it?",
-								"", JOptionPane.YES_NO_OPTION);
+								emptyString, JOptionPane.YES_NO_OPTION);
 						if (resultOption == JOptionPane.YES_OPTION) {
 							Files.copy(report.toPath(), temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
 						}
@@ -787,7 +821,7 @@ class CheckerPanel extends JPanel {
 	}
 
 	private boolean isExecute() {
-		return (this.pdfFile != null && (!this.profilePath.toString().equals("")
+		return (this.pdfFile != null && (!this.profilePath.toString().isEmpty()
 				|| !this.chooseFlavour.getSelectedItem().equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT))
 		&& (this.ProcessTypes.getSelectedItem() != ProcessType.POLICY || this.policy != null));
 	}
@@ -796,16 +830,15 @@ class CheckerPanel extends JPanel {
 		return this.fixMetadata.isSelected();
 	}
 
-	private String getFlavourReadableText(PDFAFlavour flavour) {
-		if (flavour.toString().matches("\\d\\w")) {
+	private static String getFlavourReadableText(PDFAFlavour flavour) {
+		if (flavour.toString().matches("\\d\\w")) { //$NON-NLS-1$
 			String valueString = flavour.toString();
-			String parsedFlavour = "PDF/A-";
+			String parsedFlavour = "PDF/A-"; //$NON-NLS-1$
 			parsedFlavour += valueString.charAt(0);
 			parsedFlavour += valueString.substring(1, 2).toUpperCase();
 			return parsedFlavour;
-		} else {
-			return "Error in parsing flavour";
 		}
+		return "Error in parsing flavour";
 	}
 
 	void setPolicyFile(File policy) {
