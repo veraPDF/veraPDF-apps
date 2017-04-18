@@ -1,22 +1,16 @@
 /**
  * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
- * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
- * All rights reserved.
- *
- * VeraPDF Library GUI is free software: you can redistribute it and/or modify
- * it under the terms of either:
- *
- * The GNU General public license GPLv3+.
- * You should have received a copy of the GNU General Public License
- * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the source
- * tree.  If not, see http://www.gnu.org/licenses/ or
- * https://www.gnu.org/licenses/gpl-3.0.en.html.
- *
- * The Mozilla Public License MPLv2+.
- * You should have received a copy of the Mozilla Public License along with
- * VeraPDF Library GUI as the LICENSE.MPL file in the root of the source tree.
- * If a copy of the MPL was not distributed with this file, you can obtain one at
- * http://mozilla.org/MPL/2.0/.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org> All rights
+ * reserved. VeraPDF Library GUI is free software: you can redistribute it
+ * and/or modify it under the terms of either: The GNU General public license
+ * GPLv3+. You should have received a copy of the GNU General Public License
+ * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the
+ * source tree. If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html. The Mozilla Public License
+ * MPLv2+. You should have received a copy of the Mozilla Public License along
+ * with VeraPDF Library GUI as the LICENSE.MPL file in the root of the source
+ * tree. If a copy of the MPL was not distributed with this file, you can obtain
+ * one at http://mozilla.org/MPL/2.0/.
  */
 package org.verapdf.gui;
 
@@ -29,22 +23,31 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.XMLStreamException;
 
-import org.apache.log4j.Logger;
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.VeraAppConfig;
-import org.verapdf.features.FeatureExtractorConfig;
-import org.verapdf.features.FeatureFactory;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
@@ -58,6 +61,7 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
  * @author Maksim Bezrukov
  */
 
+@SuppressWarnings("synthetic-access")
 public class PDFValidationApplication extends JFrame {
 	static final ConfigManager configManager = Applications.createAppConfigManager();
 
@@ -66,7 +70,7 @@ public class PDFValidationApplication extends JFrame {
 		@Override
 		public void windowClosing(WindowEvent e) {
 			try {
-				configManager.updateAppConfig(config);
+				configManager.updateAppConfig(PDFValidationApplication.this.config);
 			} catch (JAXBException | IOException excep) {
 				// TODO Auto-generated catch block
 				excep.printStackTrace();
@@ -76,7 +80,7 @@ public class PDFValidationApplication extends JFrame {
 
 	private static final long serialVersionUID = -5569669411392145783L;
 
-	private static final Logger LOGGER = Logger.getLogger(PDFValidationApplication.class);
+	private static final Logger logger = Logger.getLogger(PDFValidationApplication.class.getCanonicalName());
 
 	private AboutPanel aboutPanel;
 	private SettingsPanel settingsPanel;
@@ -94,43 +98,43 @@ public class PDFValidationApplication extends JFrame {
 
 		setTitle(GUIConstants.TITLE);
 
-		config = configManager.getApplicationConfig();
+		this.config = configManager.getApplicationConfig();
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		setJMenuBar(menuBar);
 
-		aboutPanel = null;
+		this.aboutPanel = null;
 		try {
-			aboutPanel = new AboutPanel();
+			this.aboutPanel = new AboutPanel();
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(this, "Error in reading logo image.", GUIConstants.ERROR,
 					JOptionPane.ERROR_MESSAGE);
-			LOGGER.error("Exception in reading logo image", e);
+			logger.log(Level.WARNING, "Exception in reading logo image", e);
 		}
 
 		final JMenu file = new JMenu("File");
 		menuBar.add(file);
 
 		try {
-			settingsPanel = new SettingsPanel();
+			this.settingsPanel = new SettingsPanel();
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error initialising settings panel.",
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			LOGGER.error("Exception in initialising settings panel", e);
+			logger.log(Level.SEVERE, "Exception in initialising settings panel", e);
 		}
 
 		final JMenuItem sett = new JMenuItem("Settings");
 		sett.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (settingsPanel != null && settingsPanel.showDialog(PDFValidationApplication.this, "Settings",
-						configManager)) {
-					Builder confBuilder = Builder
-							.fromConfig(configManager.getApplicationConfig());
-					confBuilder.wikiPath(settingsPanel.getProfilesWikiPath());
-					confBuilder.maxFails(settingsPanel.getFailedChecksDisplayNumber());
-					confBuilder.fixerFolder(settingsPanel.getFixMetadataDirectory().toString());
+				if (PDFValidationApplication.this.settingsPanel != null && PDFValidationApplication.this.settingsPanel
+						.showDialog(PDFValidationApplication.this, "Settings", configManager)) {
+					Builder confBuilder = Builder.fromConfig(configManager.getApplicationConfig());
+					confBuilder.wikiPath(PDFValidationApplication.this.settingsPanel.getProfilesWikiPath());
+					confBuilder.maxFails(PDFValidationApplication.this.settingsPanel.getFailedChecksDisplayNumber());
+					confBuilder.fixerFolder(
+							PDFValidationApplication.this.settingsPanel.getFixMetadataDirectory().toString());
 					try {
 						configManager.updateAppConfig(confBuilder.build());
 					} catch (JAXBException | IOException excep) {
@@ -139,8 +143,9 @@ public class PDFValidationApplication extends JFrame {
 					}
 
 					ValidatorConfig validConf = ValidatorFactory.createConfig(
-							configManager.getValidatorConfig().getFlavour(), settingsPanel.isDispPassedRules(),
-							settingsPanel.getFailedChecksNumber());
+							configManager.getValidatorConfig().getFlavour(),
+							PDFValidationApplication.this.settingsPanel.isDispPassedRules(),
+							PDFValidationApplication.this.settingsPanel.getFailedChecksNumber());
 					try {
 						configManager.updateValidatorConfig(validConf);
 					} catch (JAXBException | IOException excep) {
@@ -148,7 +153,8 @@ public class PDFValidationApplication extends JFrame {
 						excep.printStackTrace();
 					}
 
-					MetadataFixerConfig fixConf = FixerFactory.configFromValues(settingsPanel.getFixMetadataPrefix(), true);
+					MetadataFixerConfig fixConf = FixerFactory
+							.configFromValues(PDFValidationApplication.this.settingsPanel.getFixMetadataPrefix(), true);
 					try {
 						configManager.updateFixerConfig(fixConf);
 					} catch (JAXBException | IOException excep) {
@@ -179,18 +185,20 @@ public class PDFValidationApplication extends JFrame {
 
 		final JMenu policy = new JMenu("Configs");
 
-		featuresPanel = new FeaturesConfigPanel();
+		this.featuresPanel = new FeaturesConfigPanel();
 
 		final JMenuItem features = new JMenuItem("Features Config");
 		features.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (featuresPanel != null && featuresPanel.showDialog(PDFValidationApplication.this, "Features Config",
-						configManager.getFeaturesConfig())) {
+				if (PDFValidationApplication.this.featuresPanel != null
+						&& PDFValidationApplication.this.featuresPanel.showDialog(PDFValidationApplication.this,
+								"Features Config", configManager.getFeaturesConfig())) {
 					try {
-						configManager.updateFeaturesConfig(featuresPanel.getFeaturesConfig());
+						configManager
+								.updateFeaturesConfig(PDFValidationApplication.this.featuresPanel.getFeaturesConfig());
 					} catch (JAXBException | IOException exp) {
-						LOGGER.error("Exception in updating features config", exp);
+						logger.log(Level.SEVERE, "Exception in updating features config", exp); //$NON-NLS-1$
 					}
 				}
 			}
@@ -199,27 +207,26 @@ public class PDFValidationApplication extends JFrame {
 		menuBar.add(policy);
 		policy.add(features);
 
-		policyConfig = new PolicyPanel();
+		this.policyConfig = new PolicyPanel();
 		final JMenuItem policyPanel = new JMenuItem("Policy Config");
 		policyPanel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (policyConfig != null && policyConfig.showDialog(PDFValidationApplication.this)) {
+				if (PDFValidationApplication.this.policyConfig != null
+						&& PDFValidationApplication.this.policyConfig.showDialog(PDFValidationApplication.this)) {
 					try {
 						JFileChooser jfc = new JFileChooser(new File(GUIConstants.DOT).getCanonicalPath());
-						int dialogRes = jfc.showDialog(PDFValidationApplication.this,
-								"Save policy config file");
+						int dialogRes = jfc.showDialog(PDFValidationApplication.this, "Save policy config file");
 						if (dialogRes == JFileChooser.APPROVE_OPTION) {
-							PDFValidationApplication.this.policyConfig.setPoilcyFile(
-									jfc.getSelectedFile());
-							policyConfig.writeSchematronFile();
-							PDFValidationApplication.this.checkerPanel.setPolicyFile(
-									policyConfig.getPolicyFile());
+							PDFValidationApplication.this.policyConfig.setPolicyFile(jfc.getSelectedFile());
+							PDFValidationApplication.this.policyConfig.writeSchematronFile();
+							PDFValidationApplication.this.checkerPanel
+									.setPolicyFile(PDFValidationApplication.this.policyConfig.getPolicyFile());
 						}
 					} catch (IOException | XMLStreamException ex) {
-						JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in saving policy config file.",
-								GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-						LOGGER.error("Error in saving policy config file.", ex);
+						JOptionPane.showMessageDialog(PDFValidationApplication.this,
+								"Error in saving policy config file.", GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+						logger.log(Level.SEVERE, "Error in saving policy config file.", ex);
 					}
 				}
 			}
@@ -231,8 +238,8 @@ public class PDFValidationApplication extends JFrame {
 		about.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (aboutPanel != null) {
-					aboutPanel.showDialog(PDFValidationApplication.this, "About veraPDF");
+				if (PDFValidationApplication.this.aboutPanel != null) {
+					PDFValidationApplication.this.aboutPanel.showDialog(PDFValidationApplication.this, "About veraPDF");
 				}
 			}
 		});
@@ -251,20 +258,20 @@ public class PDFValidationApplication extends JFrame {
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in creating mini logo.",
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			LOGGER.error("Exception in creating mini logo", e);
+			logger.log(Level.WARNING, "Exception in creating mini logo", e);
 		}
 
 		contentPane.add(logoPanel);
 
-		checkerPanel = null;
+		this.checkerPanel = null;
 		try {
-			checkerPanel = new CheckerPanel(configManager);
+			this.checkerPanel = new CheckerPanel(configManager);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in loading xml or html image.",
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			LOGGER.error("Exception in loading xml or html image", e);
+			logger.log(Level.WARNING, "Exception in loading xml or html image", e);
 		}
-		contentPane.add(checkerPanel);
+		contentPane.add(this.checkerPanel);
 
 	}
 
@@ -277,7 +284,7 @@ public class PDFValidationApplication extends JFrame {
 	public static void main(String[] args) {
 		PdfBoxFoundryProvider.initialise();
 		ReleaseDetails.addDetailsFromResource(
-				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT);
+				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -285,13 +292,13 @@ public class PDFValidationApplication extends JFrame {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException
 						| InstantiationException e) {
-					LOGGER.error("Exception in configuring UI manager", e);
+					logger.log(Level.SEVERE, "Exception in configuring UI manager", e); //$NON-NLS-1$
 				}
 				try {
 					PDFValidationApplication frame = new PDFValidationApplication();
 					frame.setVisible(true);
 				} catch (Exception e) {
-					LOGGER.error("Exception", e);
+					logger.log(Level.SEVERE, "Exception", e); //$NON-NLS-1$
 				}
 			}
 		});

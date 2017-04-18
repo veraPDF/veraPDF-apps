@@ -1,22 +1,16 @@
 /**
  * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
- * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
- * All rights reserved.
- *
- * VeraPDF Library GUI is free software: you can redistribute it and/or modify
- * it under the terms of either:
- *
- * The GNU General public license GPLv3+.
- * You should have received a copy of the GNU General Public License
- * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the source
- * tree.  If not, see http://www.gnu.org/licenses/ or
- * https://www.gnu.org/licenses/gpl-3.0.en.html.
- *
- * The Mozilla Public License MPLv2+.
- * You should have received a copy of the Mozilla Public License along with
- * VeraPDF Library GUI as the LICENSE.MPL file in the root of the source tree.
- * If a copy of the MPL was not distributed with this file, you can obtain one at
- * http://mozilla.org/MPL/2.0/.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org> All rights
+ * reserved. VeraPDF Library GUI is free software: you can redistribute it
+ * and/or modify it under the terms of either: The GNU General public license
+ * GPLv3+. You should have received a copy of the GNU General Public License
+ * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the
+ * source tree. If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html. The Mozilla Public License
+ * MPLv2+. You should have received a copy of the Mozilla Public License along
+ * with VeraPDF Library GUI as the LICENSE.MPL file in the root of the source
+ * tree. If a copy of the MPL was not distributed with this file, you can obtain
+ * one at http://mozilla.org/MPL/2.0/.
  */
 package org.verapdf.gui;
 
@@ -26,10 +20,6 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.EnumMap;
 import java.util.EnumSet;
 
@@ -39,9 +29,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-import javax.xml.bind.JAXBException;
 
-import org.apache.log4j.Logger;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.features.FeatureObjectType;
@@ -63,7 +51,8 @@ public class FeaturesConfigPanel extends JPanel {
 	private EnumMap<FeatureObjectType, JCheckBox> featureGrid = new EnumMap<>(FeatureObjectType.class);
 
 	FeaturesConfigPanel() {
-		setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS));
+		setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS,
+				GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS));
 		setLayout(new BorderLayout());
 
 		JPanel panel = new JPanel();
@@ -71,14 +60,14 @@ public class FeaturesConfigPanel extends JPanel {
 
 		for (FeatureObjectType type : FeatureObjectType.values()) {
 			if (type != FeatureObjectType.ERROR) {
-				featureGrid.put(type, new JCheckBox(type.getFullName()));
-				panel.add(featureGrid.get(type));
+				this.featureGrid.put(type, new JCheckBox(type.getFullName()));
+				panel.add(this.featureGrid.get(type));
 			}
 		}
 
 		add(panel, BorderLayout.CENTER);
 
-		this.okButton = new JButton("Ok");
+		this.okButton = new JButton(GUIConstants.OK);
 		this.okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
@@ -87,7 +76,7 @@ public class FeaturesConfigPanel extends JPanel {
 			}
 		});
 
-		JButton cancelButton = new JButton("Cancel");
+		JButton cancelButton = new JButton(GUIConstants.CANCEL);
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
@@ -112,9 +101,8 @@ public class FeaturesConfigPanel extends JPanel {
 			}
 		}
 
-		Frame owner = parent instanceof Frame ?
-				(Frame) parent :
-				(Frame) SwingUtilities.getAncestorOfClass(Frame.class, parent);
+		Frame owner = parent instanceof Frame ? (Frame) parent
+				: (Frame) SwingUtilities.getAncestorOfClass(Frame.class, parent);
 
 		if (this.dialog == null || this.dialog.getOwner() != owner) {
 			this.dialog = new JDialog(owner, true);
