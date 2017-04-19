@@ -245,7 +245,7 @@ public final class GUIConstants {
 	public static final int POLICY_DIALOG_COORD_X = 150;
 	public static final int POLICY_DIALOG_COORD_Y = 150;
 	public static final int PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT = 25;
-	public static final int POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH = 150;
+	public static final int POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH = PREFERRED_POLICY_SIZE_WIDTH / 4;
 
 	private GUIConstants() {
 		// Disable default constructor
