@@ -34,6 +34,10 @@ public final class GUIConstants {
 	public static final Color PARTNERS_BACKGROUND = Color.WHITE;
 	public static final String LOGO_LINK_TEXT = "Visit veraPDF.org"; //$NON-NLS-1$
 	public static final String LOGO_LINK_URL = "http://www.verapdf.org"; //$NON-NLS-1$
+	public static final String DOCS_LINK_URL = "http://docs.verapdf.org";
+	public static final String DOCS_GUI_LINK_URL = DOCS_LINK_URL + "/gui";
+	public static final String DOCS_VALIDATION_LINK_URL = DOCS_LINK_URL + "/validation";
+	public static final String DOCS_POLICY_LINK_URL = DOCS_LINK_URL + "/policy";
 	public static final String ERROR = "Error";
 	public static final String XML_LOGO_NAME = imgRoot + "xml-logo.png"; //$NON-NLS-1$
 	public static final String HTML_LOGO_NAME = imgRoot + "html-logo.png"; //$NON-NLS-1$

@@ -14,35 +14,6 @@
  */
 package org.verapdf.gui;
 
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.BoxLayout;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
-
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
@@ -54,6 +25,19 @@ import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.PdfBoxFoundryProvider;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Main frame of the PDFA Conformance Checker
@@ -215,7 +199,11 @@ public class PDFValidationApplication extends JFrame {
 				if (PDFValidationApplication.this.policyConfig != null
 						&& PDFValidationApplication.this.policyConfig.showDialog(PDFValidationApplication.this)) {
 					try {
-						JFileChooser jfc = new JFileChooser(new File(GUIConstants.DOT).getCanonicalPath());
+						File jfcStartingPath = PDFValidationApplication.this.policyConfig.getPolicyFile();
+						if (jfcStartingPath == null) {
+							jfcStartingPath = new File(GUIConstants.DOT);
+						}
+						JFileChooser jfc = new JFileChooser(jfcStartingPath.getCanonicalPath());
 						int dialogRes = jfc.showDialog(PDFValidationApplication.this, "Save policy config file");
 						if (dialogRes == JFileChooser.APPROVE_OPTION) {
 							PDFValidationApplication.this.policyConfig.setPolicyFile(jfc.getSelectedFile());
@@ -244,7 +232,38 @@ public class PDFValidationApplication extends JFrame {
 			}
 		});
 
-		menuBar.add(about);
+		JMenuItem guiHelp = new JMenuItem("GUI");
+		guiHelp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PDFValidationApplication.this.attemptURIOpen(GUIConstants.DOCS_GUI_LINK_URL);
+			}
+		});
+
+		JMenuItem validationHelp = new JMenuItem("Validation");
+		validationHelp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PDFValidationApplication.this.attemptURIOpen(GUIConstants.DOCS_VALIDATION_LINK_URL);
+			}
+		});
+
+		JMenuItem policyHelp = new JMenuItem("Policy");
+		policyHelp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PDFValidationApplication.this.attemptURIOpen(GUIConstants.DOCS_POLICY_LINK_URL);
+			}
+		});
+
+		JMenu help = new JMenu("Help");
+		help.add(guiHelp);
+		help.add(validationHelp);
+		help.add(policyHelp);
+		help.addSeparator();
+		help.add(about);
+
+		menuBar.add(help);
 
 		JPanel contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS,
@@ -273,6 +292,16 @@ public class PDFValidationApplication extends JFrame {
 		}
 		contentPane.add(this.checkerPanel);
 
+	}
+
+	private void attemptURIOpen(String uri) {
+		try {
+			Desktop.getDesktop().browse(new URI(uri));
+		} catch (IOException | URISyntaxException excep) {
+			JOptionPane.showMessageDialog(PDFValidationApplication.this, GUIConstants.ERROR, GUIConstants.ERROR,
+					JOptionPane.ERROR_MESSAGE);
+			logger.log(Level.SEVERE, "Exception in opening link " + uri, excep); //$NON-NLS-1$
+		}
 	}
 
 	/**
