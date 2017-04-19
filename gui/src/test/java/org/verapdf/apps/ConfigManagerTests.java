@@ -50,6 +50,7 @@ import org.verapdf.processor.TaskType;
  * @version 0.1 Created 31 Oct 2016:22:13:33
  */
 
+@SuppressWarnings("static-method")
 public class ConfigManagerTests {
 
 	/**
