@@ -24,7 +24,6 @@
 package org.verapdf.cli.commands;
 
 import com.beust.jcommander.JCommander;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.verapdf.apps.Applications;
 import org.verapdf.core.VeraPDFException;
@@ -45,13 +44,6 @@ import static org.junit.Assert.assertTrue;
  */
 
 public class VeraCliTasksTest {
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
 
 	/**
 	 * Test method for {@link org.verapdf.cli.commands.VeraCliArgParser#fixMetadata()}.

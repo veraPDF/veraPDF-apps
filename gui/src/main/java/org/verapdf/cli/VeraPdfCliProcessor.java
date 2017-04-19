@@ -180,10 +180,10 @@ final class VeraPdfCliProcessor {
 
 		OutputStream outputReportStream = this.getReportStream();
 		try {
-			if (result.isValidPdf() && !result.isEncryptedPdf())
+			if (result.isPdf() && !result.isEncryptedPdf())
 				ProcessorFactory.resultToXml(result, outputReportStream, true);
 			else {
-				String message = (result.isValidPdf()) ? item.getName() + " is and encrypted PDF."
+				String message = (result.isPdf()) ? item.getName() + " is and encrypted PDF."
 						: item.getName() + " is not a valid PDF.";
 				outputReportStream.write(message.getBytes());
 			}
