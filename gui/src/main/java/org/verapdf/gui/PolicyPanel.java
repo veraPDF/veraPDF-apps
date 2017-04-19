@@ -1,13 +1,6 @@
 package org.verapdf.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.LayoutManager;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -72,11 +65,6 @@ public class PolicyPanel extends JPanel {
 	private List<JComboBox<SchematronOperation>> operations;
 	private List<JButton> removeLineButtons;
 	private List<JPanel> layoutPanels;
-
-	private JLabel featureTypeLabel = new JLabel("Feature type");
-	private JLabel featureLabel = new JLabel("Feature");
-	private JLabel operationLabel = new JLabel("Logical condition");
-	private JLabel argumentLabel = new JLabel("Argument");
 
 	private JPanel buttonPanel;
 	private JButton addLineButton;
@@ -205,7 +193,7 @@ public class PolicyPanel extends JPanel {
 		GridBagLayout linePanelLayout = new GridBagLayout();
 		linePanel.setLayout(linePanelLayout);
 
-		JTextField argumentsTextField = new JTextField();
+		JTextField argumentsTextField = new JTextField(10);
 		this.arguments.add(argumentsTextField);
 		argumentsTextField.addFocusListener(new FocusAdapter() {
 			@Override
@@ -399,7 +387,8 @@ public class PolicyPanel extends JPanel {
 		res.gridy = 0;
 		res.weighty = 0;
 		res.weightx = 2;
-		res.fill = GridBagConstraints.HORIZONTAL;
+		res.fill = GridBagConstraints.NONE;
+		res.insets = getDefaultInsets();
 		return res;
 	}
 
@@ -411,7 +400,8 @@ public class PolicyPanel extends JPanel {
 		res.gridy = 0;
 		res.weighty = 0;
 		res.weightx = 2;
-		res.fill = GridBagConstraints.HORIZONTAL;
+		res.fill = GridBagConstraints.NONE;
+		res.insets = getDefaultInsets();
 		return res;
 	}
 
@@ -423,7 +413,8 @@ public class PolicyPanel extends JPanel {
 		res.gridy = 0;
 		res.weighty = 0;
 		res.weightx = 2;
-		res.fill = GridBagConstraints.HORIZONTAL;
+		res.fill = GridBagConstraints.NONE;
+		res.insets = getDefaultInsets();
 		return res;
 	}
 
@@ -436,6 +427,7 @@ public class PolicyPanel extends JPanel {
 		res.weighty = 0;
 		res.weightx = 6;
 		res.fill = GridBagConstraints.HORIZONTAL;
+		res.insets = getDefaultInsets();
 		return res;
 	}
 
@@ -448,7 +440,12 @@ public class PolicyPanel extends JPanel {
 		res.weighty = 0;
 		res.weightx = 1;
 		res.fill = GridBagConstraints.HORIZONTAL;
+		res.insets = getDefaultInsets();
 		return res;
+	}
+
+	private static Insets getDefaultInsets() {
+		return new Insets(2, 2, 2, 2);
 	}
 
 	private class FeatureObjectTypeRenderer extends JLabel implements ListCellRenderer<FeatureObjectType> {
@@ -466,12 +463,12 @@ public class PolicyPanel extends JPanel {
 		}
 	}
 
-	private static <E> void setOptimalSizeForComboBox(JComboBox<E> comboBox) {
-		comboBox.setMinimumSize(new Dimension(GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH,
+	private static void setOptimalSizeForComboBox(Component component) {
+		component.setMinimumSize(new Dimension(GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH,
 				GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
-		comboBox.setPreferredSize(new Dimension(GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH,
+		component.setPreferredSize(new Dimension(GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH,
 				GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
-		comboBox.setMaximumSize(new Dimension(GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH,
+		component.setMaximumSize(new Dimension(GUIConstants.POLICY_PANEL_PREFERRED_COMBO_BOX_WIDTH,
 				GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
 	}
 

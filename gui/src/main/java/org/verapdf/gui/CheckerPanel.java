@@ -553,7 +553,8 @@ class CheckerPanel extends JPanel {
 					this.viewXML.setEnabled(true);
 				}
 
-				if (htmlReport != null) {
+				if (htmlReport != null && !(result.isMultiJob() &&
+						this.ProcessTypes.getSelectedItem() == ProcessType.EXTRACT)) {
 					this.saveHTML.setEnabled(true);
 					this.viewHTML.setEnabled(true);
 				}
