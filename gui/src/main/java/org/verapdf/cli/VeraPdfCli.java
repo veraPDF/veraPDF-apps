@@ -23,7 +23,6 @@
  */
 package org.verapdf.cli;
 
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -67,7 +66,7 @@ public final class VeraPdfCli {
 	 *            Java.lang.String array of command line args, to be processed
 	 *            using Apache commons CLI.
 	 */
-   public static void main(final String[] args) throws VeraPDFException, IOException {
+   public static void main(final String[] args) throws VeraPDFException {
 		VeraGreenfieldFoundryProvider.initialise();
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
 		ReleaseDetails.addDetailsFromResource(

@@ -40,7 +40,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -527,16 +526,16 @@ class CheckerPanel extends JPanel {
 		if (!this.isValidationErrorOccurred) {
 			try {
 				BatchSummary result = this.validateWorker.get();
-				if (result.getJobs() == 1) {
-					if (result.getFailedJobs() == 1) {
+				if (!result.isMultiJob()) {
+					if (result.getFailedParsingJobs() == 1) {
 						setResultMessage(GUIConstants.ERROR_IN_PARSING, GUIConstants.VALIDATION_FAILED_COLOR);
-					} else if (result.getValidPdfaCount() > 0) {
+					} else if (result.getValidationSummary().getCompliantPdfaCount() > 0) {
 						setResultMessage(GUIConstants.VALIDATION_OK, GUIConstants.VALIDATION_SUCCESS_COLOR);
-					} else if (result.getInvalidPdfaCount() > 0) {
+					} else if (result.getValidationSummary().getNonCompliantPdfaCount() > 0) {
 						setResultMessage(GUIConstants.VALIDATION_FALSE, GUIConstants.VALIDATION_FAILED_COLOR);
-					} else if (result.getValidationExceptionCount() == 1) {
+					} else if (result.getFailedParsingJobs() == 1) {
 						setResultMessage(GUIConstants.ERROR_IN_VALIDATING, GUIConstants.VALIDATION_FAILED_COLOR);
-					} else if (result.getFeatureCount() > 0) {
+					} else if (result.getFeaturesSummary().getTotalJobCount() > 0) {
 						setResultMessage(GUIConstants.FEATURES_GENERATED_CORRECT, GUIConstants.VALIDATION_SUCCESS_COLOR);
 					} else {
 						setResultMessage(GUIConstants.ERROR_IN_FEATURES, GUIConstants.VALIDATION_FAILED_COLOR);
@@ -569,14 +568,14 @@ class CheckerPanel extends JPanel {
 
 	private String getBatchResultMessage(BatchSummary result) {
 		String divisor = ",  ";
-		String start = "Items processed: " + result.getJobs();
-		String end = divisor + "Parsing Error: " + result.getFailedJobs();
-		if (result.getValidPdfaCount() + result.getInvalidPdfaCount() + result.getValidationExceptionCount() > 0) {
-			end = divisor + "Valid: " + result.getValidPdfaCount()
-					+ divisor + "Invalid: " + result.getInvalidPdfaCount()
-					+ divisor + "Error: " + (result.getValidationExceptionCount() + result.getFailedJobs());
-		} else if (result.getFeatureCount() > 0) {
-			end = divisor + "Features generated: " + result.getFeatureCount() + end;
+		String start = "Items processed: " + result.getTotalJobs();
+		String end = divisor + "Parsing Error: " + result.getFailedParsingJobs();
+		if (result.getValidationSummary().getTotalJobCount() > 0) {
+			end = divisor + "Valid: " + result.getValidationSummary().getCompliantPdfaCount()
+					+ divisor + "Invalid: " + result.getValidationSummary().getNonCompliantPdfaCount()
+					+ divisor + "Error: " + (result.getValidationSummary().getFailedJobCount());
+		} else if (result.getFeaturesSummary().getSuccessfulJobCount() > 0) {
+			end = divisor + "Features generated: " + result.getFeaturesSummary().getSuccessfulJobCount() + end;
 		}
 		return start + end;
 	}
@@ -638,7 +637,7 @@ class CheckerPanel extends JPanel {
 			if (!areAllExists(selectedFiles)) {
 				JOptionPane.showMessageDialog(CheckerPanel.this, "Error. Some selected file doesn't exist.",
 						GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			} else if (!areAllExtensionsRight(selectedFiles, extensions)) {
+			} else if (!isLegalExtension(selectedFiles, extensions)) {
 				JOptionPane.showMessageDialog(CheckerPanel.this,
 						"Error. Some selected file is not in " + elementsDevidedByComa(extensions) + " format.",
 						GUIConstants.ERROR,
@@ -657,7 +656,7 @@ class CheckerPanel extends JPanel {
 				switch (extensions[0]) {
 					case GUIConstants.PDF:
 						// TODO: change that manual collecting to library one when it will be finished
-						this.pdfFile = getAllPDFFiles(selectedFiles);
+						this.pdfFile = filterPdfFiles(selectedFiles);
 						this.chosenPDF.setText(getSelectedPathsMessage(selectedFiles));
 						break;
 					case GUIConstants.XML:
@@ -691,28 +690,20 @@ class CheckerPanel extends JPanel {
 		}
 	}
 
-	private List<File> getAllPDFFiles(File[] selectedFiles) {
-		if (selectedFiles != null) {
-			List<File> res = new ArrayList<>();
-			addAllPDFFiles(selectedFiles, res);
-			return Collections.unmodifiableList(res);
-		}
-		return Collections.emptyList();
-	}
-
-	private void addAllPDFFiles(File[] listOfFiles, List<File> res) {
+	static List<File> filterPdfFiles(final File[] listOfFiles) {
+		List<File> retVal = new ArrayList<>();
 		for (int i = 0; i < listOfFiles.length; ++i) {
 			File file = listOfFiles[i];
-			if (file.isFile() && file.getName().toLowerCase()
-					.endsWith(GUIConstants.DOT + GUIConstants.PDF.toLowerCase())) {
-				res.add(file);
+			if (file.isFile() && FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
+				retVal.add(file);
 			} else if (file.isDirectory()) {
-				addAllPDFFiles(file.listFiles(), res);
+				retVal.addAll(filterPdfFiles(file.listFiles()));
 			}
 		}
+		return retVal;
 	}
 
-	private static boolean areAllExists(File[] files) {
+	static boolean areAllExists(File[] files) {
 		if (files == null || files.length == 0) {
 			return false;
 		}
@@ -724,7 +715,7 @@ class CheckerPanel extends JPanel {
 		return true;
 	}
 
-	private static boolean areAllExtensionsRight(File[] files, String... extensions) {
+	static boolean isLegalExtension(File[] files, String... extensions) {
 		if (files == null || files.length == 0) {
 			return true;
 		}
@@ -739,11 +730,13 @@ class CheckerPanel extends JPanel {
 				if (!isExtMatch) {
 					return false;
 				}
+			} else {
+				return false;
 			}
 		}
 		return true;
 	}
-
+	
 	private static String getSelectedPathsMessage(File[] files) {
 		if (files != null && files.length > 0) {
 			StringBuilder builder = new StringBuilder(files[0].getAbsolutePath());
