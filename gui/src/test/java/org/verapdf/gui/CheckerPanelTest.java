@@ -66,7 +66,7 @@ public class CheckerPanelTest {
 		File non_ext2 = new File("test2.SCH");
 		File non_ext3 = new File("test3.xsl");
 		File[] non_exts = {non_ext1, non_ext2, non_ext3};
-		assertFalse(CheckerPanel.isLegalExtension(non_exts, "pdf"));
+		assertTrue(CheckerPanel.isLegalExtension(non_exts, "pdf"));
 		File pdf1 = tempFolder.newFile("test1.pdf");
 		File pdf2 = tempFolder.newFile("test2.PDF");
 		File pdf3 = tempFolder.newFile("test3.pdf");
