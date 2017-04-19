@@ -730,8 +730,6 @@ class CheckerPanel extends JPanel {
 				if (!isExtMatch) {
 					return false;
 				}
-			} else {
-				return file.isDirectory();
 			}
 		}
 		return true;
