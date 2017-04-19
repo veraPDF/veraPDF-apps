@@ -731,7 +731,7 @@ class CheckerPanel extends JPanel {
 					return false;
 				}
 			} else {
-				return false;
+				return file.isDirectory();
 			}
 		}
 		return true;
