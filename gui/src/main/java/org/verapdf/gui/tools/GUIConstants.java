@@ -72,10 +72,10 @@ public final class GUIConstants {
 	public static final String CONSORTIUM_TEXT = "© 2015 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String PREFORMA_FUNDED_TEXT = "Funded by the European Commission’s PREFORMA Project";
 	public static final String TITLE = "PDF/A Conformance Checker";
-	public static final String ENCRYPTED_PDF = "Pdf document is encrypted.";
+	public static final String ENCRYPTED_PDF = "Document is password encrypted and can not be processed.";
 	public static final String ERROR_IN_PARSING = "Failed to parse pdf document.";
 	public static final String ERROR_IN_VALIDATING = "Could not finish validation due to unexpected error.";
-	public static final String ERROR_IN_FEATURES = "Could not finish features collecting due to unexpected error.";
+	public static final String ERROR_IN_FEATURES = "Could not finish feature collection due to an unexpected error.";
 	public static final String ERROR_IN_INCREMETAL_SAVE = "Some error in saving changes";
 	public static final String PDF = "pdf";
 	public static final String XML = "xml";
