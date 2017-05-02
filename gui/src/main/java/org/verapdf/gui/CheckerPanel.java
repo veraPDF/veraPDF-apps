@@ -529,11 +529,13 @@ class CheckerPanel extends JPanel {
 				if (!result.isMultiJob()) {
 					if (result.getFailedParsingJobs() == 1) {
 						setResultMessage(GUIConstants.ERROR_IN_PARSING, GUIConstants.VALIDATION_FAILED_COLOR);
+					} else if (result.getFailedEncryptedJobs() == 1) {
+						setResultMessage(GUIConstants.ENCRYPTED_PDF, GUIConstants.VALIDATION_FAILED_COLOR);
 					} else if (result.getValidationSummary().getCompliantPdfaCount() > 0) {
 						setResultMessage(GUIConstants.VALIDATION_OK, GUIConstants.VALIDATION_SUCCESS_COLOR);
 					} else if (result.getValidationSummary().getNonCompliantPdfaCount() > 0) {
 						setResultMessage(GUIConstants.VALIDATION_FALSE, GUIConstants.VALIDATION_FAILED_COLOR);
-					} else if (result.getFailedParsingJobs() == 1) {
+					} else if (result.getValidationSummary().getFailedJobCount() == 1) {
 						setResultMessage(GUIConstants.ERROR_IN_VALIDATING, GUIConstants.VALIDATION_FAILED_COLOR);
 					} else if (result.getFeaturesSummary().getTotalJobCount() > 0) {
 						setResultMessage(GUIConstants.FEATURES_GENERATED_CORRECT, GUIConstants.VALIDATION_SUCCESS_COLOR);
@@ -693,8 +695,7 @@ class CheckerPanel extends JPanel {
 
 	static List<File> filterPdfFiles(final File[] listOfFiles) {
 		List<File> retVal = new ArrayList<>();
-		for (int i = 0; i < listOfFiles.length; ++i) {
-			File file = listOfFiles[i];
+		for (File file : listOfFiles) {
 			if (file.isFile() && FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
 				retVal.add(file);
 			} else if (file.isDirectory()) {
