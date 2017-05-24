@@ -125,8 +125,10 @@ final class VeraPdfCliProcessor {
 			} else if (isFileProcessable(file)) {
 				toProcess.add(file);
 			}
-			if (!toProcess.isEmpty())
-				processFiles(toProcess);
+		}
+
+		if (!toProcess.isEmpty()) {
+			processFiles(toProcess);
 		}
 
 		if (this.isPolicy) {
