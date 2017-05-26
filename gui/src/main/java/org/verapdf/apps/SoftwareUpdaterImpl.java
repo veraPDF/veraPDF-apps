@@ -31,9 +31,11 @@ import org.xml.sax.helpers.DefaultHandler;
 public class SoftwareUpdaterImpl implements SoftwareUpdater {
 	private final static Logger logger = Logger.getLogger(SoftwareUpdaterImpl.class.getCanonicalName());
 	private final static SAXParserFactory saxFact = SAXParserFactory.newInstance();
-	private final static String jenkinsRoot = "http://jenkins.openpreservation.org/"; //$NON-NLS-1$
-	private final static String latestGF = jenkinsRoot + "job/veraPDF-apps/lastStableBuild/api/xml"; //$NON-NLS-1$
-	private final static String latestPDFBox = jenkinsRoot + "job/veraPDF-apps/lastStableBuild/api/xml"; //$NON-NLS-1$
+	private final static String jenkinsRoot = "http://jenkins.openpreservation.org/job/veraPDF-apps"; //$NON-NLS-1$
+	private final static String jenkinsApiPath = "/lastStableBuild/api/xml"; //$NON-NLS-1$
+	private final static String latestGF = jenkinsRoot + jenkinsApiPath;
+	private final static String latestPDFBox = jenkinsRoot + "-" + Versions.PDFBOX_BUILD_INFO.toLowerCase() //$NON-NLS-1$
+			+ jenkinsApiPath;
 
 	/**
 	 * 
@@ -78,7 +80,7 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 		if (!this.isOnline())
 			return false;
 		SemanticVersionNumber current = Versions.fromString(versionString);
-		String endpoint = versionString.endsWith("PDFBOX") ? latestPDFBox : latestGF;
+		String endpoint = getEndpointForVersion(versionString);
 		SemanticVersionNumber available = getLatestVersionFromUrl(endpoint);
 		return current.compareTo(available) < 0;
 	}
@@ -92,8 +94,7 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 	public String getLatestVersion(final String versionString) {
 		if (!this.isOnline())
 			return versionString;
-		SemanticVersionNumber current = Versions.fromString(versionString);
-		String endpoint = versionString.endsWith("PDFBOX") ? latestPDFBox : latestGF;
+		String endpoint = getEndpointForVersion(versionString);
 		SemanticVersionNumber available = getLatestVersionFromUrl(endpoint);
 		return available.getVersionString();
 	}
@@ -114,6 +115,10 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 			throw new IllegalStateException(String.format("Problem parsing version number from URL %s", endpoint), //$NON-NLS-1$
 					excep);
 		}
+	}
+
+	private static final String getEndpointForVersion(final String versionString) {
+		return versionString.endsWith(Versions.PDFBOX_BUILD_INFO) ? latestPDFBox : latestGF;
 	}
 
 	static class VersionParser extends DefaultHandler {

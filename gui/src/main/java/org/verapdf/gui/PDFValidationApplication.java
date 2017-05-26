@@ -14,30 +14,51 @@
  */
 package org.verapdf.gui;
 
+import java.awt.Desktop;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.BoxLayout;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
+import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.VeraAppConfig;
-import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.PdfBoxFoundryProvider;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Main frame of the PDFA Conformance Checker
@@ -325,6 +346,9 @@ public class PDFValidationApplication extends JFrame {
 				}
 				try {
 					PDFValidationApplication frame = new PDFValidationApplication();
+					URL url = ClassLoader.getSystemResource("org/verapdf/gui/images/icon.png");
+					Toolkit kit = Toolkit.getDefaultToolkit();
+					frame.setIconImage(kit.createImage(url));
 					frame.setVisible(true);
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, "Exception", e); //$NON-NLS-1$

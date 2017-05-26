@@ -26,7 +26,7 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.gui.utils.GUIConstants;
 
 /**
  * Mini logo panel. Represents mini logo and link to site.

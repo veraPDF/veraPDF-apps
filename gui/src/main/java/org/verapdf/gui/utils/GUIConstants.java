@@ -18,7 +18,7 @@
  * If a copy of the MPL was not distributed with this file, you can obtain one at
  * http://mozilla.org/MPL/2.0/.
  */
-package org.verapdf.gui.tools;
+package org.verapdf.gui.utils;
 
 import java.awt.*;
 
@@ -66,8 +66,7 @@ public final class GUIConstants {
 	public static final String SAVE_HTML_REPORT_BUTTON_TEXT = "Save HTML";
 	public static final String VIEW_HTML_REPORT_BUTTON_TEXT = "View HTML";
 	public static final String REPORT = "Report";
-	public static final String ERROR_IN_SAVING_HTML_REPORT = "Some error in saving the HTML report: ";
-	public static final String ERROR_IN_SAVING_XML_REPORT = "Some error in saving the XML report.";
+	public static final String ERROR_IN_SAVING_REPORT = "IOException when saving the %s report.";
 	public static final String LABEL_TEXT = "     Please specify input PDF, Validation Profile and press \"" + VALIDATE_BUTTON_TEXT + "\"";
 	public static final String CONSORTIUM_TEXT = "© 2015 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String PREFORMA_FUNDED_TEXT = "Funded by the European Commission’s PREFORMA Project";

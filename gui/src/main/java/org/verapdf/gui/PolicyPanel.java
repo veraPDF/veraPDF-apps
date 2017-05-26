@@ -35,7 +35,7 @@ import org.verapdf.core.utils.FileUtils;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.features.objects.Feature;
 import org.verapdf.features.objects.FeaturesStructureContainer;
-import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.policy.PolicyChecker;
 import org.verapdf.policy.SchematronGenerator;
 import org.verapdf.policy.SchematronOperation;

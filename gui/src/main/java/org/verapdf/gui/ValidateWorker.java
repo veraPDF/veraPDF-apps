@@ -33,7 +33,7 @@ import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.core.VeraPDFException;
-import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.policy.PolicyChecker;
@@ -57,7 +57,6 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 	private static final String ERROR_IN_OPEN_STREAMS = "Can't open stream from PDF file or can't open stream to temporary XML report file"; //$NON-NLS-1$
 	private static final String ERROR_IN_PROCESSING = "Error during the processing"; //$NON-NLS-1$
 	private static final String ERROR_IN_CREATING_TEMP_FILE = "Can't create temporary file for XML report"; //$NON-NLS-1$
-	private static final String ERROR_IN_SAVING_REPORT = "Can't serialize xml report"; //$NON-NLS-1$
 
 	private List<File> pdfs;
 	private ValidationProfile customProfile;
@@ -91,7 +90,7 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			this.parent.errorInValidatingOccur(ERROR_IN_CREATING_TEMP_FILE + ": ", e); //$NON-NLS-1$
 		}
 		try (OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
-			VeraAppConfig veraAppConfig = parent.appConfigFromState();
+			VeraAppConfig veraAppConfig = this.parent.appConfigFromState();
 			ProcessType processType = veraAppConfig.getProcessType();
 			EnumSet<TaskType> tasks = processType.getTasks();
 			ValidatorConfig validatorConfig = this.configManager.getValidatorConfig();
@@ -101,15 +100,17 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 							veraAppConfig.getFixesFolder())
 					: ProcessorFactory.fromValues(validatorConfig, this.configManager.getFeaturesConfig(),
 							this.configManager.getPluginsCollectionConfig(), this.configManager.getFixerConfig(), tasks,
-							customProfile, veraAppConfig.getFixesFolder());
-			BatchProcessor processor = ProcessorFactory.fileBatchProcessor(resultConfig);
-			VeraAppConfig applicationConfig = this.configManager.getApplicationConfig();
-			this.batchSummary = processor.process(this.pdfs,
-					ProcessorFactory.getHandler(FormatOption.MRR, applicationConfig.isVerbose(), mrrReport,
-							applicationConfig.getMaxFailsDisplayed(), validatorConfig.isRecordPasses()));
+							this.customProfile, veraAppConfig.getFixesFolder());
+			try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(resultConfig);) {
+				VeraAppConfig applicationConfig = this.configManager.getApplicationConfig();
+				this.batchSummary = processor.process(this.pdfs,
+						ProcessorFactory.getHandler(FormatOption.MRR, applicationConfig.isVerbose(), mrrReport,
+								applicationConfig.getMaxFailsDisplayed(), validatorConfig.isRecordPasses()));
 
-			if ((processType == ProcessType.POLICY || processType == ProcessType.POLICY_FIX) && this.policy != null) {
-				applyPolicy();
+				if ((processType == ProcessType.POLICY || processType == ProcessType.POLICY_FIX)
+						&& this.policy != null) {
+					applyPolicy();
+				}
 			}
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, ERROR_IN_OPEN_STREAMS, e);
@@ -146,24 +147,28 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 	}
 
 	private void writeHtmlReport() {
+		final String extension = "html";
 		try {
-			this.htmlReport = File.createTempFile("veraPDF-tempHTMLReport", ".html"); //$NON-NLS-1$ //$NON-NLS-2$
+			final String ext = "." + extension;
+			this.htmlReport = File.createTempFile("veraPDF-tempHTMLReport", ext); //$NON-NLS-1$
 			this.htmlReport.deleteOnExit();
 			try (InputStream xmlStream = new FileInputStream(this.xmlReport);
 					OutputStream htmlStream = new FileOutputStream(this.htmlReport)) {
 				HTMLReport.writeHTMLReport(xmlStream, htmlStream, this.batchSummary,
 						this.configManager.getApplicationConfig().getWikiPath(), true);
 
-			} catch (IOException | TransformerException e) {
-				JOptionPane.showMessageDialog(this.parent, GUIConstants.ERROR_IN_SAVING_HTML_REPORT + e.getMessage(),
-						GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-				logger.log(Level.SEVERE, "Exception saving the HTML report", e); //$NON-NLS-1$
+			} catch (IOException | TransformerException excep) {
+				final String message = String.format(GUIConstants.ERROR_IN_SAVING_REPORT, extension);
+				JOptionPane.showMessageDialog(this.parent,
+						String.format(GUIConstants.ERROR_IN_SAVING_REPORT, extension), GUIConstants.ERROR,
+						JOptionPane.ERROR_MESSAGE);
+				logger.log(Level.SEVERE, message, excep);
 				this.htmlReport = null;
 			}
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(this.parent, GUIConstants.ERROR_IN_SAVING_HTML_REPORT + e.getMessage(),
-					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			logger.log(Level.SEVERE, "Exception saving the HTML report", e); //$NON-NLS-1$
+		} catch (IOException excep) {
+			final String message = String.format(GUIConstants.ERROR_IN_SAVING_REPORT, extension);
+			JOptionPane.showMessageDialog(this.parent, message, GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+			logger.log(Level.SEVERE, message, excep);
 			this.htmlReport = null;
 		}
 	}

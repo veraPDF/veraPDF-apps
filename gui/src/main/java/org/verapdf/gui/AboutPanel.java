@@ -37,7 +37,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.gui.utils.GUIConstants;
 
 /**
  * About Panel

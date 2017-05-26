@@ -1,22 +1,16 @@
 /**
  * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
- * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
- * All rights reserved.
- *
- * VeraPDF Library GUI is free software: you can redistribute it and/or modify
- * it under the terms of either:
- *
- * The GNU General public license GPLv3+.
- * You should have received a copy of the GNU General Public License
- * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the source
- * tree.  If not, see http://www.gnu.org/licenses/ or
- * https://www.gnu.org/licenses/gpl-3.0.en.html.
- *
- * The Mozilla Public License MPLv2+.
- * You should have received a copy of the Mozilla Public License along with
- * VeraPDF Library GUI as the LICENSE.MPL file in the root of the source tree.
- * If a copy of the MPL was not distributed with this file, you can obtain one at
- * http://mozilla.org/MPL/2.0/.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org> All rights
+ * reserved. VeraPDF Library GUI is free software: you can redistribute it
+ * and/or modify it under the terms of either: The GNU General public license
+ * GPLv3+. You should have received a copy of the GNU General Public License
+ * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the
+ * source tree. If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html. The Mozilla Public License
+ * MPLv2+. You should have received a copy of the Mozilla Public License along
+ * with VeraPDF Library GUI as the LICENSE.MPL file in the root of the source
+ * tree. If a copy of the MPL was not distributed with this file, you can obtain
+ * one at http://mozilla.org/MPL/2.0/.
  */
 /**
  * 
@@ -34,6 +28,7 @@ import java.nio.file.Files;
 
 import javax.xml.bind.JAXBException;
 
+import org.verapdf.ReleaseDetails;
 import org.verapdf.processor.FormatOption;
 
 /**
@@ -45,33 +40,63 @@ import org.verapdf.processor.FormatOption;
 public final class Applications {
 	public static final String APP_HOME_PROPERTY = "app.home"; //$NON-NLS-1$
 	public static final String DEFAULT_CONFIG_ROOT_NAME = "config"; //$NON-NLS-1$
+
+	private static final String write_io_message = "IOException trying to write %s directory.";
+	private static final String not_writable_message = "Arg root:%s must be a writable directory.";
+
 	private Applications() {
 		assert (false);
 	}
 
+	/**
+	 * @return the Application Release details for the GUI
+	 */
+	public static ReleaseDetails getAppDetails() {
+		return ReleaseDetails.byId("gui"); //$NON-NLS-1$
+	}
+
+	/**
+	 * @param root
+	 *            the root directory for the configuration, should contain the
+	 *            veraPDF configuration files, if not default ones are created.
+	 * @return a {@link ConfigManager} instance populated using the
+	 *         configuration files at root.
+	 */
 	public static ConfigManager createConfigManager(final File root) {
 		if (root == null)
 			throw new NullPointerException("Arg root cannot be null");
 		if ((!root.isDirectory() && !root.mkdir()) || !root.canWrite()) {
-			throw new IllegalArgumentException(
-					"Arg root:" + root.getAbsolutePath() + ", must be a writable directory.");
+			throw new IllegalArgumentException(String.format(not_writable_message, root.getAbsolutePath()));
 		}
 		return ConfigManagerImpl.create(root);
 	}
 
+	/**
+	 * Shortcut method to create a configuration in the application install
+	 * configuration directory.
+	 * 
+	 * @return a {@link ConfigManager} instance populated using the
+	 *         configuration files in the application config directory.
+	 */
 	public static ConfigManager createAppConfigManager() {
 		try {
 			return createConfigManager(appHomeRoot());
 		} catch (IOException excep) {
-			throw new IllegalStateException("Can't find a writeable temp file system.", excep);
+			throw new IllegalStateException(String.format(write_io_message, APP_HOME_PROPERTY), excep);
 		}
 	}
 
+	/**
+	 * Shortcut method to create a configuration in the temp directory.
+	 * 
+	 * @return a {@link ConfigManager} instance populated using the
+	 *         configuration files in the temp directory.
+	 */
 	public static ConfigManager createTmpConfigManager() {
 		try {
 			return createConfigManager(tempRoot());
 		} catch (IOException excep) {
-			throw new IllegalStateException("Can't find a writeable temp file system.", excep);
+			throw new IllegalStateException(String.format(write_io_message, "temp"), excep); //$NON-NLS-1$
 		}
 	}
 
@@ -206,8 +231,8 @@ public final class Applications {
 		}
 
 		public VeraAppConfig build() {
-			return new VeraAppConfigImpl(_type, _maxFails, _isOverwrite, _fixerFolder, _format, _isVerbose,
-					_wikiPath, _reportFile, _reportFolder, _policyFile);
+			return new VeraAppConfigImpl(this._type, this._maxFails, this._isOverwrite, this._fixerFolder, this._format,
+					this._isVerbose, this._wikiPath, this._reportFile, this._reportFolder, this._policyFile);
 		}
 	}
 
@@ -224,7 +249,7 @@ public final class Applications {
 	}
 
 	private static File tempRoot() throws IOException {
-		File temp = Files.createTempDirectory("").toFile();
+		File temp = Files.createTempDirectory("").toFile(); //$NON-NLS-1$
 		temp.deleteOnExit();
 		return temp;
 	}

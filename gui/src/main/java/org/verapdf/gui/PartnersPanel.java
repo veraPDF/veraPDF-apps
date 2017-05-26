@@ -31,7 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import org.verapdf.ReleaseDetails;
-import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.gui.utils.GUIConstants;
 
 /**
  * Panel with partners logo
