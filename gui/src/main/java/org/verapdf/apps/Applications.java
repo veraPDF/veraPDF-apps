@@ -23,12 +23,18 @@
  */
 package org.verapdf.apps;
 
-import org.verapdf.processor.FormatOption;
-
-import javax.xml.bind.JAXBException;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+
+import javax.xml.bind.JAXBException;
+
+import org.verapdf.processor.FormatOption;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -105,6 +111,10 @@ public final class Applications {
 
 	public static VeraAppConfigImpl fromXml(final String toConvert) throws JAXBException {
 		return VeraAppConfigImpl.fromXml(toConvert);
+	}
+
+	public static SoftwareUpdater softwareUpdater() {
+		return new SoftwareUpdaterImpl();
 	}
 
 	public static class Builder {
