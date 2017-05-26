@@ -27,8 +27,9 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.util.EnumSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.log4j.Logger;
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.ConfigManager;
@@ -47,7 +48,7 @@ import com.beust.jcommander.ParameterException;
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
  */
 public final class VeraPdfCli {
-	private static final Logger LOGGER = Logger.getLogger(VeraCliArgParser.class);
+	private static final Logger logger = Logger.getLogger(VeraCliArgParser.class.getCanonicalName());
 	private static final ConfigManager configManager = Applications.createAppConfigManager();
 	private static final int MEGABYTE = (1024 * 1024);
 	private static final String APP_NAME = "veraPDF"; //$NON-NLS-1$
@@ -98,7 +99,7 @@ public final class VeraPdfCli {
 				processor.processPaths(cliArgParser.getPdfPaths());
 			} catch (OutOfMemoryError oome) {
 				final String message = "The JVM appears to have run out of memory";
-				LOGGER.warn(message, oome);
+				logger.log(Level.WARNING, message, oome);
 				MemoryUsage heapUsage = memoryMan.getHeapMemoryUsage();
 				long maxMemory = heapUsage.getMax() / MEGABYTE;
 				long usedMemory = heapUsage.getUsed() / MEGABYTE;

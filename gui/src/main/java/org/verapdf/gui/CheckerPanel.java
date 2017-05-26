@@ -453,10 +453,10 @@ class CheckerPanel extends JPanel {
 					CheckerPanel.this.viewHTML.setEnabled(false);
 					CheckerPanel.this.saveHTML.setEnabled(false);
 					CheckerPanel.this.validateWorker.execute();
-				} catch (IllegalArgumentException | JAXBException | IOException exep) {
-					JOptionPane.showMessageDialog(CheckerPanel.this, exep.getMessage(), "Error",
+				} catch (IllegalArgumentException | JAXBException | IOException excep) {
+					JOptionPane.showMessageDialog(CheckerPanel.this, excep.getMessage(), "Error",
 							JOptionPane.ERROR_MESSAGE);
-					logger.log(Level.SEVERE, exep.getMessage(), exep);
+					logger.log(Level.SEVERE, excep.getMessage(), excep);
 				}
 			}
 		});
@@ -489,10 +489,10 @@ class CheckerPanel extends JPanel {
 			private void openXMLReport() {
 				try {
 					Desktop.getDesktop().open(CheckerPanel.this.xmlReport);
-				} catch (IOException e1) {
+				} catch (IOException excep) {
 					JOptionPane.showMessageDialog(CheckerPanel.this, "Some error in opening the XML report.",
 							GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-					logger.log(Level.SEVERE, "Exception in opening the XML report", e1);
+					logger.log(Level.SEVERE, "Exception in opening the XML report", excep);
 				}
 			}
 		});
@@ -506,10 +506,10 @@ class CheckerPanel extends JPanel {
 				} else {
 					try {
 						Desktop.getDesktop().open(CheckerPanel.this.htmlReport);
-					} catch (IOException e1) {
+					} catch (IOException excep) {
 						JOptionPane.showMessageDialog(CheckerPanel.this, "Some error in opening the HTML report.",
 								GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-						logger.log(Level.SEVERE, "Exception in opening the HTML report", e1);
+						logger.log(Level.SEVERE, "Exception in opening the HTML report", excep);
 					}
 				}
 			}
@@ -765,8 +765,8 @@ class CheckerPanel extends JPanel {
 				try {
 					try {
 						Files.copy(report.toPath(), temp.toPath());
-					} catch (FileAlreadyExistsException e1) {
-						logger.log(Level.FINEST, "File already exists, conform overwrite with user", e1);
+					} catch (FileAlreadyExistsException excep) {
+						logger.log(Level.FINE, "File already exists, conform overwrite with user", excep);
 						int resultOption = JOptionPane.showConfirmDialog(CheckerPanel.this,
 								extension.toUpperCase()
 										+ " file with the same name already exists. Do you want to overwrite it?",
@@ -775,11 +775,11 @@ class CheckerPanel extends JPanel {
 							Files.copy(report.toPath(), temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
 						}
 					}
-				} catch (IOException e) {
+				} catch (IOException excep) {
 					JOptionPane.showMessageDialog(CheckerPanel.this,
-							GUIConstants.ERROR_IN_SAVING_HTML_REPORT + e.getMessage(), GUIConstants.ERROR,
+							GUIConstants.ERROR_IN_SAVING_HTML_REPORT + excep.getMessage(), GUIConstants.ERROR,
 							JOptionPane.ERROR_MESSAGE);
-					logger.log(Level.SEVERE, "Exception saving " + extension.toUpperCase() + " report", e);
+					logger.log(Level.SEVERE, "Exception saving " + extension.toUpperCase() + " report", excep);
 				}
 			}
 		}
