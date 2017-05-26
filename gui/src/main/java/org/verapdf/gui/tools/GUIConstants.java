@@ -98,6 +98,12 @@ public final class GUIConstants {
 	public static final String FIX_METADATA_PREFIX_LABEL_TEXT = "Save fixed files with prefix:";
 	public static final String SELECTED_PATH_FOR_FIXER_TOOLTIP = "The folder to save the fixed file to. Leave empty to save it near the original file.";
 	public static final String SELECTED_PROFILES_WIKI_PATH = "Validation Profiles wiki root:";
+	public static final String UPDATE_OFFLINE_MESSAGE = "Update Service not available";
+	public static final String UPDATE_LATEST_VERSION = "You are currently running the latest version of veraPDF";
+	public static final String UPDATE_OLD_VERSION = "You are NOT running the latest version of veraPDF.";
+	public static final String CHECK_FOR_UPDATES_TEXT = "Check for Updates...";
+
+	public static final String UPDATE_URI = "http://downloads.verapdf.org/rel/verapdf-installer.zip";
 
 	public static final int EMPTY_BORDER_INSETS = 5;
 	public static final int FRAME_COORD_X = 100;

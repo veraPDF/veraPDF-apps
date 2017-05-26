@@ -146,7 +146,7 @@ public final class VeraPdfCli {
 	private static void showUpdateInfo(final ReleaseDetails details) {
 		SoftwareUpdater updater = Applications.softwareUpdater();
 		if (!updater.isOnline()) {
-			logger.log(Level.WARNING, "Update Service not online"); //$NON-NLS-1$
+			logger.log(Level.WARNING, "Update Service not available"); //$NON-NLS-1$
 			return;
 		}
 		if (!updater.isUpdateAvailable(details)) {

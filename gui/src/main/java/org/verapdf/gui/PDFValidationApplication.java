@@ -14,10 +14,12 @@
  */
 package org.verapdf.gui;
 
+import jdk.nashorn.internal.scripts.JO;
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
 import org.verapdf.apps.ConfigManager;
+import org.verapdf.apps.SoftwareUpdater;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.metadata.fixer.FixerFactory;
@@ -232,6 +234,45 @@ public class PDFValidationApplication extends JFrame {
 			}
 		});
 
+		JMenuItem checkForUpdates = new JMenuItem(GUIConstants.CHECK_FOR_UPDATES_TEXT);
+		checkForUpdates.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SoftwareUpdater updater = Applications.softwareUpdater();
+				if (!updater.isOnline()) {
+					JOptionPane.showMessageDialog(
+							PDFValidationApplication.this,
+							GUIConstants.UPDATE_OFFLINE_MESSAGE,
+							GUIConstants.CHECK_FOR_UPDATES_TEXT,
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				ReleaseDetails details = ReleaseDetails.byId("gui");
+				if (updater.isUpdateAvailable(details)) {
+					int res = JOptionPane.showConfirmDialog(
+							PDFValidationApplication.this,
+							GUIConstants.UPDATE_OLD_VERSION
+									+ String.format(
+									"\nYou are running version %s, the latest version is %s",
+									details.getVersion(), updater.getLatestVersion(details))
+							+ String.format("\nDo you want to download the latest version from:\n %s?",
+							GUIConstants.UPDATE_URI),
+							GUIConstants.CHECK_FOR_UPDATES_TEXT,
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.WARNING_MESSAGE);
+					if (res == JOptionPane.YES_OPTION) {
+						attemptURIOpen(GUIConstants.UPDATE_URI);
+					}
+				} else {
+					JOptionPane.showMessageDialog(
+							PDFValidationApplication.this,
+							GUIConstants.UPDATE_LATEST_VERSION + String.format("\n v%s", details.getVersion()),
+							GUIConstants.CHECK_FOR_UPDATES_TEXT,
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+
 		JMenuItem guiHelp = new JMenuItem("GUI");
 		guiHelp.addActionListener(new ActionListener() {
 			@Override
@@ -261,6 +302,7 @@ public class PDFValidationApplication extends JFrame {
 		help.add(validationHelp);
 		help.add(policyHelp);
 		help.addSeparator();
+		help.add(checkForUpdates);
 		help.add(about);
 
 		menuBar.add(help);
