@@ -148,8 +148,8 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 
 	private void writeHtmlReport() {
 		final String extension = "html";
+		final String ext = "." + extension;
 		try {
-			final String ext = "." + extension;
 			this.htmlReport = File.createTempFile("veraPDF-tempHTMLReport", ext); //$NON-NLS-1$
 			this.htmlReport.deleteOnExit();
 			try (InputStream xmlStream = new FileInputStream(this.xmlReport);
