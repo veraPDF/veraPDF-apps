@@ -22,12 +22,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import javax.xml.transform.TransformerException;
 
-import org.apache.log4j.Logger;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
@@ -51,7 +52,7 @@ import org.verapdf.report.HTMLReport;
  */
 class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 
-	private static final Logger LOGGER = Logger.getLogger(ValidateWorker.class);
+	private static final Logger logger = Logger.getLogger(ValidateWorker.class.getCanonicalName());
 
 	private static final String ERROR_IN_OPEN_STREAMS = "Can't open stream from PDF file or can't open stream to temporary XML report file"; //$NON-NLS-1$
 	private static final String ERROR_IN_PROCESSING = "Error during the processing"; //$NON-NLS-1$
@@ -86,7 +87,7 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			this.xmlReport.deleteOnExit();
 			this.htmlReport = null;
 		} catch (IOException e) {
-			LOGGER.error(ERROR_IN_CREATING_TEMP_FILE, e);
+			logger.log(Level.SEVERE, ERROR_IN_CREATING_TEMP_FILE, e);
 			this.parent.errorInValidatingOccur(ERROR_IN_CREATING_TEMP_FILE + ": ", e); //$NON-NLS-1$
 		}
 		try (OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
@@ -111,10 +112,10 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 				applyPolicy();
 			}
 		} catch (IOException e) {
-			LOGGER.error(ERROR_IN_OPEN_STREAMS, e);
+			logger.log(Level.SEVERE, ERROR_IN_OPEN_STREAMS, e);
 			this.parent.errorInValidatingOccur(ERROR_IN_OPEN_STREAMS + ": ", e); //$NON-NLS-1$
 		} catch (VeraPDFException e) {
-			LOGGER.error(ERROR_IN_PROCESSING, e);
+			logger.log(Level.SEVERE, ERROR_IN_PROCESSING, e);
 			this.parent.errorInValidatingOccur(ERROR_IN_PROCESSING + ": ", e); //$NON-NLS-1$
 		}
 
@@ -156,13 +157,13 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			} catch (IOException | TransformerException e) {
 				JOptionPane.showMessageDialog(this.parent, GUIConstants.ERROR_IN_SAVING_HTML_REPORT + e.getMessage(),
 						GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-				LOGGER.error("Exception saving the HTML report", e); //$NON-NLS-1$
+				logger.log(Level.SEVERE, "Exception saving the HTML report", e); //$NON-NLS-1$
 				this.htmlReport = null;
 			}
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(this.parent, GUIConstants.ERROR_IN_SAVING_HTML_REPORT + e.getMessage(),
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			LOGGER.error("Exception saving the HTML report", e); //$NON-NLS-1$
+			logger.log(Level.SEVERE, "Exception saving the HTML report", e); //$NON-NLS-1$
 			this.htmlReport = null;
 		}
 	}

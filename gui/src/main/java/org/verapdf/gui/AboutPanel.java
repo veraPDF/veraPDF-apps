@@ -51,7 +51,7 @@ class AboutPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -4011118192914036216L;
 
-	static final Logger LOGGER = Logger.getLogger(AboutPanel.class.getCanonicalName());
+	static final Logger logger = Logger.getLogger(AboutPanel.class.getCanonicalName());
 
 	private JButton okButton;
 	JDialog dialog;
@@ -90,7 +90,7 @@ class AboutPanel extends JPanel {
 				} catch (IOException | URISyntaxException excep) {
 					JOptionPane.showMessageDialog(AboutPanel.this, GUIConstants.ERROR, GUIConstants.ERROR,
 							JOptionPane.ERROR_MESSAGE);
-					LOGGER.log(Level.SEVERE, "Exception in opening link " + GUIConstants.LOGO_LINK_URL, excep); //$NON-NLS-1$
+					logger.log(Level.SEVERE, "Exception in opening link " + GUIConstants.LOGO_LINK_URL, excep); //$NON-NLS-1$
 				}
 
 			}
