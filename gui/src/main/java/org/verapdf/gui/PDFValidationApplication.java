@@ -241,7 +241,7 @@ public class PDFValidationApplication extends JFrame {
 				if (!updater.isOnline()) {
 					JOptionPane.showMessageDialog(
 							PDFValidationApplication.this,
-							GUIConstants.UPDATE_OFFLINE_MESSAGE,
+							Applications.UPDATE_SERVICE_NOT_AVAILABLE,
 							GUIConstants.CHECK_FOR_UPDATES_TEXT,
 							JOptionPane.WARNING_MESSAGE);
 					return;
@@ -250,22 +250,21 @@ public class PDFValidationApplication extends JFrame {
 				if (updater.isUpdateAvailable(details)) {
 					int res = JOptionPane.showConfirmDialog(
 							PDFValidationApplication.this,
-							GUIConstants.UPDATE_OLD_VERSION
-									+ String.format(
-									"\nYou are running version %s, the latest version is %s",
+							String.format(
+									Applications.UPDATE_OLD_VERSION,
 									details.getVersion(), updater.getLatestVersion(details))
-							+ String.format("\nDo you want to download the latest version from:\n %s?",
-							GUIConstants.UPDATE_URI),
+							+ String.format("Do you want to download the latest version from:\n%s?",
+							Applications.UPDATE_URI),
 							GUIConstants.CHECK_FOR_UPDATES_TEXT,
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.WARNING_MESSAGE);
 					if (res == JOptionPane.YES_OPTION) {
-						attemptURIOpen(GUIConstants.UPDATE_URI);
+						attemptURIOpen(Applications.UPDATE_URI);
 					}
 				} else {
 					JOptionPane.showMessageDialog(
 							PDFValidationApplication.this,
-							GUIConstants.UPDATE_LATEST_VERSION + String.format("\n v%s", details.getVersion()),
+							String.format(Applications.UPDATE_LATEST_VERSION, "\n", details.getVersion()),
 							GUIConstants.CHECK_FOR_UPDATES_TEXT,
 							JOptionPane.INFORMATION_MESSAGE);
 				}
