@@ -25,7 +25,17 @@ public final class Versions {
 	}
 
 	public static SemanticVersionNumber fromString(final String versionString) {
-		return VersionNumberImpl.fromString(versionString);
+		if (versionString == null)
+			throw new IllegalArgumentException("Argument versionString can not be null"); //$NON-NLS-1$
+		if (versionString.isEmpty())
+			throw new IllegalArgumentException("Argument versionString can not be empty"); //$NON-NLS-1$
+		String strippedVersion = (versionString.endsWith(pdfBoxBuildInfo)) ? versionString.replace(pdfBoxBuildInfo, "") //$NON-NLS-1$
+				: versionString;
+		strippedVersion = (strippedVersion.endsWith(snapshotBuildInfo)) ? strippedVersion.replace(snapshotBuildInfo, "") //$NON-NLS-1$
+				: strippedVersion;
+		strippedVersion = strippedVersion.startsWith(versionPrefix) ? strippedVersion.replaceFirst(versionPrefix, "") //$NON-NLS-1$
+				: strippedVersion;
+		return VersionNumberImpl.fromString(strippedVersion);
 	}
 
 	public static SemanticVersionNumber fromStrings(final String[] parts) {
