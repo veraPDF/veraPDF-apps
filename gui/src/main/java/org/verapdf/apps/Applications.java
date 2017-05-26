@@ -45,6 +45,10 @@ import org.verapdf.processor.FormatOption;
 public final class Applications {
 	public static final String APP_HOME_PROPERTY = "app.home"; //$NON-NLS-1$
 	public static final String DEFAULT_CONFIG_ROOT_NAME = "config"; //$NON-NLS-1$
+	public static final String UPDATE_SERVICE_NOT_AVAILABLE = "Update Service not available"; //$NON-NLS-1$
+	public static final String UPDATE_LATEST_VERSION = "You are currently running the latest version of veraPDF%s v%s"; //$NON-NLS-1$
+	public static final String UPDATE_OLD_VERSION = "You are NOT running the latest version of veraPDF.\nYou are running version %s, the latest version is %s.\n"; //$NON-NLS-1$
+	public static final String UPDATE_URI = "http://downloads.verapdf.org/rel/verapdf-installer.zip"; //$NON-NLS-1$
 	private Applications() {
 		assert (false);
 	}
