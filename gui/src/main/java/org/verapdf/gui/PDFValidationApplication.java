@@ -14,7 +14,6 @@
  */
 package org.verapdf.gui;
 
-import jdk.nashorn.internal.scripts.JO;
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
