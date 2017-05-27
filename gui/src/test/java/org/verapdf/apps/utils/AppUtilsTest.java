@@ -46,19 +46,19 @@ public class AppUtilsTest {
 		File non_ext2 = new File("test2.SCH");
 		File non_ext3 = new File("test3.xsl");
 		File[] non_exts = {non_ext1, non_ext2, non_ext3};
-		assertFalse(ApplicationUtils.areAllExists(non_exts));
+		assertFalse(ApplicationUtils.doAllFilesExist(non_exts));
 		File pdf1 = tempFolder.newFile("test1.pdf");
 		File pdf2 = tempFolder.newFile("test2.PDF");
 		File pdf3 = tempFolder.newFile("test3.pdf");
 		File[] pdfs = {pdf1, pdf2, pdf3};
 		File[] pdfs_non_exts = {pdf1, pdf2, pdf3, non_ext1, non_ext2, non_ext3};
-		assertFalse(ApplicationUtils.areAllExists(pdfs_non_exts));
-		assertTrue(ApplicationUtils.areAllExists(pdfs));
+		assertFalse(ApplicationUtils.doAllFilesExist(pdfs_non_exts));
+		assertTrue(ApplicationUtils.doAllFilesExist(pdfs));
 		File non_pdf1 = new File("test1.pdf");
 		File non_pdf2 = new File("test2.PDF");
 		File non_pdf3 = new File("test3.pdf");
 		File[] non_pdfs = {non_pdf1, non_pdf2, non_pdf3};
-		assertFalse(ApplicationUtils.areAllExists(non_pdfs));
+		assertFalse(ApplicationUtils.doAllFilesExist(non_pdfs));
 	}
 
 	@Test

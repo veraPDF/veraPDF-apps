@@ -5,46 +5,67 @@ package org.verapdf.apps.utils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import org.verapdf.apps.Applications;
 import org.verapdf.core.utils.FileUtils;
 import org.verapdf.gui.utils.GUIConstants;
 
 /**
- * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
- *          <a href="https://github.com/carlwilson">carlwilson AT github</a>
- *
- * @version 0.1
- * 
- * Created 26 May 2017:14:37:56
+ * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
+ *         <a href="https://github.com/carlwilson">carlwilson AT github</a>
+ * @version 0.1 Created 26 May 2017:14:37:56
  */
 
 public final class ApplicationUtils {
 
 	/**
-	 * 
+	 * Private constructor should never be called
 	 */
-	public ApplicationUtils() {
+	private ApplicationUtils() {
 		throw new AssertionError("Should never happen"); //$NON-NLS-1$
 	}
 
-	public static List<File> filterPdfFiles(final File[] listOfFiles) {
+	/**
+	 * Filters the passed list files by removing all files without a ".pdf"
+	 * extension.
+	 * 
+	 * @param toFilter
+	 *            the list of files to filter, can not be null
+	 * @return an immutable list of the filtered files, i.e. all PDF extenstions
+	 * @throws IllegalArgumentException
+	 *             when toFilter is null
+	 */
+	public static List<File> filterPdfFiles(final File[] toFilter) {
+		Applications.checkArgNotNull(toFilter, "toFilter"); //$NON-NLS-1$
 		List<File> retVal = new ArrayList<>();
-		for (File file : listOfFiles) {
+		for (File file : toFilter) {
 			if (file.isFile() && FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
 				retVal.add(file);
 			} else if (file.isDirectory()) {
 				retVal.addAll(filterPdfFiles(file.listFiles()));
 			}
 		}
-		return retVal;
+		return Collections.unmodifiableList(retVal);
 	}
 
-	public static boolean areAllExists(File[] files) {
-		if (files == null || files.length == 0) {
+	/**
+	 * Checks all files in a list to ensure that they exist and returns true if
+	 * and only if all files in the list exist.
+	 * 
+	 * @param toCheck
+	 *            the list of files to test
+	 * @return true if all files in the list exist, otherwise false.
+	 * @throws IllegalArgumentException
+	 *             when toCheck is null
+	 */
+	public static boolean doAllFilesExist(final File[] toCheck) {
+		Applications.checkArgNotNull(toCheck, "toCheck"); //$NON-NLS-1$
+		if (toCheck.length == 0) {
 			return false;
 		}
-		for (File file : files) {
+		for (File file : toCheck) {
 			if (file == null || !file.exists()) {
 				return false;
 			}
@@ -52,11 +73,22 @@ public final class ApplicationUtils {
 		return true;
 	}
 
-	public static boolean isLegalExtension(File[] files, String[] extensions) {
-		if (files == null || files.length == 0) {
-			return true;
-		}
-		for (File file : files) {
+	/**
+	 * Checks a list of files to ensure that they all have an extension supplied
+	 * in the list of extensions
+	 * 
+	 * @param toCheck
+	 *            the list of files to check the extensions of
+	 * @param extensions
+	 *            the list of allowed extensions
+	 * @return true if all files in toCheck have an extension listed in
+	 *         extensions
+	 * @throws IllegalArgumentException
+	 *             when toCheck is null
+	 */
+	public static boolean isLegalExtension(final File[] toCheck, final String[] extensions) {
+		Applications.checkArgNotNull(toCheck, "toCheck"); //$NON-NLS-1$
+		for (File file : toCheck) {
 			if (file.isFile()) {
 				boolean isExtMatch = false;
 				for (String extension : extensions) {
@@ -71,5 +103,5 @@ public final class ApplicationUtils {
 		}
 		return true;
 	}
-	
+
 }

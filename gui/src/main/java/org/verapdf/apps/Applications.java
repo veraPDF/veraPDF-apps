@@ -146,6 +146,12 @@ public final class Applications {
 		return new SoftwareUpdaterImpl();
 	}
 
+	public static void checkArgNotNull(final Object arg, final String argName) {
+		if (arg == null) {
+			throw new IllegalArgumentException(String.format("Parameter %s can not be null", argName)); //$NON-NLS-1$
+		}
+	}
+
 	public static class Builder {
 		private ProcessType _type = ProcessType.VALIDATE;
 		private int _maxFails = 100;
