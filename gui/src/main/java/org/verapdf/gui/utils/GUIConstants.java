@@ -26,21 +26,41 @@ import java.awt.*;
  * @author Maksim Bezrukov
  */
 public final class GUIConstants {
-
+	// Paths
 	private static final String imgRoot = "org/verapdf/gui/images/"; //$NON-NLS-1$
 	public static final String LOGO_NAME = imgRoot + "veraPDF-logo.jpg"; //$NON-NLS-1$
-	public static final Color LOGO_BACKGROUND = Color.WHITE;
 	public static final String PARTNERS_NAME = imgRoot + "partners.png"; //$NON-NLS-1$
+	public static final String XML_LOGO_NAME = imgRoot + "xml-logo.png"; //$NON-NLS-1$
+	public static final String HTML_LOGO_NAME = imgRoot + "html-logo.png"; //$NON-NLS-1$
+
+	// GUI Colors
+	public static final Color LOGO_BACKGROUND = Color.WHITE;
 	public static final Color PARTNERS_BACKGROUND = Color.WHITE;
+	
+	// URLs
 	public static final String LOGO_LINK_TEXT = "Visit veraPDF.org"; //$NON-NLS-1$
 	public static final String LOGO_LINK_URL = "http://www.verapdf.org"; //$NON-NLS-1$
 	public static final String DOCS_LINK_URL = "http://docs.verapdf.org";
 	public static final String DOCS_GUI_LINK_URL = DOCS_LINK_URL + "/gui";
 	public static final String DOCS_VALIDATION_LINK_URL = DOCS_LINK_URL + "/validation";
 	public static final String DOCS_POLICY_LINK_URL = DOCS_LINK_URL + "/policy";
-	public static final String ERROR = "Error";
-	public static final String XML_LOGO_NAME = imgRoot + "xml-logo.png"; //$NON-NLS-1$
-	public static final String HTML_LOGO_NAME = imgRoot + "html-logo.png"; //$NON-NLS-1$
+
+	// File extensions
+	public static final String PDF = "pdf"; //$NON-NLS-1$
+	public static final String XML = "xml"; //$NON-NLS-1$
+	public static final String HTML = "html"; //$NON-NLS-1$
+	public static final String SCH = "sch"; //$NON-NLS-1$
+	public static final String XSL = "xsl"; //$NON-NLS-1$
+	public static final String XSLT = "xslt"; //$NON-NLS-1$
+	public static final String DOT = "."; //$NON-NLS-1$
+
+	// Symbols
+	public static final String PLUS = "+";
+	public static final String CROSS = "x";
+
+	// TODO: Messages and Dialog / Button text, need to be separated
+	public static final String ERROR = "Error"; //$NON-NLS-1$
+	public static final String WARNING = "Warning"; //$NON-NLS-1$
 	public static final String CHOOSE_PDF_BUTTON_TEXT = "Choose PDF";
 	public static final String PDF_NOT_CHOSEN_TEXT = "PDF file not chosen";
 	public static final String FIX_METADATA_FOLDER_CHOOSE_BUTTON = "Choose";
@@ -52,9 +72,7 @@ public final class GUIConstants {
 	public static final String AUTO_FLAVOUR_COMBOBOX_TEXT = "Auto-detect";
 	public static final String VALIDATION_PROFILE_NOT_CHOSEN = "Validation profile not chosen";
 	public static final String OK = "OK"; //$NON-NLS-1$
-	public static final String CANCEL = "Cancel";
-	public static final String PLUS = "+";
-	public static final String CROSS = "x";
+	public static final String CANCEL = "Cancel"; //$NON-NLS-1$
 	public static final String NUM_VALIDATION_ERROR = "Please enter a valid number";
 	public static final String ARG_REQUIRED ="Argument required";
 	public static final String POLICY_PROFILE_NOT_CHOSEN = "Policy file not chosen";
@@ -66,36 +84,39 @@ public final class GUIConstants {
 	public static final String SAVE_HTML_REPORT_BUTTON_TEXT = "Save HTML";
 	public static final String VIEW_HTML_REPORT_BUTTON_TEXT = "View HTML";
 	public static final String REPORT = "Report";
-	public static final String ERROR_IN_SAVING_REPORT = "IOException when saving the %s report.";
-	public static final String LABEL_TEXT = "     Please specify input PDF, Validation Profile and press \"" + VALIDATE_BUTTON_TEXT + "\"";
+	public static final String ERROR_SAVING_REPORT = "Unresolvable problem occured when saving the %S report.";
+	public static final String IOEXCEP_OPENING_REPORT = "IOException when opening the %S report.";
+	public static final String IOEXCEP_SAVING_REPORT = "IOException when saving the %S report.";
+	public static final String LABEL_TEXT = "     Please choose a PDF and a Validation Profile, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
 	public static final String CONSORTIUM_TEXT = "© 2015 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String PREFORMA_FUNDED_TEXT = "Funded by the European Commission’s PREFORMA Project";
 	public static final String TITLE = "PDF/A Conformance Checker";
 	public static final String ENCRYPTED_PDF = "Document is password encrypted and can not be processed.";
 	public static final String ERROR_IN_PARSING = "Failed to parse pdf document.";
-	public static final String ERROR_IN_VALIDATING = "Could not finish validation due to unexpected error.";
-	public static final String ERROR_IN_FEATURES = "Could not finish feature collection due to an unexpected error.";
-	public static final String ERROR_IN_INCREMETAL_SAVE = "Some error in saving changes";
-	public static final String PDF = "pdf";
-	public static final String XML = "xml";
-	public static final String HTML = "html";
-	public static final String SCH = "sch";
-	public static final String XSL = "xsl";
-	public static final String XSLT = "xslt";
-	public static final String DOT = ".";
+	public static final String ERROR_IN_VALIDATING = "Could not complete validation due to an error.";
+	public static final String ERROR_IN_FEATURES = "Could not complet feature extraction due to an error.";
+	public static final String ERROR_IN_INCREMETAL_SAVE = "An error occurred when saving changes";
+	public static final String ERROR_INTERRUPTED = "Process has been interrupted: ";
+	public static final String ERROR_EXECUTION = "Execution exception in processing: ";
+	public static final String ERROR_FILE_NOT_FOUND = "Error! One of the selected files can't be found.";
+	public static final String ERROR_INVALID_EXT = "Chosen file extension can only be %s.";
+	public static final String ERROR_SINGLE_FILE = "Error! You can only choose a single %s.";
+	public static final String ERROR_NO_VALIDATION = "Error! Validation doesn't appear to have run and has returned a null report.";
+	public static final String WARN_FILE_EXISTS = "Overwrite existing file %s?.";
+	public static final String TITLE_OVERWRITE = "Confirm Overwrite";
 	public static final String PROCESSING_TYPE = " Report type:   ";
 	public static final String CHOOSE_FLAVOUR = "PDF/A flavour:   ";
 	public static final String DISPLAY_PASSED_RULES = "Include passed rules:";
-	public static final String PLUGINS_ENABLED_TEXT = "Use plugins in feature extracting:";
+	public static final String PLUGINS_ENABLED_TEXT = "Use plugins when extracting features:";
 	public static final String MAX_NUMBER_FAILED_DISPLAYED_CHECKS = "Display failed checks for rule: ";
-	public static final String MAX_NUMBER_FAILED_CHECKS = "Stop validating after failed checks:";
-	public static final String FEATURES_GENERATED_CORRECT = "Features report generated";
+	public static final String MAX_NUMBER_FAILED_CHECKS = "Halt validation after failed checks:";
+	public static final String FEATURES_GENERATED_CORRECT = "Features report generated.";
 	public static final String MAX_FAILED_CHECKS_SETTING_TIP = "1 to 999999 or empty for unlimited";
 	public static final String MAX_FAILED_CHECKS_DISP_SETTING_TIP = "0 to 999999 or empty for unlimited";
 	public static final String FIX_METADATA_LABEL_TEXT = "       Fix metadata:";
-	public static final String SELECTED_PATH_FOR_FIXER_LABEL_TEXT = "Save fixed files into the folder:";
-	public static final String FIX_METADATA_PREFIX_LABEL_TEXT = "Save fixed files with prefix:";
-	public static final String SELECTED_PATH_FOR_FIXER_TOOLTIP = "The folder to save the fixed file to. Leave empty to save it near the original file.";
+	public static final String SELECTED_PATH_FOR_FIXER_LABEL_TEXT = "Save repaired files into the folder:";
+	public static final String FIX_METADATA_PREFIX_LABEL_TEXT = "Save repaired files with prefix:";
+	public static final String SELECTED_PATH_FOR_FIXER_TOOLTIP = "Select a folder for saving repaired files to. If not set then they'll be saved next to the original.";
 	public static final String SELECTED_PROFILES_WIKI_PATH = "Validation Profiles wiki root:";
 	public static final String CHECK_FOR_UPDATES_TEXT = "Check for Updates...";
 

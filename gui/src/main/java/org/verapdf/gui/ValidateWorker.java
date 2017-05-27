@@ -87,7 +87,7 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			this.htmlReport = null;
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, ERROR_IN_CREATING_TEMP_FILE, e);
-			this.parent.errorInValidatingOccur(ERROR_IN_CREATING_TEMP_FILE + ": ", e); //$NON-NLS-1$
+			this.parent.handleValidationError(ERROR_IN_CREATING_TEMP_FILE + ": ", e); //$NON-NLS-1$
 		}
 		try (OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
 			VeraAppConfig veraAppConfig = this.parent.appConfigFromState();
@@ -114,10 +114,10 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			}
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, ERROR_IN_OPEN_STREAMS, e);
-			this.parent.errorInValidatingOccur(ERROR_IN_OPEN_STREAMS + ": ", e); //$NON-NLS-1$
+			this.parent.handleValidationError(ERROR_IN_OPEN_STREAMS + ": ", e); //$NON-NLS-1$
 		} catch (VeraPDFException e) {
 			logger.log(Level.SEVERE, ERROR_IN_PROCESSING, e);
-			this.parent.errorInValidatingOccur(ERROR_IN_PROCESSING + ": ", e); //$NON-NLS-1$
+			this.parent.handleValidationError(ERROR_IN_PROCESSING + ": ", e); //$NON-NLS-1$
 		}
 
 		if (this.batchSummary != null) {
@@ -158,15 +158,15 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 						this.configManager.getApplicationConfig().getWikiPath(), true);
 
 			} catch (IOException | TransformerException excep) {
-				final String message = String.format(GUIConstants.ERROR_IN_SAVING_REPORT, extension);
+				final String message = String.format(GUIConstants.IOEXCEP_SAVING_REPORT, extension);
 				JOptionPane.showMessageDialog(this.parent,
-						String.format(GUIConstants.ERROR_IN_SAVING_REPORT, extension), GUIConstants.ERROR,
+						String.format(GUIConstants.IOEXCEP_SAVING_REPORT, extension), GUIConstants.ERROR,
 						JOptionPane.ERROR_MESSAGE);
 				logger.log(Level.SEVERE, message, excep);
 				this.htmlReport = null;
 			}
 		} catch (IOException excep) {
-			final String message = String.format(GUIConstants.ERROR_IN_SAVING_REPORT, extension);
+			final String message = String.format(GUIConstants.IOEXCEP_SAVING_REPORT, extension);
 			JOptionPane.showMessageDialog(this.parent, message, GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 			logger.log(Level.SEVERE, message, excep);
 			this.htmlReport = null;
