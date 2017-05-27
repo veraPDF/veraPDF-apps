@@ -1,22 +1,16 @@
 /**
  * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
- * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
- * All rights reserved.
- *
- * VeraPDF Library GUI is free software: you can redistribute it and/or modify
- * it under the terms of either:
- *
- * The GNU General public license GPLv3+.
- * You should have received a copy of the GNU General Public License
- * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the source
- * tree.  If not, see http://www.gnu.org/licenses/ or
- * https://www.gnu.org/licenses/gpl-3.0.en.html.
- *
- * The Mozilla Public License MPLv2+.
- * You should have received a copy of the Mozilla Public License along with
- * VeraPDF Library GUI as the LICENSE.MPL file in the root of the source tree.
- * If a copy of the MPL was not distributed with this file, you can obtain one at
- * http://mozilla.org/MPL/2.0/.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org> All rights
+ * reserved. VeraPDF Library GUI is free software: you can redistribute it
+ * and/or modify it under the terms of either: The GNU General public license
+ * GPLv3+. You should have received a copy of the GNU General Public License
+ * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the
+ * source tree. If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html. The Mozilla Public License
+ * MPLv2+. You should have received a copy of the Mozilla Public License along
+ * with VeraPDF Library GUI as the LICENSE.MPL file in the root of the source
+ * tree. If a copy of the MPL was not distributed with this file, you can obtain
+ * one at http://mozilla.org/MPL/2.0/.
  */
 package org.verapdf.gui;
 
@@ -32,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.FileAlreadyExistsException;
@@ -39,11 +34,9 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -70,8 +63,8 @@ import org.verapdf.apps.Applications.Builder;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
-import org.verapdf.core.utils.FileUtils;
-import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.apps.utils.ApplicationUtils;
+import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
@@ -200,8 +193,7 @@ class CheckerPanel extends JPanel {
 				GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_WEIGHT_X,
 				GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_WEIGHT_Y,
 				GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_WIDTH,
-				GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_HEIGHT,
-				GridBagConstraints.HORIZONTAL);
+				GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
 		chooseFlavourLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		gbl.setConstraints(chooseFlavourLabel, gbc);
 		this.add(chooseFlavourLabel);
@@ -209,13 +201,10 @@ class CheckerPanel extends JPanel {
 		Vector<String> availableFlavours = new Vector<>();
 		availableFlavours.add(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
 		availableFlavours.add(GUIConstants.AUTO_FLAVOUR_COMBOBOX_TEXT);
-		for (PDFAFlavour flavour : PDFAFlavour.values()) {
-			Set<PDFAFlavour> currentFlavours = Profiles.getVeraProfileDirectory().getPDFAFlavours();
-			if (currentFlavours.contains(flavour)) {
+		for (PDFAFlavour flavour : Profiles.getVeraProfileDirectory().getPDFAFlavours()) {
 				String flavourReadableText = getFlavourReadableText(flavour);
 				availableFlavours.add(flavourReadableText);
 				FLAVOURS_MAP.put(flavourReadableText, flavour);
-			}
 		}
 		this.chooseFlavour = new JComboBox<>(availableFlavours);
 		this.chooseFlavour.setOpaque(true);
@@ -265,11 +254,11 @@ class CheckerPanel extends JPanel {
 		gbl.setConstraints(chooseProfile, gbc);
 		this.add(chooseProfile);
 
-		String policy = config.getApplicationConfig().getPolicyFile();
-		if (policy == null || policy.isEmpty()) {
-			policy = GUIConstants.POLICY_PROFILE_NOT_CHOSEN;
+		String policyPath = config.getApplicationConfig().getPolicyFile();
+		if (policyPath == null || policyPath.isEmpty()) {
+			policyPath = GUIConstants.POLICY_PROFILE_NOT_CHOSEN;
 		}
-		this.chosenPolicy = new JTextField(policy);
+		this.chosenPolicy = new JTextField(policyPath);
 		this.chosenPolicy.setEditable(false);
 		this.chosenPolicy.setEnabled(this.ProcessTypes.getSelectedItem() == ProcessType.POLICY);
 		setGridBagConstraintsParameters(gbc, GUIConstants.CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_X,
@@ -367,7 +356,7 @@ class CheckerPanel extends JPanel {
 		choosePDF.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CheckerPanel.this.chooseFile(CheckerPanel.this.pdfChooser, GUIConstants.PDF);
+				CheckerPanel.this.chooseFile(CheckerPanel.this.pdfChooser, new String[] { GUIConstants.PDF });
 			}
 		});
 
@@ -376,28 +365,28 @@ class CheckerPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				ProcessType item = (ProcessType) CheckerPanel.this.ProcessTypes.getSelectedItem();
 				switch (item) {
-					case VALIDATE:
-						updateEnabling(true, false);
-						break;
-					case EXTRACT:
-						CheckerPanel.this.fixMetadata.setSelected(false);
-						updateEnabling(false, false);
-						break;
-					case VALIDATE_EXTRACT:
-						updateEnabling(true, false);
-						break;
-					case POLICY:
-						updateEnabling(true, true);
-						break;
-					default:
-						break;
+				case VALIDATE:
+					updateEnabling(true, false);
+					break;
+				case EXTRACT:
+					CheckerPanel.this.fixMetadata.setSelected(false);
+					updateEnabling(false, false);
+					break;
+				case VALIDATE_EXTRACT:
+					updateEnabling(true, false);
+					break;
+				case POLICY:
+					updateEnabling(true, true);
+					break;
+				default:
+					break;
 				}
 			}
 
-			private void updateEnabling(boolean fixMetadata, boolean policy) {
-				CheckerPanel.this.fixMetadata.setEnabled(fixMetadata);
-				CheckerPanel.this.chosenPolicy.setEnabled(policy);
-				choosePolicy.setEnabled(policy);
+			private void updateEnabling(boolean enableFixMetadata, boolean enablePolicy) {
+				CheckerPanel.this.fixMetadata.setEnabled(enableFixMetadata);
+				CheckerPanel.this.chosenPolicy.setEnabled(enablePolicy);
+				choosePolicy.setEnabled(enablePolicy);
 				CheckerPanel.this.execute.setEnabled(isExecute());
 			}
 		});
@@ -405,7 +394,8 @@ class CheckerPanel extends JPanel {
 		this.chooseFlavour.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent actionEvent) {
-				if (CheckerPanel.this.chooseFlavour.getSelectedItem().equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT)) {
+				if (CheckerPanel.this.chooseFlavour.getSelectedItem()
+						.equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT)) {
 					chooseProfile.setEnabled(true);
 					CheckerPanel.this.chosenProfile.setEnabled(true);
 				} else {
@@ -419,14 +409,15 @@ class CheckerPanel extends JPanel {
 		chooseProfile.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CheckerPanel.this.chooseFile(CheckerPanel.this.xmlChooser, GUIConstants.XML);
+				CheckerPanel.this.chooseFile(CheckerPanel.this.xmlChooser, new String[] { GUIConstants.XML });
 			}
 		});
 
 		choosePolicy.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				CheckerPanel.this.chooseFile(CheckerPanel.this.policyChooser, GUIConstants.SCH, GUIConstants.XSL, GUIConstants.XSLT);
+				CheckerPanel.this.chooseFile(CheckerPanel.this.policyChooser, new String[] { GUIConstants.SCH, GUIConstants.XSL,
+						GUIConstants.XSLT });
 			}
 		});
 
@@ -436,9 +427,10 @@ class CheckerPanel extends JPanel {
 				try {
 					changeConfig();
 					ValidationProfile customProfile = null;
-					if (CheckerPanel.this.chooseFlavour.getSelectedItem().equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT)) {
+					if (CheckerPanel.this.chooseFlavour.getSelectedItem()
+							.equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT)) {
 						try (InputStream is = new FileInputStream(CheckerPanel.this.profilePath.toFile())) {
-						customProfile = Profiles.profileFromXml(is);
+							customProfile = Profiles.profileFromXml(is);
 						}
 					}
 					CheckerPanel.this.validateWorker = new ValidateWorker(CheckerPanel.this, CheckerPanel.this.pdfFile,
@@ -454,9 +446,7 @@ class CheckerPanel extends JPanel {
 					CheckerPanel.this.saveHTML.setEnabled(false);
 					CheckerPanel.this.validateWorker.execute();
 				} catch (IllegalArgumentException | JAXBException | IOException excep) {
-					JOptionPane.showMessageDialog(CheckerPanel.this, excep.getMessage(), "Error",
-							JOptionPane.ERROR_MESSAGE);
-					logger.log(Level.SEVERE, excep.getMessage(), excep);
+					CheckerPanel.this.showErrorDialog(excep.getMessage(), excep);
 				}
 			}
 		});
@@ -479,8 +469,8 @@ class CheckerPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (CheckerPanel.this.xmlReport == null) {
-					JOptionPane.showMessageDialog(CheckerPanel.this, "XML report hasn't been saved.",
-							GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+					String message = "XML report hasn't been saved.";
+					CheckerPanel.this.showErrorDialog(message, new IOException(message));
 				} else {
 					this.openXMLReport();
 				}
@@ -490,9 +480,8 @@ class CheckerPanel extends JPanel {
 				try {
 					Desktop.getDesktop().open(CheckerPanel.this.xmlReport);
 				} catch (IOException excep) {
-					JOptionPane.showMessageDialog(CheckerPanel.this, "Some error in opening the XML report.",
-							GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-					logger.log(Level.SEVERE, "Exception in opening the XML report", excep);
+					String message = "IOException when opening the XML report.";
+					CheckerPanel.this.showErrorDialog(message, excep);
 				}
 			}
 		});
@@ -501,15 +490,14 @@ class CheckerPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (CheckerPanel.this.htmlReport == null) {
-					JOptionPane.showMessageDialog(CheckerPanel.this, "HTML report hasn't been saved.",
-							GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+					String message = "HTML report hasn't been saved.";
+					CheckerPanel.this.showErrorDialog(message, new IOException(message));
 				} else {
 					try {
 						Desktop.getDesktop().open(CheckerPanel.this.htmlReport);
 					} catch (IOException excep) {
-						JOptionPane.showMessageDialog(CheckerPanel.this, "Some error in opening the HTML report.",
-								GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-						logger.log(Level.SEVERE, "Exception in opening the HTML report", excep);
+						String message = "IOException when opening the HTML report.";
+						CheckerPanel.this.showErrorDialog(message, excep);
 					}
 				}
 			}
@@ -517,7 +505,7 @@ class CheckerPanel extends JPanel {
 
 	}
 
-	void validationEnded(File xmlReport, File htmlReport) {
+	void validationEnded(File xmlReportFile, File htmlReportFile) {
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
@@ -538,7 +526,8 @@ class CheckerPanel extends JPanel {
 					} else if (result.getValidationSummary().getFailedJobCount() == 1) {
 						setResultMessage(GUIConstants.ERROR_IN_VALIDATING, GUIConstants.VALIDATION_FAILED_COLOR);
 					} else if (result.getFeaturesSummary().getTotalJobCount() > 0) {
-						setResultMessage(GUIConstants.FEATURES_GENERATED_CORRECT, GUIConstants.VALIDATION_SUCCESS_COLOR);
+						setResultMessage(GUIConstants.FEATURES_GENERATED_CORRECT,
+								GUIConstants.VALIDATION_SUCCESS_COLOR);
 					} else {
 						setResultMessage(GUIConstants.ERROR_IN_FEATURES, GUIConstants.VALIDATION_FAILED_COLOR);
 					}
@@ -547,16 +536,16 @@ class CheckerPanel extends JPanel {
 				}
 				this.resultLabel.setVisible(true);
 
-				this.xmlReport = xmlReport;
-				this.htmlReport = htmlReport;
+				this.xmlReport = xmlReportFile;
+				this.htmlReport = htmlReportFile;
 
-				if (xmlReport != null) {
+				if (xmlReportFile != null) {
 					this.saveXML.setEnabled(true);
 					this.viewXML.setEnabled(true);
 				}
 
-				if (htmlReport != null && !(result.isMultiJob() &&
-						this.ProcessTypes.getSelectedItem() == ProcessType.EXTRACT)) {
+				if (htmlReportFile != null
+						&& !(result.isMultiJob() && this.ProcessTypes.getSelectedItem() == ProcessType.EXTRACT)) {
 					this.saveHTML.setEnabled(true);
 					this.viewHTML.setEnabled(true);
 				}
@@ -569,18 +558,22 @@ class CheckerPanel extends JPanel {
 
 	}
 
-	private String getBatchResultMessage(BatchSummary result) {
-		String divisor = ",  ";
-		String start = "Items processed: " + result.getTotalJobs();
-		String end = divisor + "Parsing Error: " + result.getFailedParsingJobs();
+	private static String getBatchResultMessage(BatchSummary result) {
+		String divisor = ", "; //$NON-NLS-1$
+		StringBuilder sb = new StringBuilder(
+				String.format("Items processed: %d", Integer.valueOf(result.getTotalJobs())));
+		String end = String.format("%s Parsing Error: %d", divisor, Integer.valueOf(result.getFailedParsingJobs()));
 		if (result.getValidationSummary().getTotalJobCount() > 0) {
-			end = divisor + "Valid: " + result.getValidationSummary().getCompliantPdfaCount()
-					+ divisor + "Invalid: " + result.getValidationSummary().getNonCompliantPdfaCount()
-					+ divisor + "Error: " + (result.getValidationSummary().getFailedJobCount());
+			end = String.format("%sValid: %d%sInvalid: %d%sError: %d", divisor,
+					Integer.valueOf(result.getValidationSummary().getCompliantPdfaCount()), divisor,
+					Integer.valueOf(result.getValidationSummary().getNonCompliantPdfaCount()), divisor,
+					Integer.valueOf(result.getValidationSummary().getFailedJobCount()));
 		} else if (result.getFeaturesSummary().getSuccessfulJobCount() > 0) {
-			end = divisor + "Features generated: " + result.getFeaturesSummary().getSuccessfulJobCount() + end;
+			String old_end = end;
+			end = String.format("%sFeatures generated: %d%s", divisor, Integer.valueOf(result.getFeaturesSummary().getSuccessfulJobCount()), old_end);
 		}
-		return start + end;
+		sb.append(end);
+		return sb.toString();
 	}
 
 	private void setResultMessage(String message, Color color) {
@@ -594,9 +587,7 @@ class CheckerPanel extends JPanel {
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
 		this.isValidationErrorOccurred = true;
-		JOptionPane.showMessageDialog(CheckerPanel.this, message + e.getMessage(), GUIConstants.ERROR,
-				JOptionPane.ERROR_MESSAGE);
-
+		this.showErrorDialog(message + e.getMessage(), e);
 		this.resultLabel.setForeground(GUIConstants.VALIDATION_FAILED_COLOR);
 		this.resultLabel.setText(message + e.getMessage());
 		this.resultLabel.setVisible(true);
@@ -607,20 +598,20 @@ class CheckerPanel extends JPanel {
 		File currentDir = new File(new File(GUIConstants.DOT).getCanonicalPath());
 		res.setCurrentDirectory(currentDir);
 		res.setAcceptAllFileFilterUsed(false);
-		res.setFileFilter(new FileNameExtensionFilter(elementsDevidedByComa(types), types));
+		res.setFileFilter(new FileNameExtensionFilter(elementsCommaDelimeted(types), types));
 		return res;
 	}
 
-	private static String elementsDevidedByComa(String... elements) {
+	private static String elementsCommaDelimeted(String... elements) {
 		StringBuilder description = new StringBuilder(elements[0]);
 		for (int i = 1; i < elements.length; ++i) {
-			description.append(",").append(elements[i]);
+			description.append(",").append(elements[i]); //$NON-NLS-1$
 		}
 		return description.toString();
 	}
 
 	private static void setGridBagConstraintsParameters(GridBagConstraints gbc, int gridx, int gridy, int weightx,
-														int weighty, int gridwidth, int gridheight, int fill) {
+			int weighty, int gridwidth, int gridheight, int fill) {
 		gbc.gridx = gridx;
 		gbc.gridy = gridy;
 		gbc.weightx = weightx;
@@ -630,23 +621,34 @@ class CheckerPanel extends JPanel {
 		gbc.fill = fill;
 	}
 
-	private void chooseFile(JFileChooser chooser, String... extensions) {
+	private void showErrorDialog(final String dialogMessage, final Throwable excep) {
+		this.showErrorDialog(GUIConstants.ERROR, dialogMessage, excep);
+	}
+
+	private void showErrorDialog(final String dialogTitle, final String dialogMessage, final Throwable excep) {
+		this.showErrorDialog(dialogTitle, dialogMessage, excep, excep.getMessage());
+	}
+
+	private void showErrorDialog(final String dialogTitle, final String dialogMessage, final Throwable excep, final String excepMessage) {
+		JOptionPane.showMessageDialog(CheckerPanel.this, dialogMessage, dialogTitle,
+				JOptionPane.ERROR_MESSAGE);
+		logger.log(Level.SEVERE, excepMessage, excep);
+	}
+ 
+	private void chooseFile(JFileChooser chooser, String[] extensions) {
 		int resultChoose = chooser.showOpenDialog(CheckerPanel.this);
 		if (resultChoose == JFileChooser.APPROVE_OPTION) {
 			File[] selectedFiles = chooser.getSelectedFiles();
 			if (selectedFiles == null || selectedFiles.length == 0) {
-				selectedFiles = new File[]{chooser.getSelectedFile()};
+				selectedFiles = new File[] { chooser.getSelectedFile() };
 			}
-			if (!areAllExists(selectedFiles)) {
-				JOptionPane.showMessageDialog(CheckerPanel.this, "Error. Some selected file doesn't exist.",
-						GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			} else if (!isLegalExtension(selectedFiles, extensions)) {
-				JOptionPane.showMessageDialog(CheckerPanel.this,
-						"Error. Some selected file is not in " + elementsDevidedByComa(extensions) + " format.",
-						GUIConstants.ERROR,
-						JOptionPane.ERROR_MESSAGE);
+			if (!ApplicationUtils.areAllExists(selectedFiles)) {
+				String message = "Error. One of the selected files can't be found.";
+				this.showErrorDialog(message, new FileNotFoundException(message));
+			} else if (!ApplicationUtils.isLegalExtension(selectedFiles, extensions)) {
+				String message = String.format("Chosen file extension must be one of %s.", elementsCommaDelimeted(extensions));
+				this.showErrorDialog(message, new IllegalArgumentException(message));
 			} else {
-
 				this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
 				this.resultLabel.setText("");
 				this.xmlReport = null;
@@ -657,91 +659,47 @@ class CheckerPanel extends JPanel {
 				this.viewHTML.setEnabled(false);
 
 				switch (extensions[0]) {
-					case GUIConstants.PDF:
-						// TODO: change that manual collecting to library one when it will be finished
-						this.pdfFile = filterPdfFiles(selectedFiles);
-						this.chosenPDF.setText(getSelectedPathsMessage(selectedFiles));
-						break;
-					case GUIConstants.XML:
-						if (selectedFiles.length == 1) {
-							this.profilePath = selectedFiles[0].toPath().toAbsolutePath();
-							this.chosenProfile.setText(this.profilePath.toString());
-						} else {
-							JOptionPane.showMessageDialog(CheckerPanel.this,
-									"Error. Can't be selected more than one validation profile", GUIConstants.ERROR,
-									JOptionPane.ERROR_MESSAGE);
-						}
-						break;
-					case GUIConstants.SCH:
-					case GUIConstants.XSL:
-					case GUIConstants.XSLT:
-						if (selectedFiles.length == 1) {
-							this.policy = selectedFiles[0];
-							this.chosenPolicy.setText(this.policy.getAbsolutePath());
-						} else {
-							JOptionPane.showMessageDialog(CheckerPanel.this,
-									"Error. Can't be selected more than one policy file", GUIConstants.ERROR,
-									JOptionPane.ERROR_MESSAGE);
-						}
-						break;
-					default:
-						// This method used only for previous two cases.
-						// So do nothing.
+				case GUIConstants.PDF:
+					// TODO: change that manual collecting to library one when
+					// it will be finished
+					this.pdfFile = ApplicationUtils.filterPdfFiles(selectedFiles);
+					this.chosenPDF.setText(getSelectedPathsMessage(selectedFiles));
+					break;
+				case GUIConstants.XML:
+					if (selectedFiles.length == 1) {
+						this.profilePath = selectedFiles[0].toPath().toAbsolutePath();
+						this.chosenProfile.setText(this.profilePath.toString());
+					} else {
+						String message = "Error! You can only choose a single validation profile."; 
+						this.showErrorDialog(message, new IllegalArgumentException(message));
+					}
+					break;
+				case GUIConstants.SCH:
+				case GUIConstants.XSL:
+				case GUIConstants.XSLT:
+					if (selectedFiles.length == 1) {
+						this.policy = selectedFiles[0];
+						this.chosenPolicy.setText(this.policy.getAbsolutePath());
+					} else {
+						String message = "Error! You can only choose a single policy file."; 
+						this.showErrorDialog(message, new IllegalArgumentException(message));
+					}
+					break;
+				default:
+					// This method used only for previous two cases.
+					// So do nothing.
 				}
 				this.execute.setEnabled(isExecute());
 			}
 		}
 	}
 
-	static List<File> filterPdfFiles(final File[] listOfFiles) {
-		List<File> retVal = new ArrayList<>();
-		for (File file : listOfFiles) {
-			if (file.isFile() && FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
-				retVal.add(file);
-			} else if (file.isDirectory()) {
-				retVal.addAll(filterPdfFiles(file.listFiles()));
-			}
-		}
-		return retVal;
-	}
 
-	static boolean areAllExists(File[] files) {
-		if (files == null || files.length == 0) {
-			return false;
-		}
-		for (File file : files) {
-			if (file == null || !file.exists()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	static boolean isLegalExtension(File[] files, String... extensions) {
-		if (files == null || files.length == 0) {
-			return true;
-		}
-		for (File file : files) {
-			if (file.isFile()) {
-				boolean isExtMatch = false;
-				for (String extension : extensions) {
-					if (FileUtils.hasExtNoCase(file.getName(), extension)) {
-						isExtMatch = true;
-					}
-				}
-				if (!isExtMatch) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
 	private static String getSelectedPathsMessage(File[] files) {
 		if (files != null && files.length > 0) {
 			StringBuilder builder = new StringBuilder(files[0].getAbsolutePath());
 			for (int i = 1; i < files.length; ++i) {
-				builder.append(", ").append(files[i].getAbsolutePath());
+				builder.append(", ").append(files[i].getAbsolutePath()); //$NON-NLS-1$
 			}
 			return builder.toString();
 		}
@@ -750,8 +708,8 @@ class CheckerPanel extends JPanel {
 
 	private void saveReport(JFileChooser chooser, String extension, File report) {
 		if (report == null) {
-			JOptionPane.showMessageDialog(CheckerPanel.this, "Validation hasn't been run.", GUIConstants.ERROR,
-					JOptionPane.ERROR_MESSAGE);
+			String message = "Error : Validation doesn't appear to have run and has returned a null report."; 
+			this.showErrorDialog(message, new IllegalArgumentException(message));
 		} else {
 			chooser.setSelectedFile(new File(extension.toLowerCase() + "Report." + extension.toLowerCase()));
 			int resultChoose = chooser.showSaveDialog(CheckerPanel.this);
@@ -776,10 +734,8 @@ class CheckerPanel extends JPanel {
 						}
 					}
 				} catch (IOException excep) {
-					JOptionPane.showMessageDialog(CheckerPanel.this,
-							GUIConstants.ERROR_IN_SAVING_HTML_REPORT + excep.getMessage(), GUIConstants.ERROR,
-							JOptionPane.ERROR_MESSAGE);
-					logger.log(Level.SEVERE, "Exception saving " + extension.toUpperCase() + " report", excep);
+					String message = String.format(GUIConstants.ERROR_IN_SAVING_REPORT, extension.toUpperCase()); 
+					this.showErrorDialog(message, excep);
 				}
 			}
 		}
@@ -791,14 +747,14 @@ class CheckerPanel extends JPanel {
 		}
 		PDFAFlavour flavour = getCurrentFlavour();
 		ValidatorConfig validatorConfig = config.getValidatorConfig();
-		ValidatorConfig currentConfig = ValidatorFactory.createConfig(flavour, validatorConfig.isRecordPasses(), validatorConfig.getMaxFails());
+		ValidatorConfig currentConfig = ValidatorFactory.createConfig(flavour, validatorConfig.isRecordPasses(),
+				validatorConfig.getMaxFails());
 		config.updateValidatorConfig(currentConfig);
 		config.updateAppConfig(appConfigFromState());
 	}
 
 	VeraAppConfig appConfigFromState() {
-		Builder builder = Applications
-				.createConfigBuilder(CheckerPanel.config.getApplicationConfig());
+		Builder builder = Applications.createConfigBuilder(CheckerPanel.config.getApplicationConfig());
 		ProcessType selectedItem = (ProcessType) this.ProcessTypes.getSelectedItem();
 		if (isFixMetadata()) {
 			selectedItem = ProcessType.addProcess(selectedItem, ProcessType.FIX);
@@ -814,9 +770,10 @@ class CheckerPanel extends JPanel {
 	}
 
 	private boolean isExecute() {
-		return (this.pdfFile != null && (!this.profilePath.toString().isEmpty()
-				|| !this.chooseFlavour.getSelectedItem().equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT))
-		&& (this.ProcessTypes.getSelectedItem() != ProcessType.POLICY || this.policy != null));
+		return (this.pdfFile != null
+				&& (!this.profilePath.toString().isEmpty()
+						|| !this.chooseFlavour.getSelectedItem().equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT))
+				&& (this.ProcessTypes.getSelectedItem() != ProcessType.POLICY || this.policy != null));
 	}
 
 	boolean isFixMetadata() {
@@ -824,14 +781,7 @@ class CheckerPanel extends JPanel {
 	}
 
 	private static String getFlavourReadableText(PDFAFlavour flavour) {
-		if (flavour.toString().matches("\\d\\w")) { //$NON-NLS-1$
-			String valueString = flavour.toString();
-			String parsedFlavour = "PDF/A-"; //$NON-NLS-1$
-			parsedFlavour += valueString.charAt(0);
-			parsedFlavour += valueString.substring(1, 2).toUpperCase();
-			return parsedFlavour;
-		}
-		return "Error in parsing flavour";
+		return String.format("PDF/A-%d%S", Integer.valueOf(flavour.getPart().getPartNumber()), flavour.getLevel().getCode());
 	}
 
 	void setPolicyFile(File policy) {
@@ -855,7 +805,7 @@ class CheckerPanel extends JPanel {
 
 		@Override
 		public Component getListCellRendererComponent(JList<? extends String> list, String value, int index,
-													  boolean isSelected, boolean cellHasFocus) {
+				boolean isSelected, boolean cellHasFocus) {
 			this.setText(value);
 			return this;
 		}
@@ -876,7 +826,7 @@ class CheckerPanel extends JPanel {
 
 		@Override
 		public Component getListCellRendererComponent(JList<? extends ProcessType> list, ProcessType value, int index,
-													  boolean isSelected, boolean cellHasFocus) {
+				boolean isSelected, boolean cellHasFocus) {
 			this.setText(value.getValue());
 			return this;
 		}

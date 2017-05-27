@@ -13,7 +13,8 @@ package org.verapdf;
  */
 
 public final class Versions {
-	private static final String pdfBoxBuildInfo = "-PDFBOX"; //$NON-NLS-1$
+	public static final String PDFBOX_BUILD_INFO = "PDFBOX"; //$NON-NLS-1$
+	private static final String pdfBoxBuildInfo = "-" + PDFBOX_BUILD_INFO; //$NON-NLS-1$
 	private static final String snapshotBuildInfo = "-SNAPSHOT"; //$NON-NLS-1$
 	private static final String versionPrefix = "v"; //$NON-NLS-1$
 
@@ -21,7 +22,7 @@ public final class Versions {
 	 * 
 	 */
 	private Versions() {
-		throw new AssertionError("Should never be here");
+		throw new AssertionError("Should never be here"); //$NON-NLS-1$
 	}
 
 	public static SemanticVersionNumber fromString(final String versionString) {

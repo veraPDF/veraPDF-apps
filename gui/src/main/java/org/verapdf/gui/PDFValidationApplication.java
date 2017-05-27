@@ -14,30 +14,52 @@
  */
 package org.verapdf.gui;
 
+import java.awt.Desktop;
+import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.BoxLayout;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
+
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
+import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.apps.ConfigManager;
+import org.verapdf.apps.SoftwareUpdater;
 import org.verapdf.apps.VeraAppConfig;
-import org.verapdf.gui.tools.GUIConstants;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Main frame of the PDFA Conformance Checker
@@ -232,6 +254,44 @@ public class PDFValidationApplication extends JFrame {
 			}
 		});
 
+		JMenuItem checkForUpdates = new JMenuItem(GUIConstants.CHECK_FOR_UPDATES_TEXT);
+		checkForUpdates.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SoftwareUpdater updater = Applications.softwareUpdater();
+				if (!updater.isOnline()) {
+					JOptionPane.showMessageDialog(
+							PDFValidationApplication.this,
+							Applications.UPDATE_SERVICE_NOT_AVAILABLE,
+							GUIConstants.CHECK_FOR_UPDATES_TEXT,
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				ReleaseDetails details = ReleaseDetails.byId("gui");
+				if (updater.isUpdateAvailable(details)) {
+					int res = JOptionPane.showConfirmDialog(
+							PDFValidationApplication.this,
+							String.format(
+									Applications.UPDATE_OLD_VERSION,
+									details.getVersion(), updater.getLatestVersion(details))
+							+ String.format("Do you want to download the latest version from:\n%s?",
+							Applications.UPDATE_URI),
+							GUIConstants.CHECK_FOR_UPDATES_TEXT,
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.WARNING_MESSAGE);
+					if (res == JOptionPane.YES_OPTION) {
+						attemptURIOpen(Applications.UPDATE_URI);
+					}
+				} else {
+					JOptionPane.showMessageDialog(
+							PDFValidationApplication.this,
+							String.format(Applications.UPDATE_LATEST_VERSION, "\n", details.getVersion()),
+							GUIConstants.CHECK_FOR_UPDATES_TEXT,
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+			}
+		});
+
 		JMenuItem guiHelp = new JMenuItem("GUI");
 		guiHelp.addActionListener(new ActionListener() {
 			@Override
@@ -261,6 +321,7 @@ public class PDFValidationApplication extends JFrame {
 		help.add(validationHelp);
 		help.add(policyHelp);
 		help.addSeparator();
+		help.add(checkForUpdates);
 		help.add(about);
 
 		menuBar.add(help);
@@ -325,6 +386,9 @@ public class PDFValidationApplication extends JFrame {
 				}
 				try {
 					PDFValidationApplication frame = new PDFValidationApplication();
+					URL url = ClassLoader.getSystemResource("org/verapdf/gui/images/icon.png");
+					Toolkit kit = Toolkit.getDefaultToolkit();
+					frame.setIconImage(kit.createImage(url));
 					frame.setVisible(true);
 				} catch (Exception e) {
 					logger.log(Level.SEVERE, "Exception", e); //$NON-NLS-1$

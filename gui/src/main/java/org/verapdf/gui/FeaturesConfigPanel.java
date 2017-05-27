@@ -33,7 +33,7 @@ import javax.swing.border.EmptyBorder;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.features.FeatureObjectType;
-import org.verapdf.gui.tools.GUIConstants;
+import org.verapdf.gui.utils.GUIConstants;
 
 /**
  * @author Maksim Bezrukov

@@ -146,18 +146,18 @@ public final class VeraPdfCli {
 	private static void showUpdateInfo(final ReleaseDetails details) {
 		SoftwareUpdater updater = Applications.softwareUpdater();
 		if (!updater.isOnline()) {
-			logger.log(Level.WARNING, "Update Service not online"); //$NON-NLS-1$
+			logger.log(Level.WARNING, Applications.UPDATE_SERVICE_NOT_AVAILABLE); //$NON-NLS-1$
 			return;
 		}
 		if (!updater.isUpdateAvailable(details)) {
-			System.out.format("You are currently running the latest version of veraPDF, v%s\n", details.getVersion()); //$NON-NLS-1$
+			System.out.format(Applications.UPDATE_LATEST_VERSION, ",", details.getVersion() + "\n"); //$NON-NLS-1$
 			return;
 		}
 		System.out.format(
-				"You are NOT running the latest version of veraPDF.\nYou are running version %s, the latest version is %s.\n", //$NON-NLS-1$
+				Applications.UPDATE_OLD_VERSION, //$NON-NLS-1$
 				details.getVersion(), updater.getLatestVersion(details));
 		System.out.format("You can download the latest version from: %s.\n", //$NON-NLS-1$
-				"http://downloads.verapdf.org/rel/verapdf-installer.zip"); //$NON-NLS-1$
+				Applications.UPDATE_URI); //$NON-NLS-1$
 	}
 
 	private static boolean isProcess(final VeraCliArgParser parser) {
