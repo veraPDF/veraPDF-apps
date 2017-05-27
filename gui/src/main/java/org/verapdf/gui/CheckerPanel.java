@@ -34,6 +34,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -653,10 +654,11 @@ class CheckerPanel extends JPanel {
 	private void chooseFile(JFileChooser chooser, String[] extensions) {
 		int resultChoose = chooser.showOpenDialog(CheckerPanel.this);
 		if (resultChoose == JFileChooser.APPROVE_OPTION) {
-			File[] selectedFiles = chooser.getSelectedFiles();
-			if (selectedFiles == null || selectedFiles.length == 0) {
-				selectedFiles = new File[] { chooser.getSelectedFile() };
+			File[] chosenFiles = chooser.getSelectedFiles();
+			if (chosenFiles == null || chosenFiles.length == 0) {
+				chosenFiles = new File[] { chooser.getSelectedFile() };
 			}
+			List<File> selectedFiles = Arrays.asList(chosenFiles);
 			if (!ApplicationUtils.doAllFilesExist(selectedFiles)) {
 				DialogUtils.errorDialog(CheckerPanel.this, GUIConstants.ERROR_FILE_NOT_FOUND, logger,
 						new FileNotFoundException(GUIConstants.ERROR_FILE_NOT_FOUND));
@@ -679,8 +681,8 @@ class CheckerPanel extends JPanel {
 					this.chosenPDF.setText(getSelectedPathsMessage(selectedFiles));
 					break;
 				case GUIConstants.XML:
-					if (selectedFiles.length == 1) {
-						this.profilePath = selectedFiles[0].toPath().toAbsolutePath();
+					if (selectedFiles.size() == 1) {
+						this.profilePath = selectedFiles.get(0).toPath().toAbsolutePath();
 						this.chosenProfile.setText(this.profilePath.toString());
 					} else {
 						String message = String .format(GUIConstants.ERROR_SINGLE_FILE, "validation profile"); //$NON-NLS-1$
@@ -691,8 +693,8 @@ class CheckerPanel extends JPanel {
 				case GUIConstants.SCH:
 				case GUIConstants.XSL:
 				case GUIConstants.XSLT:
-					if (selectedFiles.length == 1) {
-						this.policy = selectedFiles[0];
+					if (selectedFiles.size() == 1) {
+						this.policy = selectedFiles.get(0);
 						this.chosenPolicy.setText(this.policy.getAbsolutePath());
 					} else {
 						String message = String .format(GUIConstants.ERROR_SINGLE_FILE, "policy file"); //$NON-NLS-1$
@@ -709,11 +711,11 @@ class CheckerPanel extends JPanel {
 		}
 	}
 
-	private static String getSelectedPathsMessage(File[] files) {
-		if (files != null && files.length > 0) {
-			StringBuilder builder = new StringBuilder(files[0].getAbsolutePath());
-			for (int i = 1; i < files.length; ++i) {
-				builder.append(", ").append(files[i].getAbsolutePath()); //$NON-NLS-1$
+	private static String getSelectedPathsMessage(List<File> files) {
+		if (files != null && files.size() > 0) {
+			StringBuilder builder = new StringBuilder();
+			for (File file : files) {
+				builder.append(", ").append(file.getAbsolutePath()); //$NON-NLS-1$
 			}
 			return builder.toString();
 		}

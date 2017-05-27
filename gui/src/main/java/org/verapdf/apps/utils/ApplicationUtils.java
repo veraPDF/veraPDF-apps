@@ -5,6 +5,7 @@ package org.verapdf.apps.utils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,14 +38,14 @@ public final class ApplicationUtils {
 	 * @throws IllegalArgumentException
 	 *             when toFilter is null
 	 */
-	public static List<File> filterPdfFiles(final File[] toFilter) {
+	public static List<File> filterPdfFiles(final List<File> toFilter) {
 		Applications.checkArgNotNull(toFilter, "toFilter"); //$NON-NLS-1$
 		List<File> retVal = new ArrayList<>();
 		for (File file : toFilter) {
 			if (file.isFile() && FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
 				retVal.add(file);
 			} else if (file.isDirectory()) {
-				retVal.addAll(filterPdfFiles(file.listFiles()));
+				retVal.addAll(filterPdfFiles(Arrays.asList(file.listFiles())));
 			}
 		}
 		return Collections.unmodifiableList(retVal);
@@ -60,9 +61,9 @@ public final class ApplicationUtils {
 	 * @throws IllegalArgumentException
 	 *             when toCheck is null
 	 */
-	public static boolean doAllFilesExist(final File[] toCheck) {
+	public static boolean doAllFilesExist(final List<File> toCheck) {
 		Applications.checkArgNotNull(toCheck, "toCheck"); //$NON-NLS-1$
-		if (toCheck.length == 0) {
+		if (toCheck.isEmpty()) {
 			return false;
 		}
 		for (File file : toCheck) {
@@ -86,7 +87,7 @@ public final class ApplicationUtils {
 	 * @throws IllegalArgumentException
 	 *             when toCheck is null
 	 */
-	public static boolean isLegalExtension(final File[] toCheck, final String[] extensions) {
+	public static boolean isLegalExtension(final List<File> toCheck, final String[] extensions) {
 		Applications.checkArgNotNull(toCheck, "toCheck"); //$NON-NLS-1$
 		for (File file : toCheck) {
 			if (file.isFile()) {
