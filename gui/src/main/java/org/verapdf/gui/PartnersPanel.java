@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import org.verapdf.ReleaseDetails;
+import org.verapdf.apps.Applications;
 import org.verapdf.gui.utils.GUIConstants;
 
 /**
@@ -81,8 +82,8 @@ class PartnersPanel extends JPanel {
 
 		add(this.preforma);
 
-		ReleaseDetails details = ReleaseDetails.byId("gui");
-		String versionText = "Version: " + details.getVersion();
+		ReleaseDetails appDetails= Applications.getAppDetails();
+		String versionText = "Version: " + appDetails.getVersion();
 
 		this.version = new JLabel(versionText);
 
