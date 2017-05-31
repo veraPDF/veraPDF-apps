@@ -46,8 +46,7 @@ public final class VeraPdfCli {
 	private static final Logger logger = Logger.getLogger(VeraCliArgParser.class.getCanonicalName());
 	private static final ConfigManager configManager = Applications.createAppConfigManager();
 	private static final int MEGABYTE = (1024 * 1024);
-	private static final String APP_NAME = "veraPDF"; //$NON-NLS-1$
-	private static final String FLAVOURS_HEADING = APP_NAME + " supported PDF/A profiles:"; //$NON-NLS-1$
+	private static final String FLAVOURS_HEADING = CliConstants.APP_NAME + " supported PDF/A profiles:"; //$NON-NLS-1$
 	private static final ProfileDirectory PROFILES = Profiles.getVeraProfileDirectory();
 
 	private VeraPdfCli() {
@@ -68,7 +67,7 @@ public final class VeraPdfCli {
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
 		VeraCliArgParser cliArgParser = new VeraCliArgParser();
 		JCommander jCommander = new JCommander(cliArgParser);
-		jCommander.setProgramName(APP_NAME);
+		jCommander.setProgramName(CliConstants.APP_NAME);
 
 		try {
 			jCommander.parse(args);
@@ -135,12 +134,12 @@ public final class VeraPdfCli {
 	}
 
 	private static void showVersionInfo(final boolean isVerbose) {
-		ReleaseDetails details = ReleaseDetails.byId("gui"); //$NON-NLS-1$
-		System.out.format("%s %s\n", APP_NAME, details.getVersion()); //$NON-NLS-1$
-		System.out.format("Built: %s\n", details.getBuildDate()); //$NON-NLS-1$
+		ReleaseDetails appDetails = Applications.getAppDetails();
+		System.out.format("%s %s\n", CliConstants.APP_NAME, appDetails.getVersion()); //$NON-NLS-1$
+		System.out.format("Built: %s\n", appDetails.getBuildDate()); //$NON-NLS-1$
 		System.out.format("%s\n", ReleaseDetails.rightsStatement()); //$NON-NLS-1$
 		if (isVerbose)
-			showUpdateInfo(details);
+			showUpdateInfo(appDetails);
 	}
 
 	private static void showUpdateInfo(final ReleaseDetails details) {
