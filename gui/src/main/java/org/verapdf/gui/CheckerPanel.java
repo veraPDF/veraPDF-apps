@@ -34,11 +34,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -310,11 +306,14 @@ class CheckerPanel extends JPanel {
 		Vector<String> availableFlavours = new Vector<>();
 		availableFlavours.add(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
 		availableFlavours.add(GUIConstants.AUTO_FLAVOUR_COMBOBOX_TEXT);
+		SortedSet<String> sortedFlavours = new TreeSet<>();
 		for (PDFAFlavour flavour : Profiles.getVeraProfileDirectory().getPDFAFlavours()) {
 			String flavourReadableText = getFlavourReadableText(flavour);
-			availableFlavours.add(flavourReadableText);
+			sortedFlavours.add(flavourReadableText);
 			FLAVOURS_MAP.put(flavourReadableText, flavour);
 		}
+		availableFlavours.addAll(sortedFlavours);
+
 		this.chooseFlavour = new JComboBox<>(availableFlavours);
 		this.chooseFlavour.setOpaque(true);
 		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
