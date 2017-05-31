@@ -55,6 +55,8 @@
   <resources>
     <res id="HTMLInfoPanel.welcome" src="welcome.html"/>
     <res id="veraLogo" src="veralogo.jpg"/>
+    <res id="customicons.xml" src="customicons.xml" />
+    <res id="JFrameIcon" src="icon.png"/>
   </resources>
 
   <variables>
@@ -107,7 +109,7 @@
       <file targetdir="$INSTALL_PATH" src="scripts/verapdf.bat"/>
       <executable targetfile="$INSTALL_PATH/verapdf.bat"/>
     </pack>
-    <pack name="veraPDF Corpus and Validation model" required="no">
+    <pack name="veraPDF Corpus and Validation model" required="no" preselected="no">
       <description>The veraPDF test files and the validation model API.</description>
       <updatecheck>
         <include name="corpus/**"/>

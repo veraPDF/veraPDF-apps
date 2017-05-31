@@ -1,22 +1,16 @@
 /**
  * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
- * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
- * All rights reserved.
- *
- * VeraPDF Library GUI is free software: you can redistribute it and/or modify
- * it under the terms of either:
- *
- * The GNU General public license GPLv3+.
- * You should have received a copy of the GNU General Public License
- * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the source
- * tree.  If not, see http://www.gnu.org/licenses/ or
- * https://www.gnu.org/licenses/gpl-3.0.en.html.
- *
- * The Mozilla Public License MPLv2+.
- * You should have received a copy of the Mozilla Public License along with
- * VeraPDF Library GUI as the LICENSE.MPL file in the root of the source tree.
- * If a copy of the MPL was not distributed with this file, you can obtain one at
- * http://mozilla.org/MPL/2.0/.
+ * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org> All rights
+ * reserved. VeraPDF Library GUI is free software: you can redistribute it
+ * and/or modify it under the terms of either: The GNU General public license
+ * GPLv3+. You should have received a copy of the GNU General Public License
+ * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the
+ * source tree. If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html. The Mozilla Public License
+ * MPLv2+. You should have received a copy of the Mozilla Public License along
+ * with VeraPDF Library GUI as the LICENSE.MPL file in the root of the source
+ * tree. If a copy of the MPL was not distributed with this file, you can obtain
+ * one at http://mozilla.org/MPL/2.0/.
  */
 /**
  *
@@ -41,6 +35,7 @@ import javax.xml.bind.JAXBException;
 
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.VeraAppConfig;
+import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.policy.PolicyChecker;
@@ -73,7 +68,7 @@ final class VeraPdfCliProcessor {
 		try {
 			this.tempMrrFile = (this.isPolicy) ? File.createTempFile("mrr", "veraPDF") : null; //$NON-NLS-1$//$NON-NLS-2$
 		} catch (IOException excep) {
-			throw new VeraPDFException("Failed to create temporary MRR file", excep);
+			throw new VeraPDFException(CliConstants.EXCEP_TEMP_MRR_CREATE, excep);
 		}
 		this.policyFile = args.getPolicyFile();
 		this.appConfig = args.appConfig(configManager.getApplicationConfig());
@@ -85,7 +80,8 @@ final class VeraPdfCliProcessor {
 				try {
 					file.delete();
 				} catch (SecurityException ex) {
-					logger.log(Level.WARNING, "Cannot delete older report file.", ex);
+					String message = String.format(CliConstants.EXCEP_REPORT_OVERWRITE, file.getPath());
+					logger.log(Level.WARNING, message, ex);
 				}
 			}
 		}
@@ -101,31 +97,11 @@ final class VeraPdfCliProcessor {
 	}
 
 	void processPaths(final List<String> pdfPaths) throws VeraPDFException {
-		// If the path list is empty then
+		// If the path list is empty then process the STDIN stream
 		if (pdfPaths.isEmpty()) {
-			System.out.println("veraPDF is processing STDIN and is expecting an EOF marker.");
-			System.out.println("If this isn't your intention you can terminate by typing an EOF equivalent:");
-			System.out.println(" - Linux or Mac users should type CTRL-D");
-			System.out.println(" - Windows users should type CTRL-Z");
-			ItemDetails item = ItemDetails.fromValues("STDIN");
-			processStream(item, System.in);
-		}
-
-		List<File> toProcess = new ArrayList<>();
-		for (String pdfPath : pdfPaths) {
-			File file = new File(pdfPath);
-			if (!isFileProcessable(file)) {
-				throw new VeraPDFException("Could not process file " + pdfPath);
-			} else if (file.isDirectory()) {
-				this.baseDirectory = file.getAbsolutePath();
-				processDir(file);
-			} else if (isFileProcessable(file)) {
-				toProcess.add(file);
-			}
-		}
-
-		if (!toProcess.isEmpty()) {
-			processFiles(toProcess);
+			processStdIn();
+		} else {
+			processFilePaths(pdfPaths);
 		}
 
 		if (this.isPolicy) {
@@ -138,81 +114,69 @@ final class VeraPdfCliProcessor {
 		return new VeraPdfCliProcessor(args, config);
 	}
 
-	private void processDir(final File dir) {
+	private void processStdIn() {
+		for (String messageLine : CliConstants.MESS_PROC_STDIN) {
+			System.out.println(messageLine);
+		}
+		ItemDetails item = ItemDetails.fromValues(CliConstants.NAME_STDIN);
+		processStream(item, System.in);
 
-		try {
-			processBatch(dir);
+	}
+
+	private void processFilePaths(final List<String> paths) {
+		List<File> toFilter = new ArrayList<>();
+		for (String path : paths) {
+			toFilter.add(new File(path));
+		}
+		List<File> toProcess = ApplicationUtils.filterPdfFiles(toFilter);
+		if (toProcess.isEmpty()) {
+			return;
+		}
+		try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
+				OutputStream reportStream = this.getReportStream()) {
+			processor.process(toProcess,
+					ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), reportStream,
+							this.appConfig.getMaxFailsDisplayed(),
+							this.processorConfig.getValidatorConfig().isRecordPasses()));
 		} catch (VeraPDFException excep) {
-			// TODO Auto-generated catch block
-			excep.printStackTrace();
-		}
-	}
-
-	private void processFiles(final List<File> files) {
-		try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
-				OutputStream reportStream = this.getReportStream()) {
-			processor.process(files,
-					ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), reportStream,
-							this.appConfig.getMaxFailsDisplayed(),
-							this.processorConfig.getValidatorConfig().isRecordPasses()));
-		} catch (VeraPDFException e) {
-			System.err.println("Exception raised while processing batch");
-			e.printStackTrace();
+			String message = CliConstants.EXCEP_VERA_BATCH;
+			System.err.println(message);
+			logger.log(Level.SEVERE, message, excep);
 		} catch (IOException excep) {
-			logger.log(Level.FINE, "Exception raised closing MRR temp file.", excep);
-		}
-	}
-
-	private static boolean isFileProcessable(final File file) {
-		if (!file.exists()) {
-			System.err.println("Path " + file.getAbsolutePath() + " cannot be found.");
-			return false;
-		} else if (!file.canRead()) {
-			System.err.println("Path " + file.getAbsolutePath() + " is not readable.");
-			return false;
-		}
-		return true;
-	}
-
-	private void processBatch(File dir) throws VeraPDFException {
-		String reportPath = this.appConfig.getReportFile();
-		try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
-				OutputStream reportStream = this.getReportStream()) {
-			processor.process(dir, true,
-					ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), reportStream,
-							this.appConfig.getMaxFailsDisplayed(),
-							this.processorConfig.getValidatorConfig().isRecordPasses()));
-		} catch (IOException excep) {
-			logger.log(Level.FINE, "Exception raised closing MRR temp file.", excep);
+			logger.log(Level.FINE, CliConstants.EXCEP_TEMP_MRR_CLOSE, excep);
 		}
 	}
 
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
-		ItemProcessor processor = ProcessorFactory.createProcessor(this.processorConfig);
+		try (ItemProcessor processor = ProcessorFactory.createProcessor(this.processorConfig);) {
 
-		ProcessorResult result = processor.process(item, toProcess);
+			ProcessorResult result = processor.process(item, toProcess);
 
-		OutputStream outputReportStream = this.getReportStream();
-		try {
-			if (result.isPdf() && !result.isEncryptedPdf())
-				ProcessorFactory.resultToXml(result, outputReportStream, true);
-			else {
-				String message = (result.isPdf()) ? item.getName() + " is and encrypted PDF."
-						: item.getName() + " is not a valid PDF.";
-				outputReportStream.write(message.getBytes());
-			}
-
-		} catch (JAXBException | IOException excep) {
-			// TODO Auto-generated catch block
-			excep.printStackTrace();
-		}
-
-		if (!this.isStdOut) {
+			OutputStream outputReportStream = this.getReportStream();
 			try {
-				outputReportStream.close();
-			} catch (IOException ex) {
-				logger.log(Level.SEVERE, "Cannot close the report file: " + ex.toString() + "\n");
+				if (result.isPdf() && !result.isEncryptedPdf())
+					ProcessorFactory.resultToXml(result, outputReportStream, true);
+				else {
+					String message = String.format(
+							(result.isPdf()) ? CliConstants.MESS_PDF_ENCRYPTED : CliConstants.MESS_PDF_NOT_VALID,
+							item.getName());
+					outputReportStream.write(message.getBytes());
+				}
+
+			} catch (JAXBException | IOException excep) {
+				// TODO Auto-generated catch block
+				logger.log(Level.SEVERE, CliConstants.EXCEP_REPORT_MARSHAL, excep);
 			}
+
+			if (!this.isStdOut) {
+				try {
+					outputReportStream.close();
+				} catch (IOException ex) {
+					logger.log(Level.SEVERE, CliConstants.EXCEP_REPORT_CLOSE, ex);
+				}
+			}
+		} catch (IOException excep) {
+			logger.log(Level.FINER, CliConstants.EXCEP_PROCESSOR_CLOSE, excep);
 		}
 	}
 

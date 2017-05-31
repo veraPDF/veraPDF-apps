@@ -72,7 +72,7 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 
 	@Override
 	public boolean isUpdateAvailable() {
-		return isUpdateAvailable(ReleaseDetails.byId("gui"));
+		return isUpdateAvailable(Applications.getAppDetails());
 	}
 
 	@Override
