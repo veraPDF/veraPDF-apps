@@ -800,9 +800,12 @@ class CheckerPanel extends JPanel {
 	}
 
 	void setPolicyFile(File policy) {
-		this.policy = policy;
-		this.policyChooser.setSelectedFile(policy);
-		this.chosenPolicy.setText(policy.getAbsolutePath());
+	    if (policy != null && policy.isFile() && policy.canRead()) {
+            this.policy = policy;
+            this.policyChooser.setSelectedFile(policy);
+            this.chosenPolicy.setText(policy.getAbsolutePath());
+            this.execute.setEnabled(isExecute());
+        }
 	}
 
 	private class ChooseFlavourRenderer extends JLabel implements ListCellRenderer<String> {
