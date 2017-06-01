@@ -250,7 +250,6 @@ class CheckerPanel extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				CheckerPanel.this.chooseFile(CheckerPanel.this.pdfChooser, new String[] { GUIConstants.PDF });
-				CheckerPanel.this.execute.setEnabled(isExecute());
 			}
 		});
 
@@ -476,7 +475,6 @@ class CheckerPanel extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				CheckerPanel.this.chooseFile(CheckerPanel.this.xmlChooser, new String[] { GUIConstants.XML });
-				CheckerPanel.this.execute.setEnabled(isExecute());
 			}
 		});
 
@@ -500,7 +498,6 @@ class CheckerPanel extends JPanel {
 			public void actionPerformed(final ActionEvent e) {
 				CheckerPanel.this.chooseFile(CheckerPanel.this.policyChooser,
 						new String[] { GUIConstants.SCH, GUIConstants.XSL, GUIConstants.XSLT });
-				CheckerPanel.this.execute.setEnabled(isExecute());
 			}
 		});
 
@@ -708,6 +705,7 @@ class CheckerPanel extends JPanel {
 					// This method used only for previous two cases.
 					// So do nothing.
 				}
+				this.execute.setEnabled(isExecute());
 			}
 		}
 	}
@@ -802,10 +800,12 @@ class CheckerPanel extends JPanel {
 	}
 
 	void setPolicyFile(File policy) {
-		this.policy = policy;
-		this.policyChooser.setSelectedFile(policy);
-		this.chosenPolicy.setText(policy.getAbsolutePath());
-		this.execute.setEnabled(isExecute());
+	    if (policy != null && policy.exists() && policy.canRead()) {
+            this.policy = policy;
+            this.policyChooser.setSelectedFile(policy);
+            this.chosenPolicy.setText(policy.getAbsolutePath());
+            this.execute.setEnabled(isExecute());
+        }
 	}
 
 	private class ChooseFlavourRenderer extends JLabel implements ListCellRenderer<String> {
