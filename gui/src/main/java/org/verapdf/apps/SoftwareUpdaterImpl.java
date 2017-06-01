@@ -36,6 +36,7 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 	private final static String latestGF = jenkinsRoot + jenkinsApiPath;
 	private final static String latestPDFBox = jenkinsRoot + "-" + Versions.PDFBOX_BUILD_INFO.toLowerCase() //$NON-NLS-1$
 			+ jenkinsApiPath;
+	private final String currentVersion = Applications.getAppDetails().getVersion();
 
 	/**
 	 * 
@@ -47,7 +48,7 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 	@Override
 	public boolean isOnline() {
 		try {
-			URL url = new URL(jenkinsRoot);
+			URL url = new URL(getEndpointForVersion(this.currentVersion));
 			HttpURLConnection huc = (HttpURLConnection) url.openConnection();
 			huc.setRequestMethod("HEAD"); //$NON-NLS-1$
 			huc.connect();
