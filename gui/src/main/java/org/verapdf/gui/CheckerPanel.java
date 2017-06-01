@@ -800,7 +800,7 @@ class CheckerPanel extends JPanel {
 	}
 
 	void setPolicyFile(File policy) {
-	    if (policy != null && policy.exists() && policy.canRead()) {
+	    if (policy != null && policy.isFile() && policy.canRead()) {
             this.policy = policy;
             this.policyChooser.setSelectedFile(policy);
             this.chosenPolicy.setText(policy.getAbsolutePath());
