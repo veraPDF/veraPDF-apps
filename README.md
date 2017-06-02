@@ -5,7 +5,7 @@ veraPDF-apps
 [![Build Status](https://travis-ci.org/veraPDF/veraPDF-apps.svg?branch=integration)](https://travis-ci.org/veraPDF/apps/ "Travis-CI")
 [![Build Status](http://jenkins.openpreservation.org/buildStatus/icon?job=veraPDF-apps)](http://jenkins.openpreservation.org/job/veraPDF-apps/ "OPF Jenkins Release")
 [![Build Status](http://jenkins.openpreservation.org/buildStatus/icon?job=veraPDF-apps-dev)](http://jenkins.openpreservation.org/job/veraPDF-apps-dev/ "OPF Jenkins Development")
-[![Maven Central](https://img.shields.io/maven-central/v/org.verapdf/apps.svg)](http://repo1.maven.org/maven2/org/verapdf/apps/ "Maven central")
+[![Maven Central](https://img.shields.io/maven-central/v/org.verapdf/verapdf-apps.svg)](http://repo1.maven.org/maven2/org/verapdf/verapdf-apps/ "Maven central")
 [![CodeCov Coverage](https://img.shields.io/codecov/c/github/veraPDF/veraPDF-apps.svg)](https://codecov.io/gh/veraPDF/veraPDF-apps/ "CodeCov coverage")
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/881d40fed7b54552839a347575e3ad80)](https://www.codacy.com/app/carlwilson/veraPDF-apps?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=veraPDF/veraPDF-apps&amp;utm_campaign=Badge_Grade)
 
