@@ -60,7 +60,7 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 		} catch (IOException excep) {
 			logger.log(Level.INFO, "Couldn't get latest version info from Jenkins.", excep); //$NON-NLS-1$
 		}
-		return false;
+		return true;
 	}
 
 	@Override
