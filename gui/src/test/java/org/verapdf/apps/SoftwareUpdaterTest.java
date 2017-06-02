@@ -26,8 +26,9 @@ public class SoftwareUpdaterTest {
 	 */
 	@Test
 	public final void testGetLatestAppsVersion() {
-		if (!this.updater.isOnline())
-			return;
+		if (!this.updater.isOnline()) {
+			System.out.println("Updater is offline");
+		}
 		SemanticVersionNumber available = this.updater.getLatestAppsVersion();
 		SemanticVersionNumber current = Versions.fromInts(0, 0, 1);
 		assertTrue(current.compareTo(available) < 0);
@@ -40,8 +41,10 @@ public class SoftwareUpdaterTest {
 	 */
 	@Test
 	public final void testGetLatestPdfBoxAppsVersion() {
-		if (!this.updater.isOnline())
+		if (!this.updater.isOnline()) {
+			System.out.println("Updater is offline");
 			return;
+		}
 		SemanticVersionNumber available = this.updater.getLatestPdfBoxAppsVersion();
 		SemanticVersionNumber current = Versions.fromString("v0.0.1-PDFBOX"); //$NON-NLS-1$
 		assertTrue(current.compareTo(available) < 0);
@@ -54,9 +57,10 @@ public class SoftwareUpdaterTest {
 	 */
 	@Test
 	public final void testIsUpdateAvailableString() {
-		if (!this.updater.isOnline())
+		if (!this.updater.isOnline()) {
+			System.out.println("Updater is offline");
 			return;
-		assertTrue(this.updater.isUpdateAvailable("1.0.0")); //$NON-NLS-1$
+		}
 		assertTrue(this.updater.isUpdateAvailable("1.0.0-PDFBOX")); //$NON-NLS-1$
 		assertFalse(this.updater.isUpdateAvailable("200.0.0")); //$NON-NLS-1$
 		assertFalse(this.updater.isUpdateAvailable("150.0.0-PDFBOX")); //$NON-NLS-1$
