@@ -52,7 +52,9 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 			HttpURLConnection huc = (HttpURLConnection) url.openConnection();
 			huc.setRequestMethod("HEAD"); //$NON-NLS-1$
 			huc.connect();
-			return huc.getResponseCode() == 200;
+			if (huc.getResponseCode() != 200)
+				return false;
+			url.openStream();
 		} catch (MalformedURLException excep) {
 			throw new IllegalStateException(String.format("Problem parsing hard coded URL %s", jenkinsRoot), excep); //$NON-NLS-1$
 		} catch (IOException excep) {
@@ -113,6 +115,7 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 			saxParser.parse(new InputSource(url.openStream()), versionParser);
 			return versionParser.getVersion();
 		} catch (IOException | ParserConfigurationException | SAXException excep) {
+			excep.printStackTrace();
 			throw new IllegalStateException(String.format("Problem parsing version number from URL %s", endpoint), //$NON-NLS-1$
 					excep);
 		}
