@@ -89,6 +89,9 @@ public class ConfigManagerTests {
 	 */
 	@Test
 	public void testGetProcessorConfig() {
+		if (!Applications.softwareUpdater().isOnline()) {
+			return;
+		}
 		ConfigManager newManager = Applications.createTmpConfigManager();
 		assertTrue(newManager.createProcessorConfig(EnumSet.noneOf(TaskType.class))
 				.equals(ProcessorFactory.defaultConfig()));
