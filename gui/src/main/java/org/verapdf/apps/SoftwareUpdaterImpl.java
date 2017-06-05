@@ -36,6 +36,7 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 	private final static String latestGF = jenkinsRoot + jenkinsApiPath;
 	private final static String latestPDFBox = jenkinsRoot + "-" + Versions.PDFBOX_BUILD_INFO.toLowerCase() //$NON-NLS-1$
 			+ jenkinsApiPath;
+	private final String currentVersion = Applications.getAppDetails().getVersion();
 
 	/**
 	 * 
@@ -47,17 +48,19 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 	@Override
 	public boolean isOnline() {
 		try {
-			URL url = new URL(jenkinsRoot);
+			URL url = new URL(getEndpointForVersion(this.currentVersion));
 			HttpURLConnection huc = (HttpURLConnection) url.openConnection();
 			huc.setRequestMethod("HEAD"); //$NON-NLS-1$
 			huc.connect();
-			return huc.getResponseCode() == 200;
+			if (huc.getResponseCode() != 200)
+				return false;
+			url.openStream();
 		} catch (MalformedURLException excep) {
 			throw new IllegalStateException(String.format("Problem parsing hard coded URL %s", jenkinsRoot), excep); //$NON-NLS-1$
 		} catch (IOException excep) {
 			logger.log(Level.INFO, "Couldn't get latest version info from Jenkins.", excep); //$NON-NLS-1$
 		}
-		return false;
+		return true;
 	}
 
 	@Override
@@ -112,6 +115,7 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 			saxParser.parse(new InputSource(url.openStream()), versionParser);
 			return versionParser.getVersion();
 		} catch (IOException | ParserConfigurationException | SAXException excep) {
+			excep.printStackTrace();
 			throw new IllegalStateException(String.format("Problem parsing version number from URL %s", endpoint), //$NON-NLS-1$
 					excep);
 		}
