@@ -28,6 +28,7 @@ public class SoftwareUpdaterTest {
 	public final void testGetLatestAppsVersion() {
 		if (!this.updater.isOnline()) {
 			System.out.println("Updater is offline");
+			return;
 		}
 		SemanticVersionNumber available = this.updater.getLatestAppsVersion();
 		SemanticVersionNumber current = Versions.fromInts(0, 0, 1);
