@@ -85,20 +85,6 @@ public class ConfigManagerTests {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.apps.ConfigManagerImpl#getProcessorConfig()}.
-	 */
-	@Test
-	public void testGetProcessorConfig() {
-		if (!Applications.softwareUpdater().isOnline()) {
-			return;
-		}
-		ConfigManager newManager = Applications.createTmpConfigManager();
-		assertTrue(newManager.createProcessorConfig(EnumSet.noneOf(TaskType.class))
-				.equals(ProcessorFactory.defaultConfig()));
-	}
-
-	/**
-	 * Test method for
 	 * {@link org.verapdf.apps.ConfigManagerImpl#getApplicationConfig()}.
 	 */
 	@Test
