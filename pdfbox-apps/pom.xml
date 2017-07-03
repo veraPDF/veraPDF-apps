@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.verapdf</groupId>
+    <artifactId>verapdf-apps</artifactId>
+    <version>1.7.0-SNAPSHOT</version>
+  </parent>
+  <groupId>org.verapdf.apps</groupId>
+  <artifactId>pdfbox-apps</artifactId>
+  <name>veraPDF PDF Box Applications</name>
+  <description>Wrapper for the PDF Box GUI and CLI applications.</description>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>org.verapdf.apps.PdfBoxGuiWrapper</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <appendAssemblyId>false</appendAssemblyId>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id> <!-- this is used for inheritance merges -->
+            <phase>package</phase> <!-- bind to the packaging phase -->
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+  <dependencies>
+
+    <dependency>
+      <groupId>org.verapdf</groupId>
+      <artifactId>pdfbox-feature-reporting</artifactId>
+      <version>${verapdf.pdfbox.validation.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.verapdf</groupId>
+      <artifactId>pdfbox-validation-model</artifactId>
+      <version>${verapdf.pdfbox.validation.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.verapdf</groupId>
+      <artifactId>pdfbox-metadata-fixer</artifactId>
+      <version>${verapdf.pdfbox.validation.version}</version>
+    </dependency>
+  
+    <dependency>
+      <groupId>org.verapdf.apps</groupId>
+      <artifactId>gui</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+
+  </dependencies>
+</project>
