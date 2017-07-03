@@ -25,9 +25,9 @@
 
   <info>
     <appname>veraPDF Software</appname>
-    <appversion>${project.version}</appversion>
+    <appversion>@project.version@</appversion>
     <appsubpath>verapdf</appsubpath>
-    <url>http://verapdf.org</url>
+    <url>http://verapdf.org/</url>
     <javaversion>1.7</javaversion>
     <authors>
       <author name="The veraPDF Consortium" email="info@verapdf.org" />
@@ -53,7 +53,7 @@
   </locale>
 
   <resources>
-    <res id="HTMLInfoPanel.welcome" src="welcome.html"/>
+    <res id="HTMLHelloPanel.welcome" src="welcome.html"/>
     <res id="veraLogo" src="veralogo.jpg"/>
     <res id="customicons.xml" src="customicons.xml" />
     <res id="JFrameIcon" src="icon.png"/>
@@ -61,13 +61,14 @@
 
   <variables>
     <variable name="InstallerFrame.logfilePath" value="Default"/>
-    <variable name="VERSION" value="v ${project.version}"/>
-    <variable name="BUILD_DATE" value="Built ${verapdf.timestamp}"/>
+    <variable name="VERSION" value="v@project.version@"/>
+    <variable name="APP_NAME" value="@verapdf.apps.package.name@"/>
+    <variable name="BUILD_DATE" value="Built @verapdf.timestamp@"/>
     <variable name="TargetPanel.dir" value="$USER_HOME/verapdf"/>
   </variables>
 
   <panels>
-    <panel classname="HTMLInfoPanel" id="welcome"/>
+    <panel classname="HTMLHelloPanel" id="welcome"/>
     <panel classname="TargetPanel" id="install_dir"/>
     <panel classname="PacksPanel" id="sdk_pack_select"/>
     <panel classname="InstallPanel" id="install"/>
@@ -80,13 +81,14 @@
       <updatecheck>
         <include name="bin/**"/>
       </updatecheck>
-      <file targetdir="$INSTALL_PATH/bin" src="bin/gui-${project.version}.jar"/>
-      <executable targetfile="$INSTALL_PATH/bin/gui-${project.version}.jar"/>
+      <file targetdir="$INSTALL_PATH/bin" src="bin/@verapdf.apps.package@-@project.version@.jar"/>
+      <executable targetfile="$INSTALL_PATH/bin/@verapdf.apps.package@-@project.version@.jar"/>
       <file targetdir="$INSTALL_PATH/profiles" src="profiles/integration.zip" unpack="true"/>
       <file targetdir="$INSTALL_PATH/plugins" src="plugins/README.txt"/>
     </pack>
-    <pack name="veraPDF Mac and *nix Scripts" required="yes" os="unix" executable="yes">
+    <pack name="veraPDF Mac and *nix Scripts" required="yes">
       <description>Scripts for using the veraPDF software.</description>
+      <os family="unix"/>
       <updatecheck>
         <include name="verapdf-gui"/>
         <include name="verapdf"/>
@@ -98,15 +100,18 @@
       <parsable targetfile="$INSTALL_PATH/verapdf" type="shell"/>
       <executable targetfile="$INSTALL_PATH/verapdf"/>
     </pack>
-    <pack name="veraPDF Batch files" required="yes" os="windows">
+    <pack name="veraPDF Batch files" required="yes">
       <description>Scripts for using the veraPDF software.</description>
+      <os family="windows"/>
       <updatecheck>
         <include name="verapdf-gui.bat"/>
         <include name="verapdf.bat"/>
       </updatecheck>
       <file targetdir="$INSTALL_PATH" src="scripts/verapdf-gui.bat"/>
+      <parsable targetfile="$INSTALL_PATH/verapdf-gui.bat" type="shell"/>
       <executable targetfile="$INSTALL_PATH/verapdf-gui.bat"/>
       <file targetdir="$INSTALL_PATH" src="scripts/verapdf.bat"/>
+      <parsable targetfile="$INSTALL_PATH/verapdf.bat" type="shell"/>
       <executable targetfile="$INSTALL_PATH/verapdf.bat"/>
     </pack>
     <pack name="veraPDF Corpus and Validation model" required="no" preselected="no">
