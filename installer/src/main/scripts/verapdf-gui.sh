@@ -126,5 +126,5 @@ exec "$JAVACMD" $JAVA_OPTS  \
   -Dapp.repo="$REPO" \
   -Dapp.home="$BASEDIR" \
   -Dbasedir="$BASEDIR" \
-  org.verapdf.gui.PDFValidationApplication \
+  @verapdf.wrapper.gui@ \
   "$@"
