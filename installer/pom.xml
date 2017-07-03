@@ -36,6 +36,7 @@
 
 
   <properties>
+    <installer.zip.prefix>verapdf-greenfield</installer.zip.prefix>
     <installer.output.filename>verapdf-izpack-installer-${project.version}.jar</installer.output.filename>
     <izpack.version>5.0.0</izpack.version>
     <izpack.staging>${project.build.directory}/staging</izpack.staging>
@@ -278,7 +279,7 @@
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptor>src/assembly/app-assembly.xml</descriptor>
-          <finalName>verapdf-${project.version}</finalName>
+          <finalName>${installer.zip.prefix}-${project.version}</finalName>
         </configuration>
         <executions>
           <execution>
@@ -326,6 +327,7 @@
         </property>
       </activation>
       <properties>
+        <installer.zip.prefix>verapdf-pdfbox</installer.zip.prefix>
         <installer.output.filename>verapdf-izpack-pdfbox-installer-${project.version}.jar</installer.output.filename>
         <verapdf.apps.package>pdfbox-apps</verapdf.apps.package>
         <verapdf.wrapper.gui>org.verapdf.apps.PdfBoxGuiWrapper</verapdf.wrapper.gui>
