@@ -30,7 +30,6 @@ import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.SoftwareUpdater;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
-import org.verapdf.pdfa.PdfBoxFoundryProvider;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
@@ -61,7 +60,6 @@ public final class VeraPdfCli {
 	 *            using Apache commons CLI.
 	 */
 	public static void main(final String[] args) throws VeraPDFException {
-		PdfBoxFoundryProvider.initialise();
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
 		ReleaseDetails.addDetailsFromResource(
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
