@@ -714,9 +714,9 @@ class CheckerPanel extends JPanel {
 		if (files != null && files.size() > 0) {
 			StringBuilder builder = new StringBuilder();
 			for (File file : files) {
-				builder.append(", ").append(file.getAbsolutePath()); //$NON-NLS-1$
+				builder.append(file.getAbsolutePath()).append(", "); //$NON-NLS-1$
 			}
-			return builder.toString();
+			return builder.substring(0, builder.length() - 2);
 		}
 		return emptyString;
 	}
