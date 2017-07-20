@@ -148,7 +148,7 @@ final class VeraPdfCliProcessor {
 	}
 
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
-		try (ItemProcessor processor = ProcessorFactory.createProcessor(this.processorConfig);) {
+		try (ItemProcessor processor = ProcessorFactory.createProcessor(this.processorConfig)) {
 
 			ProcessorResult result = processor.process(item, toProcess);
 
