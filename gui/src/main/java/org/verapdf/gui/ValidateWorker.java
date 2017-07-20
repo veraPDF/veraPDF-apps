@@ -27,12 +27,16 @@ import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathExpressionException;
 
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
+import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.core.VeraPDFException;
+import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
@@ -44,6 +48,7 @@ import org.verapdf.processor.ProcessorFactory;
 import org.verapdf.processor.TaskType;
 import org.verapdf.processor.reports.BatchSummary;
 import org.verapdf.report.HTMLReport;
+import org.xml.sax.SAXException;
 
 /**
  * Validates PDF in a new thread.
@@ -57,6 +62,7 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 	private static final String ERROR_IN_OPEN_STREAMS = "Can't open stream from PDF file or can't open stream to temporary XML report file"; //$NON-NLS-1$
 	private static final String ERROR_IN_PROCESSING = "Error during the processing"; //$NON-NLS-1$
 	private static final String ERROR_IN_CREATING_TEMP_FILE = "Can't create temporary file for XML report"; //$NON-NLS-1$
+	private static final String ERROR_IN_OBTAINING_POLICY_FEATURES = "Can't obtain enabled features from policy files"; //$NON-NLS-1$
 
 	private List<File> pdfs;
 	private ValidationProfile customProfile;
@@ -92,13 +98,24 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 		try (OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
 			VeraAppConfig veraAppConfig = this.parent.appConfigFromState();
 			ProcessType processType = veraAppConfig.getProcessType();
+			boolean isPolicy = (processType == ProcessType.POLICY || processType == ProcessType.POLICY_FIX)
+					&& this.policy != null;
 			EnumSet<TaskType> tasks = processType.getTasks();
 			ValidatorConfig validatorConfig = this.configManager.getValidatorConfig();
+			FeatureExtractorConfig featuresConfig = this.configManager.getFeaturesConfig();
+			if (isPolicy) {
+				try (InputStream policyStream = new FileInputStream(this.policy)) {
+					featuresConfig = ApplicationUtils.mergeEnabledFeaturesFromPolicy(featuresConfig, policyStream);
+				} catch (ParserConfigurationException | SAXException | XPathExpressionException e) {
+					logger.log(Level.SEVERE, ERROR_IN_OBTAINING_POLICY_FEATURES, e);
+					this.parent.handleValidationError(ERROR_IN_OBTAINING_POLICY_FEATURES + ": ", e);
+				}
+			}
 			ProcessorConfig resultConfig = this.customProfile == null
-					? ProcessorFactory.fromValues(validatorConfig, this.configManager.getFeaturesConfig(),
+					? ProcessorFactory.fromValues(validatorConfig, featuresConfig,
 							this.configManager.getPluginsCollectionConfig(), this.configManager.getFixerConfig(), tasks,
 							veraAppConfig.getFixesFolder())
-					: ProcessorFactory.fromValues(validatorConfig, this.configManager.getFeaturesConfig(),
+					: ProcessorFactory.fromValues(validatorConfig, featuresConfig,
 							this.configManager.getPluginsCollectionConfig(), this.configManager.getFixerConfig(), tasks,
 							this.customProfile, veraAppConfig.getFixesFolder());
 			try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(resultConfig);) {
@@ -107,8 +124,7 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 						ProcessorFactory.getHandler(FormatOption.MRR, applicationConfig.isVerbose(), mrrReport,
 								applicationConfig.getMaxFailsDisplayed(), validatorConfig.isRecordPasses()));
 
-				if ((processType == ProcessType.POLICY || processType == ProcessType.POLICY_FIX)
-						&& this.policy != null) {
+				if (isPolicy) {
 					applyPolicy();
 				}
 			}

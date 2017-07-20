@@ -27,6 +27,7 @@ import com.beust.jcommander.ParameterException;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
+import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.metadata.fixer.FixerFactory;
@@ -40,8 +41,11 @@ import org.verapdf.processor.FormatOption;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.ProcessorFactory;
 import org.verapdf.processor.plugins.PluginsCollectionConfig;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -425,13 +429,21 @@ public class VeraCliArgParser {
 	public ProcessorConfig processorConfig(final ProcessType procType, FeatureExtractorConfig featConfig,
 										   PluginsCollectionConfig plugConfig)
 			throws VeraPDFException {
+		FeatureExtractorConfig featuresConfig = featConfig;
+		if (isPolicy()) {
+			try (InputStream policyStream = new FileInputStream(this.policyFile)) {
+				featuresConfig = ApplicationUtils.mergeEnabledFeaturesFromPolicy(featuresConfig, policyStream);
+			} catch (SAXException | XPathExpressionException | IOException | ParserConfigurationException e) {
+				throw new VeraPDFException("Problem during obtaining feature types from policy file", e);
+			}
+		}
 		if (this.profileFile == null) {
-			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, plugConfig, this.fixerConfig(),
+			return ProcessorFactory.fromValues(this.validatorConfig(), featuresConfig, plugConfig, this.fixerConfig(),
 					procType.getTasks(), this.saveFolder);
 		}
 		try (InputStream fis = new FileInputStream(this.profileFile)) {
 			ValidationProfile customProfile = Profiles.profileFromXml(fis);
-			return ProcessorFactory.fromValues(this.validatorConfig(), featConfig, plugConfig, this.fixerConfig(),
+			return ProcessorFactory.fromValues(this.validatorConfig(), featuresConfig, plugConfig, this.fixerConfig(),
 					procType.getTasks(), customProfile, this.saveFolder);
 		} catch (IOException | JAXBException excep) {
 			throw new VeraPDFException("Problem loading custom profile", excep);
