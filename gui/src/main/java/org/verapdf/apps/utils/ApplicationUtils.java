@@ -126,10 +126,8 @@ public final class ApplicationUtils {
 		XPath xpath = xpf.newXPath();
 		SimpleNamespaceContext nsc = new SimpleNamespaceContext();
 		nsc.setPrefix(SchematronGenerator.SCH_PREFIX, SchematronGenerator.SCH_NAMESPACE);
-		nsc.setPrefix(SchematronGenerator.VERAPDF_PREFIX, SchematronGenerator.VERAPDF_NAMESPACE);
 		xpath.setNamespaceContext(nsc);
 		String path = "/" + SchematronGenerator.SCH_PREFIX + ":" + SchematronGenerator.ROOT_NAME
-						+ "/" + SchematronGenerator.VERAPDF_PREFIX + ":" + SchematronGenerator.ENABLED_FEATURES_NAME
 				+ "/@" + SchematronGenerator.ENABLED_FEATURES_ATTRIBUTE_NAME;
 		String value = (String) xpath.evaluate(path,
 				document,
