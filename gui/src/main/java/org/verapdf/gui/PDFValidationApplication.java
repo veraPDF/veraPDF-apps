@@ -94,11 +94,11 @@ public class PDFValidationApplication extends JFrame {
 	private VeraAppConfig config;
 	private PolicyPanel policyConfig;
 
-	private PDFValidationApplication() {
+	private PDFValidationApplication(double frameScale) {
 		addWindowListener(new ExitWindowAdapter());
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		setBounds(GUIConstants.FRAME_COORD_X, GUIConstants.FRAME_COORD_Y, GUIConstants.FRAME_WIDTH,
-				GUIConstants.FRAME_HEIGHT);
+		setBounds(GUIConstants.FRAME_COORD_X, GUIConstants.FRAME_COORD_Y, (int) (GUIConstants.FRAME_WIDTH*frameScale),
+				(int) (GUIConstants.FRAME_HEIGHT*frameScale));
 		setResizable(false);
 
 		setTitle(GUIConstants.TITLE);
@@ -371,8 +371,17 @@ public class PDFValidationApplication extends JFrame {
 	 *            command line arguments
 	 */
 	public static void main(String[] args) {
+		double frameScale = 1;
+		if (args.length > 1 && "--frameScale".equals(args[0]) && args[1] != null) {
+			try {
+				frameScale = Double.valueOf(args[1]);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+		}
 		ReleaseDetails.addDetailsFromResource(
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
+		final double finalFrameScale = frameScale;
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -383,7 +392,7 @@ public class PDFValidationApplication extends JFrame {
 					logger.log(Level.SEVERE, "Exception in configuring UI manager", e); //$NON-NLS-1$
 				}
 				try {
-					PDFValidationApplication frame = new PDFValidationApplication();
+					PDFValidationApplication frame = new PDFValidationApplication(finalFrameScale);
 					URL url = ClassLoader.getSystemResource("org/verapdf/gui/images/icon.png");
 					Toolkit kit = Toolkit.getDefaultToolkit();
 					frame.setIconImage(kit.createImage(url));
