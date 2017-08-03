@@ -76,4 +76,4 @@ if $cygwin; then
 fi
 
 cd $BASEDIR
-java -jar verapdf-izpack-installer-${project.version}.jar
+java -jar ${installer.output.filename}
