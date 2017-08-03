@@ -3,15 +3,27 @@
  */
 package org.verapdf.apps.utils;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
+import javanet.staxutils.SimpleNamespaceContext;
 import org.verapdf.apps.Applications;
 import org.verapdf.core.utils.FileUtils;
+import org.verapdf.features.FeatureExtractorConfig;
+import org.verapdf.features.FeatureFactory;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.gui.utils.GUIConstants;
+import org.verapdf.policy.SchematronGenerator;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -105,4 +117,38 @@ public final class ApplicationUtils {
 		return true;
 	}
 
+	public static FeatureExtractorConfig mergeEnabledFeaturesFromPolicy(FeatureExtractorConfig currentConfig, InputStream policy) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setNamespaceAware(true);
+		DocumentBuilder db = dbf.newDocumentBuilder();
+		Document document = db.parse(policy);
+		XPathFactory xpf = XPathFactory.newInstance();
+		XPath xpath = xpf.newXPath();
+		SimpleNamespaceContext nsc = new SimpleNamespaceContext();
+		nsc.setPrefix(SchematronGenerator.SCH_PREFIX, SchematronGenerator.SCH_NAMESPACE);
+		xpath.setNamespaceContext(nsc);
+		String path = "/" + SchematronGenerator.SCH_PREFIX + ":" + SchematronGenerator.ROOT_NAME
+				+ "/@" + SchematronGenerator.ENABLED_FEATURES_ATTRIBUTE_NAME;
+		String value = (String) xpath.evaluate(path,
+				document,
+				XPathConstants.STRING);
+		if (value == null) {
+			return currentConfig;
+		}
+		String[] values = value.split(",");
+		if (values.length == 0) {
+			return currentConfig;
+		}
+		EnumSet<FeatureObjectType> resFeatures = EnumSet.noneOf(FeatureObjectType.class);
+		for (String featureName : values) {
+			FeatureObjectType feature = FeatureObjectType.getFeatureObjectTypeByFullName(featureName);
+			if (feature != null) {
+				resFeatures.add(feature);
+			}
+		}
+		for (FeatureObjectType type : currentConfig.getEnabledFeatures()) {
+			resFeatures.add(type);
+		}
+		return FeatureFactory.configFromValues(resFeatures);
+	}
 }
