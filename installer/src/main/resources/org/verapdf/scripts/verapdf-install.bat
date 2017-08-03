@@ -36,7 +36,7 @@ goto Win9xApp
 :Win9xGetScriptDir
 set SAVEDIR=%CD%
 %0\
-cd %0\..\.. 
+cd %0\..\..
 set BASEDIR=%CD%
 cd %SAVEDIR%
 set SAVE_DIR=
@@ -45,7 +45,7 @@ goto repoSetup
 :WinNTGetScriptDir
 set BASEDIR=%~dp0\
 
-java -jar verapdf-izpack-installer-${project.version}.jar
+java -jar ${installer.output.filename}
 if %ERRORLEVEL% NEQ 0 goto error
 goto end
 
