@@ -38,7 +38,6 @@ set SAVEDIR="%CD%"
 %0\
 cd %0\..\..
 set BASEDIR=%CD%
-echo %SAVEDIR%
 cd "%SAVEDIR%"
 set SAVE_DIR=
 goto repoSetup

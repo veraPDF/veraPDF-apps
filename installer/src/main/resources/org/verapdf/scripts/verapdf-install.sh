@@ -75,6 +75,5 @@ if $cygwin; then
   [ -n "$BASEDIR" ] && BASEDIR=`cygpath --path --windows "$BASEDIR"`
 fi
 
-echo $BASEDIR
 cd "$BASEDIR"
 java -jar ${installer.output.filename}
