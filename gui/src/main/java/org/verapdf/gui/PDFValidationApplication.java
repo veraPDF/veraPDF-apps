@@ -68,23 +68,8 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 
 @SuppressWarnings("synthetic-access")
 public class PDFValidationApplication extends JFrame {
-	static final ConfigManager configManager = Applications.createAppConfigManager();
-
-	class ExitWindowAdapter extends WindowAdapter {
-
-		@Override
-		public void windowClosing(WindowEvent e) {
-			try {
-				configManager.updateAppConfig(PDFValidationApplication.this.config);
-			} catch (JAXBException | IOException excep) {
-				// TODO Auto-generated catch block
-				excep.printStackTrace();
-			}
-		}
-	}
-
+	private static final ConfigManager configManager = Applications.createAppConfigManager();
 	private static final long serialVersionUID = -5569669411392145783L;
-
 	private static final Logger logger = Logger.getLogger(PDFValidationApplication.class.getCanonicalName());
 
 	private AboutPanel aboutPanel;
@@ -402,6 +387,19 @@ public class PDFValidationApplication extends JFrame {
 				}
 			}
 		});
+	}
+
+	class ExitWindowAdapter extends WindowAdapter {
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			try {
+				configManager.updateAppConfig(PDFValidationApplication.this.config);
+			} catch (JAXBException | IOException excep) {
+				// TODO Auto-generated catch block
+				excep.printStackTrace();
+			}
+		}
 	}
 
 }
