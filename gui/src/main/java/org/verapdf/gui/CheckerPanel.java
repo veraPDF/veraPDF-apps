@@ -116,7 +116,7 @@ class CheckerPanel extends JPanel {
 
 	private transient Path profilePath;
 
-	JProgressBar progressBar;
+	private JProgressBar progressBar;
 	transient ValidateWorker validateWorker;
 
 	CheckerPanel(final ConfigManager config) throws IOException {
