@@ -423,6 +423,7 @@ public class VeraCliArgParser {
 		Applications.Builder configBuilder = Applications.Builder.fromConfig(base);
 		configBuilder.format(this.getFormat()).isVerbose(this.isVerbose()).fixerFolder(this.saveFolder);
 		configBuilder.type(typeFromArgs(this));
+		configBuilder.maxFails(this.maxFailuresDisplayed);
 		return configBuilder.build();
 	}
 
