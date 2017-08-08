@@ -66,7 +66,7 @@ public final class ApplicationUtils {
 				if (FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
 					retVal.add(file);
 				} else {
-					LOGGER.log(Level.SEVERE, "File " + file.getAbsolutePath() + " isn't a pdf file.");
+					LOGGER.log(Level.SEVERE, "File " + file.getAbsolutePath() + " doesn't have a .pdf extension.");
 				}
 			} else if (file.isDirectory()) {
 				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive));
