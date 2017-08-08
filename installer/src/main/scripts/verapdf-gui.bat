@@ -84,7 +84,14 @@ if NOT "%CLASSPATH_PREFIX%" == "" set CLASSPATH=%CLASSPATH_PREFIX%;%CLASSPATH%
 @REM Reaching here means variables are defined and arguments have been captured
 :endInit
 
-"%JAVACMD%" %JAVA_OPTS%  -classpath %CLASSPATH% -Dfile.encoding=UTF8 -Dapp.name="VeraPDF validation GUI" -Dapp.repo="%REPO%" -Dapp.home="%BASEDIR%" -Dbasedir="%BASEDIR%" @verapdf.wrapper.gui@ %CMD_LINE_ARGS%
+@REM This sets a scaling factor for the veraPDF GUI window layout.
+@REM You should only change this if there is a problem with the window layout on your machine.
+@REM The usual cause of such problems is a high resolution display, greater than 1920x1080 and use if Windows text scaling for such displays.
+@REM The root cause us that Java Swing applications are rendered based on pixels, see this issue for more details: http://openjdk.java.net/jeps/263
+@REM If you have problems with a cramped window and invisible window controls you can increase the SCALE_FACTOR below to 1.5 or even 2.0
+set SCALE_FACTOR=1.0
+
+"%JAVACMD%" %JAVA_OPTS%  -classpath %CLASSPATH% -Dfile.encoding=UTF8 -Dapp.name="VeraPDF validation GUI" -Dapp.repo="%REPO%" -Dapp.home="%BASEDIR%" -Dbasedir="%BASEDIR%" @verapdf.wrapper.gui@ --frameScale %SCALE_FACTOR% %CMD_LINE_ARGS%
 if %ERRORLEVEL% NEQ 0 goto error
 goto end
 

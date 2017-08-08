@@ -118,6 +118,13 @@ if $cygwin; then
   [ -n "$REPO" ] && REPO=`cygpath --path --windows "$REPO"`
 fi
 
+# This sets a scaling factor for the veraPDF GUI window layout.
+# You should only change this if there is a problem with the window layout on your machine.
+# The usual cause of such problems is a high resolution display, greater than 1920x1080 and use if Windows text scaling for such displays.
+# The root cause us that Java Swing applications are rendered based on pixels, see this issue for more details: http://openjdk.java.net/jeps/263
+# If you have problems with a cramped window and invisible window controls you can increase the SCALE_FACTOR below to 1.5 or even 2.0
+SCALE_FACTOR=1.0
+
 exec "$JAVACMD" $JAVA_OPTS  \
   -classpath "$CLASSPATH" \
   -Dfile.encoding="UTF8" \
@@ -127,4 +134,5 @@ exec "$JAVACMD" $JAVA_OPTS  \
   -Dapp.home="$BASEDIR" \
   -Dbasedir="$BASEDIR" \
   @verapdf.wrapper.gui@ \
+  "--frameScale" "$SCALE_FACTOR" \
   "$@"
