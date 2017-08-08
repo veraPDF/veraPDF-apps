@@ -5,6 +5,8 @@ package org.verapdf.apps.utils;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javanet.staxutils.SimpleNamespaceContext;
 import org.verapdf.apps.Applications;
@@ -33,6 +35,8 @@ import javax.xml.xpath.XPathFactory;
 
 public final class ApplicationUtils {
 
+	private static final Logger LOGGER = Logger.getLogger(ApplicationUtils.class.getCanonicalName());
+
 	/**
 	 * Private constructor should never be called
 	 */
@@ -50,14 +54,36 @@ public final class ApplicationUtils {
 	 * @throws IllegalArgumentException
 	 *             when toFilter is null
 	 */
-	public static List<File> filterPdfFiles(final List<File> toFilter) {
+	public static List<File> filterPdfFiles(final List<File> toFilter, final boolean isRecursive) {
+		Applications.checkArgNotNull(toFilter, "toFilter"); //$NON-NLS-1$
+		List<File> retVal = new ArrayList<>();
+		for (File file : toFilter) {
+			if (!file.exists()) {
+				LOGGER.log(Level.SEVERE, "File " + file.getAbsolutePath() + " doesn't exist.");
+				continue;
+			}
+			if (file.isFile()) {
+				if (FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
+					retVal.add(file);
+				} else {
+					LOGGER.log(Level.SEVERE, "File " + file.getAbsolutePath() + " doesn't have a .pdf extension.");
+				}
+			} else if (file.isDirectory()) {
+				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive));
+			}
+		}
+		return Collections.unmodifiableList(retVal);
+	}
+
+	private static List<File> filterPdfFilesFromDirs(final List<File> toFilter,
+											 final boolean isRecursive) {
 		Applications.checkArgNotNull(toFilter, "toFilter"); //$NON-NLS-1$
 		List<File> retVal = new ArrayList<>();
 		for (File file : toFilter) {
 			if (file.isFile() && FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
 				retVal.add(file);
-			} else if (file.isDirectory()) {
-				retVal.addAll(filterPdfFiles(Arrays.asList(file.listFiles())));
+			} else if (file.isDirectory() && isRecursive) {
+				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive));
 			}
 		}
 		return Collections.unmodifiableList(retVal);

@@ -56,6 +56,7 @@ final class VeraPdfCliProcessor {
 	private final ProcessorConfig processorConfig;
 	private final VeraAppConfig appConfig;
 	private final boolean isPolicy;
+	private final boolean isRecursive;
 	private final File tempMrrFile;
 	private final File policyFile;
 	private boolean isStdOut = true;
@@ -65,6 +66,7 @@ final class VeraPdfCliProcessor {
 	private VeraPdfCliProcessor(final VeraCliArgParser args, ConfigManager configManager) throws VeraPDFException {
 		this.configManager = configManager;
 		this.isPolicy = args.isPolicy();
+		this.isRecursive = args.isRecurse();
 		try {
 			this.tempMrrFile = (this.isPolicy) ? File.createTempFile("mrr", "veraPDF") : null; //$NON-NLS-1$//$NON-NLS-2$
 		} catch (IOException excep) {
@@ -128,8 +130,9 @@ final class VeraPdfCliProcessor {
 		for (String path : paths) {
 			toFilter.add(new File(path));
 		}
-		List<File> toProcess = ApplicationUtils.filterPdfFiles(toFilter);
+		List<File> toProcess = ApplicationUtils.filterPdfFiles(toFilter, this.isRecursive);
 		if (toProcess.isEmpty()) {
+			logger.log(Level.SEVERE, "There is no files to process.");
 			return;
 		}
 		try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);

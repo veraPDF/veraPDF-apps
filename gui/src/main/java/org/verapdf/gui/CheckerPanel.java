@@ -676,7 +676,7 @@ class CheckerPanel extends JPanel {
 
 				switch (extensions[0]) {
 				case GUIConstants.PDF:
-					this.pdfsToProcess = ApplicationUtils.filterPdfFiles(selectedFiles);
+					this.pdfsToProcess = ApplicationUtils.filterPdfFiles(selectedFiles, true);
 					this.chosenPDF.setText(getSelectedPathsMessage(selectedFiles));
 					break;
 				case GUIConstants.XML:
