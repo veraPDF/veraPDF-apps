@@ -89,6 +89,7 @@ public class VeraAppConfigTest {
 		}
 		assertTrue(defaultInstance.equals(Applications.defaultConfig()));
 		assertFalse(defaultInstance == Applications.defaultConfig());
+		temp.delete();
 	}
 
 	/**

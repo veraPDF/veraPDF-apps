@@ -64,11 +64,13 @@ public class ProcessorImplProfileTest {
         assertTrue(directory.getValidationProfiles().size() > 0);
         for (ValidationProfile profile : directory.getValidationProfiles()) {
             File tmpProfile = File.createTempFile("verapdf", "profile");
-			tmpProfile.deleteOnExit();
             try (OutputStream os = new FileOutputStream(tmpProfile)) {
                 Profiles.profileToXml(profile, os, false, false);
                 testWithProfileFile(profile.getPDFAFlavour(), tmpProfile);
             }
+            if (!tmpProfile.delete()) {
+            	tmpProfile.deleteOnExit();
+			}
         }
     }
 

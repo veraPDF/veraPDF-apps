@@ -182,7 +182,8 @@ public class VeraCliProfileOptionTest {
                 .parse(new String[] { "-p", testFile.getAbsolutePath(), "--format", "text", "-h" });
         assertFalse(parser.getProfileFile() == VeraCliArgParser.DEFAULT_ARGS
                 .getProfileFile());
-}
+        testFile.delete();
+    }
 
     /**
      * Test method for
@@ -207,6 +208,7 @@ public class VeraCliProfileOptionTest {
                 .parse(new String[] { "--profile", testFile.getAbsolutePath(), "--format", "xml", "-h" });
         assertFalse(parser.getProfileFile() == VeraCliArgParser.DEFAULT_ARGS
                 .getProfileFile());
+        testFile.delete();
     }
 
 }
