@@ -17,13 +17,7 @@
  */
 package org.verapdf.cli;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -49,7 +43,7 @@ import org.verapdf.processor.reports.ItemDetails;
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
  */
-final class VeraPdfCliProcessor {
+final class VeraPdfCliProcessor implements Closeable {
 	private static final Logger logger = Logger.getLogger(VeraPdfCliProcessor.class.getCanonicalName());
 
 	private final ConfigManager configManager;
@@ -213,6 +207,9 @@ final class VeraPdfCliProcessor {
 		} catch (IOException excep) {
 			logger.log(Level.FINE, "Exception raised closing temporary policy file.", excep);
 		}
+		if (!tempPolicyResult.delete()) {
+			tempPolicyResult.deleteOnExit();
+		}
 	}
 
 	private String constructReportPath(final String itemName) {
@@ -255,5 +252,12 @@ final class VeraPdfCliProcessor {
 			this.appendData = true;
 		}
 		return reportPath;
+	}
+
+	@Override
+	public void close() {
+		if (this.tempMrrFile != null && !this.tempMrrFile.delete()) {
+			this.tempMrrFile.deleteOnExit();
+		}
 	}
 }

@@ -82,9 +82,8 @@ public final class VeraPdfCli {
 		}
 		messagesFromParser(cliArgParser);
 		if (isProcess(cliArgParser)) {
-			try {
-				VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser,
-						configManager);
+			try (VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser,
+						configManager)) {
 				if (args.length == 0)
 					jCommander.usage();
 				// FIXME: trap policy IO Exception (deliberately left un-caught
