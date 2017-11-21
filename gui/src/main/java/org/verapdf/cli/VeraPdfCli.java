@@ -125,9 +125,9 @@ public final class VeraPdfCli {
 		EnumSet<PDFAFlavour> flavs = EnumSet.copyOf(PROFILES.getPDFAFlavours());
 		for (PDFAFlavour flav : flavs) {
 			ValidationProfile profile = PROFILES.getValidationProfileByFlavour(flav);
-			System.out.format("  %s - %s", profile.getPDFAFlavour().getId(), profile.getDetails().getName()); //$NON-NLS-1$
+			System.out.format("  %s - %s", profile.getPDFAFlavour().getId(), profile.getDetails().getName());//$NON-NLS-1$
+			System.out.println();
 		}
-		System.out.println();
 	}
 
 	private static void showVersionInfo(final boolean isVerbose) {
