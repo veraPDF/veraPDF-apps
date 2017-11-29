@@ -148,12 +148,14 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 		this.xmlReport = File.createTempFile("veraPDF-tempXMLReport", ".xml"); //$NON-NLS-1$ //$NON-NLS-2$
 		this.xmlReport.deleteOnExit();
 		File tempPolicyResult = File.createTempFile("policyResult", "veraPDF"); //$NON-NLS-1$ //$NON-NLS-2$
-		tempPolicyResult.deleteOnExit();
 		try (InputStream mrrIs = new FileInputStream(tempMrrFile);
 				OutputStream policyResultOs = new FileOutputStream(tempPolicyResult);
 				OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
 			PolicyChecker.applyPolicy(this.policy, mrrIs, policyResultOs);
 			PolicyChecker.insertPolicyReport(tempPolicyResult, tempMrrFile, mrrReport);
+		}
+		if (!tempPolicyResult.delete()) {
+			tempPolicyResult.deleteOnExit();
 		}
 	}
 
