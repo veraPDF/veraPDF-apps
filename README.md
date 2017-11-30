@@ -9,6 +9,11 @@ veraPDF-apps
 [![CodeCov Coverage](https://img.shields.io/codecov/c/github/veraPDF/veraPDF-apps.svg)](https://codecov.io/gh/veraPDF/veraPDF-apps/ "CodeCov coverage")
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/881d40fed7b54552839a347575e3ad80)](https://www.codacy.com/app/carlwilson/veraPDF-apps?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=veraPDF/veraPDF-apps&amp;utm_campaign=Badge_Grade)
 
+[![GitHub issues](https://img.shields.io/github/issues/veraPDF/veraPDF-apps.svg)](https://github.com/veraPDF/veraPDF-apps/issues "Open issues on GitHub")
+[![GitHub issues](https://img.shields.io/github/issues-closed/veraPDF/veraPDF-apps.svg)](https://github.com/veraPDF/veraPDF-apps/issues-closed "Open issues on GitHub")
+[![GitHub issues](https://img.shields.io/github/issues-pr/veraPDF/veraPDF-apps.svg)](https://github.com/veraPDF/veraPDF-apps/issues-pr "Open issues on GitHub")
+[![GitHub issues](https://img.shields.io/github/issues-pr-closed/veraPDF/veraPDF-apps.svg)](https://github.com/veraPDF/veraPDF-apps/issues-pr-closed "Open issues on GitHub")
+
 Licensing
 ---------
 The veraPDF PDF/A Validation Library is dual-licensed, see:
