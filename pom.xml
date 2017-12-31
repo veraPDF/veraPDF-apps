@@ -28,12 +28,12 @@
   <parent>
     <artifactId>verapdf-parent</artifactId>
     <groupId>org.verapdf</groupId>
-    <version>1.4.1</version>
+    <version>1.12.2</version>
   </parent>
 
   <groupId>org.verapdf</groupId>
   <artifactId>verapdf-apps</artifactId>
-  <version>1.10.0</version>
+  <version>1.11.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>veraPDF PDF/A Validation Applications</name>
@@ -72,10 +72,9 @@
   <properties>
     <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
     <sonar.language>java</sonar.language>
-    <maven.failsafe.version>2.18.1</maven.failsafe.version>
-    <verapdf.library.version>[1.10.0,1.11.0)</verapdf.library.version>
-    <verapdf.pdfbox.validation.version>[1.10.0,1.11.0)</verapdf.pdfbox.validation.version>
-    <verapdf.validation.version>[1.10.0,1.11.0)</verapdf.validation.version>
+    <verapdf.library.version>[1.11.0,1.12.0)</verapdf.library.version>
+    <verapdf.pdfbox.validation.version>[1.11.0,1.12.0)</verapdf.pdfbox.validation.version>
+    <verapdf.validation.version>[1.11.0,1.12.0)</verapdf.validation.version>
   </properties>
 
   <dependencyManagement>
@@ -84,13 +83,13 @@
       <dependency>
         <groupId>com.beust</groupId>
         <artifactId>jcommander</artifactId>
-        <version>1.48</version>
+        <version>1.69</version>
       </dependency>
 
       <dependency>
         <groupId>nl.jqno.equalsverifier</groupId>
         <artifactId>equalsverifier</artifactId>
-        <version>1.5.1</version>
+        <version>1.7.8</version>
         <scope>test</scope>
       </dependency>
 
@@ -132,7 +131,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.4</version>
         <configuration>
           <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
           <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
@@ -155,7 +153,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.3</version>
         <configuration>
           <show>public</show>
         </configuration>
@@ -172,7 +169,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-dependency-plugin</artifactId>
-            <version>2.10</version>
+            <version>3.0.2</version>
             <executions>
               <execution>
                 <id>sources-dependencies</id>
@@ -234,7 +231,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>3.0.0</version>
             <executions>
               <execution>
                 <id>src-vera</id>
