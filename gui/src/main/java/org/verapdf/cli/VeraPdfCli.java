@@ -17,10 +17,14 @@
  */
 package org.verapdf.cli;
 
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,6 +51,7 @@ public final class VeraPdfCli {
 	private static final int MEGABYTE = (1024 * 1024);
 	private static final String FLAVOURS_HEADING = CliConstants.APP_NAME + " supported PDF/A profiles:"; //$NON-NLS-1$
 	private static final ProfileDirectory PROFILES = Profiles.getVeraProfileDirectory();
+	private static final String EXIT = "q";
 
 	private VeraPdfCli() {
 		// disable default constructor
@@ -55,9 +60,8 @@ public final class VeraPdfCli {
 	/**
 	 * Main CLI entry point, process the command line arguments
 	 *
-	 * @param args
-	 *            Java.lang.String array of command line args, to be processed
-	 *            using Apache commons CLI.
+	 * @param args Java.lang.String array of command line args, to be processed
+	 *             using Apache commons CLI.
 	 */
 	public static void main(final String[] args) throws VeraPDFException {
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
@@ -71,24 +75,45 @@ public final class VeraPdfCli {
 			jCommander.parse(args);
 		} catch (ParameterException e) {
 			System.err.println(e.getMessage());
-			showVersionInfo(cliArgParser.isVerbose());
-			jCommander.usage();
-			System.exit(1);
+			displayHelpAndExit(cliArgParser, jCommander, 1);
 		}
 		if (cliArgParser.isHelp()) {
-			showVersionInfo(cliArgParser.isVerbose());
-			jCommander.usage();
-			System.exit(0);
+			displayHelpAndExit(cliArgParser, jCommander, 0);
 		}
 		messagesFromParser(cliArgParser);
 		if (isProcess(cliArgParser)) {
 			try (VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser,
-						configManager)) {
+					configManager)) {
 				if (args.length == 0)
 					jCommander.usage();
 				// FIXME: trap policy IO Exception (deliberately left un-caught
 				// for development)
+
+				//todo: server mode
 				processor.processPaths(cliArgParser.getPdfPaths());
+				File tempFile = processor.getTempFile();
+				if (tempFile != null) {
+					System.out.println(tempFile.getAbsoluteFile());
+				}
+
+				if (cliArgParser.isServerMode()) {
+					Scanner scanner = new Scanner(System.in);
+					while (scanner.hasNextLine()) {
+						String path = scanner.nextLine();
+						if (path != null) {
+							if (path.equals(EXIT)) {
+								break;
+							} else {
+								List<String> pathes = new ArrayList<>();
+								pathes.add(path);
+								cliArgParser.setPdfPaths(pathes);
+								processor.processPaths(cliArgParser.getPdfPaths());
+
+								System.out.println(processor.getTempFile().getAbsolutePath());
+							}
+						}
+					}
+				}
 			} catch (OutOfMemoryError oome) {
 				final String message = "The JVM appears to have run out of memory"; //$NON-NLS-1$
 				logger.log(Level.WARNING, message, oome);
@@ -107,6 +132,12 @@ public final class VeraPdfCli {
 				System.exit(1);
 			}
 		}
+	}
+
+	public static void displayHelpAndExit(VeraCliArgParser cliArgParser, JCommander jCommander, int i) {
+		showVersionInfo(cliArgParser.isVerbose());
+		jCommander.usage();
+		System.exit(i);
 	}
 
 	private static void messagesFromParser(final VeraCliArgParser parser) {

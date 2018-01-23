@@ -79,6 +79,7 @@ public class VeraCliArgParser {
 	final static String FORMAT = OPTION_SEP + "format"; //$NON-NLS-1$
 	final static String RECURSE_FLAG = FLAG_SEP + "r"; //$NON-NLS-1$
 	final static String RECURSE = OPTION_SEP + "recurse"; //$NON-NLS-1$
+	final static String SERVER_MODE = OPTION_SEP + "servermode"; //$NON-NLS-1$
 	final static String VERBOSE_FLAG = FLAG_SEP + "v"; //$NON-NLS-1$
 	final static String VERBOSE = OPTION_SEP + "verbose"; //$NON-NLS-1$
 	final static String MAX_FAILURES_DISPLAYED = OPTION_SEP + "maxfailuresdisplayed"; //$NON-NLS-1$
@@ -129,6 +130,9 @@ public class VeraCliArgParser {
 			RECURSE }, description = "Recurses through directories. Only files with .pdf extensions are processed.")
 	private boolean isRecurse = false;
 
+	@Parameter(names = {SERVER_MODE}, description = "Run veraPDF in server mode", hidden = true)
+	private boolean isServerMode = false;
+
 	@Parameter(names = { VERBOSE_FLAG, VERBOSE }, description = "Adds failed test information to text output.")
 	private boolean isVerbose = false;
 
@@ -149,7 +153,7 @@ public class VeraCliArgParser {
 	private String saveFolder = ""; //$NON-NLS-1$
 
 	@Parameter(names = {
-			POLICY_FILE }, description = "Select a policy schematron or XSL file.", validateWith = FileValidator.class)
+			POLICY_FILE}, description = "Select a policy schematron or XSL file.", validateWith = FileValidator.class)
 	private File policyFile;
 
 	// @Parameter(names = { PROFILES_WIKI_FLAG,
@@ -239,6 +243,14 @@ public class VeraCliArgParser {
 		return this.saveFolder;
 	}
 
+	/**
+	 *
+	 * @param pdfPaths list of pdf files paths
+	 */
+	public void setPdfPaths(List<String> pdfPaths) {
+		this.pdfPaths = pdfPaths;
+	}
+
 	// /**
 	// * @return the policy profile path
 	// */
@@ -251,6 +263,13 @@ public class VeraCliArgParser {
 	 */
 	public boolean isRecurse() {
 		return this.isRecurse;
+	}
+
+	/**
+	 * @return true if server mode enabled
+	 */
+	public boolean isServerMode() {
+		return this.isServerMode;
 	}
 
 	/**
@@ -311,6 +330,10 @@ public class VeraCliArgParser {
 	 */
 	public List<String> getPdfPaths() {
 		return this.pdfPaths;
+	}
+
+	public static String getServerModeFlagName() {
+		return SERVER_MODE;
 	}
 
 	// /**
