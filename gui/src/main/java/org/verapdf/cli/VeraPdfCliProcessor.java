@@ -59,7 +59,7 @@ final class VeraPdfCliProcessor implements Closeable {
 	private boolean appendData = true;
 	private String baseDirectory = ""; //$NON-NLS-1$
 	private OutputStream os;
-	File tempFile;
+	private File tempFile;
 
 	private VeraPdfCliProcessor(final VeraCliArgParser args, ConfigManager configManager) throws VeraPDFException {
 		this.configManager = configManager;

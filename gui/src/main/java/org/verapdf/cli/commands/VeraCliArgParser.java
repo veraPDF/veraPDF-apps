@@ -99,6 +99,8 @@ public class VeraCliArgParser {
 	// "overwriteReportFile";
 	final static String VALID_OFF_FLAG = FLAG_SEP + "o"; //$NON-NLS-1$
 	final static String VALID_OFF = OPTION_SEP + "off"; //$NON-NLS-1$
+	final static String NUMBER_OF_PROCESSES_FLAG = OPTION_SEP + "processes"; //$NON-NLS-1$
+	final static String VERA_PATH_FLAG = OPTION_SEP + "verapath";
 
 	@Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
 	private boolean help = false;
@@ -130,7 +132,7 @@ public class VeraCliArgParser {
 			RECURSE }, description = "Recurses through directories. Only files with .pdf extensions are processed.")
 	private boolean isRecurse = false;
 
-	@Parameter(names = {SERVER_MODE}, description = "Run veraPDF in server mode", hidden = true)
+	@Parameter(names = {SERVER_MODE}, description = "Run veraPDF in server mode. Changes output and ignore " + NUMBER_OF_PROCESSES_FLAG + "argument.", hidden = true)
 	private boolean isServerMode = false;
 
 	@Parameter(names = { VERBOSE_FLAG, VERBOSE }, description = "Adds failed test information to text output.")
@@ -153,7 +155,7 @@ public class VeraCliArgParser {
 	private String saveFolder = ""; //$NON-NLS-1$
 
 	@Parameter(names = {
-			POLICY_FILE}, description = "Select a policy schematron or XSL file.", validateWith = FileValidator.class)
+			POLICY_FILE }, description = "Select a policy schematron or XSL file.", validateWith = FileValidator.class)
 	private File policyFile;
 
 	// @Parameter(names = { PROFILES_WIKI_FLAG,
@@ -183,6 +185,12 @@ public class VeraCliArgParser {
 
 	@Parameter(names = { VALID_OFF_FLAG, VALID_OFF }, description = "Turns off PDF/A validation")
 	private boolean isValidationOff = false;
+
+	@Parameter(names = {NUMBER_OF_PROCESSES_FLAG}, description = "The Number of processes which will be used.")
+	private int numberOfProcesses = 1;
+
+	@Parameter(names = {VERA_PATH_FLAG}, description = "Path to veraPDF Cli", hidden = true, validateWith = FileValidator.class)
+	private File veraCLIPath;
 
 	@Parameter(description = "FILES")
 	private List<String> pdfPaths = new ArrayList<>();
@@ -241,14 +249,6 @@ public class VeraCliArgParser {
 	 */
 	public String saveFolder() {
 		return this.saveFolder;
-	}
-
-	/**
-	 *
-	 * @param pdfPaths list of pdf files paths
-	 */
-	public void setPdfPaths(List<String> pdfPaths) {
-		this.pdfPaths = pdfPaths;
 	}
 
 	// /**
@@ -325,15 +325,19 @@ public class VeraCliArgParser {
 		return this.policyFile != null;
 	}
 
+	public File getVeraCLIPath() {
+		return veraCLIPath;
+	}
+
+	public int getNumberOfProcesses() {
+		return numberOfProcesses;
+	}
+
 	/**
 	 * @return the list of file paths
 	 */
 	public List<String> getPdfPaths() {
 		return this.pdfPaths;
-	}
-
-	public static String getServerModeFlagName() {
-		return SERVER_MODE;
 	}
 
 	// /**
@@ -482,5 +486,53 @@ public class VeraCliArgParser {
 		if (parser.fixMetadata())
 			retVal = ProcessType.addProcess(retVal, ProcessType.FIX);
 		return retVal;
+	}
+
+	public static List<String> getBaseVeraPDFParameters(VeraCliArgParser cliArgParser) {
+		List<String> veraPDFParameters = new ArrayList<>();
+
+		veraPDFParameters.add("--servermode");
+		if (cliArgParser.extractFeatures()) {
+			veraPDFParameters.add("-x");
+		}
+		if (cliArgParser.fixMetadata()) {
+			veraPDFParameters.add("--fixmetadata");
+		}
+		veraPDFParameters.add("--flavour");
+		veraPDFParameters.add(String.valueOf(cliArgParser.getFlavour()));
+		veraPDFParameters.add("--format");
+		veraPDFParameters.add(String.valueOf(cliArgParser.getFormat()));
+		if (cliArgParser.listProfiles()) {
+			veraPDFParameters.add("--list");
+		}
+		veraPDFParameters.add("--maxfailures");
+		veraPDFParameters.add(String.valueOf(cliArgParser.maxFailures()));
+		veraPDFParameters.add("--maxfailuresdisplayed");
+		veraPDFParameters.add(String.valueOf(cliArgParser.maxFailuresDisplayed()));
+		if (cliArgParser.isValidationOff()) {
+			veraPDFParameters.add("--off");
+		}
+		File policyFile = cliArgParser.getPolicyFile();
+		if (policyFile != null) {
+			veraPDFParameters.add("--policyfile");
+			veraPDFParameters.add(policyFile.getAbsolutePath());
+		}
+		veraPDFParameters.add("--prefix");
+		veraPDFParameters.add(cliArgParser.prefix());
+		File profileFile = cliArgParser.getProfileFile();
+		if (profileFile!=null) {
+			veraPDFParameters.add("-p");
+			veraPDFParameters.add(profileFile.getAbsolutePath());
+		}
+		veraPDFParameters.add("--savefolder");
+		veraPDFParameters.add(cliArgParser.saveFolder());
+		if (cliArgParser.logPassed()) {
+			veraPDFParameters.add("--success");
+		}
+		if (cliArgParser.isVerbose()) {
+			veraPDFParameters.add("--verbose");
+		}
+
+		return veraPDFParameters;
 	}
 }
