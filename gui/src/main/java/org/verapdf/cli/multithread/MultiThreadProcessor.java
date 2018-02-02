@@ -1,6 +1,5 @@
 package org.verapdf.cli.multithread;
 
-import javafx.application.Application;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.cli.commands.VeraCliArgParser;
