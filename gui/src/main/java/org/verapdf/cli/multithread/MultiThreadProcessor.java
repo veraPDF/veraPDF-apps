@@ -39,19 +39,7 @@ public class MultiThreadProcessor {
         this.os = System.out;
         this.errorStream = System.err;
 
-        File veraPDFPath = cliArgParser.getVeraCLIPath();
-        if (veraPDFPath == null || !veraPDFPath.isFile()) {
-            try {
-                this.veraPDFStarterPath = Applications.getVeraScriptFile();
-            } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "Can't obtain veraPDF CLI script path", e);
-            }
-        } else {
-            this.veraPDFStarterPath = veraPDFPath;
-        }
-        if (this.veraPDFStarterPath == null || !this.veraPDFStarterPath.isFile()) {
-            throw new IllegalStateException("Can't obtain executable veraPDF CLI script path");
-        }
+        this.veraPDFStarterPath = getVeraPdfStarterFile(cliArgParser);
         this.veraPDFParameters = VeraCliArgParser.getBaseVeraPDFParameters(cliArgParser);
         this.filesToProcess = new ConcurrentLinkedQueue<>();
         this.filesToProcess.addAll(getFiles(cliArgParser.getPdfPaths(), cliArgParser.isRecurse()));
@@ -60,6 +48,21 @@ public class MultiThreadProcessor {
         ReportWriter.OutputFormat outputFormat = getOutputFormat(cliArgParser.getFormat().getOption());
         this.reportWriter = ReportWriter.newInstance(os, outputFormat, errorStream);
         this.processingHandler = new MultiThreadProcessingHandlerImpl(reportWriter);
+    }
+
+    private File getVeraPdfStarterFile(VeraCliArgParser cliArgParser) {
+        File veraPDFPath = cliArgParser.getVeraCLIPath();
+        if (veraPDFPath == null || !veraPDFPath.isFile()) {
+            try {
+                veraPDFPath = Applications.getVeraScriptFile();
+                if (veraPDFPath == null) {
+                    throw new IllegalStateException("Can't obtain executable veraPDF CLI script path");
+                }
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Can't obtain veraPDF CLI script path", e);
+            }
+        }
+        return veraPDFPath;
     }
 
     private ReportWriter.OutputFormat getOutputFormat(String outputFormat) {
