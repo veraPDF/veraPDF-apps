@@ -106,9 +106,7 @@ public final class VeraPdfCli {
 							} else {
 								List<String> pathes = new ArrayList<>();
 								pathes.add(path);
-								cliArgParser.setPdfPaths(pathes);
-								processor.processPaths(cliArgParser.getPdfPaths());
-
+								processor.processPaths(pathes);
 								System.out.println(processor.getTempFile().getAbsolutePath());
 							}
 						}
