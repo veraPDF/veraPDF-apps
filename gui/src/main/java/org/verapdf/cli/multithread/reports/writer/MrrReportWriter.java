@@ -34,7 +34,6 @@ public class MrrReportWriter extends AbstractXmlReportWriter {
 				super.printTag(reportFile, JOB_TAG, true);
 			}
 
-			merge(result.getLogFile(), errorStream);
 			deleteTemp(result);
 
 		} catch (Exception e) {

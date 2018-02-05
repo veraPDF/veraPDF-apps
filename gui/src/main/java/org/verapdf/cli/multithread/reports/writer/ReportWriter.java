@@ -41,7 +41,6 @@ public abstract class ReportWriter {
 
 	protected void deleteTemp(BaseCliRunner.ResultStructure result) {
 		deleteFile(result.getReportFile());
-		deleteFile(result.getLogFile());
 	}
 
 	private void deleteFile(File file) {

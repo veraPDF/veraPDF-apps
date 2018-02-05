@@ -7,6 +7,7 @@ import org.verapdf.cli.multithread.reports.MultiThreadProcessingHandler;
 import org.verapdf.cli.multithread.reports.MultiThreadProcessingHandlerImpl;
 import org.verapdf.cli.multithread.reports.writer.ReportWriter;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,8 +36,9 @@ public class MultiThreadProcessor {
     private boolean isFirstReport = true;
 
     private MultiThreadProcessor(VeraCliArgParser cliArgParser) {
-        this.os = System.out;
-        this.errorStream = System.err;
+        this.os = new BufferedOutputStream(System.out, 1024 * 512);
+
+        this.errorStream = new BufferedOutputStream(System.err, 512);
 
         this.veraPDFStarterPath = getVeraPdfStarterFile(cliArgParser);
         this.veraPDFParameters = VeraCliArgParser.getBaseVeraPDFParameters(cliArgParser);
@@ -103,4 +105,5 @@ public class MultiThreadProcessor {
             new Thread(veraPDFRunner).start();
         }
     }
+
 }

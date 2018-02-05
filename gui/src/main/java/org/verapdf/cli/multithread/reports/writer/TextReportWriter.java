@@ -12,7 +12,6 @@ public class TextReportWriter extends ReportWriter {
 	@Override
 	public void write(BaseCliRunner.ResultStructure result) {
 		merge(result.getReportFile(), os);
-		merge(result.getLogFile(), errorStream);
 		deleteTemp(result);
 	}
 

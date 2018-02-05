@@ -5,8 +5,6 @@ import org.verapdf.cli.VeraPdfCli;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -31,8 +29,6 @@ public class BaseCliRunner implements Runnable {
     private Scanner reportScanner;
 
     private MultiThreadProcessor multiThreadProcessor;
-
-    private File loggerFile;
 
     BaseCliRunner(MultiThreadProcessor multiThreadProcessor, String veraPDFStarterPath, List<String> veraPDFParameters, Queue<File> filesToProcess) {
         this.multiThreadProcessor = multiThreadProcessor;
@@ -59,9 +55,7 @@ public class BaseCliRunner implements Runnable {
         try {
             ProcessBuilder pb = new ProcessBuilder();
             pb.command(command);
-            Path loggerPath = Files.createTempFile("LOGGER", ".txt");
-            this.loggerFile = loggerPath.toFile();
-            pb.redirectError(loggerFile);
+            pb.redirectError(ProcessBuilder.Redirect.INHERIT);
 
             this.process = pb.start();
 
@@ -114,24 +108,18 @@ public class BaseCliRunner implements Runnable {
     }
 
     private ResultStructure getData() {
-        return new ResultStructure(new File(reportScanner.nextLine()), loggerFile);
+        return new ResultStructure(new File(reportScanner.nextLine()));
     }
 
     public static class ResultStructure {
         private File reportFile;
-        private File logFile;
 
-        ResultStructure(File reportFile, File logFile) {
+        ResultStructure(File reportFile) {
             this.reportFile = reportFile;
-            this.logFile = logFile;
         }
 
         public File getReportFile() {
             return reportFile;
-        }
-
-        public File getLogFile() {
-            return logFile;
         }
     }
 }

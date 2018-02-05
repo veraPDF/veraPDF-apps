@@ -37,7 +37,6 @@ public class XmlReportWriter extends AbstractXmlReportWriter {
 				printReport(reportFile);
 			}
 
-			merge(result.getLogFile(), errorStream);
 			deleteTemp(result);
 
 		} catch (Exception e) {
@@ -53,7 +52,7 @@ public class XmlReportWriter extends AbstractXmlReportWriter {
 	}
 
 	@Override
-	public void printFirstReport(File report) throws SAXException, IOException, XMLStreamException {
+	public void printFirstReport(File report) throws SAXException, IOException {
 		printTag(report, PROCESSOR_CONFIG_TAG, false);
 		printReport(report);
 	}
