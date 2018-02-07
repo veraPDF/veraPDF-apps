@@ -33,6 +33,7 @@ import javax.swing.SwingConstants;
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
 import org.verapdf.gui.utils.GUIConstants;
+import org.verapdf.pdfa.Foundries;
 
 /**
  * Panel with partners logo
@@ -83,7 +84,8 @@ class PartnersPanel extends JPanel {
 		add(this.preforma);
 
 		ReleaseDetails appDetails= Applications.getAppDetails();
-		String versionText = "Version: " + appDetails.getVersion();
+		String versionText = "Version: " + appDetails.getVersion()
+				+ ", Parser: " + Foundries.defaultInstance().getParserId();
 
 		this.version = new JLabel(versionText);
 
