@@ -52,6 +52,23 @@ public final class Applications {
 		assert (false);
 	}
 
+	// TODO: rewrite/refactor this method
+	public static File getVeraScriptFile() throws IOException {
+		String appHome = System.getProperty(APP_HOME_PROPERTY);
+		if (appHome != null) {
+			File user = new File(appHome);
+			File veraShell = new File(user, "verapdf");
+			if (veraShell.isFile()) {
+				return veraShell;
+			}
+			File veraBat = new File(user, "verapdf.bat");
+			if (veraBat.isFile()) {
+				return veraBat;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * @return the Application Release details for the GUI
 	 */

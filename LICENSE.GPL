@@ -627,8 +627,8 @@ possible use to the public, the best way to achieve this is to make it
 free software which everyone can redistribute and change under these terms.
 
   To do so, attach the following notices to the program.  It is safest
-to attach them to the start of each source file to most effectively
-state the exclusion of warranty; and each file should have at least
+to attach them to the start of each source outputFile to most effectively
+state the exclusion of warranty; and each outputFile should have at least
 the "copyright" line and a pointer to where the full notice is found.
 
     {one line to give the program's name and a brief idea of what it does.}
