@@ -29,10 +29,10 @@
 			</reference>
 		</rule>
         <rule id="6-1-11-t01" object="CosFileSpecification">
-			<description>A file specification dictionary, as defined in PDF 3.10.2, shall not contain the EF key</description>
+			<description>A outputFile specification dictionary, as defined in PDF 3.10.2, shall not contain the EF key</description>
 			<test>EF_size == 0</test>
 			<error>
-				<message>A file specification dictionary contains the EF key</message>
+				<message>A outputFile specification dictionary contains the EF key</message>
 			</error>
 			<reference>
 				<specification>ISO19005-1</specification>
@@ -44,10 +44,10 @@
 			</reference>
 		</rule>
         <rule id="6-1-11-t02" object="CosDocument">
-			<description>A file's name dictionary, as defined in PDF Reference 3.6.3, shall not contain the EmbeddedFiles key</description>
+			<description>A outputFile's name dictionary, as defined in PDF Reference 3.6.3, shall not contain the EmbeddedFiles key</description>
 			<test>EmbeddedFiles_size == 0</test>
 			<error>
-				<message>The document contains embedded files (EmbeddedFiles key is present in the file's name dictionary)</message>
+				<message>The document contains embedded files (EmbeddedFiles key is present in the outputFile's name dictionary)</message>
 			</error>
 			<reference>
 				<specification>ISO19005-1</specification>
@@ -150,10 +150,10 @@
             </reference>
         </rule>
         <rule id="6-1-12-t07" object="CosDocument">
-            <description>Maximum number of indirect objects in a PDF file is 8,388,607</description>
+            <description>Maximum number of indirect objects in a PDF outputFile is 8,388,607</description>
             <test>nrIndirects &lt;= 8388607</test>
             <error>
-                <message>Maximum number of indirect objects (8,388,607) in a PDF file exceeded</message>
+                <message>Maximum number of indirect objects (8,388,607) in a PDF outputFile exceeded</message>
             </error>
             <reference>
                 <specification>ISO19005-1</specification>
@@ -221,8 +221,8 @@
 			</reference>
 		</rule>
         <rule id="6-1-2-t01" object="CosDocument">
-			<description>The % character of the file header shall occur at byte offset 0 of the file. 
-			The first line of a PDF file is a header identifying the version of the PDF specification to which the file conforms</description>
+			<description>The % character of the outputFile header shall occur at byte offset 0 of the outputFile.
+			The first line of a PDF outputFile is a header identifying the version of the PDF specification to which the outputFile conforms</description>
 			<test>headerOffset == 0 &amp;&amp; /%PDF-\d\.\d/.test(header)</test>
 			<error>
 				<message>File header does not start at byte offset 0 or does not correctly identify the version of the PDF document</message>
@@ -237,11 +237,11 @@
 			</reference>
 		</rule>
         <rule id="6-1-2-t02" object="CosDocument">
-			<description>The file header line shall be immediately followed by a comment consisting of a % character followed by at 
+			<description>The outputFile header line shall be immediately followed by a comment consisting of a % character followed by at
 			least four characters, each of whose encoded byte values shall have a decimal value greater than 127</description>
 			<test>headerByte1 &gt; 127 &amp;&amp; headerByte2 &gt; 127 &amp;&amp; headerByte3 &gt; 127 &amp;&amp; headerByte4 &gt; 127 </test>
 			<error>
-				<message>Binary comment in the file header is missing or does not comply PDF/A requirements</message>
+				<message>Binary comment in the outputFile header is missing or does not comply PDF/A requirements</message>
 			</error>
 			<reference>
 				<specification>ISO19005-1</specification>
@@ -249,8 +249,8 @@
 			</reference>
 		</rule>
         <rule id="6-1-3-t01" object="CosDocument">
-			<description>The file trailer dictionary shall contain the ID keyword. The file trailer referred to is either the last trailer dictionary in a PDF file,
-			as described in PDF Reference 3.4.4 and 3.4.5, or the first page trailer in a linearized PDF file, as described in PDF Reference F.2</description>
+			<description>The outputFile trailer dictionary shall contain the ID keyword. The outputFile trailer referred to is either the last trailer dictionary in a PDF outputFile,
+			as described in PDF Reference 3.4.4 and 3.4.5, or the first page trailer in a linearized PDF outputFile, as described in PDF Reference F.2</description>
 			<test>(isLinearized == true &amp;&amp; firstPageID != null) || ((isLinearized != true) &amp;&amp; lastID != null)</test>
 			<error>
 				<message>Missing ID in the document trailer</message>
@@ -272,10 +272,10 @@
 			</reference>
 		</rule>
         <rule id="6-1-3-t03" object="CosDocument">
-			<description>No data shall follow the last end-of-file marker except a single optional end-of-line marker.</description>
+			<description>No data shall follow the last end-of-outputFile marker except a single optional end-of-line marker.</description>
 			<test>postEOFDataSize == 0</test>
 			<error>
-				<message>Data is present after the last end-of-file marker</message>
+				<message>Data is present after the last end-of-outputFile marker</message>
 			</error>
 			<reference>
 				<specification>ISO19005-1:2005</specification>
@@ -339,7 +339,7 @@
 			</reference>
 		</rule>
         <rule id="6-1-7-t01" object="CosStream">
-			<description>The value of the Length key specified in the stream dictionary shall match the number of bytes in the file
+			<description>The value of the Length key specified in the stream dictionary shall match the number of bytes in the outputFile
 			following the LINE FEED character after the stream keyword and preceding the EOL marker before the endstream keyword</description>
 			<test>isLengthCorrect</test>
 			<error>
@@ -403,7 +403,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-2-t01" object="ICCOutputProfile">
-			<description>A PDF/A-1 OutputIntent is an OutputIntent dictionary, as defined by PDF Reference 9.10.4, that is included in the file's OutputIntents 
+			<description>A PDF/A-1 OutputIntent is an OutputIntent dictionary, as defined by PDF Reference 9.10.4, that is included in the outputFile's OutputIntents
 	array and has GTS_PDFA1 as the value of its S key and a valid ICC profile stream as the value its DestOutputProfile key</description>
 			<test>(deviceClass == "prtr" || deviceClass == "mntr") &amp;&amp; (colorSpace == "RGB " || colorSpace == "CMYK" || colorSpace == "GRAY") &amp;&amp; version &lt; 3.0</test>
 			<error>
@@ -419,7 +419,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-2-t02" object="PDOutputIntent">
-			<description>If a file's OutputIntents array contains more than one entry, then all entries that contain a DestOutputProfile
+			<description>If a outputFile's OutputIntents array contains more than one entry, then all entries that contain a DestOutputProfile
 			key shall have as the value of that key the same indirect object, which shall be a valid ICC profile stream</description>
 			<test>destOutputProfileIndirect == null || gOutputProfileIndirect == null || destOutputProfileIndirect == gOutputProfileIndirect</test>
 			<error>
@@ -447,7 +447,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-3-t02" object="PDDeviceRGB">
-			<description>DeviceRGB may be used only if the file has a PDF/A-1 OutputIntent that uses an RGB colour space</description>
+			<description>DeviceRGB may be used only if the outputFile has a PDF/A-1 OutputIntent that uses an RGB colour space</description>
 			<test>gOutputCS != null &amp;&amp; gOutputCS == "RGB "</test>
 			<error>
 				<message>DeviceRGB colour space is used without RGB output intent profile</message>
@@ -458,7 +458,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-3-t03" object="PDDeviceCMYK">
-			<description>DeviceCMYK may be used only if the file has a PDF/A-1 OutputIntent that uses a CMYK colour space</description>
+			<description>DeviceCMYK may be used only if the outputFile has a PDF/A-1 OutputIntent that uses a CMYK colour space</description>
 			<test>gOutputCS != null &amp;&amp; gOutputCS == "CMYK"</test>
 			<error>
 				<message>DeviceCMYK colour space is used without CMYK output intent profile</message>
@@ -469,7 +469,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-3-t04" object="PDDeviceGray">
-			<description>If an uncalibrated colour space is used in a file then that file shall contain a PDF/A-1 OutputIntent, as defined in 6.2.2</description>
+			<description>If an uncalibrated colour space is used in a outputFile then that outputFile shall contain a PDF/A-1 OutputIntent, as defined in 6.2.2</description>
 			<test>gOutputCS != null</test>
 			<error>
 				<message>DeviceGray colour space is used without output intent profile</message>
@@ -546,7 +546,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-6-t01" object="PDXForm">
-			<description>A conforming file shall not contain any reference XObjects</description>
+			<description>A conforming outputFile shall not contain any reference XObjects</description>
 			<test>Ref_size == 0</test>
 			<error>
 				<message>The document contains a reference XObject (Ref key in the form XObject dictionary)</message>
@@ -557,7 +557,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-7-t01" object="PDXObject">
-			<description>A conforming file shall not contain any PostScript XObjects</description>
+			<description>A conforming outputFile shall not contain any PostScript XObjects</description>
 			<test>Subtype != "PS"</test>
 			<error>
 				<message>The document contains a PostScript XObject</message>
@@ -602,7 +602,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-2-t01" object="PDFont">
-			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5. 
+			<description>All fonts used in a conforming outputFile shall conform to the font specifications defined in PDF Reference 5.5.
 	Type - name - (Required) The type of PDF object that this dictionary describes; must be Font for a font dictionary</description>
 			<test>Type == "Font"</test>
 			<error>
@@ -630,7 +630,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-2-t02" object="PDFont">
-			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5. 
+			<description>All fonts used in a conforming outputFile shall conform to the font specifications defined in PDF Reference 5.5.
 			Subtype - name - (Required) The type of font; must be "Type1" for Type 1 fonts, "MMType1" for multiple master fonts, "TrueType" for TrueType fonts
 			"Type3" for Type 3 fonts, "Type0" for Type 0 fonts and "CIDFontType0" or "CIDFontType2" for CID fonts</description>
 			<test>Subtype == "Type1" || Subtype == "MMType1" || Subtype == "TrueType" || Subtype == "Type3" || Subtype == "Type0" 
@@ -660,7 +660,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-2-t03" object="PDFont">
-			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5. 
+			<description>All fonts used in a conforming outputFile shall conform to the font specifications defined in PDF Reference 5.5.
 			BaseFont - name - (Required) The PostScript name of the font</description>
 			<test>Subtype == "Type3" || fontName != null</test>
 			<error>
@@ -688,7 +688,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-2-t04" object="PDSimpleFont">
-			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5. 
+			<description>All fonts used in a conforming outputFile shall conform to the font specifications defined in PDF Reference 5.5.
 			FirstChar - integer - (Required except for the standard 14 fonts) The first character code defined in the font's Widths array</description>
 			<test>isStandard == true || FirstChar != null</test>
 			<error>
@@ -708,7 +708,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-2-t05" object="PDSimpleFont">
-			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5. 
+			<description>All fonts used in a conforming outputFile shall conform to the font specifications defined in PDF Reference 5.5.
 			FirstChar - integer - (Required except for the standard 14 fonts) The first character code defined in the font's Widths array</description>
 			<test>isStandard == true || LastChar != null</test>
 			<error>
@@ -728,7 +728,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-2-t06" object="PDSimpleFont">
-			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5. 
+			<description>All fonts used in a conforming outputFile shall conform to the font specifications defined in PDF Reference 5.5.
 			Widths - array - (Required except for the standard 14 fonts; indirect reference preferred) An array of (LastChar − FirstChar + 1) widths</description>
 			<test>isStandard == true || (Widths_size != null &amp;&amp; Widths_size == LastChar - FirstChar + 1)</test>
 			<error>
@@ -748,7 +748,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-3-t01" object="PDType0Font">
-			<description>For any given composite (Type 0) font referenced within a conforming file, the CIDSystemInfo entries of its 
+			<description>For any given composite (Type 0) font referenced within a conforming outputFile, the CIDSystemInfo entries of its
 			CIDFont and CMap dictionaries shall be compatible</description>
 			<test>areRegistryOrderingCompatible == true</test>
 			<error>
@@ -780,7 +780,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-3-t03" object="PDCMap">
-			<description>All CMaps used within a conforming file, except Identity-H and Identity-V, shall be embedded in that file as described in PDF Reference 5.6.4</description>
+			<description>All CMaps used within a conforming outputFile, except Identity-H and Identity-V, shall be embedded in that outputFile as described in PDF Reference 5.6.4</description>
 			<test>CMapName == "Identity-H" || CMapName == "Identity-V" || embeddedFile_size == 1</test>
 			<error>
 				<message>A CMap is different from "Identity-H" or "Identity-V" and is not embedded</message>
@@ -806,7 +806,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-4-t01" object="PDFont">
-			<description>The font programs for all fonts used within a conforming file shall be embedded within that file, as defined in PDF Reference 5.8, 
+			<description>The font programs for all fonts used within a conforming outputFile shall be embedded within that outputFile, as defined in PDF Reference 5.8,
 			except when the fonts are used exclusively with text rendering mode 3</description>
 			<test>Subtype == "Type3" || Subtype == "Type0" || fontFile_size == 1</test>
 			<error>
@@ -822,7 +822,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-5-t01" object="Glyph">
-			<description>Embedded font programs shall define all font glyphs referenced for rendering with a conforming file</description>
+			<description>Embedded font programs shall define all font glyphs referenced for rendering with a conforming outputFile</description>
 			<test>isGlyphPresent == true</test>
 			<error>
 				<message>Not all glyphs referenced for rendering are present in the embedded font program</message>
@@ -833,7 +833,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-5-t02" object="PDType1Font">
-			<description>For all Type 1 font subsets referenced within a conforming file, the font descriptor dictionary shall include a CharSet string
+			<description>For all Type 1 font subsets referenced within a conforming outputFile, the font descriptor dictionary shall include a CharSet string
 			listing the character names defined in the font subset, as described in PDF Reference Table 5.18</description>
 			<test>fontName.search(/[A-Z]{6}\+/) != 0 || CharSet != null</test>
 			<error>
@@ -849,8 +849,8 @@
 			</reference>
 		</rule>
         <rule id="6-3-5-t03" object="PDCIDFont">
-			<description>For all CIDFont subsets referenced within a conforming file, the font descriptor dictionary shall include a
-			CIDSet stream identifying which CIDs are present in the embedded CIDFont file, as described in PDF Reference Table 5.20</description>
+			<description>For all CIDFont subsets referenced within a conforming outputFile, the font descriptor dictionary shall include a
+			CIDSet stream identifying which CIDs are present in the embedded CIDFont outputFile, as described in PDF Reference Table 5.20</description>
 			<test>fontName.search(/[A-Z]{6}\+/) != 0 || CIDSet_size == 1</test>
 			<error>
 				<message>A CID Font subset does not define CIDSet entry in its Descriptor dictionary</message>
@@ -865,7 +865,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-6-t01" object="Glyph">
-			<description>For every font embedded in a conforming file, the glyph width information stored in the Widths entry of the 
+			<description>For every font embedded in a conforming outputFile, the glyph width information stored in the Widths entry of the
 			font dictionary and in the embedded font program shall be consistent</description>
 			<test>isWidthConsistent == true</test>
 			<error>
@@ -1125,7 +1125,7 @@
 			</reference>
 		</rule>
         <rule id="6-7-11-t01" object="XMPMainPackage">
-			<description>The PDF/A version and conformance level of a file shall be specified using the PDF/A Identification extension schema.</description>
+			<description>The PDF/A version and conformance level of a outputFile shall be specified using the PDF/A Identification extension schema.</description>
 			<test>ispdfaidNSPresent</test>
 			<error>
 				<message>The document metadata stream doesn't contains PDF/A Identification Schema.</message>
@@ -1136,10 +1136,10 @@
 			</reference>
 		</rule>
         <rule id="6-7-11-t02" object="PDFAIdSchema">
-			<description>The value of pdfaid:part shall be the part number of ISO 19005 to which the file conforms.</description>
+			<description>The value of pdfaid:part shall be the part number of ISO 19005 to which the outputFile conforms.</description>
 			<test>part == 1</test>
 			<error>
-				<message>The "part" property of the PDF/A Identification Schema is %1 instead of 1 for PDF/A-1b conforming file.</message>
+				<message>The "part" property of the PDF/A Identification Schema is %1 instead of 1 for PDF/A-1b conforming outputFile.</message>
 				<argument>part</argument>
 			</error>
 			<reference>
@@ -1148,10 +1148,10 @@
 			</reference>
 		</rule>
         <rule id="6-7-11-t03" object="PDFAIdSchema">
-			<description>A Level A conforming file shall specify the value of pdfaid:conformance as A. A Level B conforming file shall specify the value of pdfaid:conformance as B.</description>
+			<description>A Level A conforming outputFile shall specify the value of pdfaid:conformance as A. A Level B conforming outputFile shall specify the value of pdfaid:conformance as B.</description>
 			<test>conformance == "B" || conformance == "A"</test>
 			<error>
-				<message>The "conformance" property of the PDF/A Identification Schema is %1 instead of "B" for PDF/A-1b conforming file.</message>
+				<message>The "conformance" property of the PDF/A Identification Schema is %1 instead of "B" for PDF/A-1b conforming outputFile.</message>
 				<argument>conformance</argument>
 			</error>
 			<reference>
@@ -1163,7 +1163,7 @@
 			<description>The property "corr" is not specified in PDF/A Identification Schema in PDF/A-1 specification.</description>
 			<test>corr == null</test>
 			<error>
-				<message>The "corr" property of the PDF/A Identification Schema should not be used in PDF/A-1 conforming file.</message>
+				<message>The "corr" property of the PDF/A Identification Schema should not be used in PDF/A-1 conforming outputFile.</message>
 			</error>
 			<reference>
 				<specification>ISO 19005-1:2005</specification>
@@ -1183,7 +1183,7 @@
 			</reference>
 		</rule>
         <rule id="6-7-2-t01" object="PDDocument">
-			<description>The document catalog dictionary of a conforming file shall contain the Metadata key.</description>
+			<description>The document catalog dictionary of a conforming outputFile shall contain the Metadata key.</description>
 			<test>metadata_size == 1</test>
 			<error>
 				<message>The document catalog dictionary doesn't contain metadata key.</message>
@@ -1205,10 +1205,10 @@
 			</reference>
 		</rule>
         <rule id="6-7-3-t01" object="CosDocument">
-			<description>If a document information dictionary does appear at a document, then all of its entries that have analogous properties in predefined XMP schemas, shall also be embedded in the file in XMP form with equivalent values.</description>
+			<description>If a document information dictionary does appear at a document, then all of its entries that have analogous properties in predefined XMP schemas, shall also be embedded in the outputFile in XMP form with equivalent values.</description>
 			<test>doesInfoMatchXMP</test>
 			<error>
-				<message>Some of document information dictionary entries' that have analogous properties in predefined XMP schemas do not embedded or have not equivalent values in the file in XMP form.</message>
+				<message>Some of document information dictionary entries' that have analogous properties in predefined XMP schemas do not embedded or have not equivalent values in the outputFile in XMP form.</message>
 			</error>
 			<reference>
 				<specification>ISO 19005-1:2005/Cor.1:2007/Cor.2:2011</specification>
