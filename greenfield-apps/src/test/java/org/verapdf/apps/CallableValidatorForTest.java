@@ -1,6 +1,5 @@
 package org.verapdf.apps;
 
-import org.verapdf.core.XmlSerialiser;
 import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.PDFAParser;
 import org.verapdf.pdfa.PDFAValidator;
@@ -10,11 +9,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.concurrent.Callable;
 
-class Validator implements Callable<ValidationResult> {
+class CallableValidatorForTest implements Callable<ValidationResult> {
     private File fileToValidate;
 
 
-    public Validator(File fileToValidate) {
+    public CallableValidatorForTest(File fileToValidate) {
         this.fileToValidate = fileToValidate;
     }
 

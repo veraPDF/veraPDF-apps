@@ -64,7 +64,7 @@ public class MultithreadingTest {
 		List<Future<ValidationResult>> futureResult = new ArrayList<>();
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 		for (int i = 0; i < numberOfThreads; i++) {
-			Validator validator = new Validator(fileToValidate);
+			CallableValidatorForTest validator = new CallableValidatorForTest(fileToValidate);
 			Future<ValidationResult> submit = executor.submit(validator);
 			futureResult.add(submit);
 		}
