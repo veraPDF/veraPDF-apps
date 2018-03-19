@@ -8,7 +8,7 @@ This beta release features command line interface enhancements
  - proper CharSet / CIDSet validation
 
 - Command line:
- - processes stdin if no outputFile paths are supplied for use in *nix pipes;
+ - processes stdin if no file paths are supplied for use in *nix pipes;
  - directory and recursive sub-directory processing; and
  - text mode output with summarised output
  
@@ -22,7 +22,7 @@ This beta release features command line interface enhancements
  - based on TWG resolution, fixed validation normal appearance object type (Dict vs Stream) for Button widgets
 
 - Command line fixes:
- - all CLI output for a single outputFile now in one XML document; and
+ - all CLI output for a single file now in one XML document; and
  - error output now all to stderr, keeping stdin clean;
 
 ***
