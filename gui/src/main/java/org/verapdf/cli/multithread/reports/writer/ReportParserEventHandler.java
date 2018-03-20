@@ -8,7 +8,6 @@ import javax.xml.stream.XMLStreamWriter;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.IntStream;
 
 import static java.lang.String.valueOf;
 import static org.verapdf.component.AuditDurationImpl.*;
@@ -88,6 +87,7 @@ public class ReportParserEventHandler extends DefaultHandler {
             Integer value = Integer.valueOf(attributes.getValue(i));
             attributesAndValues.put(attribute, value);
         }
+        current.put(qName, attributesAndValues);
     }
 
     public void printSummary() {

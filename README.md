@@ -42,7 +42,7 @@ Once downloaded unzip the archive which contains the installer jar with batch an
     verapdf-1.4.0/verapdf-install.sh
     verapdf-1.4.0/verapdf-izpack-installer-1.4.0.jar
 
-Windows users should run the 'verapdf-install.bat' dos batch outputFile, while Linux and OSX users should run the shell script, `verapdf-install.sh`. It's possible to run the installer directly on any platform:
+Windows users should run the 'verapdf-install.bat' dos batch file, while Linux and OSX users should run the shell script, `verapdf-install.sh`. It's possible to run the installer directly on any platform:
 
     java - jar <path-to-installer-jar>/verapdf-izpack-installer-1.4.0.jar
 
@@ -59,7 +59,7 @@ We've prepared a manual for the GUI which is included in the library project and
 
 ####JVM configuration options
 The startup script found in the install dir, e.g. `.../verapdf/verapdf-gui` for Linux, or `.../verapdf/verapdf-gui.bat` for Windows can be used to pass
-configuration options to the JVM. This is done by setting `$JAVA_OPTS` for Linux, or `%JAVA_OPTS%` in the Window batch outputFile. Alternatively these can be
+configuration options to the JVM. This is done by setting `$JAVA_OPTS` for Linux, or `%JAVA_OPTS%` in the Window batch file. Alternatively these can be
 passed directly as parameters when calling the shell or batch script.
 
 Building the veraPDF-apps from Source

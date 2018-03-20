@@ -1,6 +1,6 @@
 <!--
 
-    This outputFile is part of veraPDF Installer, a module of the veraPDF project.
+    This file is part of veraPDF Installer, a module of the veraPDF project.
     Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
     All rights reserved.
 
@@ -9,14 +9,14 @@
 
     The GNU General public license GPLv3+.
     You should have received a copy of the GNU General Public License
-    along with veraPDF Installer as the LICENSE.GPL outputFile in the root of the source
+    along with veraPDF Installer as the LICENSE.GPL file in the root of the source
     tree.  If not, see http://www.gnu.org/licenses/ or
     https://www.gnu.org/licenses/gpl-3.0.en.html.
 
     The Mozilla Public License MPLv2+.
     You should have received a copy of the Mozilla Public License along with
-    veraPDF Installer as the LICENSE.MPL outputFile in the root of the source tree.
-    If a copy of the MPL was not distributed with this outputFile, you can obtain one at
+    veraPDF Installer as the LICENSE.MPL file in the root of the source tree.
+    If a copy of the MPL was not distributed with this file, you can obtain one at
     http://mozilla.org/MPL/2.0/.
 
 -->
@@ -81,10 +81,10 @@
       <updatecheck>
         <include name="bin/**"/>
       </updatecheck>
-      <outputFile targetdir="$INSTALL_PATH/bin" src="bin/@verapdf.apps.package@-@project.version@.jar"/>
+      <file targetdir="$INSTALL_PATH/bin" src="bin/@verapdf.apps.package@-@project.version@.jar"/>
       <executable targetfile="$INSTALL_PATH/bin/@verapdf.apps.package@-@project.version@.jar"/>
-      <outputFile targetdir="$INSTALL_PATH/profiles" src="profiles/integration.zip" unpack="true"/>
-      <outputFile targetdir="$INSTALL_PATH/plugins" src="plugins/README.txt"/>
+      <file targetdir="$INSTALL_PATH/profiles" src="profiles/integration.zip" unpack="true"/>
+      <file targetdir="$INSTALL_PATH/plugins" src="plugins/README.txt"/>
     </pack>
     <pack name="veraPDF Mac and *nix Scripts" required="yes">
       <description>Scripts for using the veraPDF software.</description>
@@ -107,10 +107,10 @@
         <include name="verapdf-gui.bat"/>
         <include name="verapdf.bat"/>
       </updatecheck>
-      <outputFile targetdir="$INSTALL_PATH" src="scripts/verapdf-gui.bat"/>
+      <file targetdir="$INSTALL_PATH" src="scripts/verapdf-gui.bat"/>
       <parsable targetfile="$INSTALL_PATH/verapdf-gui.bat" type="shell"/>
       <executable targetfile="$INSTALL_PATH/verapdf-gui.bat"/>
-      <outputFile targetdir="$INSTALL_PATH" src="scripts/verapdf.bat"/>
+      <file targetdir="$INSTALL_PATH" src="scripts/verapdf.bat"/>
       <parsable targetfile="$INSTALL_PATH/verapdf.bat" type="shell"/>
       <executable targetfile="$INSTALL_PATH/verapdf.bat"/>
     </pack>
@@ -120,17 +120,17 @@
         <include name="corpus/**"/>
         <include name="model/**"/>
       </updatecheck>
-      <outputFile targetdir="$INSTALL_PATH/corpus" src="corpus/staging.zip" unpack="true"/>
-      <outputFile targetdir="$INSTALL_PATH/model" src="model/integration.zip" unpack="true"/>
+      <file targetdir="$INSTALL_PATH/corpus" src="corpus/staging.zip" unpack="true"/>
+      <file targetdir="$INSTALL_PATH/model" src="model/integration.zip" unpack="true"/>
     </pack>
     <pack name="veraPDF Documentation" required="no">
       <description>The veraPDF documentation.</description>
       <updatecheck>
         <include name="documents/**"/>
       </updatecheck>
-      <outputFile targetdir="$INSTALL_PATH/documents" src="documents/README.md"/>
-      <outputFile targetdir="$INSTALL_PATH/documents" src="documents/RELEASENOTES.md"/>
-      <outputFile targetdir="$INSTALL_PATH/documents" src="documents/veraPDFPDFAConformanceCheckerGUI.pdf"/>
+      <file targetdir="$INSTALL_PATH/documents" src="documents/README.md"/>
+      <file targetdir="$INSTALL_PATH/documents" src="documents/RELEASENOTES.md"/>
+      <file targetdir="$INSTALL_PATH/documents" src="documents/veraPDFPDFAConformanceCheckerGUI.pdf"/>
     </pack>
     <pack name="veraPDF Sample Plugins" required="no" preselected="no">
       <description>The veraPDF sample plug-in pack.</description>
@@ -138,7 +138,7 @@
         <include name="plugins/**"/>
         <include name="config/**"/>
       </updatecheck>
-      <outputFile targetdir="$INSTALL_PATH" src="plugins/veraPDF-sample-plugin-pack.zip" unpack="true"/>
+      <file targetdir="$INSTALL_PATH" src="plugins/veraPDF-sample-plugin-pack.zip" unpack="true"/>
       <parsable targetfile="$INSTALL_PATH/config/plugins.xml" type="xml"/>
     </pack>
   </packs>

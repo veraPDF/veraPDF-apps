@@ -19,7 +19,7 @@
 			</reference>
 		</rule>
         <rule id="6-1-13-t01" object="CosInteger">
-            <description>A conforming outputFile shall not contain any integer greater than 2147483647. A conforming outputFile shall not contain any integer less than -2147483648.</description>
+            <description>A conforming file shall not contain any integer greater than 2147483647. A conforming file shall not contain any integer less than -2147483648.</description>
             <test>(intValue &lt;= 2147483647) &amp;&amp; (intValue &gt;= -2147483648)</test>
             <error>
                 <message>Integer value out of range</message>
@@ -30,7 +30,7 @@
             </reference>
         </rule>
         <rule id="6-1-13-t02" object="CosReal">
-            <description>A conforming outputFile shall not contain any real number outside the range of +/-3.403 x 10^38</description>
+            <description>A conforming file shall not contain any real number outside the range of +/-3.403 x 10^38</description>
             <test>(realValue &gt;= -3.403e+38) &amp;&amp; (realValue &lt;= 3.403e+38)</test>
             <error>
                 <message>Real value out of range</message>
@@ -41,7 +41,7 @@
             </reference>
         </rule>
         <rule id="6-1-13-t03" object="CosString">
-            <description>A conforming outputFile shall not contain any string longer than 32767 bytes.</description>
+            <description>A conforming file shall not contain any string longer than 32767 bytes.</description>
             <test>value.length() &lt; 32767</test>
             <error>
                 <message>Maximum length of a String (32767) exceeded</message>
@@ -52,7 +52,7 @@
             </reference>
         </rule>
         <rule id="6-1-13-t04" object="CosName">
-            <description>A conforming outputFile shall not contain any name longer than 127 bytes.</description>
+            <description>A conforming file shall not contain any name longer than 127 bytes.</description>
             <test>internalRepresentation.length() &lt;= 127</test>
             <error>
                 <message>Maximum length of a Name (127) exceeded</message>
@@ -63,10 +63,10 @@
             </reference>
         </rule>
         <rule id="6-1-13-t07" object="CosDocument">
-            <description>A conforming outputFile shall not contain more than 8388607 indirect objects</description>
+            <description>A conforming file shall not contain more than 8388607 indirect objects</description>
             <test>nrIndirects &lt;= 8388607</test>
             <error>
-                <message>Maximum number of indirect objects (8,388,607) in a PDF outputFile exceeded</message>
+                <message>Maximum number of indirect objects (8,388,607) in a PDF file exceeded</message>
             </error>
             <reference>
                 <specification>ISO19005-2:2011</specification>
@@ -74,7 +74,7 @@
             </reference>
         </rule>
         <rule id="6-1-13-t08" object="Op_q_gsave">
-            <description>A conforming outputFile shall not nest q/Q pairs by more than 28 nesting levels</description>
+            <description>A conforming file shall not nest q/Q pairs by more than 28 nesting levels</description>
             <test>nestingLevel &lt;= 28</test>
             <error>
                 <message>Maximum depth of graphics state nesting (q and Q operators) is exceeded</message>
@@ -85,7 +85,7 @@
             </reference>
         </rule>
         <rule id="6-1-13-t09" object="PDDeviceN">
-            <description>A conforming outputFile shall not contain a DeviceN colour space with more than 32 colourants.</description>
+            <description>A conforming file shall not contain a DeviceN colour space with more than 32 colourants.</description>
             <test>nrComponents &lt;= 32</test>
             <error>
                 <message>Maximum number of DeviceN components (32) is exceeded</message>
@@ -96,7 +96,7 @@
             </reference>
         </rule>
         <rule id="6-1-13-t10" object="CIDGlyph">
-            <description>A conforming outputFile shall not contain a CID value greater than 65535.</description>
+            <description>A conforming file shall not contain a CID value greater than 65535.</description>
             <test>CID &lt;= 65535</test>
             <error>
                 <message>Maximum value of a CID (65535) is exceeded</message>
@@ -119,7 +119,7 @@
             </reference>
         </rule>
         <rule id="6-1-2-t01" object="CosDocument">
-			<description>The outputFile header shall begin at byte zero and shall consist of "%PDF-1.n" followed by a single EOL marker,
+			<description>The file header shall begin at byte zero and shall consist of "%PDF-1.n" followed by a single EOL marker,
 			where 'n' is a single digit number between 0 (30h) and 7 (37h)</description>
 			<test>headerOffset == 0 &amp;&amp; /%PDF-1\.[0-7]/.test(header)</test>
 			<error>
@@ -135,7 +135,7 @@
 			byte values shall have a decimal value greater than 127</description>
 			<test>headerByte1 &gt; 127 &amp;&amp; headerByte2 &gt; 127 &amp;&amp; headerByte3 &gt; 127 &amp;&amp; headerByte4 &gt; 127</test>
 			<error>
-				<message>Binary comment in the outputFile header is missing or does not comply PDF/A requirements</message>
+				<message>Binary comment in the file header is missing or does not comply PDF/A requirements</message>
 			</error>
 			<reference>
 				<specification>ISO19005-2:2011</specification>
@@ -143,7 +143,7 @@
 			</reference>
 		</rule>
         <rule id="6-1-3-t01" object="CosDocument">
-			<description>The outputFile trailer dictionary shall contain the ID keyword whose value shall be File Identifiers as defined in ISO 32000-1:2008, 14.4</description>
+			<description>The file trailer dictionary shall contain the ID keyword whose value shall be File Identifiers as defined in ISO 32000-1:2008, 14.4</description>
 			<test>lastID</test>
 			<error>
 				<message>Missing ID in the document trailer</message>
@@ -169,10 +169,10 @@
 			</reference>
 		</rule>
         <rule id="6-1-3-t03" object="CosDocument">
-			<description>No data can follow the last end-of-outputFile marker except a single optional end-of-line marker as described in ISO 32000-1:2008, 7.5.5.</description>
+			<description>No data can follow the last end-of-file marker except a single optional end-of-line marker as described in ISO 32000-1:2008, 7.5.5.</description>
 			<test>postEOFDataSize == 0</test>
 			<error>
-				<message>Data is present after the last end-of-outputFile marker</message>
+				<message>Data is present after the last end-of-file marker</message>
 			</error>
 			<reference>
 				<specification>ISO19005-2:2011</specification>
@@ -217,7 +217,7 @@
 			</reference>
 		</rule>
         <rule id="6-1-7-t01" object="CosStream">
-			<description>The value of the Length key specified in the stream dictionary shall match the number of bytes in the outputFile following the LINE FEED (0Ah) character
+			<description>The value of the Length key specified in the stream dictionary shall match the number of bytes in the file following the LINE FEED (0Ah) character
 			after the stream keyword and preceding the EOL marker before the endstream keyword.</description>
 			<test>isLengthCorrect</test>
 			<error>
@@ -309,7 +309,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-2-t01" object="PDFont">
-			<description>All fonts and font programs used in a conforming outputFile, regardless of rendering mode usage, shall conform to
+			<description>All fonts and font programs used in a conforming file, regardless of rendering mode usage, shall conform to
 			the provisions in ISO 32000-1:2008, 9.6 and 9.7, as well as to the font specifications referenced by these provisions.
 			Type - name - (Required) The type of PDF object that this dictionary describes; must be Font for a font dictionary</description>
 			<test>Type == "Font"</test>
@@ -338,7 +338,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-2-t02" object="PDFont">
-			<description>All fonts and font programs used in a conforming outputFile, regardless of rendering mode usage, shall conform to the provisions
+			<description>All fonts and font programs used in a conforming file, regardless of rendering mode usage, shall conform to the provisions
 			in ISO 32000-1:2008, 9.6 and 9.7, as well as to the font specifications referenced by these provisions.
 			Subtype - name - (Required) The type of font; must be "Type1" for Type 1 fonts, "MMType1" for multiple master fonts, "TrueType" for TrueType fonts
 			"Type3" for Type 3 fonts, "Type0" for Type 0 fonts and "CIDFontType0" or "CIDFontType2" for CID fonts</description>
@@ -377,7 +377,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-2-t03" object="PDFont">
-			<description>All fonts and font programs used in a conforming outputFile, regardless of rendering mode usage, shall conform to the provisions
+			<description>All fonts and font programs used in a conforming file, regardless of rendering mode usage, shall conform to the provisions
 			in ISO 32000-1:2008, 9.6 and 9.7, as well as to the font specifications referenced by these provisions. 
 			BaseFont - name - (Required) The PostScript name of the font</description>
 			<test>Subtype == "Type3" || fontName != null</test>
@@ -402,7 +402,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-2-t04" object="PDSimpleFont">
-			<description>All fonts and font programs used in a conforming outputFile, regardless of rendering mode usage, shall conform to the provisions
+			<description>All fonts and font programs used in a conforming file, regardless of rendering mode usage, shall conform to the provisions
 			in ISO 32000-1:2008, 9.6 and 9.7, as well as to the font specifications referenced by these provisions.
 			FirstChar - integer - (Required except for the standard 14 fonts) The first character code defined in the font's Widths array</description>
 			<test>isStandard == true || FirstChar != null</test>
@@ -423,7 +423,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-2-t05" object="PDSimpleFont">
-			<description>All fonts and font programs used in a conforming outputFile, regardless of rendering mode usage, shall conform to the provisions
+			<description>All fonts and font programs used in a conforming file, regardless of rendering mode usage, shall conform to the provisions
 			in ISO 32000-1:2008, 9.6 and 9.7, as well as to the font specifications referenced by these provisions.
 			FirstChar - integer - (Required except for the standard 14 fonts) The first character code defined in the font's Widths array</description>
 			<test>isStandard == true || LastChar != null</test>
@@ -444,7 +444,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-2-t06" object="PDSimpleFont">
-			<description>All fonts and font programs used in a conforming outputFile, regardless of rendering mode usage, shall conform to the provisions
+			<description>All fonts and font programs used in a conforming file, regardless of rendering mode usage, shall conform to the provisions
 			in ISO 32000-1:2008, 9.6 and 9.7, as well as to the font specifications referenced by these provisions.
 			Widths - array - (Required except for the standard 14 fonts; indirect reference preferred) An array of (LastChar − FirstChar + 1) widths</description>
 			<test>isStandard == true || (Widths_size != null &amp;&amp; Widths_size == LastChar - FirstChar + 1)</test>
@@ -465,7 +465,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-3-t01" object="PDType0Font">
-			<description>For any given composite (Type 0) font within a conforming outputFile, the CIDSystemInfo entry in its CIDFont dictionary and its Encoding dictionary
+			<description>For any given composite (Type 0) font within a conforming file, the CIDSystemInfo entry in its CIDFont dictionary and its Encoding dictionary
 			shall have the following relationship: 
 			- If the Encoding key in the Type 0 font dictionary is Identity-H or Identity-V, any values of Registry, Ordering, 
 			and Supplement may be used in the CIDSystemInfo entry of the CIDFont. 
@@ -497,7 +497,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-3-t03" object="PDCMap">
-			<description>All CMaps used within a PDF/A-2 outputFile, except those listed in ISO 32000-1:2008, 9.7.5.2, Table 118, shall be embedded in that outputFile as described
+			<description>All CMaps used within a PDF/A-2 file, except those listed in ISO 32000-1:2008, 9.7.5.2, Table 118, shall be embedded in that file as described
 			in ISO 32000-1:2008, 9.7.5.</description>
 			<test>CMapName == "Identity-H" || CMapName == "Identity-V" || CMapName == "GB-EUC-H" || CMapName == "GB-EUC-V" ||
 			CMapName == "GBpc-EUC-H" || CMapName == "GBpc-EUC-V" || CMapName == "GBK-EUC-H" || CMapName == "GBK-EUC-V" ||
@@ -540,7 +540,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-4-t01" object="PDFont">
-			<description>The font programs for all fonts used for rendering within a conforming outputFile shall be embedded within that outputFile, as defined in ISO 32000-1:2008, 9.9.</description>
+			<description>The font programs for all fonts used for rendering within a conforming file shall be embedded within that file, as defined in ISO 32000-1:2008, 9.9.</description>
 			<test>Subtype == "Type3" || Subtype == "Type0" || fontFile_size == 1</test>
 			<error>
 				<message>The font program is not embedded</message>
@@ -555,7 +555,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-4-t02" object="Glyph">
-			<description>Embedded fonts shall define all glyphs referenced for rendering within the conforming outputFile.</description>
+			<description>Embedded fonts shall define all glyphs referenced for rendering within the conforming file.</description>
 			<test>isGlyphPresent == true</test>
 			<error>
 				<message>Not all glyphs referenced for rendering are present in the embedded font program</message>
@@ -590,7 +590,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-5-t01" object="Glyph">
-			<description>For every font embedded in a conforming outputFile and used for rendering, the glyph width information in the font dictionary and in the embedded
+			<description>For every font embedded in a conforming file and used for rendering, the glyph width information in the font dictionary and in the embedded
 			font program shall be consistent.</description>
 			<test>isWidthConsistent == true</test>
 			<error>
@@ -691,7 +691,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-3-t02" object="PDOutputIntent">
-			<description>If a outputFile's OutputIntents array contains more than one entry, as might be the case where a outputFile is compliant
+			<description>If a file's OutputIntents array contains more than one entry, as might be the case where a file is compliant
 			with this part of ISO 19005 and at the same time with PDF/X-4 or PDF/E-1, then all entries that contain a
 			DestOutputProfile key shall have as the value of that key the same indirect object, which shall be a valid ICC
 			profile stream.</description>
@@ -737,7 +737,7 @@
 		</rule>
         <rule id="6-2-4-t02" object="PDDeviceRGB">
 			<description>DeviceRGB shall only be used if a device independent DefaultRGB colour space has been set when the DeviceRGB colour space is used,
-			or if the outputFile has a PDF/A OutputIntent that contains an RGB destination profile.</description>
+			or if the file has a PDF/A OutputIntent that contains an RGB destination profile.</description>
 			<test>gOutputCS != null &amp;&amp; gOutputCS == "RGB "</test>
 			<error>
 				<message>DeviceRGB colour space is used without RGB output intent profile</message>
@@ -749,7 +749,7 @@
 		</rule>
         <rule id="6-2-4-t03" object="PDDeviceCMYK">
 			<description>DeviceCMYK shall only be used if a device independent DefaultCMYK colour space has been set or if a DeviceN-based DefaultCMYK colour space
-			has been set when the DeviceCMYK colour space is used or the outputFile has a PDF/A OutputIntent that contains a CMYK destination profile.</description>
+			has been set when the DeviceCMYK colour space is used or the file has a PDF/A OutputIntent that contains a CMYK destination profile.</description>
 			<test>gOutputCS != null &amp;&amp; gOutputCS == "CMYK"</test>
 			<error>
 				<message>DeviceCMYK colour space is used without CMYK output intent profile</message>
@@ -787,7 +787,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-4-t06" object="PDSeparation">
-			<description>All Separation arrays within a single PDF/A-2 outputFile (including those in Colorants dictionaries) that have the
+			<description>All Separation arrays within a single PDF/A-2 file (including those in Colorants dictionaries) that have the
 			same name shall have the same tintTransform and alternateSpace. In evaluating equivalence, the PDF
 			objects shall be compared, rather than the computational result of the use of those PDF objects. Compression
 			and whether or not an object is direct or indirect shall be ignored.</description>
@@ -834,7 +834,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-5-t04" object="PDHalftone">
-			<description>All halftones in a conforming PDF/A-2 outputFile shall have the value 1 or 5 for the HalftoneType key.</description>
+			<description>All halftones in a conforming PDF/A-2 file shall have the value 1 or 5 for the HalftoneType key.</description>
 			<test>HalftoneType != null &amp;&amp; (HalftoneType == 1 || HalftoneType == 5)</test>
 			<error>
 				<message>A Halftone has type other than 1 or 5</message>
@@ -845,7 +845,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-5-t05" object="PDHalftone">
-			<description>Halftones in a conforming PDF/A-2 outputFile shall not contain a HalftoneName key.</description>
+			<description>Halftones in a conforming PDF/A-2 file shall not contain a HalftoneName key.</description>
 			<test>HalftoneName == null</test>
 			<error>
 				<message>A Halftone dictionary contains the HalftoneName key</message>
@@ -913,7 +913,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-9-t02" object="PDXForm">
-			<description>A conforming outputFile shall not contain any reference XObjects</description>
+			<description>A conforming file shall not contain any reference XObjects</description>
 			<test>Ref_size == 0</test>
 			<error>
 				<message>The document contains a reference XObject (Ref key in the form XObject dictionary)</message>
@@ -924,7 +924,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-9-t03" object="PDXObject">
-			<description>A conforming outputFile shall not contain any PostScript XObjects</description>
+			<description>A conforming file shall not contain any PostScript XObjects</description>
 			<test>Subtype != "PS"</test>
 			<error>
 				<message>The document contains a PostScript XObject</message>
@@ -1056,7 +1056,7 @@
 			</reference>
 		</rule>
         <rule id="6-4-2-t01" object="PDAcroForm">
-			<description>The document's interactive form dictionary that forms the value of the AcroForm key in the document's Catalog of a PDF/A-2 outputFile,
+			<description>The document's interactive form dictionary that forms the value of the AcroForm key in the document's Catalog of a PDF/A-2 file,
 			if present, shall not contain the XFA key.</description>
 			<test>XFA_size == 0</test>
 			<error>
@@ -1132,11 +1132,11 @@
 			</reference>
 		</rule>
         <rule id="6-6-4-t02" object="PDFAIdSchema">
-			<description>The value of pdfaid:part shall be the part number of ISO 19005 to which the outputFile conforms. Files prepared in
+			<description>The value of pdfaid:part shall be the part number of ISO 19005 to which the file conforms. Files prepared in
 			compliance with this part of ISO 19005 shall use a value of 2.</description>
 			<test>part == 2</test>
 			<error>
-				<message>The "part" property of the PDF/A Identification Schema is not equal to 2 for a PDF/A-2B conforming outputFile.</message>
+				<message>The "part" property of the PDF/A Identification Schema is not equal to 2 for a PDF/A-2B conforming file.</message>
 				<argument>part</argument>
 			</error>
 			<reference>
@@ -1145,10 +1145,10 @@
 			</reference>
 		</rule>
         <rule id="6-6-4-t03" object="PDFAIdSchema">
-			<description>Level B conforming outputFile shall specify the value of pdfaid:conformance as B.</description>
+			<description>Level B conforming file shall specify the value of pdfaid:conformance as B.</description>
 			<test>conformance == "B"</test>
 			<error>
-				<message>The "conformance" property of the PDF/A Identification Schema is not equal to "B" for a PDF/A-2B conforming outputFile.</message>
+				<message>The "conformance" property of the PDF/A Identification Schema is not equal to "B" for a PDF/A-2B conforming file.</message>
 				<argument>conformance</argument>
 			</error>
 			<reference>
@@ -1157,11 +1157,11 @@
 			</reference>
 		</rule>
         <rule id="6-8-t01" object="EmbeddedFile">
-			<description>A outputFile specification dictionary, as defined in ISO 32000-1:2008, 7.11.3, may contain the EF key, provided that the embedded outputFile is
+			<description>A file specification dictionary, as defined in ISO 32000-1:2008, 7.11.3, may contain the EF key, provided that the embedded file is
 			compliant with either ISO 19005-1 or this part of ISO 19005.</description>
 			<test>isValidPDFA12 == true</test>
 			<error>
-				<message>An embedded outputFile does not comply to either ISO 19005-1 or ISO 19005-2</message>
+				<message>An embedded file does not comply to either ISO 19005-1 or ISO 19005-2</message>
 			</error>
 			<reference>
 				<specification>ISO19005-2:2011</specification>
@@ -1169,10 +1169,10 @@
 			</reference>
 		</rule>
         <rule id="6-8-t02" object="CosFileSpecification">
-			<description>The outputFile specification dictionary for an embedded outputFile shall contain the F and UF keys</description>
+			<description>The file specification dictionary for an embedded file shall contain the F and UF keys</description>
 			<test>EF_size == 0 || (F != null &amp;&amp; UF != null)</test>
 			<error>
-				<message>The outputFile specification dictionary for an embedded outputFile does not contain either F or EF key</message>
+				<message>The file specification dictionary for an embedded file does not contain either F or EF key</message>
 			</error>
 			<reference>
 				<specification>ISO19005-2:2011</specification>
