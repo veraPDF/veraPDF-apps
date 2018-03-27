@@ -37,6 +37,7 @@ import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import org.verapdf.processor.FeaturesPluginsLoader;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -61,6 +62,7 @@ public final class VeraPdfCli {
 	 */
 	public static void main(final String[] args) throws VeraPDFException {
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
+		FeaturesPluginsLoader.setBaseFolderPath(System.getProperty(Applications.APP_HOME_PROPERTY));
 		ReleaseDetails.addDetailsFromResource(
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
 		VeraCliArgParser cliArgParser = new VeraCliArgParser();
