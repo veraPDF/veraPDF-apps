@@ -12,7 +12,6 @@ import java.util.concurrent.Callable;
 class CallableValidatorForTest implements Callable<ValidationResult> {
     private File fileToValidate;
 
-
     public CallableValidatorForTest(File fileToValidate) {
         this.fileToValidate = fileToValidate;
     }
