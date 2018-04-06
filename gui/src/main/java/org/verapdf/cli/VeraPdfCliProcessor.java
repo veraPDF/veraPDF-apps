@@ -209,7 +209,7 @@ final class VeraPdfCliProcessor implements Closeable {
 	}
 
 	private void applyPolicy() throws VeraPDFException {
-		File tempPolicyResult = null;
+		File tempPolicyResult;
 		try {
 			tempPolicyResult = File.createTempFile("policyResult", "veraPDF");
 		} catch (IOException excep) {

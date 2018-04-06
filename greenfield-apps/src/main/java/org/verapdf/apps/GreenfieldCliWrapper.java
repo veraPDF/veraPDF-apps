@@ -7,8 +7,6 @@ import org.verapdf.cli.VeraPdfCli;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
 
-import java.util.concurrent.ThreadPoolExecutor;
-
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
  *          <a href="https://github.com/carlwilson">carlwilson AT github</a>
@@ -35,4 +33,5 @@ public final class GreenfieldCliWrapper {
 		VeraGreenfieldFoundryProvider.initialise();
 		VeraPdfCli.main(args);
 	}
+
 }

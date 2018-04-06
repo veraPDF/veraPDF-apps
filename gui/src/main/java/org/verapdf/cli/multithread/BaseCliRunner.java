@@ -103,7 +103,7 @@ public class BaseCliRunner implements Runnable {
             this.out.write("\n".getBytes());
             this.out.flush();
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Can't pass new file pro validate", e);
+            LOGGER.log(Level.SEVERE, "Can't pass new file to validate", e);
         }
     }
 
