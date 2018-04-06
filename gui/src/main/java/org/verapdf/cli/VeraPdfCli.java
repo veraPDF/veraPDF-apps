@@ -116,8 +116,7 @@ public final class VeraPdfCli {
 	private static void singleThreadProcess(VeraCliArgParser cliArgParser) throws VeraPDFException {
 		try (VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser,
 				configManager)) {
-			// FIXME: trap policy IO Exception (deliberately left un-caught
-			// for development)
+			// FIXME: trap policy IO Exception (deliberately left un-caught for development)
 			processor.processPaths(cliArgParser.getPdfPaths());
 			if (cliArgParser.isServerMode()) {
 				File tempFile = processor.getTempFile();
