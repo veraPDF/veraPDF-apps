@@ -278,7 +278,7 @@
 			</reference>
 		</rule>
         <rule id="6-1-2-t01" object="CosDocument">
-			<description>The % character of the file header shall occur at byte offset 0 of the file.
+			<description>The % character of the file header shall occur at byte offset 0 of the file. 
 			The first line of a PDF file is a header identifying the version of the PDF specification to which the file conforms</description>
 			<test>headerOffset == 0 &amp;&amp; /%PDF-\d\.\d/.test(header)</test>
 			<error>
@@ -294,7 +294,7 @@
 			</reference>
 		</rule>
         <rule id="6-1-2-t02" object="CosDocument">
-			<description>The file header line shall be immediately followed by a comment consisting of a % character followed by at
+			<description>The file header line shall be immediately followed by a comment consisting of a % character followed by at 
 			least four characters, each of whose encoded byte values shall have a decimal value greater than 127</description>
 			<test>headerByte1 &gt; 127 &amp;&amp; headerByte2 &gt; 127 &amp;&amp; headerByte3 &gt; 127 &amp;&amp; headerByte4 &gt; 127 </test>
 			<error>
@@ -460,7 +460,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-2-t01" object="ICCOutputProfile">
-			<description>A PDF/A-1 OutputIntent is an OutputIntent dictionary, as defined by PDF Reference 9.10.4, that is included in the file's OutputIntents
+			<description>A PDF/A-1 OutputIntent is an OutputIntent dictionary, as defined by PDF Reference 9.10.4, that is included in the file's OutputIntents 
 	array and has GTS_PDFA1 as the value of its S key and a valid ICC profile stream as the value its DestOutputProfile key</description>
 			<test>(deviceClass == "prtr" || deviceClass == "mntr") &amp;&amp; (colorSpace == "RGB " || colorSpace == "CMYK" || colorSpace == "GRAY") &amp;&amp; version &lt; 3.0</test>
 			<error>
@@ -659,7 +659,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-2-t01" object="PDFont">
-			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5.
+			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5. 
 	Type - name - (Required) The type of PDF object that this dictionary describes; must be Font for a font dictionary</description>
 			<test>Type == "Font"</test>
 			<error>
@@ -687,7 +687,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-2-t02" object="PDFont">
-			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5.
+			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5. 
 			Subtype - name - (Required) The type of font; must be "Type1" for Type 1 fonts, "MMType1" for multiple master fonts, "TrueType" for TrueType fonts
 			"Type3" for Type 3 fonts, "Type0" for Type 0 fonts and "CIDFontType0" or "CIDFontType2" for CID fonts</description>
 			<test>Subtype == "Type1" || Subtype == "MMType1" || Subtype == "TrueType" || Subtype == "Type3" || Subtype == "Type0" 
@@ -717,7 +717,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-2-t03" object="PDFont">
-			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5.
+			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5. 
 			BaseFont - name - (Required) The PostScript name of the font</description>
 			<test>Subtype == "Type3" || fontName != null</test>
 			<error>
@@ -745,7 +745,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-2-t04" object="PDSimpleFont">
-			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5.
+			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5. 
 			FirstChar - integer - (Required except for the standard 14 fonts) The first character code defined in the font's Widths array</description>
 			<test>isStandard == true || FirstChar != null</test>
 			<error>
@@ -765,7 +765,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-2-t05" object="PDSimpleFont">
-			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5.
+			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5. 
 			FirstChar - integer - (Required except for the standard 14 fonts) The first character code defined in the font's Widths array</description>
 			<test>isStandard == true || LastChar != null</test>
 			<error>
@@ -785,7 +785,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-2-t06" object="PDSimpleFont">
-			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5.
+			<description>All fonts used in a conforming file shall conform to the font specifications defined in PDF Reference 5.5. 
 			Widths - array - (Required except for the standard 14 fonts; indirect reference preferred) An array of (LastChar − FirstChar + 1) widths</description>
 			<test>isStandard == true || (Widths_size != null &amp;&amp; Widths_size == LastChar - FirstChar + 1)</test>
 			<error>
@@ -805,7 +805,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-3-t01" object="PDType0Font">
-			<description>For any given composite (Type 0) font referenced within a conforming file, the CIDSystemInfo entries of its
+			<description>For any given composite (Type 0) font referenced within a conforming file, the CIDSystemInfo entries of its 
 			CIDFont and CMap dictionaries shall be compatible</description>
 			<test>areRegistryOrderingCompatible == true</test>
 			<error>
@@ -863,7 +863,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-4-t01" object="PDFont">
-			<description>The font programs for all fonts used within a conforming file shall be embedded within that file, as defined in PDF Reference 5.8,
+			<description>The font programs for all fonts used within a conforming file shall be embedded within that file, as defined in PDF Reference 5.8, 
 			except when the fonts are used exclusively with text rendering mode 3</description>
 			<test>Subtype == "Type3" || Subtype == "Type0" || fontFile_size == 1</test>
 			<error>
@@ -922,7 +922,7 @@
 			</reference>
 		</rule>
         <rule id="6-3-6-t01" object="Glyph">
-			<description>For every font embedded in a conforming file, the glyph width information stored in the Widths entry of the
+			<description>For every font embedded in a conforming file, the glyph width information stored in the Widths entry of the 
 			font dictionary and in the embedded font program shall be consistent</description>
 			<test>isWidthConsistent == true</test>
 			<error>
