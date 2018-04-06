@@ -119,7 +119,7 @@
             </reference>
         </rule>
         <rule id="6-1-2-t01" object="CosDocument">
-			<description>The file header shall begin at byte zero and shall consist of "%PDF-1.n" followed by a single EOL marker,
+			<description>The file header shall begin at byte zero and shall consist of "%PDF-1.n" followed by a single EOL marker, 
 			where 'n' is a single digit number between 0 (30h) and 7 (37h)</description>
 			<test>headerOffset == 0 &amp;&amp; /%PDF-1\.[0-7]/.test(header)</test>
 			<error>
@@ -465,7 +465,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-3-t01" object="PDType0Font">
-			<description>For any given composite (Type 0) font within a conforming file, the CIDSystemInfo entry in its CIDFont dictionary and its Encoding dictionary
+			<description>For any given composite (Type 0) font within a conforming file, the CIDSystemInfo entry in its CIDFont dictionary and its Encoding dictionary 
 			shall have the following relationship: 
 			- If the Encoding key in the Type 0 font dictionary is Identity-H or Identity-V, any values of Registry, Ordering, 
 			and Supplement may be used in the CIDSystemInfo entry of the CIDFont. 
@@ -497,7 +497,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-3-t03" object="PDCMap">
-			<description>All CMaps used within a PDF/A-2 file, except those listed in ISO 32000-1:2008, 9.7.5.2, Table 118, shall be embedded in that file as described
+			<description>All CMaps used within a PDF/A-2 file, except those listed in ISO 32000-1:2008, 9.7.5.2, Table 118, shall be embedded in that file as described 
 			in ISO 32000-1:2008, 9.7.5.</description>
 			<test>CMapName == "Identity-H" || CMapName == "Identity-V" || CMapName == "GB-EUC-H" || CMapName == "GB-EUC-V" ||
 			CMapName == "GBpc-EUC-H" || CMapName == "GBpc-EUC-V" || CMapName == "GBK-EUC-H" || CMapName == "GBK-EUC-V" ||
@@ -590,7 +590,7 @@
 			</reference>
 		</rule>
         <rule id="6-2-11-5-t01" object="Glyph">
-			<description>For every font embedded in a conforming file and used for rendering, the glyph width information in the font dictionary and in the embedded
+			<description>For every font embedded in a conforming file and used for rendering, the glyph width information in the font dictionary and in the embedded 
 			font program shall be consistent.</description>
 			<test>isWidthConsistent == true</test>
 			<error>
@@ -1056,7 +1056,7 @@
 			</reference>
 		</rule>
         <rule id="6-4-2-t01" object="PDAcroForm">
-			<description>The document's interactive form dictionary that forms the value of the AcroForm key in the document's Catalog of a PDF/A-2 file,
+			<description>The document's interactive form dictionary that forms the value of the AcroForm key in the document's Catalog of a PDF/A-2 file, 
 			if present, shall not contain the XFA key.</description>
 			<test>XFA_size == 0</test>
 			<error>
