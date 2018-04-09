@@ -101,7 +101,6 @@ public class PDFValidationApplication extends JFrame {
 			JOptionPane.showMessageDialog(this, "Error in reading logo image.", GUIConstants.ERROR,
 					JOptionPane.ERROR_MESSAGE);
 			logger.log(Level.WARNING, "Exception in reading logo image", e);
-
 		}
 
 		final JMenu file = new JMenu("File");

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
 import org.verapdf.pdfa.results.ValidationResult;
+import org.verapdf.pdfa.validation.validators.CallableValidatorForTest;
 
 import java.io.File;
 import java.util.ArrayList;
