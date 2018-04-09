@@ -1,6 +1,7 @@
 package org.verapdf.cli.multithread;
 
 import org.verapdf.cli.VeraPdfCli;
+import org.verapdf.processor.reports.ResultStructure;
 
 import java.io.File;
 import java.io.IOException;
@@ -109,17 +110,5 @@ public class BaseCliRunner implements Runnable {
 
     private ResultStructure getData() {
         return new ResultStructure(new File(reportScanner.nextLine()));
-    }
-
-    public static class ResultStructure {
-        private File reportFile;
-
-        ResultStructure(File reportFile) {
-            this.reportFile = reportFile;
-        }
-
-        public File getReportFile() {
-            return reportFile;
-        }
     }
 }

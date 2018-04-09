@@ -3,13 +3,14 @@ package org.verapdf.cli.multithread;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.cli.commands.VeraCliArgParser;
-import org.verapdf.cli.multithread.reports.MultiThreadProcessingHandler;
-import org.verapdf.cli.multithread.reports.MultiThreadProcessingHandlerImpl;
-import org.verapdf.cli.multithread.reports.writer.ReportWriter;
+import org.verapdf.processor.FormatOption;
+import org.verapdf.processor.reports.ResultStructure;
+import org.verapdf.processor.reports.multithread.MultiThreadProcessingHandler;
+import org.verapdf.processor.reports.multithread.MultiThreadProcessingHandlerImpl;
+import org.verapdf.processor.reports.multithread.writer.ReportWriter;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,91 +20,94 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MultiThreadProcessor {
-    private static final Logger LOGGER = Logger.getLogger(MultiThreadProcessor.class.getCanonicalName());
+	private static final Logger LOGGER = Logger.getLogger(MultiThreadProcessor.class.getCanonicalName());
 
-    private final Queue<File> filesToProcess;
+	private static final int DEFAULT_BUFFER_SIZE = 512;
+	private static final int COEFFICIENT_BUFFER_SIZE = 1024;
 
-    private int filesQuantity;
+	private final Queue<File> filesToProcess;
 
-    private File veraPDFStarterPath;
-    private List<String> veraPDFParameters;
-    private OutputStream os;
-    private OutputStream errorStream;
+	private int filesQuantity;
 
-    private ReportWriter reportWriter;
-    private MultiThreadProcessingHandler processingHandler;
+	private File veraPDFStarterPath;
+	private List<String> veraPDFParameters;
+	private OutputStream os;
+	private OutputStream errorStream;
 
-    private boolean isFirstReport = true;
+	private ReportWriter reportWriter;
+	private MultiThreadProcessingHandler processingHandler;
 
-    private MultiThreadProcessor(VeraCliArgParser cliArgParser) {
-        this.os = new BufferedOutputStream(System.out, 1024 * 512);
+	private boolean isFirstReport = true;
 
-        this.errorStream = new BufferedOutputStream(System.err, 512);
+	private MultiThreadProcessor(VeraCliArgParser cliArgParser) {
+		this.os = new BufferedOutputStream(System.out, DEFAULT_BUFFER_SIZE * COEFFICIENT_BUFFER_SIZE);
 
-        this.veraPDFStarterPath = getVeraPdfStarterFile(cliArgParser);
-        this.veraPDFParameters = VeraCliArgParser.getBaseVeraPDFParameters(cliArgParser);
-        this.filesToProcess = new ConcurrentLinkedQueue<>();
-        this.filesToProcess.addAll(getFiles(cliArgParser.getPdfPaths(), cliArgParser.isRecurse()));
-        this.filesQuantity = filesToProcess.size();
+		this.errorStream = new BufferedOutputStream(System.err, DEFAULT_BUFFER_SIZE);
 
-        ReportWriter.OutputFormat outputFormat = getOutputFormat(cliArgParser.getFormat().getOption());
-        this.reportWriter = ReportWriter.newInstance(os, outputFormat, errorStream);
-        this.processingHandler = new MultiThreadProcessingHandlerImpl(reportWriter);
-    }
+		this.veraPDFStarterPath = getVeraPdfStarterFile(cliArgParser);
+		this.veraPDFParameters = VeraCliArgParser.getBaseVeraPDFParameters(cliArgParser);
+		this.filesToProcess = new ConcurrentLinkedQueue<>();
+		this.filesToProcess.addAll(getFiles(cliArgParser.getPdfPaths(), cliArgParser.isRecurse()));
+		this.filesQuantity = filesToProcess.size();
 
-    private File getVeraPdfStarterFile(VeraCliArgParser cliArgParser) {
-        File veraPDFPath = cliArgParser.getVeraCLIPath();
-        if (veraPDFPath == null || !veraPDFPath.isFile()) {
-            try {
-                veraPDFPath = Applications.getVeraScriptFile();
-                if (veraPDFPath == null) {
-                    throw new IllegalStateException("Can't obtain executable veraPDF CLI script path");
-                }
-            } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "Can't obtain veraPDF CLI script path", e);
-            }
-        }
-        return veraPDFPath;
-    }
+		FormatOption outputFormat = getOutputFormat(cliArgParser.getFormat().getOption());
+		this.reportWriter = ReportWriter.newInstance(os, outputFormat, errorStream);
+		this.processingHandler = new MultiThreadProcessingHandlerImpl(reportWriter);
+	}
 
-    private ReportWriter.OutputFormat getOutputFormat(String outputFormat) {
-        return ReportWriter.OutputFormat.getOutputFormat(outputFormat);
-    }
+	public static void process(VeraCliArgParser cliArgParser) {
+		MultiThreadProcessor processor = new MultiThreadProcessor(cliArgParser);
+		processor.startProcesses(cliArgParser.getNumberOfProcesses());
+	}
 
-    public static void process(VeraCliArgParser cliArgParser) {
-        MultiThreadProcessor processor = new MultiThreadProcessor(cliArgParser);
-        processor.startProcesses(cliArgParser.getNumberOfProcesses());
-    }
+	private File getVeraPdfStarterFile(VeraCliArgParser cliArgParser) {
+		File veraPDFPath = cliArgParser.getVeraCLIPath();
+		if (veraPDFPath == null || !veraPDFPath.isFile()) {
+			try {
+				veraPDFPath = Applications.getVeraScriptFile();
+				if (veraPDFPath == null) {
+					throw new IllegalStateException("Can't obtain executable veraPDF CLI script path");
+				}
+			} catch (IllegalStateException e) {
+				LOGGER.log(Level.SEVERE, "Can't obtain veraPDF CLI script path", e);
+			}
+		}
+		return veraPDFPath;
+	}
 
-    public synchronized void write(BaseCliRunner.ResultStructure result) {
-        if (isFirstReport) {
-            processingHandler.startReport();
-            processingHandler.fillReport(result);
-            isFirstReport = false;
-        } else {
-            processingHandler.fillReport(result);
-        }
+	private FormatOption getOutputFormat(String outputFormat) {
+		return FormatOption.fromOption(outputFormat);
+	}
 
-        this.filesQuantity--;
+	public synchronized void write(ResultStructure result) {
+		if (isFirstReport) {
+			processingHandler.startReport();
+			processingHandler.fillReport(result);
+			isFirstReport = false;
+		} else {
+			processingHandler.fillReport(result);
+		}
 
-        if (filesQuantity == 0) {
-            processingHandler.endReport();
-        }
-    }
+		this.filesQuantity--;
 
-    private List<File> getFiles(List<String> pdfPaths, boolean isRecurse) {
-        List<File> toFilter = new ArrayList<>(pdfPaths.size());
-        pdfPaths.forEach(path -> toFilter.add(new File(path)));
+		if (filesQuantity == 0) {
+			processingHandler.endReport();
+		}
+	}
 
-        return ApplicationUtils.filterPdfFiles(toFilter, isRecurse);
-    }
+	private List<File> getFiles(List<String> pdfPaths, boolean isRecurse) {
+		List<File> toFilter = new ArrayList<>(pdfPaths.size());
+		pdfPaths.forEach(path -> toFilter.add(new File(path)));
 
-    private void startProcesses(int numberOfProcesses) {
-        int processesQuantity = Math.min(numberOfProcesses, filesToProcess.size());
-        for (int i = 0; i < processesQuantity; i++) {
-            BaseCliRunner veraPDFRunner = new BaseCliRunner(this, veraPDFStarterPath.getAbsolutePath(), veraPDFParameters, filesToProcess);
-            new Thread(veraPDFRunner).start();
-        }
-    }
+		return ApplicationUtils.filterPdfFiles(toFilter, isRecurse);
+	}
+
+	private void startProcesses(int numberOfProcesses) {
+		int processesQuantity = Math.min(numberOfProcesses, filesToProcess.size());
+		for (int i = 0; i < processesQuantity; i++) {
+			BaseCliRunner veraPDFRunner = new BaseCliRunner(this, veraPDFStarterPath.getAbsolutePath(), veraPDFParameters, filesToProcess);
+			new Thread(veraPDFRunner).start();
+		}
+	}
 
 }

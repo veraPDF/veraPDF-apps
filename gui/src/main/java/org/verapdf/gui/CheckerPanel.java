@@ -543,27 +543,25 @@ class CheckerPanel extends JPanel {
 		if (!this.isValidationErrorOccurred) {
 			try {
 				BatchSummary result = this.validateWorker.get();
-				if (result!=null) {
-					if (!result.isMultiJob()) {
-                        if (result.getFailedParsingJobs() == 1) {
-                            setResultMessage(GUIConstants.ERROR_IN_PARSING, GUIConstants.VALIDATION_FAILED_COLOR);
-                        } else if (result.getFailedEncryptedJobs() == 1) {
-                            setResultMessage(GUIConstants.ENCRYPTED_PDF, GUIConstants.VALIDATION_FAILED_COLOR);
-                        } else if (result.getValidationSummary().getCompliantPdfaCount() > 0) {
-                            setResultMessage(GUIConstants.VALIDATION_OK, GUIConstants.VALIDATION_SUCCESS_COLOR);
-                        } else if (result.getValidationSummary().getNonCompliantPdfaCount() > 0) {
-                            setResultMessage(GUIConstants.VALIDATION_FALSE, GUIConstants.VALIDATION_FAILED_COLOR);
-                        } else if (result.getValidationSummary().getFailedJobCount() == 1) {
-                            setResultMessage(GUIConstants.ERROR_IN_VALIDATING, GUIConstants.VALIDATION_FAILED_COLOR);
-                        } else if (result.getFeaturesSummary().getTotalJobCount() > 0) {
-                            setResultMessage(GUIConstants.FEATURES_GENERATED_CORRECT,
-                                    GUIConstants.VALIDATION_SUCCESS_COLOR);
-                        } else {
-                            setResultMessage(GUIConstants.ERROR_IN_FEATURES, GUIConstants.VALIDATION_FAILED_COLOR);
-                        }
-                    } else {
-                        setResultMessage(getBatchResultMessage(result), GUIConstants.BEFORE_VALIDATION_COLOR);
-                    }
+				if (!result.isMultiJob()) {
+					if (result.getFailedParsingJobs() == 1) {
+						setResultMessage(GUIConstants.ERROR_IN_PARSING, GUIConstants.VALIDATION_FAILED_COLOR);
+					} else if (result.getFailedEncryptedJobs() == 1) {
+						setResultMessage(GUIConstants.ENCRYPTED_PDF, GUIConstants.VALIDATION_FAILED_COLOR);
+					} else if (result.getValidationSummary().getCompliantPdfaCount() > 0) {
+						setResultMessage(GUIConstants.VALIDATION_OK, GUIConstants.VALIDATION_SUCCESS_COLOR);
+					} else if (result.getValidationSummary().getNonCompliantPdfaCount() > 0) {
+						setResultMessage(GUIConstants.VALIDATION_FALSE, GUIConstants.VALIDATION_FAILED_COLOR);
+					} else if (result.getValidationSummary().getFailedJobCount() == 1) {
+						setResultMessage(GUIConstants.ERROR_IN_VALIDATING, GUIConstants.VALIDATION_FAILED_COLOR);
+					} else if (result.getFeaturesSummary().getTotalJobCount() > 0) {
+						setResultMessage(GUIConstants.FEATURES_GENERATED_CORRECT,
+								GUIConstants.VALIDATION_SUCCESS_COLOR);
+					} else {
+						setResultMessage(GUIConstants.ERROR_IN_FEATURES, GUIConstants.VALIDATION_FAILED_COLOR);
+					}
+				} else {
+					setResultMessage(getBatchResultMessage(result), GUIConstants.BEFORE_VALIDATION_COLOR);
 				}
 				this.resultLabel.setVisible(true);
 
