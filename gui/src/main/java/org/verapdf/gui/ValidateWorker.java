@@ -14,23 +14,6 @@
  */
 package org.verapdf.gui;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathExpressionException;
-
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
@@ -41,14 +24,20 @@ import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.policy.PolicyChecker;
-import org.verapdf.processor.BatchProcessor;
-import org.verapdf.processor.FormatOption;
-import org.verapdf.processor.ProcessorConfig;
-import org.verapdf.processor.ProcessorFactory;
-import org.verapdf.processor.TaskType;
+import org.verapdf.processor.*;
 import org.verapdf.processor.reports.BatchSummary;
 import org.verapdf.report.HTMLReport;
 import org.xml.sax.SAXException;
+
+import javax.swing.*;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.*;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Validates PDF in a new thread.
@@ -135,7 +124,6 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			logger.log(Level.SEVERE, ERROR_IN_PROCESSING, e);
 			this.parent.handleValidationError(ERROR_IN_PROCESSING + ": ", e); //$NON-NLS-1$
 		}
-
 		if (this.batchSummary != null) {
 			writeHtmlReport();
 		}

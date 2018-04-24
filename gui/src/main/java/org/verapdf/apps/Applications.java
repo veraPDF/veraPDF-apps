@@ -1,6 +1,6 @@
 /**
  * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
- * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org> All rights
+ * Copyright (c) 2015, veraPDF Consortium <info@VERAPDF.org> All rights
  * reserved. VeraPDF Library GUI is free software: you can redistribute it
  * and/or modify it under the terms of either: The GNU General public license
  * GPLv3+. You should have received a copy of the GNU General Public License
@@ -46,10 +46,36 @@ public final class Applications {
 	public static final String UPDATE_SERVICE_NOT_AVAILABLE = "Update Service not available"; //$NON-NLS-1$
 	public static final String UPDATE_LATEST_VERSION = "You are currently running the latest version of veraPDF%s v%s"; //$NON-NLS-1$
 	public static final String UPDATE_OLD_VERSION = "You are NOT running the latest version of veraPDF.\nYou are running version %s, the latest version is %s.\n"; //$NON-NLS-1$
-	public static final String UPDATE_URI = "http://downloads.verapdf.org/rel/verapdf-installer.zip"; //$NON-NLS-1$
+	public static final String UPDATE_URI = "http://downloads.VERAPDF.org/rel/VERAPDF-installer.zip"; //$NON-NLS-1$
+	
+	private static final String VERAPDF = "verapdf";
+	private static final String BAT_EXTENSION = ".bat";
 
 	private Applications() {
 		assert (false);
+	}
+	
+	public static File getVeraScriptFile() {
+		File startFile = null;
+		String appHome = System.getProperty(APP_HOME_PROPERTY);
+		
+		if (appHome != null) {
+			File veraPdfDirectory = new File(appHome);
+			startFile = getStartFile(veraPdfDirectory);
+		}
+		return startFile;
+	}
+
+	private static File getStartFile(File veraPdfDirectory) {
+		File unixStartFile = new File(veraPdfDirectory, VERAPDF);
+		if (unixStartFile.isFile()) {
+			return unixStartFile;
+		}
+		File windowsStartFile = new File(veraPdfDirectory, VERAPDF+BAT_EXTENSION);
+		if (windowsStartFile.isFile()) {
+			return windowsStartFile;
+		}
+		return null;
 	}
 
 	/**
