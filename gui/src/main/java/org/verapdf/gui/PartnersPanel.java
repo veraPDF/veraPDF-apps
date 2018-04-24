@@ -66,7 +66,7 @@ class PartnersPanel extends JPanel {
 				(int) (this.consortium.getFont().getSize() * GUIConstants.CONSORTIUM_FONT_SCALE)));
 		Rectangle2D rec = new TextLayout(GUIConstants.CONSORTIUM_TEXT, this.consortium.getFont(),
 				new FontRenderContext(null, true, true)).getBounds();
-		this.consortium.setSize((int) (rec.getWidth()) + GUIConstants.BORDER_WIDTH * 2,
+		this.consortium.setSize((int) (rec.getWidth()) + GUIConstants.BORDER_WIDTH * 4,
 				(int) (rec.getHeight() + GUIConstants.BORDER_WIDTH));
 
 		add(this.consortium);
