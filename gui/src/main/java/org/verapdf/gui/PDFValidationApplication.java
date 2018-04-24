@@ -59,6 +59,7 @@ import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
+import org.verapdf.processor.FeaturesPluginsLoader;
 
 /**
  * Main frame of the PDFA Conformance Checker
@@ -356,6 +357,7 @@ public class PDFValidationApplication extends JFrame {
 	 *            command line arguments
 	 */
 	public static void main(String[] args) {
+		FeaturesPluginsLoader.setBaseFolderPath(System.getProperty(Applications.APP_HOME_PROPERTY));
 		double frameScale = 1;
 		if (args.length > 1 && "--frameScale".equals(args[0]) && args[1] != null) {
 			try {
