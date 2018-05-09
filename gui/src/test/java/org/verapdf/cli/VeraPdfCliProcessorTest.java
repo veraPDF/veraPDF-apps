@@ -67,16 +67,18 @@ public class VeraPdfCliProcessorTest {
 		JCommander jCommander = initialiseJCommander(parser);
 		jCommander.parse(new String[] {});
 		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
-		VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager);
-		assertNotNull(proc.getConfig());
-		assertTrue(proc.getConfig().getFormat() == FormatOption.MRR);
+		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+			assertNotNull(proc.getConfig());
+			assertTrue(proc.getConfig().getFormat() == FormatOption.MRR);
+		}
 		for (FormatOption format : FormatOption.values()) {
 			parser = new VeraCliArgParser();
 			jCommander = initialiseJCommander(parser);
 			jCommander.parse(new String[] { "--format", format.getOption() });
-			proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager);
-			assertTrue("Expected:" + format + " == " + proc.getConfig().getFormat(),
-					proc.getConfig().getFormat() == format);
+			try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+				assertTrue("Expected:" + format + " == " + proc.getConfig().getFormat(),
+						proc.getConfig().getFormat() == format);
+			}
 		}
 	}
 
@@ -96,13 +98,14 @@ public class VeraPdfCliProcessorTest {
 		JCommander jCommander = initialiseJCommander(parser);
 		jCommander.parse(new String[] {});
 		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
-		VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager);
-		assertFalse(proc.getProcessorConfig().getValidatorConfig().isRecordPasses());
-
+		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+			assertFalse(proc.getProcessorConfig().getValidatorConfig().isRecordPasses());
+		}
 		for (String argVal : argVals) {
 			jCommander.parse(new String[] { argVal });
-			proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager);
-			assertTrue(proc.getProcessorConfig().getValidatorConfig().isRecordPasses());
+			try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+				assertTrue(proc.getProcessorConfig().getValidatorConfig().isRecordPasses());
+			}
 			parser = new VeraCliArgParser();
 			jCommander = initialiseJCommander(parser);
 		}
@@ -124,12 +127,14 @@ public class VeraPdfCliProcessorTest {
 		JCommander jCommander = initialiseJCommander(parser);
 		jCommander.parse(new String[] {});
 		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
-		VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager);
-		assertFalse(proc.getProcessorConfig().getTasks().contains(TaskType.EXTRACT_FEATURES));
+		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+			assertFalse(proc.getProcessorConfig().getTasks().contains(TaskType.EXTRACT_FEATURES));
+		}
 		for (String argVal : argVals) {
-			jCommander.parse(new String[] { argVal });
-			proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager);
-			assertTrue(proc.getProcessorConfig().getTasks().contains(TaskType.EXTRACT_FEATURES));
+			jCommander.parse(new String[]{argVal});
+			try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+				assertTrue(proc.getProcessorConfig().getTasks().contains(TaskType.EXTRACT_FEATURES));
+			}
 			parser = new VeraCliArgParser();
 			jCommander = initialiseJCommander(parser);
 		}
@@ -152,15 +157,17 @@ public class VeraPdfCliProcessorTest {
 		JCommander jCommander = initialiseJCommander(parser);
 		jCommander.parse(new String[] {});
 		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
-		VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager);
-		assertTrue(proc.getProcessorConfig().getValidatorConfig().getFlavour() == PDFAFlavour.NO_FLAVOUR);
+		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+			assertTrue(proc.getProcessorConfig().getValidatorConfig().getFlavour() == PDFAFlavour.NO_FLAVOUR);
+		}
 		ProfileDirectory directory = Profiles.getVeraProfileDirectory();
 		assertTrue(directory.getValidationProfiles().size() > 0);
 		for (String argVal : argVals) {
 			for (ValidationProfile profile : directory.getValidationProfiles()) {
 				jCommander.parse(new String[] { argVal, profile.getPDFAFlavour().getId() });
-				proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager);
-				assertTrue(proc.getProcessorConfig().getValidatorConfig().getFlavour() == profile.getPDFAFlavour());
+				try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+					assertTrue(proc.getProcessorConfig().getValidatorConfig().getFlavour() == profile.getPDFAFlavour());
+				}
 				parser = new VeraCliArgParser();
 				jCommander = initialiseJCommander(parser);
 			}
@@ -189,11 +196,13 @@ public class VeraPdfCliProcessorTest {
 		JCommander jCommander = initialiseJCommander(parser);
 		jCommander.parse(new String[] {});
 		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
-		VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager);
-		assertTrue(proc.getProcessorConfig().getValidatorConfig().getFlavour() == PDFAFlavour.NO_FLAVOUR);
+		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+			assertTrue(proc.getProcessorConfig().getValidatorConfig().getFlavour() == PDFAFlavour.NO_FLAVOUR);
+		}
 		for (String argVal : argVals) {
 			jCommander.parse(new String[] { argVal, PDFAFlavour.NO_FLAVOUR.getId() });
-			proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager);
+			try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+			}
 			parser = new VeraCliArgParser();
 			jCommander = initialiseJCommander(parser);
 		}

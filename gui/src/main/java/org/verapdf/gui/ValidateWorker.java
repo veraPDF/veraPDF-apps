@@ -14,23 +14,6 @@
  */
 package org.verapdf.gui;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathExpressionException;
-
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
@@ -41,14 +24,20 @@ import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.policy.PolicyChecker;
-import org.verapdf.processor.BatchProcessor;
-import org.verapdf.processor.FormatOption;
-import org.verapdf.processor.ProcessorConfig;
-import org.verapdf.processor.ProcessorFactory;
-import org.verapdf.processor.TaskType;
+import org.verapdf.processor.*;
 import org.verapdf.processor.reports.BatchSummary;
 import org.verapdf.report.HTMLReport;
 import org.xml.sax.SAXException;
+
+import javax.swing.*;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathExpressionException;
+import java.io.*;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Validates PDF in a new thread.
@@ -135,7 +124,6 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			logger.log(Level.SEVERE, ERROR_IN_PROCESSING, e);
 			this.parent.handleValidationError(ERROR_IN_PROCESSING + ": ", e); //$NON-NLS-1$
 		}
-
 		if (this.batchSummary != null) {
 			writeHtmlReport();
 		}
@@ -148,12 +136,14 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 		this.xmlReport = File.createTempFile("veraPDF-tempXMLReport", ".xml"); //$NON-NLS-1$ //$NON-NLS-2$
 		this.xmlReport.deleteOnExit();
 		File tempPolicyResult = File.createTempFile("policyResult", "veraPDF"); //$NON-NLS-1$ //$NON-NLS-2$
-		tempPolicyResult.deleteOnExit();
 		try (InputStream mrrIs = new FileInputStream(tempMrrFile);
 				OutputStream policyResultOs = new FileOutputStream(tempPolicyResult);
 				OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
 			PolicyChecker.applyPolicy(this.policy, mrrIs, policyResultOs);
 			PolicyChecker.insertPolicyReport(tempPolicyResult, tempMrrFile, mrrReport);
+		}
+		if (!tempPolicyResult.delete()) {
+			tempPolicyResult.deleteOnExit();
 		}
 	}
 
@@ -170,7 +160,7 @@ class ValidateWorker extends SwingWorker<BatchSummary, Integer> {
 			this.htmlReport.deleteOnExit();
 			try (InputStream xmlStream = new FileInputStream(this.xmlReport);
 					OutputStream htmlStream = new FileOutputStream(this.htmlReport)) {
-				HTMLReport.writeHTMLReport(xmlStream, htmlStream, this.batchSummary,
+				HTMLReport.writeHTMLReport(xmlStream, htmlStream, this.batchSummary.isMultiJob(),
 						this.configManager.getApplicationConfig().getWikiPath(), true);
 
 			} catch (IOException | TransformerException excep) {

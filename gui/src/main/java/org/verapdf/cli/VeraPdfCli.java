@@ -17,10 +17,14 @@
  */
 package org.verapdf.cli;
 
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,6 +33,7 @@ import org.verapdf.apps.Applications;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.SoftwareUpdater;
 import org.verapdf.cli.commands.VeraCliArgParser;
+import org.verapdf.cli.multithread.MultiThreadProcessor;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
@@ -37,6 +42,7 @@ import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import org.verapdf.processor.FeaturesPluginsLoader;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -48,6 +54,8 @@ public final class VeraPdfCli {
 	private static final String FLAVOURS_HEADING = CliConstants.APP_NAME + " supported PDF/A profiles:"; //$NON-NLS-1$
 	private static final ProfileDirectory PROFILES = Profiles.getVeraProfileDirectory();
 
+	public static final String EXIT = "q";
+
 	private VeraPdfCli() {
 		// disable default constructor
 	}
@@ -55,12 +63,12 @@ public final class VeraPdfCli {
 	/**
 	 * Main CLI entry point, process the command line arguments
 	 *
-	 * @param args
-	 *            Java.lang.String array of command line args, to be processed
-	 *            using Apache commons CLI.
+	 * @param args Java.lang.String array of command line args, to be processed
+	 *             using Apache commons CLI.
 	 */
 	public static void main(final String[] args) throws VeraPDFException {
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
+		FeaturesPluginsLoader.setBaseFolderPath(System.getProperty(Applications.APP_HOME_PROPERTY));
 		ReleaseDetails.addDetailsFromResource(
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
 		VeraCliArgParser cliArgParser = new VeraCliArgParser();
@@ -71,25 +79,22 @@ public final class VeraPdfCli {
 			jCommander.parse(args);
 		} catch (ParameterException e) {
 			System.err.println(e.getMessage());
-			showVersionInfo(cliArgParser.isVerbose());
-			jCommander.usage();
-			System.exit(1);
+			displayHelpAndExit(cliArgParser, jCommander, 1);
 		}
 		if (cliArgParser.isHelp()) {
-			showVersionInfo(cliArgParser.isVerbose());
-			jCommander.usage();
-			System.exit(0);
+			displayHelpAndExit(cliArgParser, jCommander, 0);
 		}
 		messagesFromParser(cliArgParser);
 		if (isProcess(cliArgParser)) {
+			if (args.length == 0) {
+				jCommander.usage();
+			}
 			try {
-				VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser,
-						configManager);
-				if (args.length == 0)
-					jCommander.usage();
-				// FIXME: trap policy IO Exception (deliberately left un-caught
-				// for development)
-				processor.processPaths(cliArgParser.getPdfPaths());
+				if (cliArgParser.isServerMode() || cliArgParser.getNumberOfProcesses() < 2) {
+					singleThreadProcess(cliArgParser);
+				} else {
+					MultiThreadProcessor.process(cliArgParser);
+				}
 			} catch (OutOfMemoryError oome) {
 				final String message = "The JVM appears to have run out of memory"; //$NON-NLS-1$
 				logger.log(Level.WARNING, message, oome);
@@ -110,6 +115,40 @@ public final class VeraPdfCli {
 		}
 	}
 
+	private static void singleThreadProcess(VeraCliArgParser cliArgParser) throws VeraPDFException {
+		try (VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser,
+				configManager)) {
+			// FIXME: trap policy IO Exception (deliberately left un-caught for development)
+			processor.processPaths(cliArgParser.getPdfPaths());
+			if (cliArgParser.isServerMode()) {
+				File tempFile = processor.getTempFile();
+				if (tempFile != null) {
+					System.out.println(tempFile.getAbsoluteFile());
+				}
+				Scanner scanner = new Scanner(System.in);
+				while (scanner.hasNextLine()) {
+					String path = scanner.nextLine();
+					if (path != null) {
+						if (path.equals(EXIT)) {
+							break;
+						} else {
+							List<String> pathes = new ArrayList<>();
+							pathes.add(path);
+							processor.processPaths(pathes);
+							System.out.println(processor.getTempFile().getAbsolutePath());
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public static void displayHelpAndExit(VeraCliArgParser cliArgParser, JCommander jCommander, int i) {
+		showVersionInfo(cliArgParser.isVerbose());
+		jCommander.usage();
+		System.exit(i);
+	}
+
 	private static void messagesFromParser(final VeraCliArgParser parser) {
 
 		if (parser.listProfiles()) {
@@ -126,9 +165,9 @@ public final class VeraPdfCli {
 		EnumSet<PDFAFlavour> flavs = EnumSet.copyOf(PROFILES.getPDFAFlavours());
 		for (PDFAFlavour flav : flavs) {
 			ValidationProfile profile = PROFILES.getValidationProfileByFlavour(flav);
-			System.out.format("  %s - %s", profile.getPDFAFlavour().getId(), profile.getDetails().getName()); //$NON-NLS-1$
+			System.out.format("  %s - %s", profile.getPDFAFlavour().getId(), profile.getDetails().getName());//$NON-NLS-1$
+			System.out.println();
 		}
-		System.out.println();
 	}
 
 	private static void showVersionInfo(final boolean isVerbose) {

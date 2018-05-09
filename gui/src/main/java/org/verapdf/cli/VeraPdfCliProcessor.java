@@ -17,13 +17,8 @@
  */
 package org.verapdf.cli;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -49,7 +44,7 @@ import org.verapdf.processor.reports.ItemDetails;
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
  */
-final class VeraPdfCliProcessor {
+final class VeraPdfCliProcessor implements Closeable {
 	private static final Logger logger = Logger.getLogger(VeraPdfCliProcessor.class.getCanonicalName());
 
 	private final ConfigManager configManager;
@@ -57,16 +52,21 @@ final class VeraPdfCliProcessor {
 	private final VeraAppConfig appConfig;
 	private final boolean isPolicy;
 	private final boolean isRecursive;
+	private final boolean isServerMode;
 	private final File tempMrrFile;
 	private final File policyFile;
 	private boolean isStdOut = true;
 	private boolean appendData = true;
 	private String baseDirectory = ""; //$NON-NLS-1$
+	private OutputStream os;
+	private File tempFile;
 
 	private VeraPdfCliProcessor(final VeraCliArgParser args, ConfigManager configManager) throws VeraPDFException {
 		this.configManager = configManager;
 		this.isPolicy = args.isPolicy();
 		this.isRecursive = args.isRecurse();
+		this.isServerMode = args.isServerMode();
+
 		try {
 			this.tempMrrFile = (this.isPolicy) ? File.createTempFile("mrr", "veraPDF") : null; //$NON-NLS-1$//$NON-NLS-2$
 		} catch (IOException excep) {
@@ -99,6 +99,16 @@ final class VeraPdfCliProcessor {
 	}
 
 	void processPaths(final List<String> pdfPaths) throws VeraPDFException {
+		if (isServerMode) {
+			try {
+				this.tempFile = Files.createTempFile("tempReport", ".xml").toFile();
+				this.os = new FileOutputStream(tempFile);
+			} catch (IOException e) {
+				logger.log(Level.SEVERE, "Can't create temp file", e);
+			}
+		} else {
+			this.os = System.out;
+		}
 		// If the path list is empty then process the STDIN stream
 		if (pdfPaths.isEmpty()) {
 			processStdIn();
@@ -141,6 +151,7 @@ final class VeraPdfCliProcessor {
 					ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), reportStream,
 							this.appConfig.getMaxFailsDisplayed(),
 							this.processorConfig.getValidatorConfig().isRecordPasses()));
+			reportStream.flush();
 		} catch (VeraPDFException excep) {
 			String message = CliConstants.EXCEP_VERA_BATCH;
 			System.err.println(message);
@@ -157,9 +168,9 @@ final class VeraPdfCliProcessor {
 
 			OutputStream outputReportStream = this.getReportStream();
 			try {
-				if (result.isPdf() && !result.isEncryptedPdf())
+				if (result.isPdf() && !result.isEncryptedPdf()) {
 					ProcessorFactory.resultToXml(result, outputReportStream, true);
-				else {
+				} else {
 					String message = String.format(
 							(result.isPdf()) ? CliConstants.MESS_PDF_ENCRYPTED : CliConstants.MESS_PDF_NOT_VALID,
 							item.getName());
@@ -194,11 +205,11 @@ final class VeraPdfCliProcessor {
 				throw new IllegalStateException("Policy enabled BUT no temp destination", excep);
 			}
 		}
-		return System.out;
+		return this.os;
 	}
 
 	private void applyPolicy() throws VeraPDFException {
-		File tempPolicyResult = null;
+		File tempPolicyResult;
 		try {
 			tempPolicyResult = File.createTempFile("policyResult", "veraPDF");
 		} catch (IOException excep) {
@@ -207,11 +218,14 @@ final class VeraPdfCliProcessor {
 		try (InputStream mrrIs = new FileInputStream(this.tempMrrFile);
 				OutputStream policyResultOs = new FileOutputStream(tempPolicyResult)) {
 			PolicyChecker.applyPolicy(this.policyFile, mrrIs, policyResultOs);
-			PolicyChecker.insertPolicyReport(tempPolicyResult, this.tempMrrFile, System.out);
+			PolicyChecker.insertPolicyReport(tempPolicyResult, this.tempMrrFile, os);
 		} catch (FileNotFoundException excep) {
 			throw new VeraPDFException("Could not find temporary policy result file.", excep);
 		} catch (IOException excep) {
 			logger.log(Level.FINE, "Exception raised closing temporary policy file.", excep);
+		}
+		if (!tempPolicyResult.delete()) {
+			tempPolicyResult.deleteOnExit();
 		}
 	}
 
@@ -255,5 +269,16 @@ final class VeraPdfCliProcessor {
 			this.appendData = true;
 		}
 		return reportPath;
+	}
+
+	@Override
+	public void close() {
+		if (this.tempMrrFile != null && !this.tempMrrFile.delete()) {
+			this.tempMrrFile.deleteOnExit();
+		}
+	}
+
+	public File getTempFile() {
+		return tempFile;
 	}
 }

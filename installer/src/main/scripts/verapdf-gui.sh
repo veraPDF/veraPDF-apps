@@ -128,6 +128,8 @@ SCALE_FACTOR=1.0
 exec "$JAVACMD" $JAVA_OPTS  \
   -classpath "$CLASSPATH" \
   -Dfile.encoding="UTF8" \
+  -XX:+IgnoreUnrecognizedVMOptions \
+  --add-modules=java.xml.bind \
   -Dapp.name="VeraPDF validation GUI" \
   -Dapp.pid="$$" \
   -Dapp.repo="$REPO" \
