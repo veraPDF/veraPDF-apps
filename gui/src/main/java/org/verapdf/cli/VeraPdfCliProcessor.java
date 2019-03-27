@@ -34,11 +34,8 @@ import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.policy.PolicyChecker;
-import org.verapdf.processor.BatchProcessor;
-import org.verapdf.processor.ItemProcessor;
-import org.verapdf.processor.ProcessorConfig;
-import org.verapdf.processor.ProcessorFactory;
-import org.verapdf.processor.ProcessorResult;
+import org.verapdf.processor.*;
+import org.verapdf.processor.reports.BatchSummary;
 import org.verapdf.processor.reports.ItemDetails;
 
 /**
@@ -110,7 +107,7 @@ final class VeraPdfCliProcessor implements Closeable {
 			this.os = System.out;
 		}
 		// If the path list is empty then process the STDIN stream
-		if (pdfPaths.isEmpty()) {
+		if (pdfPaths.isEmpty() && !isServerMode) {
 			processStdIn();
 		} else {
 			processFilePaths(pdfPaths);
@@ -127,8 +124,14 @@ final class VeraPdfCliProcessor implements Closeable {
 	}
 
 	private void processStdIn() {
-		for (String messageLine : CliConstants.MESS_PROC_STDIN) {
-			System.out.println(messageLine);
+		try {
+			if (System.in.available() == 0) {
+				for (String messageLine : CliConstants.MESS_PROC_STDIN) {
+					System.out.println(messageLine);
+				}
+			}
+		} catch (IOException e) {
+			logger.log(Level.SEVERE,"STDIN is not available", e);
 		}
 		ItemDetails item = ItemDetails.fromValues(CliConstants.NAME_STDIN);
 		processStream(item, System.in);
@@ -160,7 +163,6 @@ final class VeraPdfCliProcessor implements Closeable {
 			logger.log(Level.FINE, CliConstants.EXCEP_TEMP_MRR_CLOSE, excep);
 		}
 	}
-
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
 		try (ItemProcessor processor = ProcessorFactory.createProcessor(this.processorConfig)) {
 
@@ -168,8 +170,13 @@ final class VeraPdfCliProcessor implements Closeable {
 
 			OutputStream outputReportStream = this.getReportStream();
 			try {
+				BatchProcessingHandler handler = ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), outputReportStream,
+						this.appConfig.getMaxFailsDisplayed(),
+						this.processorConfig.getValidatorConfig().isRecordPasses());
+
 				if (result.isPdf() && !result.isEncryptedPdf()) {
-					ProcessorFactory.resultToXml(result, outputReportStream, true);
+                    ProcessorFactory.writeSingleResultReport(result, handler, processorConfig);
+
 				} else {
 					String message = String.format(
 							(result.isPdf()) ? CliConstants.MESS_PDF_ENCRYPTED : CliConstants.MESS_PDF_NOT_VALID,
@@ -180,6 +187,8 @@ final class VeraPdfCliProcessor implements Closeable {
 			} catch (JAXBException | IOException excep) {
 				// TODO Auto-generated catch block
 				logger.log(Level.SEVERE, CliConstants.EXCEP_REPORT_MARSHAL, excep);
+			} catch (VeraPDFException e) {
+				logger.log(Level.SEVERE,"STDIN is not available", e);
 			}
 
 			if (!this.isStdOut) {

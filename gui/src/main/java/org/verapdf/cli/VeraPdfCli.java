@@ -86,8 +86,12 @@ public final class VeraPdfCli {
 		}
 		messagesFromParser(cliArgParser);
 		if (isProcess(cliArgParser)) {
-			if (args.length == 0) {
-				jCommander.usage();
+			try {
+				if (args.length == 0 && System.in.available() == 0) {
+					jCommander.usage();
+				}
+			} catch (IOException e) {
+				logger.log(Level.SEVERE,"STDIN is not available", e);
 			}
 			try {
 				if (cliArgParser.isServerMode() || cliArgParser.getNumberOfProcesses() < 2) {
