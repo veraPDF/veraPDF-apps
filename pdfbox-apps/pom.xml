@@ -64,11 +64,26 @@
       <artifactId>pdfbox-metadata-fixer</artifactId>
       <version>${verapdf.pdfbox.validation.version}</version>
     </dependency>
-  
+
     <dependency>
       <groupId>org.verapdf.apps</groupId>
       <artifactId>gui</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
+     </dependency>
+
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
     </dependency>
 
     <dependency>
