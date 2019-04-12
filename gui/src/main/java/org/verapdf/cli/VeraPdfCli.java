@@ -17,7 +17,7 @@
  */
 package org.verapdf.cli;
 
-import java.io.*;
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -32,6 +32,7 @@ import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.SoftwareUpdater;
+import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.cli.multithread.MultiThreadProcessor;
 import org.verapdf.core.VeraPDFException;
@@ -39,10 +40,10 @@ import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
+import org.verapdf.processor.FeaturesPluginsLoader;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
-import org.verapdf.processor.FeaturesPluginsLoader;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -79,10 +80,10 @@ public final class VeraPdfCli {
 			jCommander.parse(args);
 		} catch (ParameterException e) {
 			System.err.println(e.getMessage());
-			displayHelpAndExit(cliArgParser, jCommander, 1);
+			displayHelpAndExit(cliArgParser, jCommander, ExitCodes.BAD_PARAMS);
 		}
 		if (cliArgParser.isHelp()) {
-			displayHelpAndExit(cliArgParser, jCommander, 0);
+			displayHelpAndExit(cliArgParser, jCommander, ExitCodes.VALID);
 		}
 		messagesFromParser(cliArgParser);
 		if (isProcess(cliArgParser)) {
@@ -91,7 +92,7 @@ public final class VeraPdfCli {
 			}
 			try {
 				if (cliArgParser.isServerMode() || cliArgParser.getNumberOfProcesses() < 2) {
-					singleThreadProcess(cliArgParser);
+					System.exit(singleThreadProcess(cliArgParser).value);
 				} else {
 					MultiThreadProcessor.process(cliArgParser);
 				}
@@ -110,43 +111,48 @@ public final class VeraPdfCli {
 				System.out.format("   export JAVA_OPTS=\"-Xmx2048m\"\n"); //$NON-NLS-1$
 				System.out.format(" - Windows users:\n"); //$NON-NLS-1$
 				System.out.format("   SET JAVA_OPTS=\"-Xmx2048m\"\n"); //$NON-NLS-1$
-				System.exit(1);
+				System.exit(ExitCodes.OOM.value);
 			}
+			System.exit(ExitCodes.VALID.value);
 		}
 	}
 
-	private static void singleThreadProcess(VeraCliArgParser cliArgParser) throws VeraPDFException {
+	private static ExitCodes singleThreadProcess(VeraCliArgParser cliArgParser) throws VeraPDFException {
 		try (VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser,
 				configManager)) {
 			// FIXME: trap policy IO Exception (deliberately left un-caught for development)
-			processor.processPaths(cliArgParser.getPdfPaths());
+			ExitCodes retVal = processor.processPaths(cliArgParser.getPdfPaths());
 			if (cliArgParser.isServerMode()) {
 				File tempFile = processor.getTempFile();
 				if (tempFile != null) {
 					System.out.println(tempFile.getAbsoluteFile());
 				}
-				Scanner scanner = new Scanner(System.in);
-				while (scanner.hasNextLine()) {
-					String path = scanner.nextLine();
-					if (path != null) {
-						if (path.equals(EXIT)) {
-							break;
-						} else {
-							List<String> pathes = new ArrayList<>();
-							pathes.add(path);
-							processor.processPaths(pathes);
+				try (Scanner scanner = new Scanner(System.in);) {
+					while (scanner.hasNextLine()) {
+						String path = scanner.nextLine();
+						if (path != null) {
+							if (path.equals(EXIT)) {
+								break;
+							}
+							List<String> paths = new ArrayList<>();
+							paths.add(path);
+							ExitCodes exitCode = processor.processPaths(paths);
 							System.out.println(processor.getTempFile().getAbsolutePath());
+							if (exitCode.value > retVal.value) {
+								retVal = exitCode;
+							}
 						}
 					}
 				}
 			}
+			return retVal;
 		}
 	}
 
-	public static void displayHelpAndExit(VeraCliArgParser cliArgParser, JCommander jCommander, int i) {
+	public static void displayHelpAndExit(VeraCliArgParser cliArgParser, JCommander jCommander, ExitCodes exitCode) {
 		showVersionInfo(cliArgParser.isVerbose());
 		jCommander.usage();
-		System.exit(i);
+		System.exit(exitCode.value);
 	}
 
 	private static void messagesFromParser(final VeraCliArgParser parser) {

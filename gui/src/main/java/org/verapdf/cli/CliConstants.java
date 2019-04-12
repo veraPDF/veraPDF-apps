@@ -22,8 +22,8 @@ public final class CliConstants {
 
 	public static final String APP_NAME = "veraPDF"; //$NON-NLS-1$
 
-	public static final String EXCEP_PROCESSOR_CLOSE = "IOExeption raised when closing ItemProcessor";
-	public static final String EXCEP_REPORT_MARSHAL = "JAXBEception raised when marshalling report.";
+	public static final String EXCEP_PROCESSOR_CLOSE = "IOException raised when closing ItemProcessor";
+	public static final String EXCEP_REPORT_MARSHAL = "JAXBException raised when marshalling report.";
 	public static final String EXCEP_REPORT_CLOSE = "Cannot close the report file.";
 	public static final String EXCEP_TEMP_MRR_CREATE = "Failed to create temporary MRR file";
 	public static final String EXCEP_TEMP_MRR_CLOSE = "Exception raised closing MRR temp file.";
@@ -31,7 +31,7 @@ public final class CliConstants {
 	public static final String EXCEP_VERA_BATCH = "VeraPDFException raised while processing batch";
 
 	public static final String MESS_PDF_ENCRYPTED = "%s is an encrypted PDF document.";
-	public static final String MESS_PDF_NOT_VALID = "%s is not a valid PDF.";
+	public static final String MESS_PDF_NOT_VALID = "%s is not a valid PDF document.";
 	public static final String MESS_PROC_STDIN_1 = "veraPDF is processing STDIN and is expecting an EOF marker.";
 	public static final String MESS_PROC_STDIN_2 = "If this isn't your intention you can terminate by typing an EOF equivalent:";
 	public static final String MESS_PROC_STDIN_3 = " - Linux or Mac users should type CTRL-D";
@@ -42,6 +42,46 @@ public final class CliConstants {
 			MESS_PROC_STDIN_3,
 			MESS_PROC_STDIN_4
 	});
+
+	/**
+	 * All valid exit codes from veraPDF CLI
+	 * 
+	 * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
+	 *          <a href="https://github.com/carlwilson">carlwilson AT github</a>
+	 *
+	 * @version 0.1
+	 */
+	public enum ExitCodes {
+		/** All files parsed and valid */
+		VALID(0, "All files validated."),
+		/** All files parsed, some invalid */
+		INVALID(1, "Invalid PDF/A file(s) found."),
+		/** Bad command line parameters */
+		BAD_PARAMS(2, "Invalid command line parameters."),
+		/** Out of Memory */
+		OOM(3, "Out of Java heap space (memory)."),
+		/** No files from passed list or directory */
+		NO_FILES(4, "No files to process."),
+		/** Java I/O Exception during processing */ 
+		IO_EXCEP(6, "I/O Exception while processing."),
+		/** Failed to parse one or more files */
+		FAILED_PARSING(7, "Failed to parse one or more files."),
+		/** Some PDF files encrypted. */
+		ENCRYPTED_FILES(8, "Some PDFs encrypted."),
+		/** veraPDF exception thrown while processing */
+		VERAPDF_EXCEPTION(9, "veraPDF exception while processing"),
+		JAXB_EXCEPTION(10, "Java XML marshalling exception while processing result.");
+
+		/** The numeric exit code for return to OS. */
+		public final int value;
+		/** The appropriate help message for the exitCode */
+		public final String message;
+		
+		ExitCodes(final int exitCode, final String message) {
+			this.value = exitCode;
+			this.message = message;
+		}
+	}
 
 	public static final String NAME_STDIN = "STDIN";
 }
