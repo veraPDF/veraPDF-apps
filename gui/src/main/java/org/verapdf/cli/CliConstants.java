@@ -63,7 +63,7 @@ public final class CliConstants {
 		/** No files from passed list or directory */
 		NO_FILES(4, "No files to process."),
 		/** Java I/O Exception during processing */ 
-		IO_EXCEP(6, "I/O Exception while processing."),
+		IO_EXCEPTION(6, "I/O Exception while processing."),
 		/** Failed to parse one or more files */
 		FAILED_PARSING(7, "Failed to parse one or more files."),
 		/** Some PDF files encrypted. */

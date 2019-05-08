@@ -171,7 +171,7 @@ final class VeraPdfCliProcessor implements Closeable {
 			return ExitCodes.VERAPDF_EXCEPTION;
 		} catch (IOException excep) {
 			logger.log(Level.FINE, CliConstants.EXCEP_TEMP_MRR_CLOSE, excep);
-			return ExitCodes.IO_EXCEP;
+			return ExitCodes.IO_EXCEPTION;
 		}
 	}
 
