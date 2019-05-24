@@ -1,5 +1,6 @@
 package org.verapdf.cli.multithread;
 
+import org.verapdf.cli.CliConstants;
 import org.verapdf.cli.VeraPdfCli;
 import org.verapdf.processor.reports.ResultStructure;
 
@@ -95,6 +96,7 @@ public class BaseCliRunner implements Runnable {
         } catch (InterruptedException e) {
             LOGGER.log(Level.SEVERE, "Process interrupted exception", e);
         }
+        this.multiThreadProcessor.countDown(CliConstants.ExitCodes.fromValue(process.exitValue()));
         return isClosed;
     }
 

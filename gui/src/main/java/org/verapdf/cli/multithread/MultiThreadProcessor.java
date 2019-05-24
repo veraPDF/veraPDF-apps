@@ -2,6 +2,8 @@ package org.verapdf.cli.multithread;
 
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.utils.ApplicationUtils;
+import org.verapdf.cli.CliConstants;
+import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.processor.FormatOption;
 import org.verapdf.processor.reports.ResultStructure;
@@ -13,9 +15,10 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,6 +42,9 @@ public class MultiThreadProcessor {
 
 	private boolean isFirstReport = true;
 
+	private ExitCodes currentExitCode = ExitCodes.VALID;
+	private CountDownLatch latch;
+
 	private MultiThreadProcessor(VeraCliArgParser cliArgParser) {
 		this.os = new BufferedOutputStream(System.out, DEFAULT_BUFFER_SIZE * COEFFICIENT_BUFFER_SIZE);
 
@@ -55,9 +61,12 @@ public class MultiThreadProcessor {
 		this.processingHandler = new MultiThreadProcessingHandlerImpl(reportWriter);
 	}
 
-	public static void process(VeraCliArgParser cliArgParser) {
+	public static ExitCodes process(VeraCliArgParser cliArgParser) throws InterruptedException {
 		MultiThreadProcessor processor = new MultiThreadProcessor(cliArgParser);
-		processor.startProcesses(cliArgParser.getNumberOfProcesses());
+		if (processor.currentExitCode != ExitCodes.VALID) {
+			return processor.currentExitCode;
+		}
+		return processor.startProcesses(cliArgParser.getNumberOfProcesses());
 	}
 
 	private File getVeraPdfStarterFile(VeraCliArgParser cliArgParser) {
@@ -70,6 +79,7 @@ public class MultiThreadProcessor {
 				}
 			} catch (IllegalStateException e) {
 				LOGGER.log(Level.SEVERE, "Can't obtain veraPDF CLI script path", e);
+				this.currentExitCode = ExitCodes.FAILED_MULTIPROCESS_START;
 			}
 		}
 		return veraPDFPath;
@@ -102,12 +112,24 @@ public class MultiThreadProcessor {
 		return ApplicationUtils.filterPdfFiles(toFilter, isRecurse);
 	}
 
-	private void startProcesses(int numberOfProcesses) {
+	private ExitCodes startProcesses(int numberOfProcesses) throws InterruptedException {
 		int processesQuantity = Math.min(numberOfProcesses, filesToProcess.size());
+		latch = new CountDownLatch(processesQuantity);
+		ExecutorService executor = Executors.newFixedThreadPool(processesQuantity);
 		for (int i = 0; i < processesQuantity; i++) {
 			BaseCliRunner veraPDFRunner = new BaseCliRunner(this, veraPDFStarterPath.getAbsolutePath(), veraPDFParameters, filesToProcess);
-			new Thread(veraPDFRunner).start();
+			executor.submit(veraPDFRunner);
 		}
+		latch.await();
+		return this.currentExitCode;
 	}
 
+	public void countDown(ExitCodes exitCode) {
+		if (exitCode != null && exitCode.value > this.currentExitCode.value) {
+			this.currentExitCode = exitCode;
+		}
+		if (this.latch != null) {
+			this.latch.countDown();
+		}
+	}
 }
