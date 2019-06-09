@@ -54,7 +54,7 @@
     <developerConnection>scm:git:git@github.com:veraPDF/veraPDF-integration-tests.git</developerConnection>
   </scm>
   <issueManagement>
-    <url>https://github.com/veraPDF/veraPDF-apps/issues/</url>
+    <url>https://github.com/veraPDF/veraPDF-library/issues/</url>
     <system>GitHub Issues</system>
   </issueManagement>
 
@@ -65,7 +65,7 @@
       </snapshots>
       <id>vera-dev</id>
       <name>Vera development</name>
-      <url>http://artifactory.openpreservation.org/artifactory/vera-dev</url>
+      <url>https://artifactory.openpreservation.org/artifactory/vera-dev</url>
     </repository>
   </repositories>
 
