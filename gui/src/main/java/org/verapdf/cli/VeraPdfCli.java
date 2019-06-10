@@ -94,8 +94,11 @@ public final class VeraPdfCli {
 				if (cliArgParser.isServerMode() || cliArgParser.getNumberOfProcesses() < 2) {
 					System.exit(singleThreadProcess(cliArgParser).value);
 				} else {
-					MultiThreadProcessor.process(cliArgParser);
+					System.exit(MultiThreadProcessor.process(cliArgParser).value);
 				}
+			} catch (InterruptedException e) {
+				logger.log(Level.WARNING, "Interrupted", e);
+				System.exit(ExitCodes.INTERRUPTED_EXCEPTION.value);
 			} catch (OutOfMemoryError oome) {
 				final String message = "The JVM appears to have run out of memory"; //$NON-NLS-1$
 				logger.log(Level.WARNING, message, oome);

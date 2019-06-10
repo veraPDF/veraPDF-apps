@@ -69,8 +69,13 @@ public final class CliConstants {
 		/** Some PDF files encrypted. */
 		ENCRYPTED_FILES(8, "Some PDFs encrypted."),
 		/** veraPDF exception thrown while processing */
-		VERAPDF_EXCEPTION(9, "veraPDF exception while processing"),
-		JAXB_EXCEPTION(10, "Java XML marshalling exception while processing result.");
+		VERAPDF_EXCEPTION(9, "VeraPDF exception while processing."),
+		/** JAXB exception thrown while processing */
+		JAXB_EXCEPTION(10, "Java XML marshalling exception while processing result."),
+		/** Failed to start multiprocess */
+		FAILED_MULTIPROCESS_START(11, "Failed to start multiprocess"),
+		/** Interrupted exception */
+		INTERRUPTED_EXCEPTION(12, "Interrupted exception while processing");
 
 		/** The numeric exit code for return to OS. */
 		public final int value;
@@ -80,6 +85,15 @@ public final class CliConstants {
 		ExitCodes(final int exitCode, final String message) {
 			this.value = exitCode;
 			this.message = message;
+		}
+
+		public static ExitCodes fromValue(int code) {
+			for (ExitCodes exitCode : ExitCodes.values()) {
+				if (code == exitCode.value) {
+					return exitCode;
+				}
+			}
+			return null;
 		}
 	}
 
