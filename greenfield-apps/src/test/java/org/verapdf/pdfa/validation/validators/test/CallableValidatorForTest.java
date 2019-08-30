@@ -1,4 +1,4 @@
-package org.verapdf.pdfa.validation.validators;
+package org.verapdf.pdfa.validation.validators.test;
 
 import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.PDFAParser;
