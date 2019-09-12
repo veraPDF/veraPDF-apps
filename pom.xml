@@ -28,12 +28,12 @@
   <parent>
     <artifactId>verapdf-parent</artifactId>
     <groupId>org.verapdf</groupId>
-    <version>1.12.2</version>
+    <version>1.14.3</version>
   </parent>
 
   <groupId>org.verapdf</groupId>
   <artifactId>verapdf-apps</artifactId>
-  <version>1.12.0</version>
+  <version>1.14.0</version>
   <packaging>pom</packaging>
 
   <name>veraPDF PDF/A Validation Applications</name>
@@ -54,7 +54,7 @@
     <developerConnection>scm:git:git@github.com:veraPDF/veraPDF-integration-tests.git</developerConnection>
   </scm>
   <issueManagement>
-    <url>https://github.com/veraPDF/veraPDF-apps/issues/</url>
+    <url>https://github.com/veraPDF/veraPDF-library/issues/</url>
     <system>GitHub Issues</system>
   </issueManagement>
 
@@ -65,16 +65,16 @@
       </snapshots>
       <id>vera-dev</id>
       <name>Vera development</name>
-      <url>http://artifactory.openpreservation.org/artifactory/vera-dev</url>
+      <url>https://artifactory.openpreservation.org/artifactory/vera-dev</url>
     </repository>
   </repositories>
 
   <properties>
     <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
     <sonar.language>java</sonar.language>
-    <verapdf.library.version>[1.12.0,1.13.0)</verapdf.library.version>
-    <verapdf.pdfbox.validation.version>[1.12.0,1.13.0)</verapdf.pdfbox.validation.version>
-    <verapdf.validation.version>[1.12.0,1.13.0)</verapdf.validation.version>
+    <verapdf.library.version>[1.14.0,1.15.0)</verapdf.library.version>
+    <verapdf.pdfbox.validation.version>[1.14.0,1.15.0)</verapdf.pdfbox.validation.version>
+    <verapdf.validation.version>[1.14.0,1.15.0)</verapdf.validation.version>
   </properties>
 
   <dependencyManagement>
@@ -84,6 +84,24 @@
         <groupId>com.beust</groupId>
         <artifactId>jcommander</artifactId>
         <version>1.69</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>2.3.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-impl</artifactId>
+        <version>2.3.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-core</artifactId>
+        <version>2.3.0.1</version>
       </dependency>
 
       <dependency>

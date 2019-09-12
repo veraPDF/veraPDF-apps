@@ -76,4 +76,4 @@ if $cygwin; then
 fi
 
 cd "$BASEDIR"
-java -jar ${installer.output.filename}
+java -jar ${installer.output.filename} "${@}"
