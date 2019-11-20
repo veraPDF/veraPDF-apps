@@ -36,7 +36,7 @@ public final class GUIConstants {
 	// GUI Colors
 	public static final Color LOGO_BACKGROUND = Color.WHITE;
 	public static final Color PARTNERS_BACKGROUND = Color.WHITE;
-	
+
 	// URLs
 	public static final String LOGO_LINK_TEXT = "Visit veraPDF.org"; //$NON-NLS-1$
 	public static final String LOGO_LINK_URL = "http://www.verapdf.org"; //$NON-NLS-1$
@@ -79,6 +79,7 @@ public final class GUIConstants {
 	public static final String VALIDATE_BUTTON_TEXT = "Execute";
 	public static final String VALIDATION_OK = "PDF file is compliant with Validation Profile requirements";
 	public static final String VALIDATION_FALSE = "PDF file is not compliant with Validation Profile requirements";
+	public static final String POLICY_FALSE = "PDF file is not compliant with Policy requirements";
 	public static final String SAVE_REPORT_BUTTON_TEXT = "Save XML";
 	public static final String VIEW_REPORT_BUTTON_TEXT = "View XML";
 	public static final String SAVE_HTML_REPORT_BUTTON_TEXT = "Save HTML";
@@ -94,7 +95,7 @@ public final class GUIConstants {
 	public static final String ENCRYPTED_PDF = "Document is password encrypted and can not be processed.";
 	public static final String ERROR_IN_PARSING = "Failed to parse pdf document.";
 	public static final String ERROR_IN_VALIDATING = "Could not complete validation due to an error.";
-	public static final String ERROR_IN_FEATURES = "Could not complet feature extraction due to an error.";
+	public static final String ERROR_IN_FEATURES = "Could not complete feature extraction due to an error.";
 	public static final String ERROR_IN_INCREMETAL_SAVE = "An error occurred when saving changes";
 	public static final String ERROR_INTERRUPTED = "Process has been interrupted: ";
 	public static final String ERROR_EXECUTION = "Execution exception in processing: ";
