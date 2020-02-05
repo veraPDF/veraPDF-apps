@@ -91,6 +91,18 @@ public class PDFValidationApplication extends JFrame {
 
 		this.config = configManager.getApplicationConfig();
 
+		ValidatorConfig validConf = ValidatorFactory.createConfig(
+				configManager.getValidatorConfig().getFlavour(),
+				configManager.getValidatorConfig().isRecordPasses(),
+				configManager.getApplicationConfig().getMaxFailsDisplayed(),
+				configManager.getValidatorConfig().getMaxFails());
+		try {
+			configManager.updateValidatorConfig(validConf);
+		} catch (JAXBException | IOException excep) {
+			// TODO Auto-generated catch block
+			excep.printStackTrace();
+		}
+
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
 		setJMenuBar(menuBar);
@@ -136,7 +148,8 @@ public class PDFValidationApplication extends JFrame {
 					ValidatorConfig validConf = ValidatorFactory.createConfig(
 							configManager.getValidatorConfig().getFlavour(),
 							PDFValidationApplication.this.settingsPanel.isDispPassedRules(),
-							PDFValidationApplication.this.settingsPanel.getFailedChecksNumber());
+							PDFValidationApplication.this.settingsPanel.getFailedChecksNumber(),
+							PDFValidationApplication.this.settingsPanel.getFailedChecksDisplayNumber());
 					try {
 						configManager.updateValidatorConfig(validConf);
 					} catch (JAXBException | IOException excep) {
@@ -337,7 +350,6 @@ public class PDFValidationApplication extends JFrame {
 			logger.log(Level.WARNING, "Exception in loading xml or html image", e);
 		}
 		contentPane.add(this.checkerPanel);
-
 	}
 
 	private void attemptURIOpen(String uri) {
