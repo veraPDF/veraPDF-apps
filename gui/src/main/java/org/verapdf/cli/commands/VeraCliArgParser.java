@@ -439,7 +439,7 @@ public class VeraCliArgParser {
 	}
 
 	public ValidatorConfig validatorConfig() {
-		return ValidatorFactory.createConfig(this.flavour, this.logPassed(), this.maxFailures);
+		return ValidatorFactory.createConfig(this.flavour, this.logPassed(), this.maxFailuresDisplayed, this.maxFailures);
 	}
 
 	public MetadataFixerConfig fixerConfig() {
