@@ -762,7 +762,7 @@ class CheckerPanel extends JPanel {
 		PDFAFlavour flavour = getCurrentFlavour();
 		ValidatorConfig validatorConfig = config.getValidatorConfig();
 		ValidatorConfig currentConfig = ValidatorFactory.createConfig(flavour, validatorConfig.isRecordPasses(),
-				validatorConfig.getViewFails(),
+				validatorConfig.getMaxCheckedDetailsPerRule(),
 				validatorConfig.getMaxFails());
 		config.updateValidatorConfig(currentConfig);
 		config.updateAppConfig(appConfigFromState());
