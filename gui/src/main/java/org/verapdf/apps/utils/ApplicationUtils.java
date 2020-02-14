@@ -1,12 +1,17 @@
 /**
- * 
+ *
  */
 package org.verapdf.apps.utils;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javanet.staxutils.SimpleNamespaceContext;
 import org.verapdf.apps.Applications;
@@ -47,7 +52,7 @@ public final class ApplicationUtils {
 	/**
 	 * Filters the passed list files by removing all files without a ".pdf"
 	 * extension.
-	 * 
+	 *
 	 * @param toFilter
 	 *            the list of files to filter, can not be null
 	 * @return an immutable list of the filtered files, i.e. all PDF extenstions
@@ -92,7 +97,7 @@ public final class ApplicationUtils {
 	/**
 	 * Checks all files in a list to ensure that they exist and returns true if
 	 * and only if all files in the list exist.
-	 * 
+	 *
 	 * @param toCheck
 	 *            the list of files to test
 	 * @return true if all files in the list exist, otherwise false.
@@ -115,7 +120,7 @@ public final class ApplicationUtils {
 	/**
 	 * Checks a list of files to ensure that they all have an extension supplied
 	 * in the list of extensions
-	 * 
+	 *
 	 * @param toCheck
 	 *            the list of files to check the extensions of
 	 * @param extensions
@@ -136,6 +141,10 @@ public final class ApplicationUtils {
 					}
 				}
 				if (!isExtMatch) {
+					return false;
+				}
+			} else if (file.isDirectory()) {
+				if (!isLegalExtension(Arrays.asList(file.listFiles()), extensions)) {
 					return false;
 				}
 			}
