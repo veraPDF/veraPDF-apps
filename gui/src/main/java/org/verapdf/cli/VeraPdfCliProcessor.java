@@ -17,7 +17,14 @@
  */
 package org.verapdf.cli;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,10 +38,15 @@ import javax.xml.bind.JAXBException;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.apps.utils.ApplicationUtils;
+import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.policy.PolicyChecker;
-import org.verapdf.processor.*;
+import org.verapdf.processor.BatchProcessor;
+import org.verapdf.processor.ItemProcessor;
+import org.verapdf.processor.ProcessorConfig;
+import org.verapdf.processor.ProcessorFactory;
+import org.verapdf.processor.ProcessorResult;
 import org.verapdf.processor.reports.BatchSummary;
 import org.verapdf.processor.reports.ItemDetails;
 
@@ -95,7 +107,8 @@ final class VeraPdfCliProcessor implements Closeable {
 		return this.processorConfig;
 	}
 
-	void processPaths(final List<String> pdfPaths) throws VeraPDFException {
+	ExitCodes processPaths(final List<String> pdfPaths) throws VeraPDFException {
+		ExitCodes retStatus = ExitCodes.VALID;
 		if (isServerMode) {
 			try {
 				this.tempFile = Files.createTempFile("tempReport", ".xml").toFile();
@@ -110,12 +123,13 @@ final class VeraPdfCliProcessor implements Closeable {
 		if (pdfPaths.isEmpty() && !isServerMode) {
 			processStdIn();
 		} else {
-			processFilePaths(pdfPaths);
+			retStatus = processFilePaths(pdfPaths);
 		}
 
 		if (this.isPolicy) {
 			applyPolicy();
 		}
+		return retStatus;
 	}
 
 	static VeraPdfCliProcessor createProcessorFromArgs(final VeraCliArgParser args, ConfigManager config)
@@ -134,41 +148,44 @@ final class VeraPdfCliProcessor implements Closeable {
 			logger.log(Level.SEVERE,"STDIN is not available", e);
 		}
 		ItemDetails item = ItemDetails.fromValues(CliConstants.NAME_STDIN);
-		processStream(item, System.in);
+		return processStream(item, System.in);
 
 	}
 
-	private void processFilePaths(final List<String> paths) {
+	private ExitCodes processFilePaths(final List<String> paths) {
 		List<File> toFilter = new ArrayList<>();
 		for (String path : paths) {
 			toFilter.add(new File(path));
 		}
 		List<File> toProcess = ApplicationUtils.filterPdfFiles(toFilter, this.isRecursive);
 		if (toProcess.isEmpty()) {
-			logger.log(Level.SEVERE, "There is no files to process.");
-			return;
+			logger.log(Level.SEVERE, "There are no files to process.");
+			return ExitCodes.NO_FILES;
 		}
 		try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(this.processorConfig);
 				OutputStream reportStream = this.getReportStream()) {
-			processor.process(toProcess,
+			BatchSummary summary = processor.process(toProcess,
 					ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), reportStream,
 							this.appConfig.getMaxFailsDisplayed(),
 							this.processorConfig.getValidatorConfig().isRecordPasses()));
 			reportStream.flush();
+			return exitStatusFromSummary(summary);
 		} catch (VeraPDFException excep) {
 			String message = CliConstants.EXCEP_VERA_BATCH;
 			System.err.println(message);
 			logger.log(Level.SEVERE, message, excep);
+			return ExitCodes.VERAPDF_EXCEPTION;
 		} catch (IOException excep) {
 			logger.log(Level.FINE, CliConstants.EXCEP_TEMP_MRR_CLOSE, excep);
+			return ExitCodes.IO_EXCEPTION;
 		}
 	}
 	private void processStream(final ItemDetails item, final InputStream toProcess) {
 		try (ItemProcessor processor = ProcessorFactory.createProcessor(this.processorConfig)) {
 
 			ProcessorResult result = processor.process(item, toProcess);
-
 			OutputStream outputReportStream = this.getReportStream();
+
 			try {
 				BatchProcessingHandler handler = ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), outputReportStream,
 						this.appConfig.getMaxFailsDisplayed(),
@@ -176,12 +193,12 @@ final class VeraPdfCliProcessor implements Closeable {
 
 				if (result.isPdf() && !result.isEncryptedPdf()) {
                     ProcessorFactory.writeSingleResultReport(result, handler, processorConfig);
-
 				} else {
 					String message = String.format(
 							(result.isPdf()) ? CliConstants.MESS_PDF_ENCRYPTED : CliConstants.MESS_PDF_NOT_VALID,
 							item.getName());
 					outputReportStream.write(message.getBytes());
+					retVal = (result.isPdf()) ? ExitCodes.ENCRYPTED_FILES : ExitCodes.FAILED_PARSING; 
 				}
 
 			} catch (JAXBException | IOException excep) {
@@ -195,12 +212,13 @@ final class VeraPdfCliProcessor implements Closeable {
 				try {
 					outputReportStream.close();
 				} catch (IOException ex) {
-					logger.log(Level.SEVERE, CliConstants.EXCEP_REPORT_CLOSE, ex);
+					logger.log(Level.WARNING, CliConstants.EXCEP_REPORT_CLOSE, ex);
 				}
 			}
 		} catch (IOException excep) {
 			logger.log(Level.FINER, CliConstants.EXCEP_PROCESSOR_CLOSE, excep);
 		}
+		return retVal;
 	}
 
 	private OutputStream getReportStream() {
