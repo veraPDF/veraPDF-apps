@@ -46,7 +46,7 @@ Windows users should run the 'verapdf-install.bat' dos batch file, while Linux a
 
     java - jar <path-to-installer-jar>/verapdf-izpack-installer-1.4.0.jar
 
-####Linux full command line download and install
+#### Linux full command line download and install
 Linux users can download and execute the veraPDF installer using the following commands:
 
     wget http://downloads.verapdf.org/rel/verapdf-installer.zip
@@ -54,10 +54,10 @@ Linux users can download and execute the veraPDF installer using the following c
     cd verapdf-<version>
     ./verapdf-install.sh
 
-####veraPDF GUI manual
+#### veraPDF GUI manual
 We've prepared a manual for the GUI which is included in the library project and can be [downloaded from GitHub](https://github.com/veraPDF/veraPDF-apps/raw/release-1.4/veraPDFPDFAConformanceCheckerGUI.pdf).
 
-####JVM configuration options
+#### JVM configuration options
 The startup script found in the install dir, e.g. `.../verapdf/verapdf-gui` for Linux, or `.../verapdf/verapdf-gui.bat` for Windows can be used to pass
 configuration options to the JVM. This is done by setting `$JAVA_OPTS` for Linux, or `%JAVA_OPTS%` in the Window batch file. Alternatively these can be
 passed directly as parameters when calling the shell or batch script.
