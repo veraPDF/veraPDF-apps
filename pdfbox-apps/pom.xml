@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.verapdf</groupId>
     <artifactId>verapdf-apps</artifactId>
-    <version>1.15.0-SNAPSHOT</version>
+    <version>1.17.0-SNAPSHOT</version>
   </parent>
   <groupId>org.verapdf.apps</groupId>
   <artifactId>pdfbox-apps</artifactId>
