@@ -287,6 +287,24 @@ public class VerCliFlavourTest {
         testFlavour("--flavour", "3u", PDFAFlavour.PDFA_3_U);
     }
 
+    /**
+     * Test method for
+     * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
+     */
+    @Test
+    public final void testGetFlavourFlagua1() {
+        testFlavour("-f", "ua1", PDFAFlavour.PDFUA_1);
+    }
+
+    /**
+     * Test method for
+     * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
+     */
+    @Test
+    public final void testGetFlavourOptionua1() {
+        testFlavour("--flavour", "ua1", PDFAFlavour.PDFUA_1);
+    }
+
     private static final void testFlavour(final String flag, final String flavour, final PDFAFlavour expected) {
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
