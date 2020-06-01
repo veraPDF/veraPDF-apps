@@ -106,7 +106,7 @@ public final class GUIConstants {
 	public static final String WARN_FILE_EXISTS = "Overwrite existing file %s?.";
 	public static final String TITLE_OVERWRITE = "Confirm Overwrite";
 	public static final String PROCESSING_TYPE = " Report type:   ";
-	public static final String CHOOSE_FLAVOUR = "PDF/A flavour:   ";
+	public static final String CHOOSE_FLAVOUR = "PDF flavour:   ";
 	public static final String DISPLAY_PASSED_RULES = "Include passed rules:";
 	public static final String PLUGINS_ENABLED_TEXT = "Use plugins when extracting features:";
 	public static final String MAX_NUMBER_FAILED_DISPLAYED_CHECKS = "Display failed checks for rule: ";
