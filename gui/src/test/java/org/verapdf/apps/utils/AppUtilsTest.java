@@ -37,10 +37,14 @@ public class AppUtilsTest {
 		File xml3 = tempFolder.newFile("test3.xml");
 		List<File> xml_exts = Arrays.asList(new File[]{xml1, xml2, xml3, ext1, ext2, ext3});
 		List<File> all = Arrays.asList(new File[]{pdf1, pdf2, pdf3, xml1, xml2, xml3, ext1, ext2, ext3});
-		assertEquals(pdfs.size(), ApplicationUtils.filterPdfFiles(pdfs, true).size());
-		assertTrue(ApplicationUtils.filterPdfFiles(xml_exts, true).size() == 0);
-		assertTrue(ApplicationUtils.filterPdfFiles(non_pdfs, true).size() == 0);
-		assertEquals(pdfs.size(), ApplicationUtils.filterPdfFiles(all, true).size());
+		assertEquals(pdfs.size(), ApplicationUtils.filterPdfFiles(pdfs, true, false).size());
+		assertTrue(ApplicationUtils.filterPdfFiles(xml_exts, true, false).size() == 0);
+		assertTrue(ApplicationUtils.filterPdfFiles(non_pdfs, true, false).size() == 0);
+		assertEquals(pdfs.size(), ApplicationUtils.filterPdfFiles(all, true, false).size());
+		assertEquals(pdfs.size(), ApplicationUtils.filterPdfFiles(pdfs, true, true).size());
+		assertTrue(ApplicationUtils.filterPdfFiles(xml_exts, true, true).size() == 6);
+		assertTrue(ApplicationUtils.filterPdfFiles(non_pdfs, true, true).size() == 0);
+		assertEquals(all.size(), ApplicationUtils.filterPdfFiles(all, true, true).size());
 	}
 
 	@Test

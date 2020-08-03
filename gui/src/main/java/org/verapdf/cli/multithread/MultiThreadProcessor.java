@@ -53,7 +53,7 @@ public class MultiThreadProcessor {
 		this.veraPDFStarterPath = getVeraPdfStarterFile(cliArgParser);
 		this.veraPDFParameters = VeraCliArgParser.getBaseVeraPDFParameters(cliArgParser);
 		this.filesToProcess = new ConcurrentLinkedQueue<>();
-		this.filesToProcess.addAll(getFiles(cliArgParser.getPdfPaths(), cliArgParser.isRecurse()));
+		this.filesToProcess.addAll(getFiles(cliArgParser.getPdfPaths(), cliArgParser.isRecurse(), cliArgParser.nonPdfExt()));
 		this.filesQuantity = filesToProcess.size();
 
 		FormatOption outputFormat = getOutputFormat(cliArgParser.getFormat().getOption());
@@ -105,11 +105,11 @@ public class MultiThreadProcessor {
 		}
 	}
 
-	private List<File> getFiles(List<String> pdfPaths, boolean isRecurse) {
+	private List<File> getFiles(List<String> pdfPaths, boolean isRecurse, boolean nonPdfExt) {
 		List<File> toFilter = new ArrayList<>(pdfPaths.size());
 		pdfPaths.forEach(path -> toFilter.add(new File(path)));
 
-		return ApplicationUtils.filterPdfFiles(toFilter, isRecurse);
+		return ApplicationUtils.filterPdfFiles(toFilter, isRecurse, nonPdfExt);
 	}
 
 	private ExitCodes startProcesses(int numberOfProcesses) throws InterruptedException {

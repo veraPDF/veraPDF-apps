@@ -59,7 +59,7 @@ public final class ApplicationUtils {
 	 * @throws IllegalArgumentException
 	 *             when toFilter is null
 	 */
-	public static List<File> filterPdfFiles(final List<File> toFilter, final boolean isRecursive) {
+	public static List<File> filterPdfFiles(final List<File> toFilter, final boolean isRecursive, boolean nonPdfExt) {
 		Applications.checkArgNotNull(toFilter, "toFilter"); //$NON-NLS-1$
 		List<File> retVal = new ArrayList<>();
 		for (File file : toFilter) {
@@ -68,7 +68,7 @@ public final class ApplicationUtils {
 				continue;
 			}
 			if (file.isFile()) {
-				if (FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
+				if (nonPdfExt || FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
 					retVal.add(file);
 				} else {
 					LOGGER.log(Level.SEVERE, "File " + file.getAbsolutePath() + " doesn't have a .pdf extension.");
