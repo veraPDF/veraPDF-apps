@@ -102,12 +102,12 @@ class CheckerPanel extends JPanel {
 
 		this.initGui();
 
-		this.pdfChooser = getChooser(GUIConstants.PDF);
+		this.pdfChooser = getChooser(true, GUIConstants.PDF);
 		this.pdfChooser.setMultiSelectionEnabled(true);
 		this.pdfChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-		this.xmlChooser = getChooser(GUIConstants.XML);
-		this.htmlChooser = getChooser(GUIConstants.HTML);
-		this.policyChooser = getChooser(GUIConstants.SCH, GUIConstants.XSL, GUIConstants.XSLT);
+		this.xmlChooser = getChooser(false, GUIConstants.XML);
+		this.htmlChooser = getChooser(false, GUIConstants.HTML);
+		this.policyChooser = getChooser(false, GUIConstants.SCH, GUIConstants.XSL, GUIConstants.XSLT);
 
 		this.addActionListeners();
 	}
@@ -618,11 +618,11 @@ class CheckerPanel extends JPanel {
 		this.resultLabel.setVisible(true);
 	}
 
-	private static JFileChooser getChooser(String... types) throws IOException {
+	private static JFileChooser getChooser(boolean allFilesAccept, String... types) throws IOException {
 		JFileChooser res = new JFileChooser();
 		File currentDir = new File(new File(GUIConstants.DOT).getCanonicalPath());
 		res.setCurrentDirectory(currentDir);
-		res.setAcceptAllFileFilterUsed(false);
+		res.setAcceptAllFileFilterUsed(allFilesAccept);
 		res.setFileFilter(new FileNameExtensionFilter(elementsCommaDelimeted(types), types));
 		return res;
 	}
@@ -662,9 +662,6 @@ class CheckerPanel extends JPanel {
 		if (!ApplicationUtils.doAllFilesExist(selectedFiles)) {
 			DialogUtils.errorDialog(CheckerPanel.this, GUIConstants.ERROR_FILE_NOT_FOUND, logger,
 					new FileNotFoundException(GUIConstants.ERROR_FILE_NOT_FOUND));
-		} else if (!ApplicationUtils.isLegalExtension(selectedFiles, extensions)) {
-			String message = String.format(GUIConstants.ERROR_INVALID_EXT, elementsCommaDelimeted(extensions));
-			DialogUtils.errorDialog(CheckerPanel.this, message, logger, new IllegalArgumentException(message));
 		} else {
 			this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
 			this.resultLabel.setText(""); //$NON-NLS-1$
@@ -677,7 +674,7 @@ class CheckerPanel extends JPanel {
 
 			switch (extensions[0]) {
 				case GUIConstants.PDF:
-					this.pdfsToProcess = ApplicationUtils.filterPdfFiles(selectedFiles, true);
+					this.pdfsToProcess = ApplicationUtils.filterPdfFiles(selectedFiles, true, true);
 					this.chosenPDF.setText(getSelectedPathsMessage(selectedFiles));
 					break;
 				case GUIConstants.XML:

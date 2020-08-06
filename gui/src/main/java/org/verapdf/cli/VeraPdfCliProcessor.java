@@ -107,7 +107,7 @@ final class VeraPdfCliProcessor implements Closeable {
 		return this.processorConfig;
 	}
 
-	ExitCodes processPaths(final List<String> pdfPaths) throws VeraPDFException {
+	ExitCodes processPaths(final List<String> pdfPaths, boolean nonPdfExt) throws VeraPDFException {
 		ExitCodes retStatus = ExitCodes.VALID;
 		if (isServerMode) {
 			try {
@@ -123,7 +123,7 @@ final class VeraPdfCliProcessor implements Closeable {
 		if (pdfPaths.isEmpty()) {
 			retStatus = processStdIn();
 		} else {
-			retStatus = processFilePaths(pdfPaths);
+			retStatus = processFilePaths(pdfPaths, nonPdfExt);
 		}
 
 		if (this.isPolicy) {
@@ -146,12 +146,12 @@ final class VeraPdfCliProcessor implements Closeable {
 
 	}
 
-	private ExitCodes processFilePaths(final List<String> paths) {
+	private ExitCodes processFilePaths(final List<String> paths, boolean nonPdfExt) {
 		List<File> toFilter = new ArrayList<>();
 		for (String path : paths) {
 			toFilter.add(new File(path));
 		}
-		List<File> toProcess = ApplicationUtils.filterPdfFiles(toFilter, this.isRecursive);
+		List<File> toProcess = ApplicationUtils.filterPdfFiles(toFilter, this.isRecursive, nonPdfExt);
 		if (toProcess.isEmpty()) {
 			logger.log(Level.SEVERE, "There are no files to process.");
 			return ExitCodes.NO_FILES;
