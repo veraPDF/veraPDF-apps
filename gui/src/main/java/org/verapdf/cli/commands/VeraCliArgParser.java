@@ -87,6 +87,7 @@ public class VeraCliArgParser {
 	final static String FIX_METADATA = OPTION_SEP + "fixmetadata"; //$NON-NLS-1$
 	final static String FIX_METADATA_PREFIX = OPTION_SEP + "prefix"; //$NON-NLS-1$
 	final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder"; //$NON-NLS-1$
+	final static String NON_PDF_EXTENSION = FLAG_SEP + "nonpdfext";
 	final static String POLICY_FILE = OPTION_SEP + "policyfile"; //$NON-NLS-1$
 	// final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
 	// final static String LOAD_CONFIG_FLAG = FLAG_SEP + "c";
@@ -153,6 +154,9 @@ public class VeraCliArgParser {
 
 	@Parameter(names = { FIX_METADATA_FOLDER }, description = "Sets output directory for any fixed files.")
 	private String saveFolder = ""; //$NON-NLS-1$
+
+	@Parameter(names = { NON_PDF_EXTENSION }, description = "Add descryption")
+	private Boolean nonPdfExt = false;
 
 	@Parameter(names = {
 			POLICY_FILE }, description = "Select a policy schematron or XSL file.", validateWith = FileValidator.class)
@@ -249,6 +253,10 @@ public class VeraCliArgParser {
 	 */
 	public String saveFolder() {
 		return this.saveFolder;
+	}
+
+	public Boolean nonPdfExt() {
+		return this.nonPdfExt;
 	}
 
 	// /**

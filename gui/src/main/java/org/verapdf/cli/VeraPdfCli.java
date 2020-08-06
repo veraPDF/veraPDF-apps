@@ -124,7 +124,7 @@ public final class VeraPdfCli {
 		try (VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser,
 				configManager)) {
 			// FIXME: trap policy IO Exception (deliberately left un-caught for development)
-			ExitCodes retVal = processor.processPaths(cliArgParser.getPdfPaths());
+			ExitCodes retVal = processor.processPaths(cliArgParser.getPdfPaths(), cliArgParser.nonPdfExt());
 			if (cliArgParser.isServerMode()) {
 				File tempFile = processor.getTempFile();
 				if (tempFile != null) {
@@ -139,7 +139,7 @@ public final class VeraPdfCli {
 							}
 							List<String> paths = new ArrayList<>();
 							paths.add(path);
-							ExitCodes exitCode = processor.processPaths(paths);
+							ExitCodes exitCode = processor.processPaths(paths, cliArgParser.nonPdfExt());
 							System.out.println(processor.getTempFile().getAbsolutePath());
 							if (exitCode.value > retVal.value) {
 								retVal = exitCode;
