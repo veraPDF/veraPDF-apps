@@ -89,7 +89,7 @@ public final class GUIConstants {
 	public static final String IOEXCEP_OPENING_REPORT = "IOException when opening the %S report.";
 	public static final String IOEXCEP_SAVING_REPORT = "IOException when saving the %S report.";
 	public static final String LABEL_TEXT = "     Please choose a PDF and a Validation Profile, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
-	public static final String CONSORTIUM_TEXT = "© 2015-2018 veraPDF Consortium"; //$NON-NLS-1$
+	public static final String CONSORTIUM_TEXT = "© 2015-2020 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String PREFORMA_FUNDED_TEXT = "Funded by the European Commission’s PREFORMA Project";
 	public static final String TITLE = "veraPDF Conformance Checker";
 	public static final String ENCRYPTED_PDF = "Document is password encrypted and can not be processed.";

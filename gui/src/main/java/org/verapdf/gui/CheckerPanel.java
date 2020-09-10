@@ -90,6 +90,7 @@ class CheckerPanel extends JPanel {
 
 	private DropTarget targetPDF;
 	private DropTarget targetPolicy;
+	private DropTarget targetProfile;
 
 	private transient Path profilePath;
 
@@ -326,6 +327,13 @@ class CheckerPanel extends JPanel {
 				GUIConstants.CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.chosenProfile, gbc);
 		this.add(this.chosenProfile);
+
+		PanelDropTargetListener dtdProfileListener = new PanelDropTargetListener(1,
+				GUIConstants.XML);
+		targetProfile = new DropTarget(this.chosenProfile, DnDConstants.ACTION_COPY_OR_MOVE,
+				dtdProfileListener, true, null);
+		targetProfile.setActive(false);
+
 		if (!this.profilePath.toString().isEmpty()) {
 			this.chosenProfile.setText(this.profilePath.toString());
 		} else {
@@ -450,9 +458,11 @@ class CheckerPanel extends JPanel {
 						.equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT)) {
 					chooseProfile.setEnabled(true);
 					CheckerPanel.this.chosenProfile.setEnabled(true);
+					CheckerPanel.this.targetProfile.setActive(true);
 				} else {
 					chooseProfile.setEnabled(false);
 					CheckerPanel.this.chosenProfile.setEnabled(false);
+					CheckerPanel.this.targetProfile.setActive(false);
 				}
 				CheckerPanel.this.execute.setEnabled(isExecute());
 			}
