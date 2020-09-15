@@ -18,6 +18,7 @@
 package org.verapdf.cli;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
@@ -87,8 +88,12 @@ public final class VeraPdfCli {
 		}
 		messagesFromParser(cliArgParser);
 		if (isProcess(cliArgParser)) {
-			if (args.length == 0) {
-				jCommander.usage();
+			try {
+				if (args.length == 0 && System.in.available() == 0) {
+					jCommander.usage();
+				}
+			} catch (IOException e) {
+				logger.log(Level.SEVERE,"STDIN is not available", e);
 			}
 			try {
 				if (cliArgParser.isServerMode() || cliArgParser.getNumberOfProcesses() < 2) {
