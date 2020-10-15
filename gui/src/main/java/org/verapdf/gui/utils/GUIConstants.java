@@ -91,7 +91,7 @@ public final class GUIConstants {
 	public static final String LABEL_TEXT = "     Please choose a PDF and a Validation Profile, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
 	public static final String CONSORTIUM_TEXT = "© 2015-2020 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String PREFORMA_FUNDED_TEXT = "Funded by the European Commission’s PREFORMA Project";
-	public static final String TITLE = "PDF/A Conformance Checker";
+	public static final String TITLE = "veraPDF Conformance Checker";
 	public static final String ENCRYPTED_PDF = "Document is password encrypted and can not be processed.";
 	public static final String ERROR_IN_PARSING = "Failed to parse pdf document.";
 	public static final String ERROR_IN_VALIDATING = "Could not complete validation due to an error.";
@@ -106,7 +106,7 @@ public final class GUIConstants {
 	public static final String WARN_FILE_EXISTS = "Overwrite existing file %s?.";
 	public static final String TITLE_OVERWRITE = "Confirm Overwrite";
 	public static final String PROCESSING_TYPE = " Report type:   ";
-	public static final String CHOOSE_FLAVOUR = "PDF/A flavour:   ";
+	public static final String CHOOSE_FLAVOUR = "PDF flavour:   ";
 	public static final String DISPLAY_PASSED_RULES = "Include passed rules:";
 	public static final String PLUGINS_ENABLED_TEXT = "Use plugins when extracting features:";
 	public static final String MAX_NUMBER_FAILED_DISPLAYED_CHECKS = "Display failed checks for rule: ";
