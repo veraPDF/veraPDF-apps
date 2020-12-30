@@ -292,6 +292,60 @@ public class VerCliFlavourTest {
      * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
      */
     @Test
+    public final void testGetFlavourFlag4() {
+        testFlavour("-f", "4", PDFAFlavour.PDFA_4);
+    }
+
+    /**
+     * Test method for
+     * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
+     */
+    @Test
+    public final void testGetFlavourOption4() {
+        testFlavour("--flavour", "4", PDFAFlavour.PDFA_4);
+    }
+
+    /**
+     * Test method for
+     * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
+     */
+    @Test
+    public final void testGetFlavourFlag4f() {
+        testFlavour("-f", "4f", PDFAFlavour.PDFA_4_F);
+    }
+
+    /**
+     * Test method for
+     * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
+     */
+    @Test
+    public final void testGetFlavourOption4f() {
+        testFlavour("--flavour", "4f", PDFAFlavour.PDFA_4_F);
+    }
+
+    /**
+     * Test method for
+     * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
+     */
+    @Test
+    public final void testGetFlavourFlag4e() {
+        testFlavour("-f", "4e", PDFAFlavour.PDFA_4_E);
+    }
+
+    /**
+     * Test method for
+     * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
+     */
+    @Test
+    public final void testGetFlavourOption4e() {
+        testFlavour("--flavour", "4e", PDFAFlavour.PDFA_4_E);
+    }
+
+    /**
+     * Test method for
+     * {@link org.verapdf.cli.commands.VeraCliArgParser#getFlavour()}.
+     */
+    @Test
     public final void testGetFlavourFlagua1() {
         testFlavour("-f", "ua1", PDFAFlavour.PDFUA_1);
     }
