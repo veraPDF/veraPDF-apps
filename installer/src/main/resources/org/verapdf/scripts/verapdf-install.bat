@@ -45,7 +45,7 @@ goto repoSetup
 :WinNTGetScriptDir
 set BASEDIR=%~dp0\
 
-java -jar "%BASEDIR%${installer.output.filename}"
+java -jar "%BASEDIR%${installer.output.filename}" %CMD_LINE_ARGS%
 if %ERRORLEVEL% NEQ 0 goto error
 goto end
 
