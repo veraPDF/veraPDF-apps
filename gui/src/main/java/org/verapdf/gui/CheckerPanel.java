@@ -763,12 +763,12 @@ class CheckerPanel extends JPanel {
 	}
 
 	private void changeConfig() throws JAXBException, IOException {
-		if (!this.chooseFlavour.getSelectedItem().equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT)) {
+		if (!GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT.equals(this.chooseFlavour.getSelectedItem())) {
 			this.profilePath = FileSystems.getDefault().getPath(emptyString);
 		}
 		PDFAFlavour flavour = getCurrentFlavour();
 		ValidatorConfig validatorConfig = config.getValidatorConfig();
-		ValidatorConfig currentConfig = ValidatorFactory.createConfig(flavour, validatorConfig.isRecordPasses(),
+		ValidatorConfig currentConfig = ValidatorFactory.createConfig(flavour, validatorConfig.getDefaultFlavour(), validatorConfig.isRecordPasses(),
 				validatorConfig.getMaxFails());
 		config.updateValidatorConfig(currentConfig);
 		config.updateAppConfig(appConfigFromState());
@@ -801,7 +801,7 @@ class CheckerPanel extends JPanel {
 		return this.fixMetadata.isSelected();
 	}
 
-	private static String getFlavourReadableText(PDFAFlavour flavour) {
+	protected static String getFlavourReadableText(PDFAFlavour flavour) {
 		return String.format(flavour.getPart().getFamily() + "-%d%S", flavour.getPart().getPartNumber(), //$NON-NLS-1$
 				flavour.getLevel().getCode());
 	}
@@ -812,28 +812,6 @@ class CheckerPanel extends JPanel {
 			this.policyChooser.setSelectedFile(policy);
 			this.chosenPolicy.setText(policy.getAbsolutePath());
 			this.execute.setEnabled(isExecute());
-		}
-	}
-
-	private class ChooseFlavourRenderer extends JLabel implements ListCellRenderer<String> {
-
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = 3740801661593829099L;
-
-		public ChooseFlavourRenderer() {
-			setOpaque(true);
-			setHorizontalAlignment(CENTER);
-			setVerticalAlignment(CENTER);
-		}
-
-		@Override
-		public Component getListCellRendererComponent(final JList<? extends String> list,
-													  final String value, final int index,
-													  final boolean isSelected, final boolean cellHasFocus) {
-			this.setText(value);
-			return this;
 		}
 	}
 

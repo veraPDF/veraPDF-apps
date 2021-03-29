@@ -26,7 +26,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Vector;
+import java.util.TreeSet;
+import java.util.SortedSet;
 
+import javax.swing.JComboBox;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -41,6 +47,8 @@ import javax.swing.border.EmptyBorder;
 
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.gui.utils.GUIConstants;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
+import org.verapdf.pdfa.validation.profiles.Profiles;
 
 /**
  * Settings Panel
@@ -60,6 +68,8 @@ class SettingsPanel extends JPanel {
 	JTextField fixMetadataFolder;
 	JFileChooser folderChooser;
 	private JTextField profilesWikiPath;
+	private static final Map<String, PDFAFlavour> FLAVOURS_MAP = new HashMap<>();
+	private JComboBox<String> chooseDefaultFlavour;
 
 	SettingsPanel() throws IOException {
 		setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS,
@@ -67,7 +77,7 @@ class SettingsPanel extends JPanel {
 		setLayout(new BorderLayout());
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(6, 2));
+		panel.setLayout(new GridLayout(7, 2));
 
 		panel.add(new JLabel(GUIConstants.DISPLAY_PASSED_RULES));
 		this.hidePassedRules = new JCheckBox();
@@ -151,6 +161,21 @@ class SettingsPanel extends JPanel {
 		this.profilesWikiPath = new JTextField(GUIConstants.SETTINGS_DIALOG_MAX_CHARS_TEXTFIELD);
 		panel.add(this.profilesWikiPath);
 
+		panel.add(new JLabel("Default flavour"));
+		Vector<String> availableFlavours = new Vector<>();
+		SortedSet<String> sortedFlavours = new TreeSet<>();
+		for (PDFAFlavour flavour : Profiles.getVeraProfileDirectory().getPDFAFlavours()) {
+			String flavourReadableText = CheckerPanel.getFlavourReadableText(flavour);
+			sortedFlavours.add(flavourReadableText);
+			FLAVOURS_MAP.put(flavourReadableText, flavour);
+		}
+		availableFlavours.addAll(sortedFlavours);
+		this.chooseDefaultFlavour = new JComboBox<>(availableFlavours);
+		this.chooseDefaultFlavour.setOpaque(true);
+		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
+		this.chooseDefaultFlavour.setRenderer(renderer);
+		this.chooseDefaultFlavour.setSelectedItem(CheckerPanel.getFlavourReadableText(PDFAFlavour.PDFA_1_B));
+		panel.add(this.chooseDefaultFlavour);
 		add(panel, BorderLayout.CENTER);
 
 		this.okButton = new JButton(GUIConstants.OK);
@@ -231,6 +256,11 @@ class SettingsPanel extends JPanel {
 		this.dialog.setVisible(true);
 
 		return this.ok;
+	}
+
+	public PDFAFlavour getCurrentDefaultFlavour() {
+		String selectedItem = (String) this.chooseDefaultFlavour.getSelectedItem();
+		return FLAVOURS_MAP.get(selectedItem);
 	}
 
 	private static KeyAdapter getKeyAdapter(final JTextField field, final boolean fromZero) {
