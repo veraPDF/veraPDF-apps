@@ -68,6 +68,8 @@ public class VeraCliArgParser {
 	final static String VERSION = OPTION_SEP + "version"; //$NON-NLS-1$
 	final static String FLAVOUR_FLAG = FLAG_SEP + "f"; //$NON-NLS-1$
 	final static String FLAVOUR = OPTION_SEP + "flavour"; //$NON-NLS-1$
+	final static String DEFAULT_FLAVOUR_FLAG = FLAG_SEP + "df"; //$NON-NLS-1$
+	final static String DEFAULT_FLAVOUR = OPTION_SEP + "defaultflavour"; //$NON-NLS-1$
 	final static String SUCCESS = OPTION_SEP + "success"; //$NON-NLS-1$
 	final static String PASSED = OPTION_SEP + "passed"; //$NON-NLS-1$
 	final static String LIST_FLAG = FLAG_SEP + "l"; //$NON-NLS-1$
@@ -112,6 +114,10 @@ public class VeraCliArgParser {
 	@Parameter(names = { FLAVOUR_FLAG,
 			FLAVOUR }, description = "Chooses built-in Validation Profile flavour, e.g. '1b'. Alternatively, supply '0' or no argument for automatic flavour detection based on a file's metadata.", converter = FlavourConverter.class)
 	private PDFAFlavour flavour = PDFAFlavour.NO_FLAVOUR;
+
+	@Parameter(names = { DEFAULT_FLAVOUR_FLAG,
+	                     DEFAULT_FLAVOUR }, description = "Chooses built-in Validation Profile default flavour, e.g. '1b'. This flavor will be applied if automatic flavour detection based on a file's metadata doesn't work.", converter = FlavourConverter.class)
+	private PDFAFlavour defaultFlavour = PDFAFlavour.PDFA_1_B;
 
 	@Parameter(names = { SUCCESS, PASSED }, description = "Logs successful validation checks.")
 	private boolean passed = ValidatorFactory.defaultConfig().isRecordPasses();
@@ -447,7 +453,7 @@ public class VeraCliArgParser {
 	}
 
 	public ValidatorConfig validatorConfig() {
-		return ValidatorFactory.createConfig(this.flavour, this.logPassed(), this.maxFailures);
+		return ValidatorFactory.createConfig(this.flavour, this.defaultFlavour, this.logPassed(), this.maxFailures);
 	}
 
 	public MetadataFixerConfig fixerConfig() {
