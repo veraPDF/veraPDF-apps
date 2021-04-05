@@ -65,13 +65,14 @@ class SettingsPanel extends JPanel {
 	private JTextField numberOfFailedDisplay;
 	private JCheckBox hidePassedRules;
 	private JTextField fixMetadataPrefix;
+	private PDFAFlavour currentDefaultFlavour;
 	JTextField fixMetadataFolder;
 	JFileChooser folderChooser;
 	private JTextField profilesWikiPath;
 	private static final Map<String, PDFAFlavour> FLAVOURS_MAP = new HashMap<>();
 	private JComboBox<String> chooseDefaultFlavour;
 
-	SettingsPanel() throws IOException {
+	SettingsPanel(final ConfigManager config) throws IOException {
 		setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS,
 				GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS));
 		setLayout(new BorderLayout());
@@ -174,7 +175,15 @@ class SettingsPanel extends JPanel {
 		this.chooseDefaultFlavour.setOpaque(true);
 		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
 		this.chooseDefaultFlavour.setRenderer(renderer);
-		this.chooseDefaultFlavour.setSelectedItem(CheckerPanel.getFlavourReadableText(PDFAFlavour.PDFA_1_B));
+		PDFAFlavour fromConfig = config.createProcessorConfig().getValidatorConfig().getDefaultFlavour();
+		String fromConfigDefaultFlavourText = CheckerPanel.getFlavourReadableText(fromConfig);
+		if (availableFlavours.contains(fromConfigDefaultFlavourText)) {
+			this.chooseDefaultFlavour.setSelectedItem(fromConfigDefaultFlavourText);
+			currentDefaultFlavour = fromConfig;
+		} else {
+			this.chooseDefaultFlavour.setSelectedItem(CheckerPanel.getFlavourReadableText(PDFAFlavour.PDFA_1_B));
+			currentDefaultFlavour = PDFAFlavour.PDFA_1_B;
+		}
 		panel.add(this.chooseDefaultFlavour);
 		add(panel, BorderLayout.CENTER);
 
@@ -182,6 +191,8 @@ class SettingsPanel extends JPanel {
 		this.okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
+				String selectedItem = (String) chooseDefaultFlavour.getSelectedItem();
+				currentDefaultFlavour = FLAVOURS_MAP.get(selectedItem);
 				boolean isEverythingValid = true;
 				Path mdPath = FileSystems.getDefault().getPath(SettingsPanel.this.fixMetadataFolder.getText());
 				if (mdPath == null || (!mdPath.toString().isEmpty()
@@ -231,6 +242,10 @@ class SettingsPanel extends JPanel {
 			this.numberOfFailedDisplay.setText(String.valueOf(numbOfFailDisp));
 		}
 
+		PDFAFlavour defaultFlavour = settings.createProcessorConfig().getValidatorConfig().getDefaultFlavour();
+		String fromConfigDefaultFlavourText = CheckerPanel.getFlavourReadableText(defaultFlavour);
+		this.chooseDefaultFlavour.setSelectedItem(fromConfigDefaultFlavourText);
+
 		this.fixMetadataPrefix.setText(settings.createProcessorConfig().getFixerConfig().getFixesPrefix());
 		this.fixMetadataFolder.setText(settings.getApplicationConfig().getFixesFolder());
 
@@ -259,8 +274,7 @@ class SettingsPanel extends JPanel {
 	}
 
 	public PDFAFlavour getCurrentDefaultFlavour() {
-		String selectedItem = (String) this.chooseDefaultFlavour.getSelectedItem();
-		return FLAVOURS_MAP.get(selectedItem);
+		return currentDefaultFlavour;
 	}
 
 	private static KeyAdapter getKeyAdapter(final JTextField field, final boolean fromZero) {

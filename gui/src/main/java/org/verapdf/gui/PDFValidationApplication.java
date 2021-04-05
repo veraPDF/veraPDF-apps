@@ -108,7 +108,7 @@ public class PDFValidationApplication extends JFrame {
 		menuBar.add(file);
 
 		try {
-			this.settingsPanel = new SettingsPanel();
+			this.settingsPanel = new SettingsPanel(configManager);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error initialising settings panel.",
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
