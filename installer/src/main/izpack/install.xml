@@ -114,13 +114,11 @@
       <parsable targetfile="$INSTALL_PATH/verapdf.bat" type="shell"/>
       <executable targetfile="$INSTALL_PATH/verapdf.bat"/>
     </pack>
-    <pack name="veraPDF Corpus and Validation model" required="no" preselected="no">
-      <description>The veraPDF test files and the validation model API.</description>
+    <pack name="veraPDF Validation model" required="no" preselected="no">
+      <description>The veraPDF validation model API.</description>
       <updatecheck>
-        <include name="corpus/**"/>
         <include name="model/**"/>
       </updatecheck>
-      <file targetdir="$INSTALL_PATH/corpus" src="corpus/staging.zip" unpack="true"/>
       <file targetdir="$INSTALL_PATH/model" src="model/integration.zip" unpack="true"/>
     </pack>
     <pack name="veraPDF Documentation" required="no">
