@@ -81,7 +81,6 @@ public class PDFValidationApplication extends JFrame {
 	private PolicyPanel policyConfig;
 
 	private PDFValidationApplication(double frameScale) {
-		addWindowListener(new ExitWindowAdapter());
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(GUIConstants.FRAME_COORD_X, GUIConstants.FRAME_COORD_Y, (int) (GUIConstants.FRAME_WIDTH*frameScale),
 				(int) (GUIConstants.FRAME_HEIGHT*frameScale));
@@ -185,7 +184,7 @@ public class PDFValidationApplication extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (PDFValidationApplication.this.featuresPanel != null
 						&& PDFValidationApplication.this.featuresPanel.showDialog(PDFValidationApplication.this,
-								"Features Config", configManager.getFeaturesConfig())) {
+						"Features Config", configManager.getFeaturesConfig())) {
 					try {
 						configManager
 								.updateFeaturesConfig(PDFValidationApplication.this.featuresPanel.getFeaturesConfig());
@@ -260,8 +259,8 @@ public class PDFValidationApplication extends JFrame {
 							String.format(
 									Applications.UPDATE_OLD_VERSION,
 									details.getVersion(), updater.getLatestVersion(details))
-							+ String.format("Do you want to download the latest version from:\n%s?",
-							Applications.UPDATE_URI),
+									+ String.format("Do you want to download the latest version from:\n%s?",
+									Applications.UPDATE_URI),
 							GUIConstants.CHECK_FOR_UPDATES_TEXT,
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.WARNING_MESSAGE);
