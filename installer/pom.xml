@@ -38,11 +38,11 @@
   <properties>
     <installer.zip.prefix>verapdf-greenfield</installer.zip.prefix>
     <installer.output.filename>verapdf-izpack-installer-${project.version}.jar</installer.output.filename>
-    <izpack.version>5.0.10</izpack.version>
+    <izpack.version>5.1.2</izpack.version>
     <izpack.staging>${project.build.directory}/staging</izpack.staging>
     <izpack.target>${project.build.directory}</izpack.target>
     <izpack.scripts>${project.build.scriptSourceDirectory}</izpack.scripts>
-    <mvn.assembly.version>2.6</mvn.assembly.version>
+    <mvn.assembly.version>3.1.0</mvn.assembly.version>
     <project.main.dir>${project.basedir}/..</project.main.dir>
     <verapdf.apps.package>greenfield-apps</verapdf.apps.package>
     <verapdf.apps.package.name>Greenfield</verapdf.apps.package.name>
@@ -288,7 +288,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
-          <descriptor>src/assembly/app-assembly.xml</descriptor>
+          <descriptors>
+            <descriptor>src/assembly/app-assembly.xml</descriptor>
+          </descriptors>
           <finalName>${installer.zip.prefix}-${project.version}</finalName>
         </configuration>
         <executions>
