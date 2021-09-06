@@ -116,7 +116,7 @@ public class ConfigManagerTests {
 		assertFalse(defaultConfig == newManager.getValidatorConfig());
 		assertTrue(defaultConfig.equals(newManager.getValidatorConfig()));
 		ValidatorConfig newConfig = ValidatorFactory.createConfig(PDFAFlavour.PDFA_1_A, PDFAFlavour.PDFA_1_B, !defaultConfig.isRecordPasses(),
-				defaultConfig.getMaxFails() + 20);
+				defaultConfig.getMaxFails() + 20, false);
 		newManager.updateValidatorConfig(newConfig);
 		assertFalse(defaultConfig.equals(newManager.getValidatorConfig()));
 	}
