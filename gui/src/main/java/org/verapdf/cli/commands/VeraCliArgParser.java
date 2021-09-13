@@ -84,6 +84,8 @@ public class VeraCliArgParser {
 	final static String SERVER_MODE = OPTION_SEP + "servermode"; //$NON-NLS-1$
 	final static String VERBOSE_FLAG = FLAG_SEP + "v"; //$NON-NLS-1$
 	final static String VERBOSE = OPTION_SEP + "verbose"; //$NON-NLS-1$
+	final static String DEBUG_FLAG = FLAG_SEP + "d"; //$NON-NLS-1$
+	final static String DEBUG = OPTION_SEP + "debug"; //$NON-NLS-1$
 	final static String MAX_FAILURES_DISPLAYED = OPTION_SEP + "maxfailuresdisplayed"; //$NON-NLS-1$
 	final static String MAX_FAILURES = OPTION_SEP + "maxfailures"; //$NON-NLS-1$
 	final static String FIX_METADATA = OPTION_SEP + "fixmetadata"; //$NON-NLS-1$
@@ -144,6 +146,9 @@ public class VeraCliArgParser {
 
 	@Parameter(names = { VERBOSE_FLAG, VERBOSE }, description = "Adds failed test information to text output.")
 	private boolean isVerbose = false;
+
+	@Parameter(names = { DEBUG_FLAG, DEBUG }, description = "Outputs all processed file names.")
+	private boolean debug = false;
 
 	@Parameter(names = {
 			MAX_FAILURES_DISPLAYED }, description = "Sets maximum amount of failed checks displayed for each rule.")
@@ -224,6 +229,13 @@ public class VeraCliArgParser {
 	 */
 	public boolean isVerbose() {
 		return this.isVerbose;
+	}
+
+	/**
+	 * @return true if to output file names of all processed files
+	 */
+	public boolean isDebug() {
+		return debug;
 	}
 
 	/**
@@ -453,7 +465,7 @@ public class VeraCliArgParser {
 	}
 
 	public ValidatorConfig validatorConfig() {
-		return ValidatorFactory.createConfig(this.flavour, this.defaultFlavour, this.logPassed(), this.maxFailures);
+		return ValidatorFactory.createConfig(this.flavour, this.defaultFlavour, this.logPassed(), this.maxFailures, this.debug);
 	}
 
 	public MetadataFixerConfig fixerConfig() {
@@ -545,6 +557,9 @@ public class VeraCliArgParser {
 		}
 		if (cliArgParser.isVerbose()) {
 			veraPDFParameters.add("--verbose");
+		}
+		if (cliArgParser.isDebug()) {
+			veraPDFParameters.add("--debug");
 		}
 
 		return veraPDFParameters;
