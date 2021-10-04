@@ -5,6 +5,7 @@ dist: trusty
 jdk:
   - openjdk8
   - oraclejdk8
+  - openjdk11
 
 branches:
   except:
@@ -18,6 +19,9 @@ notifications:
 before_install:
   - sudo apt-get install jq
   - wget -O ~/codacy-coverage-reporter-assembly-latest.jar http://resources.openpreservation.org/codacy-coverage-reporter-assembly-latest.jar
+
+install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2 -Dmaven.wagon.http.pool=false
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
