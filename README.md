@@ -95,7 +95,7 @@ or download the latest [tar archive](https://github.com/veraPDF/veraPDF-apps/arc
 Move to the downloaded project directory and call Maven install:
 
     cd veraPDF-apps
-    mvn clean install -P clone-test-resources
+    mvn clean install
 
 #### Testing the build
 You can test your build by running the GUI application from the VeraPDF Library GUI `gui` sub-module.
