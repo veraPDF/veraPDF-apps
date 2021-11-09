@@ -37,6 +37,8 @@ import org.verapdf.processor.plugins.PluginsCollectionConfig;
 import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.util.EnumSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -45,6 +47,9 @@ import java.util.EnumSet;
  */
 
 final class ConfigManagerImpl implements ConfigManager {
+
+	private static final Logger LOGGER = Logger.getLogger(ConfigManagerImpl.class.getCanonicalName());
+
 	private static final String nullArgMessage = "Arg tasks can not be null";
 	private static final String defaultConfExt = ".xml"; //$NON-NLS-1$
 	private static final String defaultValidName = "validator" + defaultConfExt; //$NON-NLS-1$
@@ -77,7 +82,7 @@ final class ConfigManagerImpl implements ConfigManager {
 		try (InputStream fis = new FileInputStream(this.validatorFile)) {
 			return ValidatorFactory.createConfig(fis);
 		} catch (IOException | JAXBException excep) {
-			excep.printStackTrace();
+			LOGGER.log(Level.WARNING, "The validator config file is missing or damaged");
 			return ValidatorFactory.defaultConfig();
 		}
 	}
@@ -90,7 +95,7 @@ final class ConfigManagerImpl implements ConfigManager {
 		try (InputStream fis = new FileInputStream(this.featuresFile)) {
 			return FeatureFactory.configFromXml(fis);
 		} catch (IOException | JAXBException excep) {
-			excep.printStackTrace();
+			LOGGER.log(Level.WARNING, "The features config file is missing or damaged");
 			return FeatureFactory.defaultConfig();
 		}
 	}
@@ -100,7 +105,7 @@ final class ConfigManagerImpl implements ConfigManager {
 		try (InputStream fis = new FileInputStream(this.pluginsFile)) {
 			return PluginsCollectionConfig.create(fis);
 		} catch (IOException | JAXBException excep) {
-			excep.printStackTrace();
+			LOGGER.log(Level.WARNING, "The plugins config file is missing or damaged");
 			return PluginsCollectionConfig.defaultConfig();
 		}
 	}
@@ -113,7 +118,7 @@ final class ConfigManagerImpl implements ConfigManager {
 		try (InputStream fis = new FileInputStream(this.fixerFile)) {
 			return FixerFactory.configFromXml(fis);
 		} catch (IOException | JAXBException excep) {
-			excep.printStackTrace();
+			LOGGER.log(Level.WARNING, "The fixer config file is missing or damaged");
 			return FixerFactory.defaultConfig();
 		}
 	}
@@ -153,7 +158,7 @@ final class ConfigManagerImpl implements ConfigManager {
 		try (InputStream fis = new FileInputStream(this.appFile)) {
 			return VeraAppConfigImpl.fromXml(fis);
 		} catch (IOException | JAXBException excep) {
-			excep.printStackTrace();
+			LOGGER.log(Level.WARNING, "The application config file is missing or damaged");
 			return VeraAppConfigImpl.defaultInstance();
 		}
 	}
@@ -236,7 +241,7 @@ final class ConfigManagerImpl implements ConfigManager {
 				}
 			}
 		} catch (IOException | JAXBException excep) {
-			excep.printStackTrace();
+			LOGGER.log(Level.WARNING, "One or several of config files are missing or damaged");
 			throw new IllegalStateException("Couldn't setup config", excep);
 		}
 	}
