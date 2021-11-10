@@ -134,7 +134,7 @@ exec "$JAVACMD" $JAVA_OPTS  \
   -Dapp.repo="$REPO" \
   -Dapp.home="$BASEDIR" \
   -Dbasedir="$BASEDIR" \
-  --add-exports java.base/sun.security.pkcs=ALL-UNNAMED \
+  --add-exports=java.base/sun.security.pkcs=ALL-UNNAMED \
   @verapdf.wrapper.gui@ \
   "--frameScale" "$SCALE_FACTOR" \
   "$@"

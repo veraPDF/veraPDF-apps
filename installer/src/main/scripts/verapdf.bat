@@ -84,7 +84,7 @@ if NOT "%CLASSPATH_PREFIX%" == "" set CLASSPATH=%CLASSPATH_PREFIX%;%CLASSPATH%
 @REM Reaching here means variables are defined and arguments have been captured
 :endInit
 
-"%JAVACMD%" %JAVA_OPTS%  -classpath %CLASSPATH% -Dfile.encoding=UTF8 -XX:+IgnoreUnrecognizedVMOptions -Dapp.name="VeraPDF validation GUI" -Dapp.repo="%REPO%" -Dapp.home="%BASEDIR%" -Dbasedir="%BASEDIR%" --add-exports java.base/sun.security.pkcs=ALL-UNNAMED @verapdf.wrapper.cli@ %CMD_LINE_ARGS%
+"%JAVACMD%" %JAVA_OPTS%  -classpath %CLASSPATH% -Dfile.encoding=UTF8 -XX:+IgnoreUnrecognizedVMOptions -Dapp.name="VeraPDF validation GUI" -Dapp.repo="%REPO%" -Dapp.home="%BASEDIR%" -Dbasedir="%BASEDIR%" --add-exports=java.base/sun.security.pkcs=ALL-UNNAMED @verapdf.wrapper.cli@ %CMD_LINE_ARGS%
 if %ERRORLEVEL% NEQ 0 goto error
 goto end
 
