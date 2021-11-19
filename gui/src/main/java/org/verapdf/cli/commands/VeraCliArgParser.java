@@ -167,7 +167,7 @@ public class VeraCliArgParser {
 	private String saveFolder = ""; //$NON-NLS-1$
 
 	@Parameter(names = { NON_PDF_EXTENSION }, description = "Select files without .pdf extension")
-	private Boolean nonPdfExt = false;
+	private boolean nonPdfExt = false;
 
 	@Parameter(names = {
 			POLICY_FILE }, description = "Select a policy schematron or XSL file.", validateWith = FileValidator.class)
@@ -273,7 +273,7 @@ public class VeraCliArgParser {
 		return this.saveFolder;
 	}
 
-	public Boolean nonPdfExt() {
+	public boolean nonPdfExt() {
 		return this.nonPdfExt;
 	}
 
@@ -324,6 +324,10 @@ public class VeraCliArgParser {
 	 */
 	public boolean extractFeatures() {
 		return this.features | this.isPolicy();
+	}
+
+	public PDFAFlavour getDefaultFlavour() {
+		return this.defaultFlavour;
 	}
 
 	/**
@@ -524,6 +528,8 @@ public class VeraCliArgParser {
 		if (cliArgParser.fixMetadata()) {
 			veraPDFParameters.add("--fixmetadata");
 		}
+		veraPDFParameters.add("--defaultflavour");
+		veraPDFParameters.add(String.valueOf(cliArgParser.getDefaultFlavour()));
 		veraPDFParameters.add("--flavour");
 		veraPDFParameters.add(String.valueOf(cliArgParser.getFlavour()));
 		veraPDFParameters.add("--format");
@@ -560,6 +566,9 @@ public class VeraCliArgParser {
 		}
 		if (cliArgParser.isDebug()) {
 			veraPDFParameters.add("--debug");
+		}
+		if (cliArgParser.nonPdfExt()) {
+			veraPDFParameters.add("--nonpdfext");
 		}
 
 		return veraPDFParameters;
