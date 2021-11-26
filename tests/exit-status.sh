@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 
+function echo() {
+  command echo -e "$@"
+}
+
 if (( NO_CD != 1 )); then
   cd /tmp || exit
 fi
 
 if [[ ! -e "./veraPDF-corpus-master" ]]; then
-  wget https://github.com/veraPDF/veraPDF-corpus/archive/master.zip
+  curl -LO https://github.com/veraPDF/veraPDF-corpus/archive/master.zip
   unzip master.zip
   rm master.zip
 fi
@@ -18,9 +22,9 @@ fi
 resSinglePass=$?
 "$VERAPDF" "./veraPDF-corpus-master/PDF_A-1b/6.1 File structure/6.1.4 Cross reference table/veraPDF test suite 6-1-4-t02-fail-a.pdf"
 resSingleFail=$?
-"$VERAPDF" ./veraPDF-corpus-master/PDF_A-1b/6.1\ File\ structure/6.1.5\ Document\ information\ dictionary/veraPDF\ test\ suite\ 6-1-5-t02-pass-a.pdf ./veraPDF-corpus-master/PDF_A-1b/6.1\ File\ structure/6.1.5\ Document\ information\ dictionary/veraPDF\ test\ suite\ 6-1-5-t02-pass-b.pdf ./veraPDF-corpus-master/PDF_A-1b/6.1\ File\ structure/6.1.5\ Document\ information\ dictionary/veraPDF\ test\ suite\ 6-1-5-t02-pass-c.pdf
+"$VERAPDF" "./veraPDF-corpus-master/PDF_A-1b/6.1 File structure/6.1.5 Document information dictionary/veraPDF test suite 6-1-5-t02-pass-a.pdf" "./veraPDF-corpus-master/PDF_A-1b/6.1 File structure/6.1.5 Document information dictionary/veraPDF test suite 6-1-5-t02-pass-b.pdf" "./veraPDF-corpus-master/PDF_A-1b/6.1 File structure/6.1.5 Document information dictionary/veraPDF test suite 6-1-5-t02-pass-c.pdf"
 resBatchPass=$?
-"$VERAPDF" ./veraPDF-corpus-master/PDF_A-1b/6.1 File\ structure/6.1.5\ Document\ information\ dictionary/veraPDF\ test\ suite\ 6-1-5-t01-fail-a.pdf ./veraPDF-corpus-master/PDF_A-1b/6.1\ File\ structure/6.1.5\ Document\ information\ dictionary/veraPDF\ test\ suite\ 6-1-5-t01-fail-b.pdf ./veraPDF-corpus-master/PDF_A-1b/6.1\ File\ structure/6.1.5\ Document\ information\ dictionary/veraPDF\ test\ suite\ 6-1-5-t01-fail-c.pdf
+"$VERAPDF" "./veraPDF-corpus-master/PDF_A-1b/6.1 File structure/6.1.5 Document information dictionary/veraPDF test suite 6-1-5-t01-fail-a.pdf" "./veraPDF-corpus-master/PDF_A-1b/6.1 File structure/6.1.5 Document information dictionary/veraPDF test suite 6-1-5-t01-fail-b.pdf" "./veraPDF-corpus-master/PDF_A-1b/6.1 File structure/6.1.5 Document information dictionary/veraPDF test suite 6-1-5-t01-fail-c.pdf"
 resBatchFail=$?
 "$VERAPDF" "./veraPDF-corpus-master/PDF_A-1b/6.1 File structure/6.1.5 Document information dictionary/"
 resBatchPassFail=$?
@@ -28,23 +32,41 @@ resBatchPassFail=$?
 resBadParams=$?
 export JAVA_OPTS="-Xmx2200k"
 "$VERAPDF" "./veraPDF-corpus-master/PDF_A-1b/6.1 File structure/6.1.4 Cross reference table/"
-outOfMem=$?
+resOutOfMem=$?
 unset JAVA_OPTS
 touch test.pdf
 "$VERAPDF" test.pdf
-parseError=$?
+resParseError=$?
+
+expSinglePass=0
+expSingleFail=1
+expBatchPass=0
+expBatchFail=1
+expBatchPassFail=1
+expBadParams=2
+expOutOfMem=3
+expParseError=7
 
 echo
 echo "RESULTS"
 echo "======="
-echo " - single pass exit code:   $resSinglePass"
-echo " - single fail exit code:   $resSingleFail"
-echo " - batch pass exit code:    $resBatchPass"
-echo " - batch fail exit code:    $resBatchFail"
-echo " - batch mixed exit code:   $resBatchPassFail"
-echo " - bad params exit code:    $resBadParams"
-echo " - out of memory exit code: $outOfMem"
-echo " - parse error exit code:   $parseError"
+echo " - single pass exit code:   \t$resSinglePass\t(expected $expSinglePass)"
+echo " - single fail exit code:   \t$resSingleFail\t(expected $expSingleFail)"
+echo " - batch pass exit code:    \t$resBatchPass\t(expected $expBatchPass)"
+echo " - batch fail exit code:    \t$resBatchFail\t(expected $expBatchFail)"
+echo " - batch mixed exit code:   \t$resBatchPassFail\t(expected $expBatchPassFail)"
+echo " - bad params exit code:    \t$resBadParams\t(expected $expBadParams)"
+echo " - out of memory exit code: \t$resOutOfMem\t(expected $expOutOfMem)"
+echo " - parse error exit code:   \t$resParseError\t(expected $expParseError)"
 
-! [[ $resSinglePass || $resSingleFail || $resBatchPass || $resBatchFail || $resBatchPassFail || $resBadParams || $outOfMem || $parseError ]]
-exit
+[[ $resSinglePass == $expSinglePass && $resSingleFail == $expSingleFail && $resBatchPass == $expBatchPass && $resBatchFail == $expBatchFail && $resBatchPassFail == $expBatchPassFail && $resBadParams == $expBadParams && $resOutOfMem == $expOutOfMem && $resParseError == $expParseError ]]
+passed=$?
+
+echo
+if [[ $passed == 0 ]]; then
+	echo "PASSED"
+else
+	echo "FAILED"
+fi
+
+exit $passed
