@@ -30,10 +30,10 @@ Quick Start
 
 ### veraPDF GUI
 #### Download release version
-You can download a Java-based installer for the latest veraPDF GUI release [from our download site](http://downloads.verapdf.org/rel/verapdf-installer.zip). The current installation process requires Java 1.7 to be pre-installed.
+You can download a Java-based installer for the latest veraPDF GUI release [from our download site](https://software.verapdf.org/rel/verapdf-installer.zip). The current installation process requires Java 1.7 to be pre-installed.
 
 #### Download latest development version
-If you want to try the latest development version you can obtain it from our [development download site](http://downloads.verapdf.org/dev/http://downloads.verapdf.org/dev/verapdf-installer.zip). Be aware that we release development snapshots regularly, often more than once a day. While we try to ensure that development builds are well tested there are no guarantees.
+If you want to try the latest development version you can obtain it from our [development download site](https://software.verapdf.org/dev/verapdf-installer.zip). Be aware that we release development snapshots regularly, often more than once a day. While we try to ensure that development builds are well tested there are no guarantees.
 
 #### Install from zip package
 Once downloaded unzip the archive which contains the installer jar with batch and shell scripts to launch, the zip contents are as follows:
