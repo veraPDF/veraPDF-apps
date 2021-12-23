@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.VeraAppConfig;
+import org.verapdf.cli.FormatterHelper;
 import org.verapdf.processor.TaskType;
 
 import com.beust.jcommander.JCommander;
@@ -374,12 +375,13 @@ public class VeraCliArgParserTest {
         // Test flag works
         jCommander.parse(new String[] { "--off" });
         config = parser.appConfig(Applications.defaultConfig());
-        assertTrue(parser.isValidationOff());
-        assertFalse(config.getProcessType().getTasks().contains(TaskType.VALIDATE));
+        assertFalse(parser.isValidationOff());
+        assertTrue(config.getProcessType().getTasks().contains(TaskType.VALIDATE));
     }
 
     static final JCommander initialiseJCommander(final VeraCliArgParser parser) {
         JCommander jCommander = new JCommander(parser);
+        jCommander.setUsageFormatter(new FormatterHelper(jCommander));
         jCommander.setProgramName(APP_NAME);
         jCommander.setAllowParameterOverwriting(true);
         return jCommander;
