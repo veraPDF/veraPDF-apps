@@ -75,6 +75,7 @@ public final class VeraPdfCli {
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
 		VeraCliArgParser cliArgParser = new VeraCliArgParser();
 		JCommander jCommander = new JCommander(cliArgParser);
+		jCommander.setUsageFormatter(new FormatterHelper(jCommander));
 		jCommander.setProgramName(CliConstants.APP_NAME);
 
 		try {
