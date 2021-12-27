@@ -90,7 +90,7 @@ public final class VeraPdfCli {
 		if (isProcess(cliArgParser)) {
 			try {
 				if (args.length == 0 && System.in.available() == 0) {
-					jCommander.usage();
+					usage(jCommander);
 				}
 			} catch (IOException e) {
 				logger.log(Level.SEVERE,"STDIN is not available", e);
@@ -215,5 +215,12 @@ public final class VeraPdfCli {
 			return false;
 		}
 		return true;
+	}
+
+	/* We temporarily hide the wcag2 option from the available flavours, as it is not yet fully supported in CLI. */
+	public static void usage(JCommander jCommander) {
+		StringBuilder sb = new StringBuilder();
+		jCommander.usage(sb);
+		JCommander.getConsole().println(sb.toString().replace(", wcag2", "").replaceFirst("0, ",""));
 	}
 }
