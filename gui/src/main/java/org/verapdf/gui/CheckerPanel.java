@@ -174,7 +174,8 @@ class CheckerPanel extends JPanel {
 				try {
 					Desktop.getDesktop().open(CheckerPanel.this.xmlReport);
 				} catch (IOException excep) {
-					String message = String.format(GUIConstants.IOEXCEP_OPENING_REPORT, GUIConstants.XML);
+					String message = String.format(GUIConstants.IOEXCEP_OPENING_REPORT,
+					                               CheckerPanel.this.xmlReport.getAbsolutePath(), GUIConstants.XML);
 					DialogUtils.errorDialog(CheckerPanel.this, message, logger, excep);
 				}
 			}
@@ -190,7 +191,8 @@ class CheckerPanel extends JPanel {
 					try {
 						Desktop.getDesktop().open(CheckerPanel.this.htmlReport);
 					} catch (IOException excep) {
-						String message = String.format(GUIConstants.IOEXCEP_OPENING_REPORT, GUIConstants.HTML);
+						String message = String.format(GUIConstants.IOEXCEP_OPENING_REPORT,
+						                               CheckerPanel.this.htmlReport.getAbsolutePath(), GUIConstants.HTML);
 						DialogUtils.errorDialog(CheckerPanel.this, message, logger, excep);
 					}
 				}

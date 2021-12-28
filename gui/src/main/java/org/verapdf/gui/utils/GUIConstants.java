@@ -86,7 +86,7 @@ public final class GUIConstants {
 	public static final String VIEW_HTML_REPORT_BUTTON_TEXT = "View HTML";
 	public static final String REPORT = "Report";
 	public static final String ERROR_SAVING_REPORT = "Unresolvable problem occured when saving the %S report.";
-	public static final String IOEXCEP_OPENING_REPORT = "IOException when opening the %S report.";
+	public static final String IOEXCEP_OPENING_REPORT = "Could not open %s using the default Desktop application for %S file type. Please, try opening this file manually.";
 	public static final String IOEXCEP_SAVING_REPORT = "IOException when saving the %S report.";
 	public static final String LABEL_TEXT = "     Please choose a PDF and a Validation Profile, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
 	public static final String CONSORTIUM_TEXT = "© 2015-2021 veraPDF Consortium"; //$NON-NLS-1$
@@ -120,6 +120,7 @@ public final class GUIConstants {
 	public static final String SELECTED_PATH_FOR_FIXER_TOOLTIP = "Select a folder for saving repaired files to. If not set then they'll be saved next to the original.";
 	public static final String SELECTED_PROFILES_WIKI_PATH = "Validation Profiles wiki root:";
 	public static final String CHECK_FOR_UPDATES_TEXT = "Check for Updates...";
+	public static final String UNSUPPORTED_OPERATION_EXC_BROWSE = "Couldn't open online help. Please, try opening this link manually %s";
 
 	public static final int EMPTY_BORDER_INSETS = 5;
 	public static final int FRAME_COORD_X = 100;

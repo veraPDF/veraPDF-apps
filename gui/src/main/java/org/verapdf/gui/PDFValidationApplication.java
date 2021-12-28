@@ -344,8 +344,9 @@ public class PDFValidationApplication extends JFrame {
 	private void attemptURIOpen(String uri) {
 		try {
 			Desktop.getDesktop().browse(new URI(uri));
-		} catch (IOException | URISyntaxException excep) {
-			JOptionPane.showMessageDialog(PDFValidationApplication.this, GUIConstants.ERROR, GUIConstants.ERROR,
+		} catch (IOException | URISyntaxException | UnsupportedOperationException excep) {
+			String message = String.format(GUIConstants.UNSUPPORTED_OPERATION_EXC_BROWSE, uri);
+			JOptionPane.showMessageDialog(PDFValidationApplication.this, message, GUIConstants.ERROR,
 					JOptionPane.ERROR_MESSAGE);
 			logger.log(Level.SEVERE, "Exception in opening link " + uri, excep); //$NON-NLS-1$
 		}
