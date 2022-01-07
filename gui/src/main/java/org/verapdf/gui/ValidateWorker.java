@@ -18,7 +18,6 @@ import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.apps.utils.ApplicationUtils;
-import org.verapdf.component.AuditDuration;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.gui.utils.GUIConstants;
@@ -27,9 +26,6 @@ import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.policy.PolicyChecker;
 import org.verapdf.processor.*;
 import org.verapdf.processor.reports.BatchSummary;
-import org.verapdf.processor.reports.FeaturesBatchSummary;
-import org.verapdf.processor.reports.MetadataRepairBatchSummary;
-import org.verapdf.processor.reports.ValidationBatchSummary;
 import org.verapdf.report.HTMLReport;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -44,7 +40,6 @@ import javax.xml.xpath.XPathFactory;
 import java.io.*;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -201,6 +196,7 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 		                                                    document, XPathConstants.NUMBER)).intValue();
 		return failedPolicyJobsCount;
 	}
+
 	public class ValidateWorkerSummary {
 		private BatchSummary batchSummary;
 		private int policyNonCompliantJobCount = -1;
