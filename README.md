@@ -38,13 +38,15 @@ If you want to try the latest development version you can obtain it from our [de
 #### Install from zip package
 Once downloaded unzip the archive which contains the installer jar with batch and shell scripts to launch, the zip contents are as follows:
 
-    verapdf-1.4.0/verapdf-install.bat
-    verapdf-1.4.0/verapdf-install.sh
-    verapdf-1.4.0/verapdf-izpack-installer-1.4.0.jar
+    verapdf-${project.version}/verapdf-install.bat
+    verapdf-${project.version}/verapdf-install.sh
+    verapdf-${project.version}/verapdf-izpack-installer-${project.version}.jar
+
+Where `${project.version}` is the last development or release version.
 
 Windows users should run the 'verapdf-install.bat' dos batch file, while Linux and OSX users should run the shell script, `verapdf-install.sh`. It's possible to run the installer directly on any platform:
 
-    java - jar <path-to-installer-jar>/verapdf-izpack-installer-1.4.0.jar
+    java - jar <path-to-installer-jar>/verapdf-izpack-installer-${project.version}.jar
 
 #### Linux full command line download and install
 Linux users can download and execute the veraPDF installer using the following commands:
@@ -98,8 +100,8 @@ Move to the downloaded project directory and call Maven install:
     mvn clean install
 
 #### Testing the build
-You can test your build by running the GUI application from the VeraPDF Library GUI `gui` sub-module.
+You can test your build by running the greenfield GUI application from the `greenfield-apps` sub-module.
 
-    java -jar gui/target/gui-${project.version}.jar
+    java -jar greenfield-apps/target/greenfield-apps-${project.version}.jar
 
 Where `${project.version}` is the current Maven project version. This should bring up the veraPDF GUI main window if the build was successful.
