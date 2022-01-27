@@ -309,6 +309,7 @@ public class VeraCliArgParser {
 	 * @return true if verbose output requested
 	 */
 	public FormatOption getFormat() {
+		if (this.policyFile != null && !this.policyFile.getAbsolutePath().equals("")) return Applications.defaultConfig().getFormat();
 		return this.format;
 	}
 

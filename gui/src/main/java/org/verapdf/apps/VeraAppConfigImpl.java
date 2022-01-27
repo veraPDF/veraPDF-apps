@@ -231,14 +231,9 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 			return false;
 		}
 		if (this.wikiPath == null) {
-			if (other.wikiPath != null) {
-				return false;
-			}
-		} else if (!this.wikiPath.equals(other.wikiPath)) {
-			return false;
-		}
-		return true;
-	}
+            return other.wikiPath == null;
+		} else return this.wikiPath.equals(other.wikiPath);
+    }
 
 	/**
 	 * @see java.lang.Object#toString()
