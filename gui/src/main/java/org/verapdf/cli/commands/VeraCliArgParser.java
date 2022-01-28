@@ -306,11 +306,12 @@ public class VeraCliArgParser {
 	}
 
 	/**
-	 * @return true if verbose output requested
+	 * @return format if policy file is not specified,
+	 * otherwise ignore all report format settings and always use mrr report
 	 */
 	public FormatOption getFormat() {
-		if (this.policyFile != null && !this.policyFile.getAbsolutePath().equals("")) return Applications.defaultConfig().getFormat();
-		return this.format;
+		return this.policyFile != null && !this.policyFile.getAbsolutePath().equals("") ?
+				Applications.defaultConfig().getFormat() : this.format;
 	}
 
 	/**
