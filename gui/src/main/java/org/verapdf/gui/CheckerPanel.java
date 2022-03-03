@@ -857,29 +857,26 @@ class CheckerPanel extends JPanel {
 
 		@Override
 		public void dragEnter(DropTargetDragEvent dtde) {
-			try {
-				List<File> selectedFiles = (List<File>) dtde.getTransferable()
-						.getTransferData(DataFlavor.javaFileListFlavor);
-				if (!isAcceptableTransferData(selectedFiles)) {
-					dtde.rejectDrag();
-				} else {
-					this.selectedFiles = selectedFiles;
-				}
-			} catch (UnsupportedFlavorException e) {
-				LOGGER.warning(UNSUPPORTED_FLAVOUR);
-			} catch (IOException e) {
-				LOGGER.warning(CASTING_ERROR);
+			if (dtde.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+				dtde.acceptDrag(DnDConstants.ACTION_COPY);
+			} else {
+				dtde.rejectDrag();
 			}
 		}
 
 		@Override
 		public void drop(DropTargetDropEvent dtde) {
 			if ((dtde.getDropAction() & DnDConstants.ACTION_COPY_OR_MOVE) != 0) {
-				dtde.acceptDrop(dtde.getDropAction());
-				if (this.selectedFiles.isEmpty()) {
-					dtde.rejectDrop();
-				} else {
-					dropFiles(selectedFiles);
+				try {
+					dtde.acceptDrop(dtde.getDropAction());
+					selectedFiles = (List<File>) dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+					if (isAcceptableTransferData(selectedFiles)) {
+						dropFiles(selectedFiles);
+					}
+				} catch (UnsupportedFlavorException e) {
+					LOGGER.warning(UNSUPPORTED_FLAVOUR);
+				} catch (IOException e) {
+					LOGGER.warning(CASTING_ERROR);
 				}
 			} else {
 				dtde.rejectDrop();
