@@ -52,15 +52,16 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 			HttpURLConnection huc = (HttpURLConnection) url.openConnection();
 			huc.setRequestMethod("HEAD"); //$NON-NLS-1$
 			huc.connect();
-			if (huc.getResponseCode() != 200)
-				return false;
-			url.openStream();
+			if (huc.getResponseCode() == 200) {
+				url.openStream();
+				return true;
+			}
 		} catch (MalformedURLException excep) {
 			throw new IllegalStateException(String.format("Problem parsing hard coded URL %s", jenkinsRoot), excep); //$NON-NLS-1$
 		} catch (IOException excep) {
 			logger.log(Level.INFO, "Couldn't get latest version info from Jenkins.", excep); //$NON-NLS-1$
 		}
-		return true;
+		return false;
 	}
 
 	@Override
