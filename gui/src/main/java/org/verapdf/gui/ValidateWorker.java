@@ -38,9 +38,12 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import java.io.*;
+import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
@@ -112,12 +115,32 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 					                              this.configManager.getPluginsCollectionConfig(),
 					                              this.configManager.getFixerConfig(), tasks,
 					                              this.customProfile, veraAppConfig.getFixesFolder());
+
+			try {
+				FileInputStream configFile = new FileInputStream("greenfield-apps/src/main/resources/logging.properties");
+				LogManager.getLogManager().readConfiguration(configFile);
+			} catch (IOException ex) {
+                logger.log(Level.WARNING, "Logging is not configured (console output only)");
+            }
+
 			try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(resultConfig)) {
+				File logs = new File("greenfield-apps/src/main/resources/logs.log");
 				VeraAppConfig applicationConfig = this.configManager.getApplicationConfig();
 				BatchSummary batchSummary = processor.process(this.pdfs,
 						ProcessorFactory.getHandler(FormatOption.MRR, applicationConfig.isVerbose(), mrrReport,
 								applicationConfig.getMaxFailsDisplayed(), validatorConfig.isRecordPasses()));
 				validateWorkerSummary = new ValidateWorkerSummary(batchSummary);
+
+				List<String> loggerMessages = Files.readAllLines(logs.toPath());
+				List<String> warnings = new ArrayList<>();
+				for (int i = 0; i < loggerMessages.size(); ++i) {
+					if (loggerMessages.get(i).contains("M org.")) {
+                        //first line of warning/severe/info
+                        warnings.add(loggerMessages.get(++i));
+					}
+				}
+				insertWarnings(warnings);
+
 				if (isPolicy) {
 					applyPolicy();
 					validateWorkerSummary.setPolicyNonCompliantJobCount(countFailedPolicyJobs(xmlReport));
@@ -135,6 +158,22 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 		}
 
 		return validateWorkerSummary;
+	}
+
+	private void insertWarnings(List<String> warnings) throws IOException, VeraPDFException, SAXException {
+		File xmlReport = this.xmlReport;
+		this.xmlReport = File.createTempFile("veraPDF-tempXMLReport", ".xml"); //$NON-NLS-1$ //$NON-NLS-2$
+		this.xmlReport.deleteOnExit();
+		List<String> report = Files.readAllLines(xmlReport.toPath());
+		StringBuilder add = new StringBuilder();
+		add.append("      <warningsReport warningsCount=\"").append(warnings.size()).append("\">\n");
+		for (String warning : warnings) {
+			add.append("            <warning>").append(warning).append("</warning>\n");
+		}
+		add.append("      </warningsReport>\n");
+		int i = report.indexOf("  </jobs>");
+		report.set(i - 1, add.append("    </job>").toString());
+		Files.write(this.xmlReport.toPath(), report);
 	}
 
 	private void applyPolicy() throws IOException, VeraPDFException {
