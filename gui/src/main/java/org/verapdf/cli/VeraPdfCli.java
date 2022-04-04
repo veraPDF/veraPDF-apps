@@ -53,7 +53,7 @@ public final class VeraPdfCli {
 	private static final Logger logger = Logger.getLogger(VeraCliArgParser.class.getCanonicalName());
 	private static final ConfigManager configManager = Applications.createAppConfigManager();
 	private static final int MEGABYTE = (1024 * 1024);
-	private static final String FLAVOURS_HEADING = CliConstants.APP_NAME + " supported PDF/A profiles:"; //$NON-NLS-1$
+	private static final String FLAVOURS_HEADING = CliConstants.APP_NAME + " supported PDF/A and PDF/UA profiles:"; //$NON-NLS-1$
 	private static final ProfileDirectory PROFILES = Profiles.getVeraProfileDirectory();
 
 	public static final String EXIT = "q";

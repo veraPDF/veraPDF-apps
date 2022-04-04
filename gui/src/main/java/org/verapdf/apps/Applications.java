@@ -180,7 +180,6 @@ public final class Applications {
 
 	public static class Builder {
 		private ProcessType _type = ProcessType.VALIDATE;
-		private int _maxFails = 100;
 		private boolean _isOverwrite = false;
 		private String _fixerFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
 		private FormatOption _format = FormatOption.MRR;
@@ -197,7 +196,6 @@ public final class Applications {
 		private Builder(VeraAppConfig config) {
 			super();
 			this._type = config.getProcessType();
-			this._maxFails = config.getMaxFailsDisplayed();
 			this._isOverwrite = config.isOverwriteReport();
 			this._fixerFolder = config.getFixesFolder();
 			this._format = config.getFormat();
@@ -210,11 +208,6 @@ public final class Applications {
 
 		public Builder type(ProcessType type) {
 			this._type = type;
-			return this;
-		}
-
-		public Builder maxFails(int maxFails) {
-			this._maxFails = maxFails;
 			return this;
 		}
 
@@ -267,7 +260,7 @@ public final class Applications {
 		}
 
 		public VeraAppConfig build() {
-			return new VeraAppConfigImpl(this._type, this._maxFails, this._isOverwrite, this._fixerFolder, this._format,
+			return new VeraAppConfigImpl(this._type, this._isOverwrite, this._fixerFolder, this._format,
 					this._isVerbose, this._wikiPath, this._reportFile, this._reportFolder, this._policyFile);
 		}
 	}

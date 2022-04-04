@@ -46,8 +46,6 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	@XmlAttribute
 	private final ProcessType type;
 	@XmlAttribute
-	private final int maxFails;
-	@XmlAttribute
 	private final boolean isOverwrite;
 	@XmlAttribute
 	private final FormatOption format;
@@ -65,18 +63,16 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	private final String policyFile;
 
 	VeraAppConfigImpl() {
-		this(defaultInstance.getProcessType(), defaultInstance.getMaxFailsDisplayed(),
-				defaultInstance.isOverwriteReport(), defaultInstance.getFixesFolder(), defaultInstance.getFormat(),
-				defaultInstance.isVerbose(), defaultInstance.getWikiPath(), defaultInstance.getReportFile(),
-				defaultInstance.getReportFolder(), defaultInstance.getPolicyFile());
+		this(defaultInstance.getProcessType(), defaultInstance.isOverwriteReport(), defaultInstance.getFixesFolder(),
+				defaultInstance.getFormat(), defaultInstance.isVerbose(), defaultInstance.getWikiPath(),
+				defaultInstance.getReportFile(), defaultInstance.getReportFolder(), defaultInstance.getPolicyFile());
 	}
 
-	VeraAppConfigImpl(final ProcessType type, final int maxFails, final boolean isOverwrite, final String fixerFolder,
+	VeraAppConfigImpl(final ProcessType type, final boolean isOverwrite, final String fixerFolder,
 			final FormatOption format, final boolean isVerbose, final String wikiPath, final String reportFile,
 					  final String reportFolder, final String policyFile) {
 		super();
 		this.type = type;
-		this.maxFails = maxFails;
 		this.isOverwrite = isOverwrite;
 		this.format = format;
 		this.isVerbose = isVerbose;
@@ -144,11 +140,6 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 		return this.isVerbose;
 	}
 
-	@Override
-	public int getMaxFailsDisplayed() {
-		return this.maxFails;
-	}
-
 	public static VeraAppConfig defaultInstance() {
 		return defaultInstance;
 	}
@@ -160,7 +151,6 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	@Override
 	public int hashCode() {
 		int result = this.type != null ? this.type.hashCode() : 0;
-		result = 31 * result + this.maxFails;
 		result = 31 * result + (this.isOverwrite ? 1 : 0);
 		result = 31 * result + (this.format != null ? this.format.hashCode() : 0);
 		result = 31 * result + (this.isVerbose ? 1 : 0);
@@ -203,9 +193,6 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 		if (this.isOverwrite != other.isOverwrite) {
 			return false;
 		}
-		if (this.maxFails != other.maxFails) {
-			return false;
-		}
 		if (this.policyFile == null) {
 			if (other.policyFile != null) {
 				return false;
@@ -240,7 +227,7 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	 */
 	@Override
 	public String toString() {
-		return "VeraAppConfigImpl [type=" + this.type + ", maxFails=" + this.maxFails + ", isOverwrite=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		return "VeraAppConfigImpl [type=" + this.type + ", isOverwrite=" //$NON-NLS-1$ //$NON-NLS-2$
 				+ this.isOverwrite + ", format=" + this.format + ", isVerbose=" + this.isVerbose + ", fixerFolder=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ this.fixerFolder + ", wikiPath=" + this.wikiPath + ", reportFile=" + this.reportFile + ", reportFolder=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				+ this.reportFolder + ", policyFile=" + this.policyFile + "]"; //$NON-NLS-1$ //$NON-NLS-2$

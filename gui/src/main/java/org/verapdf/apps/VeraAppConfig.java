@@ -46,5 +46,4 @@ public interface VeraAppConfig {
 	public FormatOption getFormat();
 	public ProcessType getProcessType();
 	public boolean isVerbose();
-	public int getMaxFailsDisplayed();
 }

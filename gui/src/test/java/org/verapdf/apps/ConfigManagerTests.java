@@ -39,10 +39,9 @@ import org.verapdf.features.FeatureFactory;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+import org.verapdf.pdfa.validation.validators.BaseValidator;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
-import org.verapdf.processor.ProcessorFactory;
-import org.verapdf.processor.TaskType;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -116,7 +115,7 @@ public class ConfigManagerTests {
 		assertFalse(defaultConfig == newManager.getValidatorConfig());
 		assertTrue(defaultConfig.equals(newManager.getValidatorConfig()));
 		ValidatorConfig newConfig = ValidatorFactory.createConfig(PDFAFlavour.PDFA_1_A, PDFAFlavour.PDFA_1_B, !defaultConfig.isRecordPasses(),
-				defaultConfig.getMaxFails() + 20, false);
+				defaultConfig.getMaxFails() + 20, false, BaseValidator.DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS);
 		newManager.updateValidatorConfig(newConfig);
 		assertFalse(defaultConfig.equals(newManager.getValidatorConfig()));
 	}
