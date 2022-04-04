@@ -35,6 +35,7 @@ import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
+import org.verapdf.pdfa.validation.validators.BaseValidator;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.FormatOption;
@@ -152,7 +153,7 @@ public class VeraCliArgParser {
 
 	@Parameter(names = {
 			MAX_FAILURES_DISPLAYED }, description = "Sets maximum amount of failed checks displayed for each rule.")
-	private int maxFailuresDisplayed = 100;
+	private int maxFailuresDisplayed = BaseValidator.DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS;
 
 	@Parameter(names = { MAX_FAILURES }, description = "Sets maximum amount of failed checks.")
 	private int maxFailures = ValidatorFactory.defaultConfig().getMaxFails();
@@ -201,7 +202,7 @@ public class VeraCliArgParser {
 	@Parameter(names = { VALID_OFF_FLAG, VALID_OFF }, description = "Turns off PDF/A validation")
 	private boolean isValidationOff = false;
 
-	@Parameter(names = {NUMBER_OF_PROCESSES_FLAG}, description = "The Number of processes which will be used.")
+	@Parameter(names = {NUMBER_OF_PROCESSES_FLAG}, description = "The number of processes which will be used.")
 	private int numberOfProcesses = 1;
 
 	@Parameter(names = {VERA_PATH_FLAG}, description = "Path to veraPDF Cli", hidden = true, validateWith = FileValidator.class)
@@ -471,7 +472,8 @@ public class VeraCliArgParser {
 	}
 
 	public ValidatorConfig validatorConfig() {
-		return ValidatorFactory.createConfig(this.flavour, this.defaultFlavour, this.logPassed(), this.maxFailures, this.debug);
+		return ValidatorFactory.createConfig(this.flavour, this.defaultFlavour, this.logPassed(), this.maxFailures,
+				this.debug, this.maxFailuresDisplayed);
 	}
 
 	public MetadataFixerConfig fixerConfig() {
@@ -482,7 +484,6 @@ public class VeraCliArgParser {
 		Applications.Builder configBuilder = Applications.Builder.fromConfig(base);
 		configBuilder.format(this.getFormat()).isVerbose(this.isVerbose()).fixerFolder(this.saveFolder);
 		configBuilder.type(typeFromArgs(this));
-		configBuilder.maxFails(this.maxFailuresDisplayed);
 		return configBuilder.build();
 	}
 

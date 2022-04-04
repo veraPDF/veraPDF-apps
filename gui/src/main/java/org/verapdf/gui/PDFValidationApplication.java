@@ -122,7 +122,6 @@ public class PDFValidationApplication extends JFrame {
 						.showDialog(PDFValidationApplication.this, "Settings", configManager)) {
 					Builder confBuilder = Builder.fromConfig(configManager.getApplicationConfig());
 					confBuilder.wikiPath(PDFValidationApplication.this.settingsPanel.getProfilesWikiPath());
-					confBuilder.maxFails(PDFValidationApplication.this.settingsPanel.getFailedChecksDisplayNumber());
 					confBuilder.fixerFolder(
 							PDFValidationApplication.this.settingsPanel.getFixMetadataDirectory().toString());
 					try {
@@ -137,7 +136,8 @@ public class PDFValidationApplication extends JFrame {
 							PDFValidationApplication.this.settingsPanel.getCurrentDefaultFlavour(),
 							PDFValidationApplication.this.settingsPanel.isDispPassedRules(),
 							PDFValidationApplication.this.settingsPanel.getFailedChecksNumber(),
-							configManager.getValidatorConfig().isDebug());
+							configManager.getValidatorConfig().isDebug(),
+							PDFValidationApplication.this.settingsPanel.getFailedChecksDisplayNumber());
 					try {
 						configManager.updateValidatorConfig(validConf);
 					} catch (JAXBException | IOException excep) {

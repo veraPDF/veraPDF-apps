@@ -2,7 +2,6 @@ package org.verapdf.cli.multithread;
 
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.utils.ApplicationUtils;
-import org.verapdf.cli.CliConstants;
 import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.processor.FormatOption;
@@ -15,7 +14,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.*;

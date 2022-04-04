@@ -49,6 +49,7 @@ import org.verapdf.apps.ConfigManager;
 import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
+import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 
 /**
  * Settings Panel
@@ -226,23 +227,24 @@ class SettingsPanel extends JPanel {
 
 		this.ok = false;
 
-		this.hidePassedRules.setSelected(settings.createProcessorConfig().getValidatorConfig().isRecordPasses());
+		ValidatorConfig validatorConfig = settings.createProcessorConfig().getValidatorConfig();
+		this.hidePassedRules.setSelected(validatorConfig.isRecordPasses());
 
-		int numbOfFail = settings.createProcessorConfig().getValidatorConfig().getMaxFails();
+		int numbOfFail = validatorConfig.getMaxFails();
 		if (numbOfFail == -1) {
 			this.numberOfFailed.setText("");
 		} else {
 			this.numberOfFailed.setText(String.valueOf(numbOfFail));
 		}
 
-		int numbOfFailDisp = settings.getApplicationConfig().getMaxFailsDisplayed();
+		int numbOfFailDisp = validatorConfig.getMaxNumberOfDisplayedFailedChecks();
 		if (numbOfFailDisp == -1) {
 			this.numberOfFailedDisplay.setText("");
 		} else {
 			this.numberOfFailedDisplay.setText(String.valueOf(numbOfFailDisp));
 		}
 
-		PDFAFlavour defaultFlavour = settings.createProcessorConfig().getValidatorConfig().getDefaultFlavour();
+		PDFAFlavour defaultFlavour = validatorConfig.getDefaultFlavour();
 		String fromConfigDefaultFlavourText = CheckerPanel.getFlavourReadableText(defaultFlavour);
 		this.chooseDefaultFlavour.setSelectedItem(fromConfigDefaultFlavourText);
 

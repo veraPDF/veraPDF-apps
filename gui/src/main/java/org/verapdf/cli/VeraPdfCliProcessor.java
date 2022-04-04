@@ -165,7 +165,6 @@ final class VeraPdfCliProcessor implements Closeable {
 				OutputStream reportStream = this.getReportStream()) {
 			BatchSummary summary = processor.process(toProcess,
 					ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), reportStream,
-							this.appConfig.getMaxFailsDisplayed(),
 							this.processorConfig.getValidatorConfig().isRecordPasses()));
 			reportStream.flush();
 			return exitStatusFromSummary(summary);
@@ -209,7 +208,7 @@ final class VeraPdfCliProcessor implements Closeable {
 			try {
 
 				BatchProcessingHandler handler = ProcessorFactory.getHandler(this.appConfig.getFormat(),
-						this.appConfig.isVerbose(), outputReportStream, this.appConfig.getMaxFailsDisplayed(),
+						this.appConfig.isVerbose(), outputReportStream,
 						this.processorConfig.getValidatorConfig().isRecordPasses());
 
 				if (result.isPdf() && !result.isEncryptedPdf()) {
