@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.io.*;
+import java.util.Objects;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -143,7 +144,6 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	public static VeraAppConfig defaultInstance() {
 		return defaultInstance;
 	}
-
 	
 	/**
 	 * @see java.lang.Object#hashCode()
@@ -177,11 +177,7 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 			return false;
 		}
 		VeraAppConfigImpl other = (VeraAppConfigImpl) obj;
-		if (this.fixerFolder == null) {
-			if (other.fixerFolder != null) {
-				return false;
-			}
-		} else if (!this.fixerFolder.equals(other.fixerFolder)) {
+		if (!Objects.equals(this.fixerFolder, other.fixerFolder)) {
 			return false;
 		}
 		if (this.format != other.format) {
@@ -200,26 +196,16 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 		} else if (!this.policyFile.equals(other.policyFile)) {
 			return false;
 		}
-		if (this.reportFile == null) {
-			if (other.reportFile != null) {
-				return false;
-			}
-		} else if (!this.reportFile.equals(other.reportFile)) {
+		if (!Objects.equals(this.reportFile, other.reportFile)) {
 			return false;
 		}
-		if (this.reportFolder == null) {
-			if (other.reportFolder != null) {
-				return false;
-			}
-		} else if (!this.reportFolder.equals(other.reportFolder)) {
+		if (!Objects.equals(this.reportFolder, other.reportFolder)) {
 			return false;
 		}
 		if (this.type != other.type) {
 			return false;
 		}
-		if (this.wikiPath == null) {
-            return other.wikiPath == null;
-		} else return this.wikiPath.equals(other.wikiPath);
+		return Objects.equals(this.wikiPath, other.wikiPath);
     }
 
 	/**

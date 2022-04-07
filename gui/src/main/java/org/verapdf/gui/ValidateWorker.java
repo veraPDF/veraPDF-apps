@@ -19,6 +19,7 @@ import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.core.VeraPDFException;
+import org.verapdf.core.utils.LogsFileHandler;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
@@ -89,11 +90,12 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 		}
 		try (OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
 			VeraAppConfig veraAppConfig = this.parent.appConfigFromState();
+			ValidatorConfig validatorConfig = this.configManager.getValidatorConfig();
+			LogsFileHandler.setLoggingLevel(validatorConfig.getLoggingLevel());
 			ProcessType processType = veraAppConfig.getProcessType();
 			boolean isPolicy = (processType == ProcessType.POLICY || processType == ProcessType.POLICY_FIX)
 					&& this.policy != null;
 			EnumSet<TaskType> tasks = processType.getTasks();
-			ValidatorConfig validatorConfig = this.configManager.getValidatorConfig();
 			FeatureExtractorConfig featuresConfig = this.configManager.getFeaturesConfig();
 			if (isPolicy) {
 				try (InputStream policyStream = new FileInputStream(this.policy)) {

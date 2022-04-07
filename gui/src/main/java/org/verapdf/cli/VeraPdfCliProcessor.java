@@ -39,6 +39,7 @@ import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
+import org.verapdf.core.utils.LogsFileHandler;
 import org.verapdf.policy.PolicyChecker;
 import org.verapdf.processor.BatchProcessor;
 import org.verapdf.processor.ItemProcessor;
@@ -82,6 +83,7 @@ final class VeraPdfCliProcessor implements Closeable {
 		}
 		this.policyFile = args.getPolicyFile();
 		this.appConfig = args.appConfig(configManager.getApplicationConfig());
+		LogsFileHandler.setLoggingLevel(configManager.getValidatorConfig().getLoggingLevel());
 		this.processorConfig = args.processorConfig(this.appConfig.getProcessType(),
 				this.configManager.getFeaturesConfig(), this.configManager.getPluginsCollectionConfig());
 		if (this.configManager.getApplicationConfig().isOverwriteReport()) {
