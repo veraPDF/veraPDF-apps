@@ -137,6 +137,8 @@ public class PDFValidationApplication extends JFrame {
 							PDFValidationApplication.this.settingsPanel.isDispPassedRules(),
 							PDFValidationApplication.this.settingsPanel.getFailedChecksNumber(),
 							configManager.getValidatorConfig().isDebug(),
+							PDFValidationApplication.this.settingsPanel.isLogsEnabled(),
+							PDFValidationApplication.this.settingsPanel.getLoggingLevel(),
 							PDFValidationApplication.this.settingsPanel.getFailedChecksDisplayNumber());
 					try {
 						configManager.updateValidatorConfig(validConf);

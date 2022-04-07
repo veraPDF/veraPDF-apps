@@ -54,6 +54,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
 
 /**
  * This class holds all command-line options used by VeraPDF application.
@@ -94,6 +95,8 @@ public class VeraCliArgParser {
 	final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder"; //$NON-NLS-1$
 	final static String NON_PDF_EXTENSION = OPTION_SEP + "nonpdfext";
 	final static String POLICY_FILE = OPTION_SEP + "policyfile"; //$NON-NLS-1$
+	final static String ADD_LOGS = OPTION_SEP + "addlogs"; //$NON-NLS-1$
+	final static String LOG_LEVEL = OPTION_SEP + "loglevel"; //$NON-NLS-1$
 	// final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
 	// final static String LOAD_CONFIG_FLAG = FLAG_SEP + "c";
 	// final static String LOAD_CONFIG = OPTION_SEP + "config";
@@ -160,6 +163,12 @@ public class VeraCliArgParser {
 
 	@Parameter(names = { FIX_METADATA }, description = "Performs metadata fixes.")
 	private boolean fixMetadata = false;
+
+	@Parameter(names = { ADD_LOGS }, description = "Add logs to xml report.")
+	private boolean addLogs = false;
+
+	@Parameter(names = { LOG_LEVEL }, description = "Enables logs with level: 0 – OFF, 1 – SEVERE, 2 – WARNING, SEVERE (default), 3 – CONFIG, INFO, WARNING, SEVERE, 4 – ALL.")
+	private int logLevel = 2;
 
 	@Parameter(names = { FIX_METADATA_PREFIX }, description = "Sets file name prefix for any fixed files.")
 	private String prefix = FixerFactory.defaultConfig().getFixesPrefix();
@@ -258,6 +267,25 @@ public class VeraCliArgParser {
 	 */
 	public boolean fixMetadata() {
 		return this.fixMetadata;
+	}
+
+	/**
+	 * @return true if adding logs to xml report is enabled
+	 */
+	public boolean addLogs() {
+		return this.addLogs;
+	}
+
+	/**
+	 * @return logging level set by user:
+	 * 0 - OFF
+	 * 1 - SEVERE
+	 * 2 - WARNING, SEVERE (default)
+	 * 3 - CONFIG, INFO, WARNING, SEVERE
+	 * 4 - ALL
+	 */
+	public int getLogLevel() {
+		return this.logLevel;
 	}
 
 	/**
@@ -472,8 +500,25 @@ public class VeraCliArgParser {
 	}
 
 	public ValidatorConfig validatorConfig() {
-		return ValidatorFactory.createConfig(this.flavour, this.defaultFlavour, this.logPassed(), this.maxFailures,
-				this.debug, this.maxFailuresDisplayed);
+		Level loggingLevel;
+		switch (this.getLogLevel()){
+			case 0:
+				loggingLevel = Level.OFF;
+				break;
+			case 1:
+				loggingLevel = Level.SEVERE;
+				break;
+			case 3:
+				loggingLevel = Level.CONFIG;
+				break;
+			case 4:
+				loggingLevel = Level.ALL;
+				break;
+			default:
+				loggingLevel = Level.WARNING;
+				break;
+		}
+		return ValidatorFactory.createConfig(this.flavour, this.defaultFlavour, this.logPassed(), this.maxFailures, this.debug, this.addLogs(), loggingLevel, this.maxFailuresDisplayed);
 	}
 
 	public MetadataFixerConfig fixerConfig() {
@@ -531,6 +576,11 @@ public class VeraCliArgParser {
 		if (cliArgParser.fixMetadata()) {
 			veraPDFParameters.add("--fixmetadata");
 		}
+		if (cliArgParser.addLogs()) {
+			veraPDFParameters.add("--addlogs");
+		}
+		veraPDFParameters.add("--loglevel");
+		veraPDFParameters.add(String.valueOf(cliArgParser.getLogLevel()));
 		veraPDFParameters.add("--defaultflavour");
 		veraPDFParameters.add(String.valueOf(cliArgParser.getDefaultFlavour()));
 		veraPDFParameters.add("--flavour");

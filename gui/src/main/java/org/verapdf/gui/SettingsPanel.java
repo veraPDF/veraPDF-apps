@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Vector;
 import java.util.TreeSet;
 import java.util.SortedSet;
+import java.util.logging.Level;
 
 import javax.swing.JComboBox;
 import javax.swing.BoxLayout;
@@ -65,13 +66,16 @@ class SettingsPanel extends JPanel {
 	private JTextField numberOfFailed;
 	private JTextField numberOfFailedDisplay;
 	private JCheckBox hidePassedRules;
+	private JCheckBox logs;
 	private JTextField fixMetadataPrefix;
 	private PDFAFlavour currentDefaultFlavour;
 	JTextField fixMetadataFolder;
 	JFileChooser folderChooser;
 	private JTextField profilesWikiPath;
 	private static final Map<String, PDFAFlavour> FLAVOURS_MAP = new HashMap<>();
+	private static final Map<String, Integer> LOGGING_LEVELS_MAP = new HashMap<>();
 	private JComboBox<String> chooseDefaultFlavour;
+	private JComboBox<String> chooseLoggingLevel;
 
 	SettingsPanel(final ConfigManager config) throws IOException {
 		setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS,
@@ -79,11 +83,15 @@ class SettingsPanel extends JPanel {
 		setLayout(new BorderLayout());
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(7, 2));
+		panel.setLayout(new GridLayout(9, 2));
 
 		panel.add(new JLabel(GUIConstants.DISPLAY_PASSED_RULES));
 		this.hidePassedRules = new JCheckBox();
 		panel.add(this.hidePassedRules);
+
+		panel.add(new JLabel(GUIConstants.LOGS_LABEL_TEXT));
+		this.logs = new JCheckBox();
+		panel.add(this.logs);
 
 		panel.add(new JLabel(GUIConstants.MAX_NUMBER_FAILED_CHECKS));
 		this.numberOfFailed = new JTextField();
@@ -163,7 +171,7 @@ class SettingsPanel extends JPanel {
 		this.profilesWikiPath = new JTextField(GUIConstants.SETTINGS_DIALOG_MAX_CHARS_TEXTFIELD);
 		panel.add(this.profilesWikiPath);
 
-		panel.add(new JLabel("Default flavour"));
+		panel.add(new JLabel("Default flavour:"));
 		Vector<String> availableFlavours = new Vector<>();
 		SortedSet<String> sortedFlavours = new TreeSet<>();
 		for (PDFAFlavour flavour : Profiles.getVeraProfileDirectory().getPDFAFlavours()) {
@@ -186,6 +194,28 @@ class SettingsPanel extends JPanel {
 			currentDefaultFlavour = PDFAFlavour.PDFA_1_B;
 		}
 		panel.add(this.chooseDefaultFlavour);
+
+		panel.add(new JLabel(GUIConstants.CHOOSE_LOGGING_LEVEL));
+		Vector<String> availableLoggingLevels = new Vector<>();
+		availableLoggingLevels.add(GUIConstants.OFF_LEVEL);
+		availableLoggingLevels.add(GUIConstants.SEVERE_LEVEL);
+		availableLoggingLevels.add(GUIConstants.WARNING_LEVEL);
+		availableLoggingLevels.add(GUIConstants.CONFIG_LEVEL);
+		availableLoggingLevels.add(GUIConstants.ALL_LEVEL);
+		for (int i = 0; i < availableLoggingLevels.size(); ++i){
+			LOGGING_LEVELS_MAP.put(availableLoggingLevels.get(i), i);
+		}
+		this.chooseLoggingLevel = new JComboBox<>(availableLoggingLevels);
+		this.chooseLoggingLevel.setOpaque(true);
+		this.chooseLoggingLevel.setRenderer(new ChooseFlavourRenderer());
+		String levelFromConfig = LOGGING_LEVELS_MAP.keySet()
+				.stream()
+				.filter(l -> l.startsWith(config.getValidatorConfig().getLoggingLevel().toString()))
+				.findFirst()
+				.orElse(GUIConstants.WARNING_LEVEL);
+		this.chooseLoggingLevel.setSelectedItem(levelFromConfig);
+		panel.add(this.chooseLoggingLevel);
+
 		add(panel, BorderLayout.CENTER);
 
 		this.okButton = new JButton(GUIConstants.OK);
@@ -230,6 +260,8 @@ class SettingsPanel extends JPanel {
 		ValidatorConfig validatorConfig = settings.createProcessorConfig().getValidatorConfig();
 		this.hidePassedRules.setSelected(validatorConfig.isRecordPasses());
 
+		this.logs.setSelected(settings.getValidatorConfig().isLogsEnabled());
+
 		int numbOfFail = validatorConfig.getMaxFails();
 		if (numbOfFail == -1) {
 			this.numberOfFailed.setText("");
@@ -243,6 +275,13 @@ class SettingsPanel extends JPanel {
 		} else {
 			this.numberOfFailedDisplay.setText(String.valueOf(numbOfFailDisp));
 		}
+
+		String defaultLevel = LOGGING_LEVELS_MAP.keySet()
+				.stream()
+				.filter(l -> l.startsWith(settings.getValidatorConfig().getLoggingLevel().toString()))
+				.findFirst()
+				.orElse(GUIConstants.WARNING_LEVEL);
+		this.chooseLoggingLevel.setSelectedItem(defaultLevel);
 
 		PDFAFlavour defaultFlavour = validatorConfig.getDefaultFlavour();
 		String fromConfigDefaultFlavourText = CheckerPanel.getFlavourReadableText(defaultFlavour);
@@ -316,6 +355,14 @@ class SettingsPanel extends JPanel {
 
 	boolean isDispPassedRules() {
 		return this.hidePassedRules.isSelected();
+	}
+
+	boolean isLogsEnabled() {
+		return this.logs.isSelected();
+	}
+
+	Level getLoggingLevel() {
+		return Level.parse(((String)this.chooseLoggingLevel.getSelectedItem()).split(",")[0]);
 	}
 
 	int getFailedChecksNumber() {

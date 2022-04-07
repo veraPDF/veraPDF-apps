@@ -70,6 +70,11 @@ public final class GUIConstants {
 	public static final String CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT = "Please, specify validation profile";
 	public static final String CUSTOM_PROFILE_COMBOBOX_TEXT = "Custom profile";
 	public static final String AUTO_FLAVOUR_COMBOBOX_TEXT = "Auto-detect";
+	public static final String OFF_LEVEL = "OFF";
+	public static final String SEVERE_LEVEL = "SEVERE";
+	public static final String WARNING_LEVEL = "WARNING, SEVERE";
+	public static final String CONFIG_LEVEL = "CONFIG, INFO, WARNING, SEVERE";
+	public static final String ALL_LEVEL = "ALL";
 	public static final String VALIDATION_PROFILE_NOT_CHOSEN = "Validation profile not chosen";
 	public static final String OK = "OK"; //$NON-NLS-1$
 	public static final String CANCEL = "Cancel"; //$NON-NLS-1$
@@ -107,6 +112,7 @@ public final class GUIConstants {
 	public static final String TITLE_OVERWRITE = "Confirm Overwrite";
 	public static final String PROCESSING_TYPE = " Report type:   ";
 	public static final String CHOOSE_FLAVOUR = "PDF flavour:   ";
+	public static final String CHOOSE_LOGGING_LEVEL = "Logging level:   ";
 	public static final String DISPLAY_PASSED_RULES = "Include passed rules:";
 	public static final String PLUGINS_ENABLED_TEXT = "Use plugins when extracting features:";
 	public static final String MAX_NUMBER_FAILED_DISPLAYED_CHECKS = "Display failed checks for rule: ";
@@ -114,6 +120,7 @@ public final class GUIConstants {
 	public static final String FEATURES_GENERATED_CORRECT = "Features report generated.";
 	public static final String MAX_FAILED_CHECKS_SETTING_TIP = "1 to 999999 or empty for unlimited";
 	public static final String MAX_FAILED_CHECKS_DISP_SETTING_TIP = "0 to 999999 or empty for unlimited";
+	public static final String LOGS_LABEL_TEXT = "Add logs to xml report:";
 	public static final String FIX_METADATA_LABEL_TEXT = "       Fix metadata:";
 	public static final String SELECTED_PATH_FOR_FIXER_LABEL_TEXT = "Save repaired files into the folder:";
 	public static final String FIX_METADATA_PREFIX_LABEL_TEXT = "Save repaired files with prefix:";
