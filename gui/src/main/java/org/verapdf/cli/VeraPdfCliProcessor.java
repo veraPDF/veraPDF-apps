@@ -141,9 +141,7 @@ final class VeraPdfCliProcessor implements Closeable {
 	private ExitCodes processStdIn() {
 		try {
 			if (System.in.available() == 0) {
-				for (String messageLine : CliConstants.MESS_PROC_STDIN) {
-					System.out.println(messageLine);
-				}
+				return ExitCodes.VALID;
 			}
 		} catch (IOException e) {
 			logger.log(Level.SEVERE,"STDIN is not available", e);
