@@ -51,6 +51,10 @@ public final class Applications {
 	private static final String VERAPDF = "verapdf";
 	private static final String VERAPDF_WITH_BAT = VERAPDF + ".bat";
 
+	private static final String APPDATA_NAME = "APPDATA";
+	private static final String USER_HOME_PROPERTY = "user.home";
+	private static final String DOT = ".";
+
 	private Applications() {
 		assert (false);
 	}
@@ -95,24 +99,29 @@ public final class Applications {
 	public static ConfigManager createConfigManager(final File root) {
 		if (root == null)
 			throw new NullPointerException("Arg root cannot be null");
-		if ((!root.isDirectory() && !root.mkdir()) || !root.canWrite()) {
+		if ((!root.isDirectory() && !root.mkdir()) || !Files.isWritable(root.toPath())) {
 			throw new IllegalArgumentException(String.format(not_writable_message, root.getAbsolutePath()));
 		}
 		return ConfigManagerImpl.create(root);
 	}
 
 	/**
-	 * Shortcut method to create a configuration in the application install
-	 * configuration directory.
+	 * Shortcut method to find configuration in the local user directory or,
+	 * if it doesn't exist, to create configuration in the application
+	 * installation configuration directory,
+	 * if installation configuration directory is not writable method shall
+	 * create configuration in the local user directory.
 	 * 
 	 * @return a {@link ConfigManager} instance populated using the
 	 *         configuration files in the application config directory.
 	 */
 	public static ConfigManager createAppConfigManager() {
+		File configRoot = new File("");
 		try {
-			return createConfigManager(appHomeRoot());
+			configRoot = configRoot();
+			return createConfigManager(configRoot);
 		} catch (IOException excep) {
-			throw new IllegalStateException(String.format(write_io_message, APP_HOME_PROPERTY), excep);
+			throw new IllegalStateException(String.format(write_io_message, configRoot.getAbsolutePath()), excep);
 		}
 	}
 
@@ -265,7 +274,29 @@ public final class Applications {
 		}
 	}
 
-	private static File appHomeRoot() throws IOException {
+	private static File configRoot() throws IOException {
+		String path = System.getenv(APPDATA_NAME);
+		if (path == null) {
+			path = System.getProperty(USER_HOME_PROPERTY) + File.separator + DOT;
+		} else {
+			path += File.separator;
+		}
+		path += VERAPDF + File.separator + DEFAULT_CONFIG_ROOT_NAME;
+		File localRoot = new File(path);
+		if (localRoot.exists() && areDirectoryFilesWritable(localRoot)) {
+			return localRoot;
+		}
+		File appHomeRoot = appHomeRoot();
+		if (appHomeRoot != null && Files.isWritable(appHomeRoot.toPath()) && areDirectoryFilesWritable(appHomeRoot)) {
+			return appHomeRoot;
+		}
+		if (localRoot.mkdirs() && Files.isWritable(localRoot.toPath())) {
+			return localRoot;
+		}
+		return tempRoot();
+	}
+
+	private static File appHomeRoot() {
 		String appHome = System.getProperty(APP_HOME_PROPERTY);
 		if (appHome != null) {
 			File user = new File(appHome);
@@ -274,12 +305,28 @@ public final class Applications {
 				return f;
 			}
 		}
-		return tempRoot();
+		return null;
 	}
 
 	private static File tempRoot() throws IOException {
 		File temp = Files.createTempDirectory("").toFile(); //$NON-NLS-1$
 		temp.deleteOnExit();
 		return temp;
+	}
+
+	private static boolean areDirectoryFilesWritable(File directory) {
+		String[] files = directory.list();
+		if (files == null) {
+			return Files.isWritable(directory.toPath());
+		}
+		if (files.length == 0) {
+			return true;
+		}
+		for (String fileName : files) {
+			if (!Files.isWritable(new File(directory + File.separator + fileName).toPath())) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
