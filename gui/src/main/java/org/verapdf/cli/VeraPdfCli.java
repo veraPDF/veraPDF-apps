@@ -100,7 +100,7 @@ public final class VeraPdfCli {
 				if (cliArgParser.isServerMode() || cliArgParser.getNumberOfProcesses() < 2) {
 					System.exit(singleThreadProcess(cliArgParser).value);
 				} else {
-					System.exit(MultiThreadProcessor.process(cliArgParser).value);
+					System.exit(MultiThreadProcessor.process(cliArgParser, configManager.getApplicationConfig().getWikiPath()).value);
 				}
 			} catch (InterruptedException e) {
 				logger.log(Level.WARNING, "Interrupted", e);
