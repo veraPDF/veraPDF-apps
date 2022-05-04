@@ -9,10 +9,10 @@ import org.verapdf.processor.reports.ResultStructure;
 import org.verapdf.processor.reports.multithread.MultiThreadProcessingHandler;
 import org.verapdf.processor.reports.multithread.MultiThreadProcessingHandlerImpl;
 import org.verapdf.processor.reports.multithread.writer.ReportWriter;
+import org.verapdf.report.HTMLReport;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.OutputStream;
+import javax.xml.transform.TransformerException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -39,13 +39,29 @@ public class MultiThreadProcessor {
 	private MultiThreadProcessingHandler processingHandler;
 
 	private boolean isFirstReport = true;
+	private boolean isHTMLReport;
+	private File xmlReport;
+	private String wikiPath;
 
 	private ExitCodes currentExitCode = ExitCodes.VALID;
 	private CountDownLatch latch;
 
-	private MultiThreadProcessor(VeraCliArgParser cliArgParser) {
-		this.os = new BufferedOutputStream(System.out, DEFAULT_BUFFER_SIZE * COEFFICIENT_BUFFER_SIZE);
+	private MultiThreadProcessor(VeraCliArgParser cliArgParser, String wikiPath) {
+		this.isHTMLReport = cliArgParser.getFormat() == FormatOption.HTML;
+		if (isHTMLReport) {
+			try {
+				this.xmlReport = File.createTempFile("veraPDF", "report.xml");
+				this.os = new BufferedOutputStream(new FileOutputStream(xmlReport), DEFAULT_BUFFER_SIZE * COEFFICIENT_BUFFER_SIZE);
+			} catch (IOException e) {
+				isHTMLReport = false;
+				LOGGER.log(Level.WARNING, "Problem with generating html report");
+			}
+		}
+		if (!isHTMLReport) {
+			this.os = new BufferedOutputStream(System.out, DEFAULT_BUFFER_SIZE * COEFFICIENT_BUFFER_SIZE);
+		}
 
+		this.wikiPath = wikiPath;
 		this.errorStream = new BufferedOutputStream(System.err, DEFAULT_BUFFER_SIZE);
 
 		this.veraPDFStarterPath = getVeraPdfStarterFile(cliArgParser);
@@ -59,8 +75,8 @@ public class MultiThreadProcessor {
 		this.processingHandler = new MultiThreadProcessingHandlerImpl(reportWriter);
 	}
 
-	public static ExitCodes process(VeraCliArgParser cliArgParser) throws InterruptedException {
-		MultiThreadProcessor processor = new MultiThreadProcessor(cliArgParser);
+	public static ExitCodes process(VeraCliArgParser cliArgParser, String wikiPath) throws InterruptedException {
+		MultiThreadProcessor processor = new MultiThreadProcessor(cliArgParser, wikiPath);
 		if (processor.currentExitCode != ExitCodes.VALID) {
 			return processor.currentExitCode;
 		}
@@ -84,7 +100,11 @@ public class MultiThreadProcessor {
 	}
 
 	private FormatOption getOutputFormat(String outputFormat) {
-		return FormatOption.fromOption(outputFormat);
+		FormatOption formatOption = FormatOption.fromOption(outputFormat);
+		if (formatOption == FormatOption.HTML) {
+			return FormatOption.MRR;
+		}
+		return formatOption;
 	}
 
 	public synchronized void write(ResultStructure result) {
@@ -100,6 +120,14 @@ public class MultiThreadProcessor {
 
 		if (filesQuantity == 0) {
 			processingHandler.endReport();
+			if (isHTMLReport) {
+				this.os = new BufferedOutputStream(System.out, DEFAULT_BUFFER_SIZE * COEFFICIENT_BUFFER_SIZE);
+				try (InputStream inputStream = new FileInputStream(xmlReport)) {
+					HTMLReport.writeHTMLReport(inputStream, os, true, wikiPath, true);
+				} catch (IOException | TransformerException e) {
+					LOGGER.log(Level.WARNING, "Problem with generating html report");
+				}
+			}
 		}
 	}
 

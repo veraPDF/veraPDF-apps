@@ -167,7 +167,7 @@ public class VeraCliArgParser {
 	@Parameter(names = { ADD_LOGS }, description = "Add logs to xml report.")
 	private boolean addLogs = false;
 
-	@Parameter(names = { LOG_LEVEL }, description = "Enables logs with level: 0 – OFF, 1 – SEVERE, 2 – WARNING, SEVERE (default), 3 – CONFIG, INFO, WARNING, SEVERE, 4 – ALL.")
+	@Parameter(names = { LOG_LEVEL }, description = "Enables logs with level: 0 - OFF, 1 - SEVERE, 2 - WARNING, SEVERE (default), 3 - CONFIG, INFO, WARNING, SEVERE, 4 - ALL.")
 	private int logLevel = 2;
 
 	@Parameter(names = { FIX_METADATA_PREFIX }, description = "Sets file name prefix for any fixed files.")
@@ -586,7 +586,11 @@ public class VeraCliArgParser {
 		veraPDFParameters.add("--flavour");
 		veraPDFParameters.add(String.valueOf(cliArgParser.getFlavour()));
 		veraPDFParameters.add("--format");
-		veraPDFParameters.add(String.valueOf(cliArgParser.getFormat()));
+		if (cliArgParser.getFormat() == FormatOption.HTML) {
+			veraPDFParameters.add(String.valueOf(FormatOption.MRR));
+		} else {
+			veraPDFParameters.add(String.valueOf(cliArgParser.getFormat()));
+		}
 		if (cliArgParser.listProfiles()) {
 			veraPDFParameters.add("--list");
 		}
