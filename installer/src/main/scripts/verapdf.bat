@@ -64,7 +64,8 @@ set SAVE_DIR=
 goto repoSetup
 
 :WinNTGetScriptDir
-set BASEDIR=%~dp0\
+set BASEDIR=%~dp0
+if %BASEDIR:~-1%==\ set BASEDIR=%BASEDIR:~0,-1%
 
 :repoSetup
 set REPO=
