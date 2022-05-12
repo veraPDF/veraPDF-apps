@@ -47,6 +47,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import org.verapdf.apps.ConfigManager;
+import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
@@ -59,6 +60,9 @@ import org.verapdf.pdfa.validation.validators.ValidatorConfig;
  */
 class SettingsPanel extends JPanel {
 
+	private static final char[] FORBIDDEN_SYMBOLS_IN_FILE_NAME = new char[] { '\\', '/', ':', '*', '?', '\"', '<', '>',
+			'|', '+', '\0', '%' };
+
 	private static final long serialVersionUID = -5688021756073449469L;
 	private JButton okButton;
 	boolean ok;
@@ -67,6 +71,7 @@ class SettingsPanel extends JPanel {
 	private JTextField numberOfFailedDisplay;
 	private JCheckBox hidePassedRules;
 	private JCheckBox logs;
+	private JCheckBox showErrorMessages;
 	private JTextField fixMetadataPrefix;
 	private PDFAFlavour currentDefaultFlavour;
 	JTextField fixMetadataFolder;
@@ -83,7 +88,7 @@ class SettingsPanel extends JPanel {
 		setLayout(new BorderLayout());
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(9, 2));
+		panel.setLayout(new GridLayout(10, 2));
 
 		panel.add(new JLabel(GUIConstants.DISPLAY_PASSED_RULES));
 		this.hidePassedRules = new JCheckBox();
@@ -92,6 +97,10 @@ class SettingsPanel extends JPanel {
 		panel.add(new JLabel(GUIConstants.LOGS_LABEL_TEXT));
 		this.logs = new JCheckBox();
 		panel.add(this.logs);
+
+		panel.add(new JLabel(GUIConstants.SHOW_ERROR_MESSAGES_TEXT));
+		this.showErrorMessages = new JCheckBox();
+		panel.add(this.showErrorMessages);
 
 		panel.add(new JLabel(GUIConstants.MAX_NUMBER_FAILED_CHECKS));
 		this.numberOfFailed = new JTextField();
@@ -260,7 +269,9 @@ class SettingsPanel extends JPanel {
 		ValidatorConfig validatorConfig = settings.createProcessorConfig().getValidatorConfig();
 		this.hidePassedRules.setSelected(validatorConfig.isRecordPasses());
 
-		this.logs.setSelected(settings.getValidatorConfig().isLogsEnabled());
+		this.showErrorMessages.setSelected(validatorConfig.showErrorMessages());
+
+		this.logs.setSelected(validatorConfig.isLogsEnabled());
 
 		int numbOfFail = validatorConfig.getMaxFails();
 		if (numbOfFail == -1) {
@@ -278,7 +289,7 @@ class SettingsPanel extends JPanel {
 
 		String defaultLevel = LOGGING_LEVELS_MAP.keySet()
 				.stream()
-				.filter(l -> l.startsWith(settings.getValidatorConfig().getLoggingLevel().toString()))
+				.filter(l -> l.startsWith(validatorConfig.getLoggingLevel().toString()))
 				.findFirst()
 				.orElse(GUIConstants.WARNING_LEVEL);
 		this.chooseLoggingLevel.setSelectedItem(defaultLevel);
@@ -288,9 +299,11 @@ class SettingsPanel extends JPanel {
 		this.chooseDefaultFlavour.setSelectedItem(fromConfigDefaultFlavourText);
 
 		this.fixMetadataPrefix.setText(settings.createProcessorConfig().getFixerConfig().getFixesPrefix());
-		this.fixMetadataFolder.setText(settings.getApplicationConfig().getFixesFolder());
 
-		this.profilesWikiPath.setText(settings.getApplicationConfig().getWikiPath());
+		VeraAppConfig appConfig = settings.getApplicationConfig();
+		this.fixMetadataFolder.setText(appConfig.getFixesFolder());
+
+		this.profilesWikiPath.setText(appConfig.getWikiPath());
 
 		Frame owner;
 		if (parent instanceof Frame) {
@@ -361,6 +374,10 @@ class SettingsPanel extends JPanel {
 		return this.logs.isSelected();
 	}
 
+	boolean showErrorMessages() {
+		return this.showErrorMessages.isSelected();
+	}
+
 	Level getLoggingLevel() {
 		return Level.parse(((String)this.chooseLoggingLevel.getSelectedItem()).split(",")[0]);
 	}
@@ -386,9 +403,6 @@ class SettingsPanel extends JPanel {
 	String getProfilesWikiPath() {
 		return this.profilesWikiPath.getText();
 	}
-
-	private static final char[] FORBIDDEN_SYMBOLS_IN_FILE_NAME = new char[] { '\\', '/', ':', '*', '?', '\"', '<', '>',
-			'|', '+', '\0', '%' };
 
 	public static final boolean isValidFileNameCharacter(char c) {
 		for (char ch : FORBIDDEN_SYMBOLS_IN_FILE_NAME) {

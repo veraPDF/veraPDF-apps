@@ -115,8 +115,9 @@ public class ConfigManagerTests {
 		ConfigManager newManager = Applications.createTmpConfigManager();
 		assertFalse(defaultConfig == newManager.getValidatorConfig());
 		assertTrue(defaultConfig.equals(newManager.getValidatorConfig()));
-		ValidatorConfig newConfig = ValidatorFactory.createConfig(PDFAFlavour.PDFA_1_A, PDFAFlavour.PDFA_1_B, !defaultConfig.isRecordPasses(),
-				defaultConfig.getMaxFails() + 20, false, false, Level.WARNING, BaseValidator.DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS);
+		ValidatorConfig newConfig = ValidatorFactory.createConfig(PDFAFlavour.PDFA_1_A, PDFAFlavour.PDFA_1_B,
+				!defaultConfig.isRecordPasses(), defaultConfig.getMaxFails() + 20, false, false,
+				Level.WARNING, BaseValidator.DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS, false);
 		newManager.updateValidatorConfig(newConfig);
 		assertFalse(defaultConfig.equals(newManager.getValidatorConfig()));
 	}

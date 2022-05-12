@@ -96,6 +96,7 @@ public class VeraCliArgParser {
 	final static String NON_PDF_EXTENSION = OPTION_SEP + "nonpdfext";
 	final static String POLICY_FILE = OPTION_SEP + "policyfile"; //$NON-NLS-1$
 	final static String ADD_LOGS = OPTION_SEP + "addlogs"; //$NON-NLS-1$
+	final static String DISABLE_ERROR_MESSAGES = OPTION_SEP + "disableerrormessages"; //$NON-NLS-1$
 	final static String LOG_LEVEL = OPTION_SEP + "loglevel"; //$NON-NLS-1$
 	// final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
 	// final static String LOAD_CONFIG_FLAG = FLAG_SEP + "c";
@@ -166,6 +167,9 @@ public class VeraCliArgParser {
 
 	@Parameter(names = { ADD_LOGS }, description = "Add logs to xml report.")
 	private boolean addLogs = false;
+
+	@Parameter(names = {DISABLE_ERROR_MESSAGES}, description = "Disable detailed error messages in report.")
+	private boolean disableErrorMessages = false;
 
 	@Parameter(names = { LOG_LEVEL }, description = "Enables logs with level: 0 - OFF, 1 - SEVERE, 2 - WARNING, SEVERE (default), 3 - CONFIG, INFO, WARNING, SEVERE, 4 - ALL.")
 	private int logLevel = 2;
@@ -286,6 +290,21 @@ public class VeraCliArgParser {
 	 */
 	public int getLogLevel() {
 		return this.logLevel;
+	}
+
+	public Level getLoggerLevel() {
+		switch (this.getLogLevel()) {
+			case 0:
+				return Level.OFF;
+			case 1:
+				return Level.SEVERE;
+			case 3:
+				return Level.CONFIG;
+			case 4:
+				return Level.ALL;
+			default:
+				return Level.WARNING;
+		}
 	}
 
 	/**
@@ -436,6 +455,10 @@ public class VeraCliArgParser {
 		return this.isValidationOff | this.isPolicy();
 	}
 
+	public boolean isDisableErrorMessages() {
+		return disableErrorMessages;
+	}
+
 	/**
 	 * JCommander parameter converter for {@link FormatOption}, see
 	 * {@link IStringConverter} and {@link FormatOption#fromOption(String)}.
@@ -500,25 +523,8 @@ public class VeraCliArgParser {
 	}
 
 	public ValidatorConfig validatorConfig() {
-		Level loggingLevel;
-		switch (this.getLogLevel()){
-			case 0:
-				loggingLevel = Level.OFF;
-				break;
-			case 1:
-				loggingLevel = Level.SEVERE;
-				break;
-			case 3:
-				loggingLevel = Level.CONFIG;
-				break;
-			case 4:
-				loggingLevel = Level.ALL;
-				break;
-			default:
-				loggingLevel = Level.WARNING;
-				break;
-		}
-		return ValidatorFactory.createConfig(this.flavour, this.defaultFlavour, this.logPassed(), this.maxFailures, this.debug, this.addLogs(), loggingLevel, this.maxFailuresDisplayed);
+		return ValidatorFactory.createConfig(this.flavour, this.defaultFlavour, this.logPassed(), this.maxFailures,
+				this.debug, this.addLogs(), getLoggerLevel(), this.maxFailuresDisplayed, !isDisableErrorMessages());
 	}
 
 	public MetadataFixerConfig fixerConfig() {
@@ -569,63 +575,66 @@ public class VeraCliArgParser {
 	public static List<String> getBaseVeraPDFParameters(VeraCliArgParser cliArgParser) {
 		List<String> veraPDFParameters = new ArrayList<>();
 
-		veraPDFParameters.add("--servermode");
+		veraPDFParameters.add(SERVER_MODE);
 		if (cliArgParser.extractFeatures()) {
-			veraPDFParameters.add("-x");
+			veraPDFParameters.add(EXTRACT_FLAG);
 		}
 		if (cliArgParser.fixMetadata()) {
-			veraPDFParameters.add("--fixmetadata");
+			veraPDFParameters.add(FIX_METADATA);
 		}
 		if (cliArgParser.addLogs()) {
-			veraPDFParameters.add("--addlogs");
+			veraPDFParameters.add(ADD_LOGS);
 		}
-		veraPDFParameters.add("--loglevel");
+		if (cliArgParser.isDisableErrorMessages()) {
+			veraPDFParameters.add(DISABLE_ERROR_MESSAGES);
+		}
+		veraPDFParameters.add(LOG_LEVEL);
 		veraPDFParameters.add(String.valueOf(cliArgParser.getLogLevel()));
-		veraPDFParameters.add("--defaultflavour");
+		veraPDFParameters.add(DEFAULT_FLAVOUR);
 		veraPDFParameters.add(String.valueOf(cliArgParser.getDefaultFlavour()));
-		veraPDFParameters.add("--flavour");
+		veraPDFParameters.add(FLAVOUR);
 		veraPDFParameters.add(String.valueOf(cliArgParser.getFlavour()));
-		veraPDFParameters.add("--format");
+		veraPDFParameters.add(FORMAT);
 		if (cliArgParser.getFormat() == FormatOption.HTML) {
 			veraPDFParameters.add(String.valueOf(FormatOption.MRR));
 		} else {
 			veraPDFParameters.add(String.valueOf(cliArgParser.getFormat()));
 		}
 		if (cliArgParser.listProfiles()) {
-			veraPDFParameters.add("--list");
+			veraPDFParameters.add(LIST);
 		}
-		veraPDFParameters.add("--maxfailures");
+		veraPDFParameters.add(MAX_FAILURES);
 		veraPDFParameters.add(String.valueOf(cliArgParser.maxFailures()));
-		veraPDFParameters.add("--maxfailuresdisplayed");
+		veraPDFParameters.add(MAX_FAILURES_DISPLAYED);
 		veraPDFParameters.add(String.valueOf(cliArgParser.maxFailuresDisplayed()));
 		if (cliArgParser.isValidationOff()) {
-			veraPDFParameters.add("--off");
+			veraPDFParameters.add(VALID_OFF);
 		}
 		File policyFile = cliArgParser.getPolicyFile();
 		if (policyFile != null) {
-			veraPDFParameters.add("--policyfile");
+			veraPDFParameters.add(POLICY_FILE);
 			veraPDFParameters.add(policyFile.getAbsolutePath());
 		}
-		veraPDFParameters.add("--prefix");
+		veraPDFParameters.add(FIX_METADATA_PREFIX);
 		veraPDFParameters.add(cliArgParser.prefix());
 		File profileFile = cliArgParser.getProfileFile();
-		if (profileFile!=null) {
-			veraPDFParameters.add("-p");
+		if (profileFile != null) {
+			veraPDFParameters.add(LOAD_PROFILE_FLAG);
 			veraPDFParameters.add(profileFile.getAbsolutePath());
 		}
-		veraPDFParameters.add("--savefolder");
+		veraPDFParameters.add(FIX_METADATA_FOLDER);
 		veraPDFParameters.add(cliArgParser.saveFolder());
 		if (cliArgParser.logPassed()) {
-			veraPDFParameters.add("--success");
+			veraPDFParameters.add(SUCCESS);
 		}
 		if (cliArgParser.isVerbose()) {
-			veraPDFParameters.add("--verbose");
+			veraPDFParameters.add(VERBOSE);
 		}
 		if (cliArgParser.isDebug()) {
-			veraPDFParameters.add("--debug");
+			veraPDFParameters.add(DEBUG);
 		}
 		if (cliArgParser.nonPdfExt()) {
-			veraPDFParameters.add("--nonpdfext");
+			veraPDFParameters.add(NON_PDF_EXTENSION);
 		}
 
 		return veraPDFParameters;
