@@ -121,6 +121,7 @@ public final class GUIConstants {
 	public static final String MAX_FAILED_CHECKS_SETTING_TIP = "1 to 999999 or empty for unlimited";
 	public static final String MAX_FAILED_CHECKS_DISP_SETTING_TIP = "0 to 999999 or empty for unlimited";
 	public static final String LOGS_LABEL_TEXT = "Add logs to xml report:";
+	public static final String SHOW_ERROR_MESSAGES_TEXT = "Add detailed errors to report:";
 	public static final String FIX_METADATA_LABEL_TEXT = "       Fix metadata:";
 	public static final String SELECTED_PATH_FOR_FIXER_LABEL_TEXT = "Save repaired files into the folder:";
 	public static final String FIX_METADATA_PREFIX_LABEL_TEXT = "Save repaired files with prefix:";
