@@ -190,6 +190,12 @@ final class VeraPdfCliProcessor implements Closeable {
 		if (summary.getValidationSummary().getNonCompliantPdfaCount() > 0) {
 			return ExitCodes.INVALID;
 		}
+		if (summary.getOutOfMemory() > 0) {
+			return ExitCodes.OOM;
+		}
+		if (summary.getVeraExceptions() > 0) {
+			return ExitCodes.VERAPDF_EXCEPTION;
+		}
 		return ExitCodes.VALID;
 	}
 
