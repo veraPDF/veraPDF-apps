@@ -120,8 +120,7 @@ class CheckerPanel extends JPanel {
 				try {
 					changeConfig();
 					ValidationProfile customProfile = null;
-					if (CheckerPanel.this.chooseFlavour.getSelectedItem()
-							.equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT)) {
+					if (GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT.equals(CheckerPanel.this.chooseFlavour.getSelectedItem())) {
 						try (InputStream is = new FileInputStream(CheckerPanel.this.profilePath.toFile())) {
 							customProfile = Profiles.profileFromXml(is);
 						}
@@ -364,7 +363,7 @@ class CheckerPanel extends JPanel {
 				GUIConstants.SCH, GUIConstants.XSL, GUIConstants.XSLT);
 		targetPolicy = new DropTarget(this.chosenPolicy, DnDConstants.ACTION_COPY_OR_MOVE,
 				dtdPolicyListener, true, null);
-		targetPolicy.setActive(false);
+		targetPolicy.setActive(this.ProcessTypes.getSelectedItem() == ProcessType.POLICY);
 
 		this.setupPolicyButton(gbl, gbc);
 
