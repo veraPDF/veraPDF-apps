@@ -5,7 +5,7 @@ package org.verapdf.apps;
 
 import org.verapdf.cli.VeraPdfCli;
 import org.verapdf.core.VeraPDFException;
-import org.verapdf.pdfa.PdfBoxFoundryProvider;
+import org.verapdf.pdfbox.foundry.PdfBoxFoundryProvider;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
