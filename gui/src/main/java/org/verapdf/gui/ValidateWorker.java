@@ -188,7 +188,7 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 		}
 	}
 
-	private int countFailedPolicyJobs(File xmlReport) throws XPathExpressionException,
+	private static int countFailedPolicyJobs(File xmlReport) throws XPathExpressionException,
 	                                                         ParserConfigurationException,
 	                                                         IOException, SAXException {
 		DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();

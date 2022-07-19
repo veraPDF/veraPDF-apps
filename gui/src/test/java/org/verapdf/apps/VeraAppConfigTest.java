@@ -23,9 +23,6 @@
  */
 package org.verapdf.apps;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -39,6 +36,8 @@ import javax.xml.bind.JAXBException;
 import org.junit.Test;
 
 import nl.jqno.equalsverifier.EqualsVerifier;
+
+import static org.junit.Assert.*;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -58,10 +57,10 @@ public class VeraAppConfigTest {
 	public void testDefaultInstance() {
 		VeraAppConfig defaultInstance = Applications.defaultConfig();
 		VeraAppConfig defaultCopy = Applications.createConfigBuilder(defaultInstance).build();
-		assertTrue(defaultInstance == Applications.defaultConfig());
-		assertTrue(defaultInstance.equals(Applications.defaultConfig()));
-		assertTrue(defaultCopy.equals(defaultInstance));
-		assertFalse(defaultCopy == defaultInstance);
+		assertSame(defaultInstance, Applications.defaultConfig());
+		assertEquals(defaultInstance, Applications.defaultConfig());
+		assertEquals(defaultCopy, defaultInstance);
+		assertNotSame(defaultCopy, defaultInstance);
 	}
 
     /**
@@ -80,15 +79,15 @@ public class VeraAppConfigTest {
 	public void testToXmlVeraAppConfigOutputStreamBoolean() throws IOException, JAXBException {
 		File temp = Files.createTempFile("", "").toFile();
 		VeraAppConfig defaultInstance = Applications.defaultConfig();
-		assertTrue(defaultInstance == Applications.defaultConfig());
+		assertSame(defaultInstance, Applications.defaultConfig());
 		try (OutputStream fos = new FileOutputStream(temp)) {
 			Applications.toXml(Applications.defaultConfig(), fos, Boolean.TRUE);
 		}
 		try (InputStream fis = new FileInputStream(temp)) {
 			defaultInstance = Applications.fromXml(fis);
 		}
-		assertTrue(defaultInstance.equals(Applications.defaultConfig()));
-		assertFalse(defaultInstance == Applications.defaultConfig());
+		assertEquals(defaultInstance, Applications.defaultConfig());
+		assertNotSame(defaultInstance, Applications.defaultConfig());
 		temp.delete();
 	}
 
@@ -99,8 +98,8 @@ public class VeraAppConfigTest {
 	public void testFromXmlString() throws JAXBException, IOException {
 		String defaultXml = Applications.toXml(Applications.defaultConfig(), Boolean.TRUE);
 		VeraAppConfig fromXml = Applications.fromXml(defaultXml);
-		assertTrue(Applications.defaultConfig().equals(fromXml));
-		assertFalse(fromXml == Applications.defaultConfig());
+		assertEquals(Applications.defaultConfig(), fromXml);
+		assertNotSame(fromXml, Applications.defaultConfig());
 	}
 
 }

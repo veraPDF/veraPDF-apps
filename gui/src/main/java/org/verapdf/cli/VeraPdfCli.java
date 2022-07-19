@@ -88,6 +88,7 @@ public final class VeraPdfCli {
 			displayHelpAndExit(cliArgParser, jCommander, ExitCodes.VALID);
 		}
 		messagesFromParser(cliArgParser);
+		cliArgParser.checkParametersCompatibility();
 		if (isProcess(cliArgParser)) {
 			try {
 				if (args.length == 0 && System.in.available() == 0) {

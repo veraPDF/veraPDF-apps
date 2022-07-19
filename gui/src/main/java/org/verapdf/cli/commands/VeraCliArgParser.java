@@ -32,6 +32,7 @@ import org.verapdf.core.VeraPDFException;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
+import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
@@ -55,6 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class holds all command-line options used by VeraPDF application.
@@ -62,6 +64,8 @@ import java.util.logging.Level;
  * @author Timur Kamalov
  */
 public class VeraCliArgParser {
+	private static final Logger LOGGER = Logger.getLogger(VeraCliArgParser.class.getCanonicalName());
+
 	final static VeraCliArgParser DEFAULT_ARGS = new VeraCliArgParser();
 	final static String FLAG_SEP = "-"; //$NON-NLS-1$
 	final static String OPTION_SEP = "--"; //$NON-NLS-1$
@@ -358,8 +362,7 @@ public class VeraCliArgParser {
 	 * otherwise ignore all report format settings and always use mrr report
 	 */
 	public FormatOption getFormat() {
-		return this.policyFile != null && !this.policyFile.getAbsolutePath().equals("") ?
-				Applications.defaultConfig().getFormat() : this.format;
+		return this.format;
 	}
 
 	/**
@@ -638,5 +641,16 @@ public class VeraCliArgParser {
 		}
 
 		return veraPDFParameters;
+	}
+
+	public void checkParametersCompatibility() {
+		if (this.policyFile != null && !this.policyFile.getAbsolutePath().equals("")) {
+			LOGGER.log(Level.WARNING, "Policy report supports only mrr output format.");
+			this.format = FormatOption.MRR;
+		}
+		if (Foundries.defaultParserIsPDFBox() && !this.disableErrorMessages) {
+			LOGGER.log(Level.WARNING, "Detailed error messages are not supported in PDFBox validator.");
+			this.disableErrorMessages = true;
+		}
 	}
 }
