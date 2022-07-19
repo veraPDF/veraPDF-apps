@@ -23,9 +23,6 @@
  */
 package org.verapdf.cli.commands;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -33,6 +30,8 @@ import org.junit.Test;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -47,21 +46,19 @@ public class VeraCliProfileOptionTest {
      */
     @Test
     public final void testGetProfileFileDefault() {
-        assertTrue(VeraCliArgParser.DEFAULT_ARGS.getProfileFile() == null);
+        assertNull(VeraCliArgParser.DEFAULT_ARGS.getProfileFile());
 
         // Test empty String[] args doesn't change that
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] {});
-        assertTrue(parser.getProfileFile() == VeraCliArgParser.DEFAULT_ARGS
-                .getProfileFile());
+        jCommander.parse();
+        assertSame(parser.getProfileFile(), VeraCliArgParser.DEFAULT_ARGS.getProfileFile());
 
         // Test other flags & options doesn't change that
         parser = new VeraCliArgParser();
         jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--flavour", "1B", "-h" });
-        assertTrue(parser.getProfileFile() == VeraCliArgParser.DEFAULT_ARGS
-                .getProfileFile());
+        jCommander.parse("-l", "--flavour", "1B", "-h");
+        assertSame(parser.getProfileFile(), VeraCliArgParser.DEFAULT_ARGS.getProfileFile());
     }
 
     /**
@@ -74,9 +71,7 @@ public class VeraCliProfileOptionTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        parser = new VeraCliArgParser();
-        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-p" });
+        jCommander.parse("-p");
     }
 
     /**
@@ -89,9 +84,7 @@ public class VeraCliProfileOptionTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        parser = new VeraCliArgParser();
-        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-p", "-h" });
+        jCommander.parse("-p", "-h");
     }
 
     /**
@@ -104,9 +97,7 @@ public class VeraCliProfileOptionTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        parser = new VeraCliArgParser();
-        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "--profile" });
+        jCommander.parse("--profile");
     }
 
     /**
@@ -119,9 +110,7 @@ public class VeraCliProfileOptionTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        parser = new VeraCliArgParser();
-        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "--profile" , "-h"});
+        jCommander.parse("--profile", "-h");
     }
 
     /**
@@ -134,11 +123,8 @@ public class VeraCliProfileOptionTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        parser = new VeraCliArgParser();
-        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-p", "*"});
-        assertFalse(parser.getProfileFile() == VeraCliArgParser.DEFAULT_ARGS
-                .getProfileFile());
+        jCommander.parse("-p", "*");
+        assertNotSame(parser.getProfileFile(), VeraCliArgParser.DEFAULT_ARGS.getProfileFile());
     }
 
     /**
@@ -151,11 +137,8 @@ public class VeraCliProfileOptionTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        parser = new VeraCliArgParser();
-        jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "--profile", "%$3"});
-        assertFalse(parser.getProfileFile() == VeraCliArgParser.DEFAULT_ARGS
-                .getProfileFile());
+        jCommander.parse("--profile", "%$3");
+        assertNotSame(parser.getProfileFile(), VeraCliArgParser.DEFAULT_ARGS.getProfileFile());
     }
 
     /**
@@ -171,16 +154,15 @@ public class VeraCliProfileOptionTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse(new String[] { "-p", testFile.getAbsolutePath()});
-        assertFalse(parser.getProfileFile() == VeraCliArgParser.DEFAULT_ARGS
+        jCommander.parse("-p", testFile.getAbsolutePath());
+        assertNotSame(parser.getProfileFile(), VeraCliArgParser.DEFAULT_ARGS
                 .getProfileFile());
     
         // Test flag works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander
-                .parse(new String[] { "-p", testFile.getAbsolutePath(), "--format", "text", "-h" });
-        assertFalse(parser.getProfileFile() == VeraCliArgParser.DEFAULT_ARGS
+        jCommander.parse("-p", testFile.getAbsolutePath(), "--format", "text", "-h");
+        assertNotSame(parser.getProfileFile(), VeraCliArgParser.DEFAULT_ARGS
                 .getProfileFile());
         testFile.delete();
     }
@@ -197,17 +179,15 @@ public class VeraCliProfileOptionTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test option works
-        jCommander.parse(new String[] { "--profile", testFile.getAbsolutePath()});
-        assertFalse(parser.getProfileFile() == VeraCliArgParser.DEFAULT_ARGS
-                .getProfileFile());
+        jCommander.parse("--profile", testFile.getAbsolutePath());
+        assertNotSame(parser.getProfileFile(), VeraCliArgParser.DEFAULT_ARGS.getProfileFile());
 
         // Test option works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
         jCommander
-                .parse(new String[] { "--profile", testFile.getAbsolutePath(), "--format", "xml", "-h" });
-        assertFalse(parser.getProfileFile() == VeraCliArgParser.DEFAULT_ARGS
-                .getProfileFile());
+                .parse("--profile", testFile.getAbsolutePath(), "--format", "xml", "-h");
+        assertNotSame(parser.getProfileFile(), VeraCliArgParser.DEFAULT_ARGS.getProfileFile());
         testFile.delete();
     }
 

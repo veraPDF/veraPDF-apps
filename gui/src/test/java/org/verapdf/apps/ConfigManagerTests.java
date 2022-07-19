@@ -23,9 +23,6 @@
  */
 package org.verapdf.apps;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -44,6 +41,8 @@ import org.verapdf.pdfa.validation.validators.BaseValidator;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 
+import static org.junit.Assert.*;
+
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
  *         <a href="https://github.com/carlwilson">carlwilson AT github</a>
@@ -60,7 +59,7 @@ public class ConfigManagerTests {
 	@Test
 	public void testGetValidatorConfig() {
 		ConfigManager newManager = Applications.createTmpConfigManager();
-		assertTrue(newManager.getValidatorConfig().equals(ValidatorFactory.defaultConfig()));
+		assertEquals(newManager.getValidatorConfig(), ValidatorFactory.defaultConfig());
 	}
 
 	/**
@@ -70,7 +69,7 @@ public class ConfigManagerTests {
 	@Test
 	public void testGetFeaturesConfig() {
 		ConfigManager newManager = Applications.createTmpConfigManager();
-		assertTrue(newManager.getFeaturesConfig().equals(FeatureFactory.defaultConfig()));
+		assertEquals(newManager.getFeaturesConfig(), FeatureFactory.defaultConfig());
 	}
 
 	/**
@@ -80,7 +79,7 @@ public class ConfigManagerTests {
 	@Test
 	public void testGetFixerConfig() {
 		ConfigManager newManager = Applications.createTmpConfigManager();
-		assertTrue(newManager.getFixerConfig().equals(FixerFactory.defaultConfig()));
+		assertEquals(newManager.getFixerConfig(), FixerFactory.defaultConfig());
 	}
 
 	/**
@@ -90,7 +89,7 @@ public class ConfigManagerTests {
 	@Test
 	public void testGetApplicationConfig() {
 		ConfigManager newManager = Applications.createTmpConfigManager();
-		assertTrue(newManager.getApplicationConfig().equals(Applications.defaultConfig()));
+		assertEquals(newManager.getApplicationConfig(), Applications.defaultConfig());
 	}
 
 	/**
@@ -102,7 +101,7 @@ public class ConfigManagerTests {
 		File tempDir = Files.createTempDirectory("").toFile();
 		tempDir.deleteOnExit();
 		ConfigManager newManager = Applications.createConfigManager(tempDir);
-		assertTrue(newManager.getConfigDir() == tempDir);
+		assertSame(newManager.getConfigDir(), tempDir);
 	}
 
 	/**
@@ -113,13 +112,13 @@ public class ConfigManagerTests {
 	public void testUpdateValidatorConfig() throws JAXBException, IOException {
 		ValidatorConfig defaultConfig = ValidatorFactory.defaultConfig();
 		ConfigManager newManager = Applications.createTmpConfigManager();
-		assertFalse(defaultConfig == newManager.getValidatorConfig());
-		assertTrue(defaultConfig.equals(newManager.getValidatorConfig()));
+		assertNotSame(defaultConfig, newManager.getValidatorConfig());
+		assertEquals(defaultConfig, newManager.getValidatorConfig());
 		ValidatorConfig newConfig = ValidatorFactory.createConfig(PDFAFlavour.PDFA_1_A, PDFAFlavour.PDFA_1_B,
 				!defaultConfig.isRecordPasses(), defaultConfig.getMaxFails() + 20, false, false,
 				Level.WARNING, BaseValidator.DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS, false);
 		newManager.updateValidatorConfig(newConfig);
-		assertFalse(defaultConfig.equals(newManager.getValidatorConfig()));
+		assertNotEquals(defaultConfig, newManager.getValidatorConfig());
 	}
 
 	/**
@@ -131,10 +130,10 @@ public class ConfigManagerTests {
 	public void testUpdateFeaturesConfig() throws JAXBException, IOException {
 		FeatureExtractorConfig defaultConfig = FeatureFactory.defaultConfig();
 		ConfigManager newManager = Applications.createTmpConfigManager();
-		assertTrue(defaultConfig.equals(newManager.getFeaturesConfig()));
+		assertEquals(defaultConfig, newManager.getFeaturesConfig());
 		FeatureExtractorConfig newConfig = FeatureFactory.configFromValues(EnumSet.complementOf(defaultConfig.getEnabledFeatures()));
 		newManager.updateFeaturesConfig(newConfig);
-		assertFalse(defaultConfig.equals(newManager.getFeaturesConfig()));
+		assertNotEquals(defaultConfig, newManager.getFeaturesConfig());
 	}
 
 	/**
@@ -145,11 +144,11 @@ public class ConfigManagerTests {
 	public void testUpdateFixerConfig() throws JAXBException, IOException {
 		MetadataFixerConfig defaultConfig = FixerFactory.defaultConfig();
 		ConfigManager newManager = Applications.createTmpConfigManager();
-		assertFalse(defaultConfig == newManager.getFixerConfig());
-		assertTrue(defaultConfig.equals(newManager.getFixerConfig()));
+		assertNotSame(defaultConfig, newManager.getFixerConfig());
+		assertEquals(defaultConfig, newManager.getFixerConfig());
 		MetadataFixerConfig newConfig = FixerFactory.configFromValues("NOT_DEFAULT", !defaultConfig.isFixId());
 		newManager.updateFixerConfig(newConfig);
-		assertFalse(defaultConfig.equals(newManager.getFixerConfig()));
+		assertNotEquals(defaultConfig, newManager.getFixerConfig());
 	}
 
 	/**
@@ -160,11 +159,11 @@ public class ConfigManagerTests {
 	public void testUpdateAppConfig() throws JAXBException, IOException {
 		VeraAppConfig defaultConfig = Applications.defaultConfig();
 		ConfigManager newManager = Applications.createTmpConfigManager();
-		assertFalse(defaultConfig == newManager.getApplicationConfig());
-		assertTrue(defaultConfig.equals(newManager.getApplicationConfig()));
+		assertNotSame(defaultConfig, newManager.getApplicationConfig());
+		assertEquals(defaultConfig, newManager.getApplicationConfig());
 		VeraAppConfig newConfig = Applications.createConfigBuilder(defaultConfig).overwrite(!defaultConfig.isOverwriteReport()).build();
 		newManager.updateAppConfig(newConfig);
-		assertFalse(defaultConfig.equals(newManager.getApplicationConfig()));
+		assertNotEquals(defaultConfig, newManager.getApplicationConfig());
 	}
 
 }

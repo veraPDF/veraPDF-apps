@@ -28,6 +28,7 @@ import com.beust.jcommander.ParameterException;
 import org.junit.Test;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -45,21 +46,19 @@ public class VerCliFlavourTest {
     @Test
     public final void testGetFlavourDefault() {
         // Test default is 1b
-        assertTrue(VeraCliArgParser.DEFAULT_ARGS.getFlavour() == PDFAFlavour.NO_FLAVOUR);
+        assertSame(PDFAFlavour.NO_FLAVOUR, VeraCliArgParser.DEFAULT_ARGS.getFlavour());
 
         // Test empty String[] args doesn't change that
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] {});
-        assertTrue(parser.getFlavour() == VeraCliArgParser.DEFAULT_ARGS
-                .getFlavour());
+        jCommander.parse();
+        assertSame(VeraCliArgParser.DEFAULT_ARGS.getFlavour(), parser.getFlavour());
 
         // Test other flags & options doesn't change that
         parser = new VeraCliArgParser();
         jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--version", "-h" });
-        assertTrue(parser.getFlavour() == VeraCliArgParser.DEFAULT_ARGS
-                .getFlavour());
+        jCommander.parse("-l", "--version", "-h");
+        assertSame(VeraCliArgParser.DEFAULT_ARGS.getFlavour(), parser.getFlavour());
     }
 
     /**
@@ -72,7 +71,7 @@ public class VerCliFlavourTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse(new String[] { "-f" });
+        jCommander.parse("-f");
     }
 
     /**
@@ -85,7 +84,7 @@ public class VerCliFlavourTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse(new String[] { "-f", "-h" });
+        jCommander.parse("-f", "-h");
     }
 
     /**
@@ -98,7 +97,7 @@ public class VerCliFlavourTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse(new String[] { "--flavour" });
+        jCommander.parse("--flavour");
     }
 
     /**
@@ -111,7 +110,7 @@ public class VerCliFlavourTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse(new String[] { "--flavour", "--version", "-h" });
+        jCommander.parse("--flavour", "--version", "-h");
     }
 
     /**
@@ -124,7 +123,7 @@ public class VerCliFlavourTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse(new String[] { "-f", "5t" });
+        jCommander.parse("-f", "5t");
     }
 
     /**
@@ -137,7 +136,7 @@ public class VerCliFlavourTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse(new String[] { "--flavour", "9u" });
+        jCommander.parse("--flavour", "9u");
     }
 
     /**
@@ -364,14 +363,14 @@ public class VerCliFlavourTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse(new String[] { flag, flavour });
-        assertTrue(parser.getFlavour() == expected);
+        jCommander.parse(flag, flavour);
+        assertSame(expected, parser.getFlavour());
 
         // Test flag works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", flag, flavour, "--format", "xml"});
-        assertTrue(parser.getFlavour() == expected);
+        jCommander.parse("-l", flag, flavour, "--format", "xml");
+        assertSame(expected, parser.getFlavour());
     }
 
 }

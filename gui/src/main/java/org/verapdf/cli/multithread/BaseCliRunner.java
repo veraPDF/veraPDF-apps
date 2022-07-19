@@ -30,7 +30,7 @@ public class BaseCliRunner implements Runnable {
 
     private Scanner reportScanner;
 
-    private MultiThreadProcessor multiThreadProcessor;
+    private final MultiThreadProcessor multiThreadProcessor;
 
     BaseCliRunner(MultiThreadProcessor multiThreadProcessor, String veraPDFStarterPath, List<String> veraPDFParameters, Queue<File> filesToProcess) {
         this.multiThreadProcessor = multiThreadProcessor;
