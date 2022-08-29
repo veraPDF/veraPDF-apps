@@ -101,6 +101,7 @@ public class VeraCliArgParser {
 	final static String POLICY_FILE = OPTION_SEP + "policyfile"; //$NON-NLS-1$
 	final static String ADD_LOGS = OPTION_SEP + "addlogs"; //$NON-NLS-1$
 	final static String DISABLE_ERROR_MESSAGES = OPTION_SEP + "disableerrormessages"; //$NON-NLS-1$
+	final static String PASSWORD = OPTION_SEP + "password"; //$NON-NLS-1$
 	final static String LOG_LEVEL = OPTION_SEP + "loglevel"; //$NON-NLS-1$
 	// final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
 	// final static String LOAD_CONFIG_FLAG = FLAG_SEP + "c";
@@ -174,6 +175,9 @@ public class VeraCliArgParser {
 
 	@Parameter(names = {DISABLE_ERROR_MESSAGES}, description = "Disable detailed error messages in report.")
 	private boolean disableErrorMessages = false;
+
+	@Parameter(names = { PASSWORD }, description = "Sets the password for an encrypted document.")
+	private String password;
 
 	@Parameter(names = { LOG_LEVEL }, description = "Enables logs with level: 0 - OFF, 1 - SEVERE, 2 - WARNING, SEVERE (default), 3 - CONFIG, INFO, WARNING, SEVERE, 4 - ALL.")
 	private int logLevel = 2;
@@ -462,6 +466,10 @@ public class VeraCliArgParser {
 		return disableErrorMessages;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
 	/**
 	 * JCommander parameter converter for {@link FormatOption}, see
 	 * {@link IStringConverter} and {@link FormatOption#fromOption(String)}.
@@ -527,7 +535,7 @@ public class VeraCliArgParser {
 
 	public ValidatorConfig validatorConfig() {
 		return ValidatorFactory.createConfig(this.flavour, this.defaultFlavour, this.logPassed(), this.maxFailures,
-				this.debug, this.addLogs(), getLoggerLevel(), this.maxFailuresDisplayed, !isDisableErrorMessages());
+				this.debug, this.addLogs(), getLoggerLevel(), this.maxFailuresDisplayed, !isDisableErrorMessages(), this.getPassword());
 	}
 
 	public MetadataFixerConfig fixerConfig() {
@@ -593,6 +601,8 @@ public class VeraCliArgParser {
 		}
 		veraPDFParameters.add(LOG_LEVEL);
 		veraPDFParameters.add(String.valueOf(cliArgParser.getLogLevel()));
+		veraPDFParameters.add(PASSWORD);
+		veraPDFParameters.add(cliArgParser.getPassword());
 		veraPDFParameters.add(DEFAULT_FLAVOUR);
 		veraPDFParameters.add(String.valueOf(cliArgParser.getDefaultFlavour()));
 		veraPDFParameters.add(FLAVOUR);
@@ -651,6 +661,9 @@ public class VeraCliArgParser {
 		if (Foundries.defaultParserIsPDFBox() && !this.disableErrorMessages) {
 			LOGGER.log(Level.WARNING, "Detailed error messages are not supported in PDFBox validator.");
 			this.disableErrorMessages = true;
+		}
+		if (Foundries.defaultParserIsPDFBox() && this.password != null) {
+			LOGGER.log(Level.WARNING, "Password handling for encrypted files is not supported in PDFBox validator.");
 		}
 	}
 }

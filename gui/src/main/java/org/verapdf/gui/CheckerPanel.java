@@ -772,7 +772,7 @@ class CheckerPanel extends JPanel {
 		ValidatorConfig currentConfig = ValidatorFactory.createConfig(flavour, validatorConfig.getDefaultFlavour(),
 				validatorConfig.isRecordPasses(), validatorConfig.getMaxFails(), validatorConfig.isDebug(),
 				validatorConfig.isLogsEnabled(), validatorConfig.getLoggingLevel(),
-				validatorConfig.getMaxNumberOfDisplayedFailedChecks(), validatorConfig.showErrorMessages());
+				validatorConfig.getMaxNumberOfDisplayedFailedChecks(), validatorConfig.showErrorMessages(), null);
 		config.updateValidatorConfig(currentConfig);
 		config.updateAppConfig(appConfigFromState());
 	}
