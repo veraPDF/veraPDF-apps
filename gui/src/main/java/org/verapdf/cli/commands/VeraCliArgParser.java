@@ -102,6 +102,7 @@ public class VeraCliArgParser {
 	final static String DISABLE_ERROR_MESSAGES = OPTION_SEP + "disableerrormessages"; //$NON-NLS-1$
 	final static String PASSWORD = OPTION_SEP + "password"; //$NON-NLS-1$
 	final static String LOG_LEVEL = OPTION_SEP + "loglevel"; //$NON-NLS-1$
+	final static String PROGRESS = OPTION_SEP + "progress"; //$NON-NLS-1$
 	final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
 	final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
 	final static String VALID_OFF_FLAG = FLAG_SEP + "o"; //$NON-NLS-1$
@@ -175,6 +176,9 @@ public class VeraCliArgParser {
 
 	@Parameter(names = { LOG_LEVEL }, description = "Enables logs with level: 0 - OFF, 1 - SEVERE, 2 - WARNING, SEVERE (default), 3 - CONFIG, INFO, WARNING, SEVERE, 4 - ALL.")
 	private int logLevel = 2;
+
+	@Parameter(names = { PROGRESS }, description = "Shows the current status of the validation job.")
+	private boolean showProgress;
 
 	@Parameter(names = { FIX_METADATA_PREFIX }, description = "Sets file name prefix for any fixed files.")
 	private String prefix = FixerFactory.defaultConfig().getFixesPrefix();
@@ -290,6 +294,13 @@ public class VeraCliArgParser {
 			default:
 				return Level.WARNING;
 		}
+	}
+
+	/**
+	 * @return number of checks per which set by user:
+	 */
+	public boolean getShowProgress() {
+		return this.showProgress;
 	}
 
 	/**
@@ -457,6 +468,10 @@ public class VeraCliArgParser {
 	 	this.prefix = configManager.getFixerConfig().getFixesPrefix();
 	}
 
+	public boolean isMultiprocessing() {
+	 	return this.numberOfProcesses > 1 && !this.isServerMode;
+	}
+
 	/**
 	 * JCommander parameter converter for {@link FormatOption}, see
 	 * {@link IStringConverter} and {@link FormatOption#fromOption(String)}.
@@ -536,7 +551,8 @@ public class VeraCliArgParser {
 
 	public ValidatorConfig validatorConfig() {
 		return ValidatorFactory.createConfig(this.flavour, this.defaultFlavour, this.logPassed(), this.maxFailures,
-				this.debug, this.addLogs(), getLoggerLevel(), this.maxFailuresDisplayed, !isDisableErrorMessages(), this.getPassword());
+				this.debug, this.addLogs(), getLoggerLevel(), this.maxFailuresDisplayed, !isDisableErrorMessages(),
+				                             this.getPassword(), this.getShowProgress());
 	}
 
 	public FeatureExtractorConfig featureExtractorConfig() {
@@ -682,6 +698,9 @@ public class VeraCliArgParser {
 		}
 		if (Foundries.defaultParserIsPDFBox() && this.password != null) {
 			LOGGER.log(Level.WARNING, "Password handling for encrypted files is not supported in PDFBox validator.");
+		}
+		if (isMultiprocessing() && this.showProgress) {
+			LOGGER.log(Level.WARNING, "Validation progress output is not supported for multiprocessing.");
 		}
 	}
 }
