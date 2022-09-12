@@ -83,7 +83,7 @@ final class VeraPdfCliProcessor implements Closeable {
 		}
 		this.policyFile = args.getPolicyFile();
 		this.appConfig = args.appConfig(configManager.getApplicationConfig());
-		LogsFileHandler.setLoggingLevel(configManager.getValidatorConfig().getLoggingLevel());
+		LogsFileHandler.setLoggingLevel(args.getLoggerLevel());
 		this.processorConfig = args.processorConfig(this.appConfig.getProcessType(),
 				this.configManager.getFeaturesConfig(), this.configManager.getPluginsCollectionConfig());
 		if (this.configManager.getApplicationConfig().isOverwriteReport()) {

@@ -110,7 +110,7 @@ class SettingsPanel extends JPanel {
 		this.numberOfFailed.setToolTipText(GUIConstants.MAX_FAILED_CHECKS_SETTING_TIP);
 		JPanel panel1 = new JPanel();
 		panel1.setLayout(null);
-		this.numberOfFailed.setBounds(0, 0, 65, 23);
+		this.numberOfFailed.setBounds(0, 0, 65, 28);
 		panel1.add(this.numberOfFailed);
 		panel.add(panel1);
 
@@ -122,7 +122,7 @@ class SettingsPanel extends JPanel {
 		this.numberOfFailedDisplay.setToolTipText(GUIConstants.MAX_FAILED_CHECKS_DISP_SETTING_TIP);
 		JPanel panel2 = new JPanel();
 		panel2.setLayout(null);
-		this.numberOfFailedDisplay.setBounds(0, 0, 65, 23);
+		this.numberOfFailedDisplay.setBounds(0, 0, 65, 28);
 		panel2.add(this.numberOfFailedDisplay);
 		panel.add(panel2);
 
