@@ -601,8 +601,10 @@ public class VeraCliArgParser {
 		}
 		veraPDFParameters.add(LOG_LEVEL);
 		veraPDFParameters.add(String.valueOf(cliArgParser.getLogLevel()));
-		veraPDFParameters.add(PASSWORD);
-		veraPDFParameters.add(cliArgParser.getPassword());
+		if (cliArgParser.getPassword() != null) {
+			veraPDFParameters.add(PASSWORD);
+			veraPDFParameters.add(cliArgParser.getPassword());
+		}
 		veraPDFParameters.add(DEFAULT_FLAVOUR);
 		veraPDFParameters.add(String.valueOf(cliArgParser.getDefaultFlavour()));
 		veraPDFParameters.add(FLAVOUR);
