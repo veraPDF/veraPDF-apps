@@ -4,7 +4,7 @@
 package org.verapdf.apps;
 
 import org.verapdf.ReleaseDetails;
-import org.verapdf.SemanticVersionNumber;
+import org.verapdf.version.SemanticVersionNumber;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
