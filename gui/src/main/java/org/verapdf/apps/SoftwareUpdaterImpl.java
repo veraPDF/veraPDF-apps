@@ -15,8 +15,8 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.verapdf.ReleaseDetails;
-import org.verapdf.SemanticVersionNumber;
-import org.verapdf.Versions;
+import org.verapdf.version.SemanticVersionNumber;
+import org.verapdf.version.Versions;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
