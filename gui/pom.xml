@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.verapdf</groupId>
     <artifactId>verapdf-apps</artifactId>
-    <version>1.21.0-SNAPSHOT</version>
+    <version>1.23.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.verapdf.apps</groupId>
