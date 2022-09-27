@@ -170,10 +170,10 @@ public class VeraCliArgParser {
 	@Parameter(names = { FIX_METADATA }, description = "Performs metadata fixes.")
 	private boolean fixMetadata = false;
 
-	@Parameter(names = { ADD_LOGS }, description = "Add logs to mrr/json report.")
+	@Parameter(names = { ADD_LOGS }, description = "Add logs to mrr, json or html report.")
 	private boolean addLogs = false;
 
-	@Parameter(names = {DISABLE_ERROR_MESSAGES}, description = "Disable detailed error messages in report.")
+	@Parameter(names = {DISABLE_ERROR_MESSAGES}, description = "Disable detailed error messages in the validation report.")
 	private boolean disableErrorMessages = false;
 
 	@Parameter(names = { PASSWORD }, description = "Sets the password for an encrypted document.")
@@ -660,8 +660,9 @@ public class VeraCliArgParser {
 			LOGGER.log(Level.WARNING, "Policy report supports only mrr output format.");
 			this.format = FormatOption.MRR;
 		}
-		if (this.format != FormatOption.MRR && this.format != FormatOption.JSON && this.addLogs) {
-			LOGGER.log(Level.WARNING, "Log messages in report are supported only in mrr and json formats.");
+		if (this.format != FormatOption.MRR && this.format != FormatOption.JSON && this.format != FormatOption.HTML
+		    && this.addLogs) {
+			LOGGER.log(Level.WARNING, "Log messages in report are supported only in mrr, json and html formats.");
 		}
 		if (Foundries.defaultParserIsPDFBox() && !this.disableErrorMessages) {
 			LOGGER.log(Level.WARNING, "Detailed error messages are not supported in PDFBox validator.");
