@@ -67,7 +67,7 @@ public class VeraPdfCliProcessorTest {
 		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
 		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
 			assertNotNull(proc.getConfig());
-			assertTrue(proc.getConfig().getFormat() == FormatOption.MRR);
+			assertTrue(proc.getConfig().getFormat() == FormatOption.XML);
 		}
 		for (FormatOption format : FormatOption.values()) {
 			parser = new VeraCliArgParser();

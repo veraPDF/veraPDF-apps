@@ -117,7 +117,7 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 			try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(resultConfig)) {
 				VeraAppConfig applicationConfig = this.configManager.getApplicationConfig();
 				BatchSummary batchSummary = processor.process(this.pdfs,
-						ProcessorFactory.getHandler(FormatOption.MRR, applicationConfig.isVerbose(), mrrReport,
+						ProcessorFactory.getHandler(FormatOption.XML, applicationConfig.isVerbose(), mrrReport,
 								validatorConfig.isRecordPasses()));
 				validateWorkerSummary = new ValidateWorkerSummary(batchSummary);
 				if (isPolicy) {

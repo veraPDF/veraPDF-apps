@@ -102,7 +102,7 @@ public class MultiThreadProcessor {
 	private FormatOption getOutputFormat(String outputFormat) {
 		FormatOption formatOption = FormatOption.fromOption(outputFormat);
 		if (formatOption == FormatOption.HTML) {
-			return FormatOption.MRR;
+			return FormatOption.XML;
 		}
 		return formatOption;
 	}
