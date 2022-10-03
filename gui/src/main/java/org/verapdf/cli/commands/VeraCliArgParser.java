@@ -611,7 +611,7 @@ public class VeraCliArgParser {
 		veraPDFParameters.add(String.valueOf(cliArgParser.getFlavour()));
 		veraPDFParameters.add(FORMAT);
 		if (cliArgParser.getFormat() == FormatOption.HTML) {
-			veraPDFParameters.add(String.valueOf(FormatOption.MRR));
+			veraPDFParameters.add(String.valueOf(FormatOption.XML));
 		} else {
 			veraPDFParameters.add(String.valueOf(cliArgParser.getFormat()));
 		}
@@ -656,13 +656,14 @@ public class VeraCliArgParser {
 	}
 
 	public void checkParametersCompatibility() {
-		if (this.format != FormatOption.MRR && this.policyFile != null && !this.policyFile.getAbsolutePath().equals("")) {
-			LOGGER.log(Level.WARNING, "Policy report supports only mrr output format.");
-			this.format = FormatOption.MRR;
+		if (this.format != FormatOption.MRR && this.format != FormatOption.XML && this.policyFile != null
+		    && !this.policyFile.getAbsolutePath().equals("")) {
+			LOGGER.log(Level.WARNING, "Policy report supports only xml (mrr) output format.");
+			this.format = FormatOption.XML;
 		}
-		if (this.format != FormatOption.MRR && this.format != FormatOption.JSON && this.format != FormatOption.HTML
-		    && this.addLogs) {
-			LOGGER.log(Level.WARNING, "Log messages in report are supported only in mrr, json and html formats.");
+		if (this.format != FormatOption.MRR && this.format != FormatOption.XML && this.format != FormatOption.JSON
+		    && this.format != FormatOption.HTML && this.addLogs) {
+			LOGGER.log(Level.WARNING, "Log messages in report are supported only in xml (mrr), json and html formats.");
 		}
 		if (Foundries.defaultParserIsPDFBox() && !this.disableErrorMessages) {
 			LOGGER.log(Level.WARNING, "Detailed error messages are not supported in PDFBox validator.");

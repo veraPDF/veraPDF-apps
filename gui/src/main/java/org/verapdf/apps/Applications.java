@@ -191,7 +191,7 @@ public final class Applications {
 		private ProcessType _type = ProcessType.VALIDATE;
 		private boolean _isOverwrite = false;
 		private String _fixerFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
-		private FormatOption _format = FormatOption.MRR;
+		private FormatOption _format = FormatOption.XML;
 		private String _wikiPath = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki/"; //$NON-NLS-1$
 		private String _reportFile = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
 		private String _reportFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
