@@ -47,8 +47,6 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	@XmlAttribute
 	private final ProcessType type;
 	@XmlAttribute
-	private final boolean isOverwrite;
-	@XmlAttribute
 	private final FormatOption format;
 	@XmlAttribute
 	private final boolean isVerbose;
@@ -57,39 +55,23 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	@XmlElement
 	private final String wikiPath;
 	@XmlElement
-	private final String reportFile;
-	@XmlElement
-	private final String reportFolder;
-	@XmlElement
 	private final String policyFile;
 
 	VeraAppConfigImpl() {
-		this(defaultInstance.getProcessType(), defaultInstance.isOverwriteReport(), defaultInstance.getFixesFolder(),
+		this(defaultInstance.getProcessType(), defaultInstance.getFixesFolder(),
 				defaultInstance.getFormat(), defaultInstance.isVerbose(), defaultInstance.getWikiPath(),
-				defaultInstance.getReportFile(), defaultInstance.getReportFolder(), defaultInstance.getPolicyFile());
+                defaultInstance.getPolicyFile());
 	}
 
-	VeraAppConfigImpl(final ProcessType type, final boolean isOverwrite, final String fixerFolder,
-			final FormatOption format, final boolean isVerbose, final String wikiPath, final String reportFile,
-					  final String reportFolder, final String policyFile) {
+	VeraAppConfigImpl(final ProcessType type, final String fixerFolder,
+			final FormatOption format, final boolean isVerbose, final String wikiPath, final String policyFile) {
 		super();
 		this.type = type;
-		this.isOverwrite = isOverwrite;
 		this.format = format;
 		this.isVerbose = isVerbose;
 		this.wikiPath = wikiPath;
 		this.fixerFolder = fixerFolder;
-		this.reportFile = reportFile;
-		this.reportFolder = reportFolder;
 		this.policyFile = policyFile;
-	}
-
-	/**
-	 * @see org.verapdf.apps.VeraAppConfig#isOverwriteReport()
-	 */
-	@Override
-	public boolean isOverwriteReport() {
-		return this.isOverwrite;
 	}
 
 	/**
@@ -98,14 +80,6 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	@Override
 	public String getFixesFolder() {
 		return this.fixerFolder;
-	}
-
-	/**
-	 * @see org.verapdf.apps.VeraAppConfig#getReportFile()
-	 */
-	@Override
-	public String getReportFile() {
-		return this.reportFile;
 	}
 
 	/**
@@ -119,11 +93,6 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	@Override
 	public ProcessType getProcessType() {
 		return this.type;
-	}
-
-	@Override
-	public String getReportFolder() {
-		return this.reportFolder;
 	}
 
 	@Override
@@ -151,13 +120,10 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	@Override
 	public int hashCode() {
 		int result = this.type != null ? this.type.hashCode() : 0;
-		result = 31 * result + (this.isOverwrite ? 1 : 0);
 		result = 31 * result + (this.format != null ? this.format.hashCode() : 0);
 		result = 31 * result + (this.isVerbose ? 1 : 0);
 		result = 31 * result + (this.fixerFolder != null ? this.fixerFolder.hashCode() : 0);
 		result = 31 * result + (this.wikiPath != null ? this.wikiPath.hashCode() : 0);
-		result = 31 * result + (this.reportFile != null ? this.reportFile.hashCode() : 0);
-		result = 31 * result + (this.reportFolder != null ? this.reportFolder.hashCode() : 0);
 		result = 31 * result + (this.policyFile != null ? this.policyFile.hashCode() : 0);
 		return result;
 	}
@@ -186,20 +152,11 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 		if (this.isVerbose != other.isVerbose) {
 			return false;
 		}
-		if (this.isOverwrite != other.isOverwrite) {
-			return false;
-		}
 		if (this.policyFile == null) {
 			if (other.policyFile != null) {
 				return false;
 			}
 		} else if (!this.policyFile.equals(other.policyFile)) {
-			return false;
-		}
-		if (!Objects.equals(this.reportFile, other.reportFile)) {
-			return false;
-		}
-		if (!Objects.equals(this.reportFolder, other.reportFolder)) {
 			return false;
 		}
 		if (this.type != other.type) {
@@ -213,10 +170,9 @@ final class VeraAppConfigImpl implements VeraAppConfig {
 	 */
 	@Override
 	public String toString() {
-		return "VeraAppConfigImpl [type=" + this.type + ", isOverwrite=" //$NON-NLS-1$ //$NON-NLS-2$
-				+ this.isOverwrite + ", format=" + this.format + ", isVerbose=" + this.isVerbose + ", fixerFolder=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				+ this.fixerFolder + ", wikiPath=" + this.wikiPath + ", reportFile=" + this.reportFile + ", reportFolder=" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				+ this.reportFolder + ", policyFile=" + this.policyFile + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+		return "VeraAppConfigImpl [type=" + this.type + ", format=" + this.format + //$NON-NLS-1$ //$NON-NLS-2$
+		       ", isVerbose=" + this.isVerbose + ", fixerFolder=" + this.fixerFolder + //$NON-NLS-1$ //$NON-NLS-2$
+		       ", wikiPath=" + this.wikiPath + ", policyFile=" + this.policyFile + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	static String toXml(final VeraAppConfig toConvert, Boolean prettyXml) throws JAXBException, IOException {

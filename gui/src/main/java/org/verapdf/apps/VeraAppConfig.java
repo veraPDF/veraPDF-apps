@@ -37,10 +37,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlJavaTypeAdapter(VeraAppConfigImpl.Adapter.class)
 public interface VeraAppConfig {
-	public boolean isOverwriteReport();
 	public String getFixesFolder();
-	public String getReportFile();
-	public String getReportFolder();
 	public String getPolicyFile();
 	public String getWikiPath();
 	public FormatOption getFormat();

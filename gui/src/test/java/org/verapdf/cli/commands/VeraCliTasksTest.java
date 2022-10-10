@@ -63,7 +63,7 @@ public class VeraCliTasksTest {
 	 */
 	@Test
 	public void testExtractFeatures() throws VeraPDFException {
-		String [] args = {"-o" , "-x"};
+		String [] args = {"-o" , "-x", "informationDict"};
 		ProcessorConfig config = VeraCliTasksTest.getConfig(args);
 		assertEquals("taskSize = " + config.getTasks().size(), 1, config.getTasks().size());
 		assertTrue(config.getTasks().contains(TaskType.EXTRACT_FEATURES));
@@ -85,7 +85,7 @@ public class VeraCliTasksTest {
 	 */
 	@Test
 	public void testExtractAndValidation() throws VeraPDFException {
-		String [] args = {"-x"};
+		String [] args = {"-x", "informationDict"};
 		ProcessorConfig config = VeraCliTasksTest.getConfig(args);
 		assertEquals("taskSize = " + config.getTasks().size(), 2, config.getTasks().size());
 		assertTrue(config.getTasks().contains(TaskType.EXTRACT_FEATURES));
@@ -97,7 +97,7 @@ public class VeraCliTasksTest {
 	 */
 	@Test
 	public void testExtractFixAndValidation() throws VeraPDFException {
-		String [] args = {"-x", "--fixmetadata"};
+		String [] args = {"-x", "informationDict", "--fixmetadata"};
 		ProcessorConfig config = VeraCliTasksTest.getConfig(args);
 		assertEquals("taskSize = " + config.getTasks().size(), 3, config.getTasks().size());
 		assertTrue(config.getTasks().contains(TaskType.EXTRACT_FEATURES));
@@ -105,7 +105,7 @@ public class VeraCliTasksTest {
 		assertTrue(config.getTasks().contains(TaskType.FIX_METADATA));
 	}
 
-	private static ProcessorConfig getConfig (final String [] args) throws VeraPDFException {
+	private static ProcessorConfig getConfig(final String [] args) throws VeraPDFException {
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = VeraCliArgParserTest
                 .initialiseJCommander(parser);
@@ -114,6 +114,6 @@ public class VeraCliTasksTest {
         jCommander.parse(args);
         
         return parser.processorConfig(parser.appConfig(Applications.defaultConfig()).getProcessType(),
-				FeatureFactory.defaultConfig(), PluginsCollectionConfig.defaultConfig());
+                                      PluginsCollectionConfig.defaultConfig());
 	}
 }

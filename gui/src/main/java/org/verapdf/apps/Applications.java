@@ -189,12 +189,9 @@ public final class Applications {
 
 	public static class Builder {
 		private ProcessType _type = ProcessType.VALIDATE;
-		private boolean _isOverwrite = false;
 		private String _fixerFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
 		private FormatOption _format = FormatOption.XML;
 		private String _wikiPath = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki/"; //$NON-NLS-1$
-		private String _reportFile = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
-		private String _reportFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
 		private String _policyFile = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
 		private boolean _isVerbose = false;
 
@@ -205,23 +202,15 @@ public final class Applications {
 		private Builder(VeraAppConfig config) {
 			super();
 			this._type = config.getProcessType();
-			this._isOverwrite = config.isOverwriteReport();
 			this._fixerFolder = config.getFixesFolder();
 			this._format = config.getFormat();
 			this._isVerbose = config.isVerbose();
 			this._wikiPath = config.getWikiPath();
-			this._reportFile = config.getReportFile();
-			this._reportFolder = config.getReportFolder();
 			this._policyFile = config.getPolicyFile();
 		}
 
 		public Builder type(ProcessType type) {
 			this._type = type;
-			return this;
-		}
-
-		public Builder overwrite(boolean overwrite) {
-			this._isOverwrite = overwrite;
 			return this;
 		}
 
@@ -245,16 +234,6 @@ public final class Applications {
 			return this;
 		}
 
-		public Builder reportFile(String report) {
-			this._reportFile = report;
-			return this;
-		}
-
-		public Builder reportFolder(String reports) {
-			this._reportFolder = reports;
-			return this;
-		}
-
 		public Builder policyFile(String policy) {
 			this._policyFile = policy;
 			return this;
@@ -269,8 +248,8 @@ public final class Applications {
 		}
 
 		public VeraAppConfig build() {
-			return new VeraAppConfigImpl(this._type, this._isOverwrite, this._fixerFolder, this._format,
-					this._isVerbose, this._wikiPath, this._reportFile, this._reportFolder, this._policyFile);
+			return new VeraAppConfigImpl(this._type, this._fixerFolder, this._format,
+					this._isVerbose, this._wikiPath, this._policyFile);
 		}
 	}
 
