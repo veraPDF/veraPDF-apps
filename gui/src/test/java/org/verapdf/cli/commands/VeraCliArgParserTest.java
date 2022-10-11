@@ -307,13 +307,13 @@ public class VeraCliArgParserTest {
         JCommander jCommander = initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse("-x");
+        jCommander.parse("-x", "informationDict");
         assertNotEquals(parser.extractFeatures(), VeraCliArgParser.DEFAULT_ARGS.extractFeatures());
 
         // Test flag works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse("-x", "--format", "xml", "-h");
+        jCommander.parse("-x", "informationDict", "--format", "xml", "-h");
         assertNotEquals(parser.extractFeatures(), VeraCliArgParser.DEFAULT_ARGS.extractFeatures());
     }
 
@@ -327,13 +327,13 @@ public class VeraCliArgParserTest {
         JCommander jCommander = initialiseJCommander(parser);
 
         // Test option works
-        jCommander.parse("--extract");
+        jCommander.parse("--extract", "informationDict");
         assertNotEquals(parser.extractFeatures(), VeraCliArgParser.DEFAULT_ARGS.extractFeatures());
 
         // Test option works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse("-l", "--extract", "--flavour", "3b");
+        jCommander.parse("-l", "--extract", "informationDict", "--flavour", "3b");
         assertNotEquals(parser.extractFeatures(), VeraCliArgParser.DEFAULT_ARGS.extractFeatures());
     }
 

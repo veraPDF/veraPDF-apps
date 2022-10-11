@@ -20,16 +20,16 @@
  */
 package org.verapdf.cli.commands;
 
-import com.beust.jcommander.IParameterValidator;
-import com.beust.jcommander.IStringConverter;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.*;
 import org.verapdf.apps.Applications;
+import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.features.FeatureExtractorConfig;
+import org.verapdf.features.FeatureFactory;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.Foundries;
@@ -42,6 +42,7 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.FormatOption;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.ProcessorFactory;
+import org.verapdf.processor.TaskType;
 import org.verapdf.processor.plugins.PluginsCollectionConfig;
 import org.xml.sax.SAXException;
 
@@ -52,9 +53,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -103,19 +102,13 @@ public class VeraCliArgParser {
 	final static String DISABLE_ERROR_MESSAGES = OPTION_SEP + "disableerrormessages"; //$NON-NLS-1$
 	final static String PASSWORD = OPTION_SEP + "password"; //$NON-NLS-1$
 	final static String LOG_LEVEL = OPTION_SEP + "loglevel"; //$NON-NLS-1$
-	// final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
-	// final static String LOAD_CONFIG_FLAG = FLAG_SEP + "c";
-	// final static String LOAD_CONFIG = OPTION_SEP + "config";
-	// final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
-	// final static String POLICY_PROFILE = OPTION_SEP + "policyProfile";
-	// final static String REPORT_FILE = OPTION_SEP + "reportfile";
-	// final static String REPORT_FOLDER = OPTION_SEP + "reportfolder";
-	// final static String OVERWRITE_REPORT_FILE = OPTION_SEP +
-	// "overwriteReportFile";
+	final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
+	final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
 	final static String VALID_OFF_FLAG = FLAG_SEP + "o"; //$NON-NLS-1$
 	final static String VALID_OFF = OPTION_SEP + "off"; //$NON-NLS-1$
 	final static String NUMBER_OF_PROCESSES_FLAG = OPTION_SEP + "processes"; //$NON-NLS-1$
 	final static String VERA_PATH_FLAG = OPTION_SEP + "verapath";
+	public static final String USE_CONFIG = OPTION_SEP + "config";
 
 	@Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
 	private boolean help = false;
@@ -141,8 +134,9 @@ public class VeraCliArgParser {
 			LOAD_PROFILE }, description = "Loads a Validation Profile from given path and exits if loading fails. This overrides any choice or default implied by the -f / --flavour option.", validateWith = FileValidator.class)
 	private File profileFile;
 
-	@Parameter(names = { EXTRACT_FLAG, EXTRACT }, description = "Extracts and reports PDF features.")
-	private boolean features = false;
+	@Parameter(names = { EXTRACT_FLAG,
+	                     EXTRACT }, description = "Extracts and reports PDF features. Features must be passed separated by commas without spaces between them.", converter = FeatureConverter.class)
+	private List<FeatureObjectType> features;
 
 	@Parameter(names = { FORMAT }, description = "Chooses output format.", converter = FormatConverter.class)
 	private FormatOption format = Applications.defaultConfig().getFormat();
@@ -195,36 +189,19 @@ public class VeraCliArgParser {
 			POLICY_FILE }, description = "Select a policy schematron or XSL file.", validateWith = FileValidator.class)
 	private File policyFile;
 
-	// @Parameter(names = { PROFILES_WIKI_FLAG,
-	// PROFILES_WIKI }, description = "Sets location of the Validation Profiles
-	// wiki.")
-	// private String profilesWikiPath =
-	// Applications.defaultConfig().getWikiPath();
-	//
-	// @Parameter(names = {
-	// POLICY_PROFILE }, description = "Uses policy check output with specified
-	// Policy Profile. Output format option will be ignored.")
-	// private String policyProfilePath = "";
-	//
-	// @Parameter(names = {
-	// REPORT_FOLDER }, description = "Sets output directory for any reports. If
-	// a directory hierarchy is being recursed, a duplicate hierarchy will be
-	// produced.")
-	// private String reportFolder = "";
-	//
-	// @Parameter(names = { REPORT_FILE }, description = "Sets output file for
-	// any reports.")
-	// private String reportFile = "";
-	//
-	// @Parameter(names = { OVERWRITE_REPORT_FILE }, description = "Overwrites
-	// report file.")
-	// private boolean isOverwriteReportFile = false;
+	 @Parameter(names = { PROFILES_WIKI_FLAG,
+	                      PROFILES_WIKI }, description = "Sets location of the Validation Profiles wiki.")
+	 private String profilesWikiPath = Applications.defaultConfig().getWikiPath();
 
 	@Parameter(names = { VALID_OFF_FLAG, VALID_OFF }, description = "Turns off PDF/A validation")
 	private boolean isValidationOff = false;
 
 	@Parameter(names = {NUMBER_OF_PROCESSES_FLAG}, description = "The number of processes which will be used.")
 	private int numberOfProcesses = 1;
+
+	@Parameter(names = {USE_CONFIG},
+	           description = "Sets settings from the config files, if no cli parameters are specified.")
+	private boolean useConfig = false;
 
 	@Parameter(names = {VERA_PATH_FLAG}, description = "Path to veraPDF Cli", hidden = true, validateWith = FileValidator.class)
 	private File veraCLIPath;
@@ -333,13 +310,6 @@ public class VeraCliArgParser {
 		return this.nonPdfExt;
 	}
 
-	// /**
-	// * @return the policy profile path
-	// */
-	// public String policyProfilePath() {
-	// return this.policyProfilePath;
-	// }
-
 	/**
 	 * @return true if to recursively process sub-dirs
 	 */
@@ -380,7 +350,7 @@ public class VeraCliArgParser {
 	 * @return true if PDF Feature extraction requested
 	 */
 	public boolean extractFeatures() {
-		return this.features | this.isPolicy();
+		return this.features != null || this.isPolicy();
 	}
 
 	public PDFAFlavour getDefaultFlavour() {
@@ -412,12 +382,23 @@ public class VeraCliArgParser {
 		return this.policyFile != null;
 	}
 
+	public String getPolicyFileName() {
+		if (isPolicy()) {
+			return getPolicyFile().getAbsolutePath();
+		}
+		return null;
+	}
+
 	public File getVeraCLIPath() {
 		return veraCLIPath;
 	}
 
 	public int getNumberOfProcesses() {
 		return numberOfProcesses;
+	}
+
+	public boolean useConfig() {
+		return useConfig;
 	}
 
 	/**
@@ -427,36 +408,12 @@ public class VeraCliArgParser {
 		return this.pdfPaths;
 	}
 
-	// /**
-	// * @return path to validation profiles wiki
-	// */
-	// public String getProfilesWikiPath() {
-	// return this.profilesWikiPath;
-	// }
-	//
-	// /**
-	// * @author: mancuska@digitaldocuments.org
-	// * @return folder for reports
-	// */
-	// public String getReportFolder() {
-	// return this.reportFolder;
-	// }
-	//
-	// /**
-	// * @author: mancuska@digitaldocuments.org
-	// * @return output file for report
-	// */
-	// public String getReportFile() {
-	// return this.reportFile;
-	// }
-
-	// /**
-	// * @author: mancuska@digitaldocuments.org
-	// * @return true if existing result file must be overwritten
-	// */
-	// public boolean isOverwriteReportFile() {
-	// return this.isOverwriteReportFile;
-	// }
+	 /**
+	 * @return path to validation profiles wiki
+	 */
+	 public String getProfilesWikiPath() {
+	 return this.profilesWikiPath;
+	 }
 
 	public boolean isValidationOff() {
 		return this.isValidationOff | this.isPolicy();
@@ -468,6 +425,31 @@ public class VeraCliArgParser {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public void setValuesFromConfig(ConfigManager configManager) {
+	 	ValidatorConfig validatorConfig = configManager.getValidatorConfig();
+	 	this.flavour = validatorConfig.getFlavour();
+	 	this.defaultFlavour = validatorConfig.getDefaultFlavour();
+	 	this.passed = validatorConfig.isRecordPasses();
+	 	this.debug = validatorConfig.isDebug();
+	 	this.addLogs = validatorConfig.isLogsEnabled();
+	 	this.logLevel = validatorConfig.getLoggingLevel().intValue();
+	 	this.maxFailures = validatorConfig.getMaxFails();
+	 	this.maxFailuresDisplayed = validatorConfig.getMaxNumberOfDisplayedFailedChecks();
+	 	this.disableErrorMessages = !validatorConfig.showErrorMessages();
+
+	 	VeraAppConfig veraAppConfig = configManager.getApplicationConfig();
+	 	this.saveFolder = veraAppConfig.getFixesFolder();
+	 	this.format = veraAppConfig.getFormat();
+	 	this.isVerbose = veraAppConfig.isVerbose();
+	 	this.policyFile = veraAppConfig.getPolicyFile().isEmpty() ? null : new File(veraAppConfig.getPolicyFile());
+	 	this.profilesWikiPath = veraAppConfig.getWikiPath();
+		this.fixMetadata = veraAppConfig.getProcessType().getTasks().contains(TaskType.FIX_METADATA);
+
+	 	this.features = new ArrayList<>(configManager.getFeaturesConfig().getEnabledFeatures());
+
+	 	this.prefix = configManager.getFixerConfig().getFixesPrefix();
 	}
 
 	/**
@@ -504,12 +486,26 @@ public class VeraCliArgParser {
 		@Override
 		public PDFAFlavour convert(final String value) {
 			for (PDFAFlavour flavourLocal : PDFAFlavour.values()) {
-				if (flavourLocal.getId().equalsIgnoreCase(value))
+				if (flavourLocal.getId().equalsIgnoreCase(value)) {
 					return flavourLocal;
+				}
 			}
 			throw new ParameterException("Illegal --flavour argument:" + value);
 		}
 
+	}
+
+	public static final class FeatureConverter implements IStringConverter<FeatureObjectType> {
+
+		@Override
+		public FeatureObjectType convert(final String value) {
+			for (FeatureObjectType type : FeatureObjectType.values()) {
+				if (type.getNodeName().equalsIgnoreCase(value)) {
+					return type;
+				}
+			}
+			throw new ParameterException("Illegal --extract argument:" + value);
+		}
 	}
 
 	/**
@@ -538,21 +534,26 @@ public class VeraCliArgParser {
 				this.debug, this.addLogs(), getLoggerLevel(), this.maxFailuresDisplayed, !isDisableErrorMessages(), this.getPassword());
 	}
 
+	public FeatureExtractorConfig featureExtractorConfig() {
+		return this.features == null ? FeatureFactory.defaultConfig()
+		                             : FeatureFactory.configFromValues(EnumSet.copyOf(this.features));
+	}
+
 	public MetadataFixerConfig fixerConfig() {
 		return FixerFactory.configFromValues(this.prefix, true);
 	}
 
 	public VeraAppConfig appConfig(final VeraAppConfig base) {
 		Applications.Builder configBuilder = Applications.Builder.fromConfig(base);
-		configBuilder.format(this.getFormat()).isVerbose(this.isVerbose()).fixerFolder(this.saveFolder);
+		configBuilder.format(this.getFormat()).isVerbose(this.isVerbose()).fixerFolder(this.saveFolder)
+		             .wikiPath(this.getProfilesWikiPath()).policyFile(this.getPolicyFileName());
 		configBuilder.type(typeFromArgs(this));
 		return configBuilder.build();
 	}
 
-	public ProcessorConfig processorConfig(final ProcessType procType, FeatureExtractorConfig featConfig,
-										   PluginsCollectionConfig plugConfig)
+	public ProcessorConfig processorConfig(final ProcessType procType, PluginsCollectionConfig plugConfig)
 			throws VeraPDFException {
-		FeatureExtractorConfig featuresConfig = featConfig;
+		FeatureExtractorConfig featuresConfig = this.featureExtractorConfig();
 		if (isPolicy()) {
 			try (InputStream policyStream = new FileInputStream(this.policyFile)) {
 				featuresConfig = ApplicationUtils.mergeEnabledFeaturesFromPolicy(featuresConfig, policyStream);
@@ -601,6 +602,8 @@ public class VeraCliArgParser {
 		}
 		veraPDFParameters.add(LOG_LEVEL);
 		veraPDFParameters.add(String.valueOf(cliArgParser.getLogLevel()));
+		veraPDFParameters.add(PROFILES_WIKI);
+		veraPDFParameters.add(String.valueOf(cliArgParser.getProfilesWikiPath()));
 		if (cliArgParser.getPassword() != null) {
 			veraPDFParameters.add(PASSWORD);
 			veraPDFParameters.add(cliArgParser.getPassword());

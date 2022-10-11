@@ -22,10 +22,7 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -75,6 +72,9 @@ public final class VeraPdfCli {
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
 		VeraCliArgParser cliArgParser = new VeraCliArgParser();
 		JCommander jCommander = new JCommander(cliArgParser);
+		if (Arrays.asList(args).contains(VeraCliArgParser.USE_CONFIG)) {
+			cliArgParser.setValuesFromConfig(configManager);
+		}
 		jCommander.setUsageFormatter(new FormatterHelper(jCommander));
 		jCommander.setProgramName(CliConstants.APP_NAME);
 
@@ -101,7 +101,7 @@ public final class VeraPdfCli {
 				if (cliArgParser.isServerMode() || cliArgParser.getNumberOfProcesses() < 2) {
 					System.exit(singleThreadProcess(cliArgParser).value);
 				} else {
-					System.exit(MultiThreadProcessor.process(cliArgParser, configManager.getApplicationConfig().getWikiPath()).value);
+					System.exit(MultiThreadProcessor.process(cliArgParser).value);
 				}
 			} catch (InterruptedException e) {
 				logger.log(Level.WARNING, "Interrupted", e);

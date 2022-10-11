@@ -1,10 +1,14 @@
 package org.verapdf.cli;
 
 import com.beust.jcommander.*;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 
-import java.util.*;
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
 
 public class FormatterHelper extends DefaultUsageFormatter {
 
@@ -82,6 +86,19 @@ public class FormatterHelper extends DefaultUsageFormatter {
 					} else {
 						out.append(s(indentCount));
 					}
+					out.append(possibleValues);
+				}
+			}
+
+			if (List.class.getCanonicalName().equals(type.getCanonicalName())) {
+				Type fieldGenericType = pd.getParameterized().findFieldGenericType();
+				String valueList = null;
+				if (FeatureObjectType.class.equals(fieldGenericType)) {
+					valueList = Arrays.asList(FeatureObjectType.values()).toString();
+				}
+				if (valueList != null) {
+					String possibleValues = "Possible Values: " + valueList;
+					out.append(newLineAndIndent(indentCount));
 					out.append(possibleValues);
 				}
 			}

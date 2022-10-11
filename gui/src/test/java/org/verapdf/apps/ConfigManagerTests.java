@@ -161,7 +161,7 @@ public class ConfigManagerTests {
 		ConfigManager newManager = Applications.createTmpConfigManager();
 		assertNotSame(defaultConfig, newManager.getApplicationConfig());
 		assertEquals(defaultConfig, newManager.getApplicationConfig());
-		VeraAppConfig newConfig = Applications.createConfigBuilder(defaultConfig).overwrite(!defaultConfig.isOverwriteReport()).build();
+		VeraAppConfig newConfig = Applications.createConfigBuilder(defaultConfig).isVerbose(!defaultConfig.isVerbose()).build();
 		newManager.updateAppConfig(newConfig);
 		assertNotEquals(defaultConfig, newManager.getApplicationConfig());
 	}
