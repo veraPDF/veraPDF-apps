@@ -445,9 +445,14 @@ public class VeraCliArgParser {
 	 	this.isVerbose = veraAppConfig.isVerbose();
 	 	this.policyFile = veraAppConfig.getPolicyFile().isEmpty() ? null : new File(veraAppConfig.getPolicyFile());
 	 	this.profilesWikiPath = veraAppConfig.getWikiPath();
-		this.fixMetadata = veraAppConfig.getProcessType().getTasks().contains(TaskType.FIX_METADATA);
 
-	 	this.features = new ArrayList<>(configManager.getFeaturesConfig().getEnabledFeatures());
+	 	EnumSet<TaskType> taskTypes =  veraAppConfig.getProcessType().getTasks();
+		this.fixMetadata = taskTypes.contains(TaskType.FIX_METADATA);
+
+		this.features = new ArrayList<>();
+		if (taskTypes.contains(TaskType.EXTRACT_FEATURES)) {
+			this.features.addAll(configManager.getFeaturesConfig().getEnabledFeatures());
+		}
 
 	 	this.prefix = configManager.getFixerConfig().getFixesPrefix();
 	}
@@ -535,8 +540,11 @@ public class VeraCliArgParser {
 	}
 
 	public FeatureExtractorConfig featureExtractorConfig() {
-		return this.features == null ? FeatureFactory.defaultConfig()
-		                             : FeatureFactory.configFromValues(EnumSet.copyOf(this.features));
+		if (this.features != null) {
+			return FeatureFactory.configFromValues(this.features.isEmpty() ? EnumSet.noneOf(FeatureObjectType.class)
+			                                                               : EnumSet.copyOf(this.features));
+		}
+		return FeatureFactory.defaultConfig();
 	}
 
 	public MetadataFixerConfig fixerConfig() {
