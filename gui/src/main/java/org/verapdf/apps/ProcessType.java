@@ -23,9 +23,11 @@
  */
 package org.verapdf.apps;
 
-import java.util.EnumSet;
-
 import org.verapdf.processor.TaskType;
+
+import java.util.EnumSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -42,6 +44,8 @@ public enum ProcessType {
 	POLICY("Policy", EnumSet.of(TaskType.VALIDATE, TaskType.EXTRACT_FEATURES)),
 	POLICY_FIX("policy and fix", EnumSet.of(TaskType.VALIDATE, TaskType.FIX_METADATA, TaskType.EXTRACT_FEATURES)),
 	NO_PROCESS("", EnumSet.noneOf(TaskType.class));
+
+	private static final Logger logger = Logger.getLogger(ProcessType.class.getCanonicalName());
 
 	private final EnumSet<TaskType> tasks;
 	private final String value;
@@ -60,33 +64,45 @@ public enum ProcessType {
 	}
 
 	public static ProcessType addProcess(ProcessType base, ProcessType toAdd) {
-		if (base == NO_PROCESS)
+		if (base == NO_PROCESS) {
 			return toAdd;
-		if (toAdd == NO_PROCESS)
+		}
+		if (toAdd == NO_PROCESS) {
 			return base;
+		}
 		if (base == VALIDATE) {
-			if (toAdd == EXTRACT)
+			if (toAdd == EXTRACT) {
 				return VALIDATE_EXTRACT;
+			}
 		} else if (base == EXTRACT) {
-			if (toAdd == VALIDATE)
+			if (toAdd == VALIDATE) {
 				return VALIDATE_EXTRACT;
-			else if (toAdd == FIX)
-				return EXTRACT_FIX;
+			} else if (toAdd == FIX) {
+				logger.log(Level.WARNING, "Incompatible process types: Features and Fix metadata.");
+				return EXTRACT;
+			}
 		} else if (base == FIX) {
-			if (toAdd == EXTRACT || toAdd == VALIDATE_EXTRACT)
+			if (toAdd == VALIDATE_EXTRACT) {
 				return EXTRACT_FIX;
-			else if (toAdd == POLICY)
+			} else if (toAdd == EXTRACT) {
+				logger.log(Level.WARNING, "Incompatible process types: Fix metadata and Features.");
+				return FIX;
+			} else if (toAdd == POLICY) {
 				return POLICY_FIX;
+			}
 		} else if (base == VALIDATE_EXTRACT) {
-			if (toAdd == FIX)
+			if (toAdd == FIX) {
 				return EXTRACT_FIX;
+			}
 		} else if (base == EXTRACT_FIX) {
-			if (toAdd == POLICY || toAdd == POLICY_FIX)
+			if (toAdd == POLICY || toAdd == POLICY_FIX) {
 				return POLICY_FIX;
+			}
 			return EXTRACT_FIX;
 		} else if (base == POLICY) {
-			if (toAdd == FIX || toAdd == EXTRACT_FIX)
+			if (toAdd == FIX || toAdd == EXTRACT_FIX) {
 				return POLICY_FIX;
+			}
 			return POLICY;
 		} else if (base == POLICY_FIX) {
 			return POLICY_FIX;

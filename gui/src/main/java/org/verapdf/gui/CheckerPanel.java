@@ -197,6 +197,17 @@ class CheckerPanel extends JPanel {
 				}
 			}
 		});
+
+		this.fixMetadata.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					config.updateAppConfig(appConfigFromState());
+				} catch (JAXBException | IOException exception) {
+					exception.printStackTrace();
+				}
+			}
+		});
 	}
 
 	private void initGui() throws IOException {
@@ -344,7 +355,9 @@ class CheckerPanel extends JPanel {
 		this.setupProfileButton(gbl, gbc);
 
 		String policyPath = config.getApplicationConfig().getPolicyFile();
-		if (policyPath == null || policyPath.isEmpty()) {
+		if (policyPath != null && !policyPath.isEmpty()) {
+			this.policy = new File(policyPath);
+		} else {
 			policyPath = GUIConstants.POLICY_PROFILE_NOT_CHOSEN;
 		}
 		this.chosenPolicy = new JTextField(policyPath);
@@ -466,6 +479,11 @@ class CheckerPanel extends JPanel {
 					CheckerPanel.this.targetProfile.setActive(false);
 				}
 				CheckerPanel.this.execute.setEnabled(isExecute());
+				try {
+					config.updateValidatorConfig(validatorConfigFromState());
+				} catch (JAXBException | IOException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 
@@ -496,6 +514,11 @@ class CheckerPanel extends JPanel {
 			public void actionPerformed(final ActionEvent e) {
 				CheckerPanel.this.chooseFile(CheckerPanel.this.policyChooser,
 						new String[] { GUIConstants.SCH, GUIConstants.XSL, GUIConstants.XSLT });
+				try {
+					config.updateAppConfig(appConfigFromState());
+				} catch (JAXBException | IOException exception) {
+					exception.printStackTrace();
+				}
 			}
 		});
 
@@ -519,6 +542,11 @@ class CheckerPanel extends JPanel {
 						break;
 					default:
 						break;
+				}
+				try {
+					config.updateAppConfig(appConfigFromState());
+				} catch (JAXBException | IOException exception) {
+					exception.printStackTrace();
 				}
 			}
 
@@ -767,14 +795,18 @@ class CheckerPanel extends JPanel {
 		if (!GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT.equals(this.chooseFlavour.getSelectedItem())) {
 			this.profilePath = FileSystems.getDefault().getPath(emptyString);
 		}
+		config.updateValidatorConfig(validatorConfigFromState());
+		config.updateAppConfig(appConfigFromState());
+	}
+
+	ValidatorConfig validatorConfigFromState() {
 		PDFAFlavour flavour = getCurrentFlavour();
 		ValidatorConfig validatorConfig = config.getValidatorConfig();
-		ValidatorConfig currentConfig = ValidatorFactory.createConfig(flavour, validatorConfig.getDefaultFlavour(),
-				validatorConfig.isRecordPasses(), validatorConfig.getMaxFails(), validatorConfig.isDebug(),
-				validatorConfig.isLogsEnabled(), validatorConfig.getLoggingLevel(),
-				validatorConfig.getMaxNumberOfDisplayedFailedChecks(), validatorConfig.showErrorMessages(), null);
-		config.updateValidatorConfig(currentConfig);
-		config.updateAppConfig(appConfigFromState());
+		return ValidatorFactory.createConfig(flavour, validatorConfig.getDefaultFlavour(),
+		                                     validatorConfig.isRecordPasses(), validatorConfig.getMaxFails(),
+		                                     validatorConfig.isDebug(), validatorConfig.isLogsEnabled(),
+		                                     validatorConfig.getLoggingLevel(), validatorConfig.getMaxNumberOfDisplayedFailedChecks(),
+		                                     validatorConfig.showErrorMessages(), null);
 	}
 
 	VeraAppConfig appConfigFromState() {
@@ -783,7 +815,7 @@ class CheckerPanel extends JPanel {
 		if (isFixMetadata()) {
 			selectedItem = ProcessType.addProcess(selectedItem, ProcessType.FIX);
 		}
-		builder.type(selectedItem);
+		builder.type(selectedItem).policyFile(this.getPolicyFile());
 		return builder.build();
 	}
 
@@ -809,12 +841,22 @@ class CheckerPanel extends JPanel {
 				flavour.getLevel().getCode());
 	}
 
+	public String getPolicyFile() {
+		return this.policy == null ? "" : this.policy.getAbsolutePath();
+	}
+
 	void setPolicyFile(File policy) {
 		if (policy != null && policy.isFile() && policy.canRead()) {
 			this.policy = policy;
 			this.policyChooser.setSelectedFile(policy);
 			this.chosenPolicy.setText(policy.getAbsolutePath());
 			this.execute.setEnabled(isExecute());
+
+			try {
+				config.updateAppConfig(appConfigFromState());
+			} catch (JAXBException | IOException exception) {
+				exception.printStackTrace();
+			}
 		}
 	}
 
