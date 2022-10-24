@@ -51,6 +51,7 @@ import javax.xml.stream.XMLStreamException;
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.Applications.Builder;
+import org.verapdf.core.utils.LogsFileHandler;
 import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.SoftwareUpdater;
@@ -363,6 +364,7 @@ public class PDFValidationApplication extends JFrame {
 	 *            command line arguments
 	 */
 	public static void main(String[] args) {
+		LogsFileHandler.configLogs();
 		FeaturesPluginsLoader.setBaseFolderPath(System.getProperty(Applications.APP_HOME_PROPERTY));
 		double frameScale = 1;
 		if (args.length > 1 && "--frameScale".equals(args[0]) && args[1] != null) {

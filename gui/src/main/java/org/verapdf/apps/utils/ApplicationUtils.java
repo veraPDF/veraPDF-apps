@@ -176,9 +176,7 @@ public final class ApplicationUtils {
 				resFeatures.add(feature);
 			}
 		}
-		for (FeatureObjectType type : currentConfig.getEnabledFeatures()) {
-			resFeatures.add(type);
-		}
+		resFeatures.addAll(currentConfig.getEnabledFeatures());
 		return FeatureFactory.configFromValues(resFeatures);
 	}
 }
