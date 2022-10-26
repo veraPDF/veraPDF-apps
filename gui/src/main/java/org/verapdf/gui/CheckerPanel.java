@@ -29,6 +29,8 @@ import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.TaskType;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.xml.bind.JAXBException;
 import java.awt.*;
@@ -514,11 +516,25 @@ class CheckerPanel extends JPanel {
 			public void actionPerformed(final ActionEvent e) {
 				CheckerPanel.this.chooseFile(CheckerPanel.this.policyChooser,
 						new String[] { GUIConstants.SCH, GUIConstants.XSL, GUIConstants.XSLT });
+			}
+		});
+
+		this.chosenPolicy.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
 				try {
 					config.updateAppConfig(appConfigFromState());
 				} catch (JAXBException | IOException exception) {
 					exception.printStackTrace();
 				}
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
 			}
 		});
 
@@ -851,12 +867,6 @@ class CheckerPanel extends JPanel {
 			this.policyChooser.setSelectedFile(policy);
 			this.chosenPolicy.setText(policy.getAbsolutePath());
 			this.execute.setEnabled(isExecute());
-
-			try {
-				config.updateAppConfig(appConfigFromState());
-			} catch (JAXBException | IOException exception) {
-				exception.printStackTrace();
-			}
 		}
 	}
 
