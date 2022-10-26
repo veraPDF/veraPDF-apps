@@ -98,7 +98,7 @@ public final class VeraPdfCli {
 				logger.log(Level.SEVERE,"STDIN is not available", e);
 			}
 			try {
-				if (cliArgParser.isServerMode() || cliArgParser.getNumberOfProcesses() < 2) {
+				if (!cliArgParser.isMultiprocessing()) {
 					System.exit(singleThreadProcess(cliArgParser).value);
 				} else {
 					System.exit(MultiThreadProcessor.process(cliArgParser).value);
