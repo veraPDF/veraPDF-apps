@@ -34,6 +34,7 @@ import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.cli.multithread.MultiThreadProcessor;
 import org.verapdf.core.VeraPDFException;
+import org.verapdf.core.utils.LogsFileHandler;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
@@ -66,6 +67,7 @@ public final class VeraPdfCli {
 	 *             using Apache commons CLI.
 	 */
 	public static void main(final String[] args) throws VeraPDFException {
+		LogsFileHandler.configLogs();
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
 		FeaturesPluginsLoader.setBaseFolderPath(System.getProperty(Applications.APP_HOME_PROPERTY));
 		ReleaseDetails.addDetailsFromResource(
@@ -87,6 +89,7 @@ public final class VeraPdfCli {
 		if (cliArgParser.isHelp()) {
 			displayHelpAndExit(cliArgParser, jCommander, ExitCodes.VALID);
 		}
+		LogsFileHandler.setLoggingLevel(cliArgParser.getLoggerLevel());
 		messagesFromParser(cliArgParser);
 		cliArgParser.checkParametersCompatibility();
 		if (isProcess(cliArgParser)) {
@@ -137,7 +140,7 @@ public final class VeraPdfCli {
 				if (tempFile != null) {
 					System.out.println(tempFile.getAbsoluteFile());
 				}
-				try (Scanner scanner = new Scanner(System.in);) {
+				try (Scanner scanner = new Scanner(System.in)) {
 					while (scanner.hasNextLine()) {
 						String path = scanner.nextLine();
 						if (path != null) {
