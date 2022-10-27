@@ -296,6 +296,21 @@ public class VeraCliArgParser {
 		}
 	}
 
+	public int getLoggerLevel(Level level) {
+		switch (level.toString()) {
+			case "OFF":
+				return 0;
+			case "SEVERE":
+				return 1;
+			case "CONFIG":
+				return 3;
+			case "ALL":
+				return 4;
+			default:
+				return 2;
+		}
+	}
+
 	/**
 	 * @return number of checks per which set by user:
 	 */
@@ -445,7 +460,7 @@ public class VeraCliArgParser {
 	 	this.passed = validatorConfig.isRecordPasses();
 	 	this.debug = validatorConfig.isDebug();
 	 	this.addLogs = validatorConfig.isLogsEnabled();
-	 	this.logLevel = validatorConfig.getLoggingLevel().intValue();
+	 	this.logLevel = getLoggerLevel(validatorConfig.getLoggingLevel());
 	 	this.maxFailures = validatorConfig.getMaxFails();
 	 	this.maxFailuresDisplayed = validatorConfig.getMaxNumberOfDisplayedFailedChecks();
 	 	this.disableErrorMessages = !validatorConfig.showErrorMessages();
