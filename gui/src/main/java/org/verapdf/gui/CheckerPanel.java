@@ -817,15 +817,22 @@ class CheckerPanel extends JPanel {
 		if (!GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT.equals(this.chooseFlavour.getSelectedItem())) {
 			this.profilePath = FileSystems.getDefault().getPath(emptyString);
 		}
-		config.updateValidatorConfig(validatorConfigFromState());
 		config.updateAppConfig(appConfigFromState());
+		config.updateValidatorConfig(validatorConfigFromState());
 	}
 
 	ValidatorConfig validatorConfigFromState() {
-		PDFAFlavour flavour = getCurrentFlavour();
 		ValidatorConfig validatorConfig = config.getValidatorConfig();
+		int maxFails = validatorConfig.getMaxFails();
+		if (config.getApplicationConfig().getProcessType().getTasks().contains(TaskType.FIX_METADATA)) {
+			if (maxFails > 0) {
+				logger.log(Level.WARNING, "Option \"Halt validation after " + maxFails + " failed checks\" is ignored when fixing metadata is enabled");
+				maxFails = -1;
+			}
+		}
+		PDFAFlavour flavour = getCurrentFlavour();
 		return ValidatorFactory.createConfig(flavour, validatorConfig.getDefaultFlavour(),
-		                                     validatorConfig.isRecordPasses(), validatorConfig.getMaxFails(),
+		                                     validatorConfig.isRecordPasses(), maxFails,
 		                                     validatorConfig.isDebug(), validatorConfig.isLogsEnabled(),
 		                                     validatorConfig.getLoggingLevel(), validatorConfig.getMaxNumberOfDisplayedFailedChecks(),
 		                                     validatorConfig.showErrorMessages(), null, validatorConfig.getShowProgress());

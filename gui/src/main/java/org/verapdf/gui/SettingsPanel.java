@@ -118,7 +118,7 @@ class SettingsPanel extends JPanel {
 
 		this.numberOfFailedDisplay = new JTextField();
 		this.numberOfFailedDisplay.setTransferHandler(null);
-		this.numberOfFailedDisplay.addKeyListener(getKeyAdapter(this.numberOfFailedDisplay, true));
+		this.numberOfFailedDisplay.addKeyListener(getKeyAdapter(this.numberOfFailedDisplay, false));
 		this.numberOfFailedDisplay.setToolTipText(GUIConstants.MAX_FAILED_CHECKS_DISP_SETTING_TIP);
 		JPanel panel2 = new JPanel();
 		panel2.setLayout(null);
