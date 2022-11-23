@@ -122,7 +122,7 @@ public class VeraCliArgParser {
 	private PDFAFlavour flavour = PDFAFlavour.NO_FLAVOUR;
 
 	@Parameter(names = { DEFAULT_FLAVOUR_FLAG,
-	                     DEFAULT_FLAVOUR }, description = "Chooses built-in Validation Profile default flavour, e.g. '1b'. This flavor will be applied if automatic flavour detection based on a file's metadata doesn't work.", converter = FlavourConverter.class)
+	                     DEFAULT_FLAVOUR }, description = "Chooses built-in Validation Profile default flavour, e.g. '1b'. This flavour will be applied if automatic flavour detection based on a file's metadata doesn't work.", converter = FlavourConverter.class)
 	private PDFAFlavour defaultFlavour = PDFAFlavour.PDFA_1_B;
 
 	@Parameter(names = { SUCCESS, PASSED }, description = "Logs successful validation checks.")
@@ -197,7 +197,7 @@ public class VeraCliArgParser {
 	                      PROFILES_WIKI }, description = "Sets location of the Validation Profiles wiki.")
 	 private String profilesWikiPath = Applications.defaultConfig().getWikiPath();
 
-	@Parameter(names = { VALID_OFF_FLAG, VALID_OFF }, description = "Turns off PDF/A validation")
+	@Parameter(names = { VALID_OFF_FLAG, VALID_OFF }, description = "Turns off validation")
 	private boolean isValidationOff = false;
 
 	@Parameter(names = {NUMBER_OF_PROCESSES_FLAG}, description = "The number of processes which will be used.")
@@ -691,6 +691,10 @@ public class VeraCliArgParser {
 		if (this.format != FormatOption.MRR && this.format != FormatOption.XML && this.format != FormatOption.JSON
 		    && this.format != FormatOption.HTML && this.addLogs) {
 			LOGGER.log(Level.WARNING, "Log messages in report are supported only in xml (mrr), json and html formats.");
+		}
+		if (Foundries.defaultParserIsPDFBox() && this.fixMetadata) {
+			LOGGER.log(Level.WARNING, "Fixing metadata are not supported in PDFBox validator.");
+			this.fixMetadata = false;
 		}
 		if (Foundries.defaultParserIsPDFBox() && !this.disableErrorMessages) {
 			LOGGER.log(Level.WARNING, "Detailed error messages are not supported in PDFBox validator.");

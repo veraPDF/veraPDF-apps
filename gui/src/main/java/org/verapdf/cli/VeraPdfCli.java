@@ -48,7 +48,7 @@ import com.beust.jcommander.ParameterException;
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
  */
 public final class VeraPdfCli {
-	private static final Logger logger = Logger.getLogger(VeraCliArgParser.class.getCanonicalName());
+	private static final Logger logger = Logger.getLogger(VeraPdfCli.class.getCanonicalName());
 	private static final ConfigManager configManager = Applications.createAppConfigManager();
 	private static final int MEGABYTE = (1024 * 1024);
 	private static final String FLAVOURS_HEADING = CliConstants.APP_NAME + " supported PDF/A and PDF/UA profiles:"; //$NON-NLS-1$
