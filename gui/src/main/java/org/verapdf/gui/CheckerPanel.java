@@ -21,6 +21,7 @@ import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.gui.utils.*;
+import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
@@ -274,7 +275,12 @@ class CheckerPanel extends JPanel {
 
 		this.fixMetadata = new JCheckBox(GUIConstants.FIX_METADATA_LABEL_TEXT);
 		this.fixMetadata.setHorizontalTextPosition(SwingConstants.LEFT);
-		this.fixMetadata.setSelected(config.createProcessorConfig().getTasks().contains(TaskType.FIX_METADATA));
+		if (Foundries.defaultParserIsPDFBox()) {
+			this.fixMetadata.setSelected(false);
+			this.fixMetadata.setEnabled(false);
+		} else {
+			this.fixMetadata.setSelected(config.createProcessorConfig().getTasks().contains(TaskType.FIX_METADATA));
+		}
 		setGridBagConstraintsParameters(gbc, GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_X,
 				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_Y,
 				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_WEIGHT_X,
@@ -544,17 +550,17 @@ class CheckerPanel extends JPanel {
 				ProcessType item = (ProcessType) CheckerPanel.this.ProcessTypes.getSelectedItem();
 				switch (item) {
 					case VALIDATE:
-						updateEnabling(true, false);
+						updateEnabling(!Foundries.defaultParserIsPDFBox(), false);
 						break;
 					case EXTRACT:
 						CheckerPanel.this.fixMetadata.setSelected(false);
 						updateEnabling(false, false);
 						break;
 					case VALIDATE_EXTRACT:
-						updateEnabling(true, false);
+						updateEnabling(!Foundries.defaultParserIsPDFBox(), false);
 						break;
 					case POLICY:
-						updateEnabling(true, true);
+						updateEnabling(!Foundries.defaultParserIsPDFBox(), true);
 						break;
 					default:
 						break;
