@@ -136,8 +136,7 @@ final class VeraPdfCliProcessor implements Closeable {
 				OutputStream reportStream = this.getReportStream()) {
 			BatchSummary summary = processor.process(toProcess,
 					ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), reportStream,
-							this.processorConfig.getValidatorConfig().isRecordPasses(),
-							configManager.getApplicationConfig().getWikiPath()));
+							this.processorConfig.getValidatorConfig().isRecordPasses(), this.appConfig.getWikiPath()));
 			reportStream.flush();
 			return exitStatusFromSummary(summary);
 		} catch (VeraPDFException excep) {

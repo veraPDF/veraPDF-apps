@@ -156,7 +156,7 @@ public class VeraCliArgParser {
 	private boolean debug = false;
 
 	@Parameter(names = {
-			MAX_FAILURES_DISPLAYED }, description = "Sets maximum amount of failed checks displayed for each rule.")
+			MAX_FAILURES_DISPLAYED }, description = "Sets maximum amount of failed checks displayed for each rule. -1 for unlimited checks.")
 	private int maxFailuresDisplayed = BaseValidator.DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS;
 
 	@Parameter(names = { MAX_FAILURES }, description = "Sets maximum amount of failed checks.")
@@ -714,6 +714,14 @@ public class VeraCliArgParser {
 		if (Foundries.defaultParserIsPDFBox() && !this.disableErrorMessages) {
 			LOGGER.log(Level.WARNING, "Detailed error messages are not supported in PDFBox validator.");
 			this.disableErrorMessages = true;
+		}
+		if (this.fixMetadata && this.maxFailures > 0) {
+			LOGGER.log(Level.WARNING, "Option maxfailures is ignored when option fixmetadata is enabled");
+			this.maxFailures = -1;
+		}
+		if (this.maxFailuresDisplayed < -1 || this.maxFailuresDisplayed == 0) {
+			LOGGER.log(Level.WARNING, "Argument of option maxfailuresdisplayed " + maxFailuresDisplayed + " is not supported and changed to 1");
+			this.maxFailuresDisplayed = 1;
 		}
 		if (Foundries.defaultParserIsPDFBox() && this.password != null) {
 			LOGGER.log(Level.WARNING, "Password handling for encrypted files is not supported in PDFBox validator.");
