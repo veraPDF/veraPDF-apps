@@ -100,6 +100,8 @@ class CheckerPanel extends JPanel {
 	private JProgressBar progressBar;
 	transient ValidateWorker validateWorker;
 
+	private boolean validationInProgress = false;
+
 	CheckerPanel(final ConfigManager config) throws IOException {
 		CheckerPanel.config = config;
 		this.profilePath = FileSystems.getDefault().getPath(emptyString);
@@ -120,6 +122,11 @@ class CheckerPanel extends JPanel {
 		this.execute.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
+				if (validationInProgress) {
+					validateWorker.cancel(true);
+					execute.setEnabled(false);
+					return;
+				}
 				try {
 					changeConfig();
 					ValidationProfile customProfile = null;
@@ -134,12 +141,13 @@ class CheckerPanel extends JPanel {
 					CheckerPanel.this.progressBar.setVisible(true);
 					CheckerPanel.this.resultLabel.setVisible(false);
 					setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-					CheckerPanel.this.execute.setEnabled(false);
+					CheckerPanel.this.execute.setText(GUIConstants.CANCEL_BUTTON_TEXT);
 					CheckerPanel.this.isValidationErrorOccurred = false;
 					CheckerPanel.this.viewXML.setEnabled(false);
 					CheckerPanel.this.saveXML.setEnabled(false);
 					CheckerPanel.this.viewHTML.setEnabled(false);
 					CheckerPanel.this.saveHTML.setEnabled(false);
+					validationInProgress = true;
 					CheckerPanel.this.validateWorker.execute();
 				} catch (IllegalArgumentException | JAXBException | IOException excep) {
 					DialogUtils.errorDialog(CheckerPanel.this, excep.getMessage(), logger, excep);
@@ -587,7 +595,9 @@ class CheckerPanel extends JPanel {
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
+		this.validationInProgress = false;
 		this.execute.setEnabled(true);
+		this.execute.setText(GUIConstants.VALIDATE_BUTTON_TEXT);
 
 		if (!this.isValidationErrorOccurred) {
 			try {
@@ -824,11 +834,9 @@ class CheckerPanel extends JPanel {
 	ValidatorConfig validatorConfigFromState() {
 		ValidatorConfig validatorConfig = config.getValidatorConfig();
 		int maxFails = validatorConfig.getMaxFails();
-		if (config.getApplicationConfig().getProcessType().getTasks().contains(TaskType.FIX_METADATA)) {
-			if (maxFails > 0) {
-				logger.log(Level.WARNING, "Option \"Halt validation after " + maxFails + " failed checks\" is ignored when fixing metadata is enabled");
-				maxFails = -1;
-			}
+		if (maxFails > 0 && config.getApplicationConfig().getProcessType().getTasks().contains(TaskType.FIX_METADATA)) {
+			logger.log(Level.WARNING, "Option \"Halt validation after " + maxFails + " failed checks\" is ignored when fixing metadata is enabled");
+			maxFails = -1;
 		}
 		PDFAFlavour flavour = getCurrentFlavour();
 		return ValidatorFactory.createConfig(flavour, validatorConfig.getDefaultFlavour(),
