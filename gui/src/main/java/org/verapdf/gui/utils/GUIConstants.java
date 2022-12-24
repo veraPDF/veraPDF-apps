@@ -82,6 +82,7 @@ public final class GUIConstants {
 	public static final String ARG_REQUIRED ="Argument required";
 	public static final String POLICY_PROFILE_NOT_CHOSEN = "Policy file not chosen";
 	public static final String VALIDATE_BUTTON_TEXT = "Execute";
+	public static final String CANCEL_BUTTON_TEXT = "Cancel";
 	public static final String VALIDATION_OK = "PDF file is compliant with Validation Profile requirements";
 	public static final String VALIDATION_FALSE = "PDF file is not compliant with Validation Profile requirements";
 	public static final String POLICY_FALSE = "PDF file is not compliant with Policy requirements";
