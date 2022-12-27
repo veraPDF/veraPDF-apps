@@ -63,7 +63,8 @@ public final class ApplicationUtils {
 				continue;
 			}
 			if (file.isFile()) {
-				if (nonPdfExt || FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
+				if (nonPdfExt || FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF) ||
+						FileUtils.hasExtNoCase(file.getName(), GUIConstants.ZIP)) {
 					retVal.add(file);
 				} else {
 					LOGGER.log(Level.SEVERE, "File " + file.getAbsolutePath() + " doesn't have a .pdf extension. Try using --nonpdfext flag");

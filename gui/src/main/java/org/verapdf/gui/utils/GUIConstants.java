@@ -47,6 +47,7 @@ public final class GUIConstants {
 
 	// File extensions
 	public static final String PDF = "pdf"; //$NON-NLS-1$
+	public static final String ZIP = "zip"; //$NON-NLS-1$
 	public static final String XML = "xml"; //$NON-NLS-1$
 	public static final String HTML = "html"; //$NON-NLS-1$
 	public static final String SCH = "sch"; //$NON-NLS-1$
