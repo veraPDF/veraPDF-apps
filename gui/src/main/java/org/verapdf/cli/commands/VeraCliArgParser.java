@@ -720,7 +720,7 @@ public class VeraCliArgParser {
 			this.maxFailures = -1;
 		}
 		if (this.maxFailuresDisplayed < -1 || this.maxFailuresDisplayed == 0) {
-			LOGGER.log(Level.WARNING, "Argument \" + maxFailuresDisplayed + \" of option maxfailuresdisplayed is not supported and changed to 1");
+			LOGGER.log(Level.WARNING, "Argument " + maxFailuresDisplayed + " of option maxfailuresdisplayed is not supported and changed to 1");
 			this.maxFailuresDisplayed = 1;
 		}
 		if (Foundries.defaultParserIsPDFBox() && this.password != null) {

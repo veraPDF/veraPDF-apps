@@ -108,7 +108,7 @@ class CheckerPanel extends JPanel {
 
 		this.initGui();
 
-		this.pdfChooser = getChooser(true, GUIConstants.PDF);
+		this.pdfChooser = getChooser(true, GUIConstants.PDF, GUIConstants.ZIP);
 		this.pdfChooser.setMultiSelectionEnabled(true);
 		this.pdfChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		this.xmlChooser = getChooser(false, GUIConstants.XML);
@@ -238,7 +238,7 @@ class CheckerPanel extends JPanel {
 		this.add(this.chosenPDF);
 
 		PanelDropTargetListener dtdPDFListener = new PanelDropTargetListener(-1,
-				GUIConstants.PDF);
+				GUIConstants.PDF, GUIConstants.ZIP);
 		targetPDF = new DropTarget(this.chosenPDF, DnDConstants.ACTION_COPY_OR_MOVE,
 				dtdPDFListener, true, null);
 
