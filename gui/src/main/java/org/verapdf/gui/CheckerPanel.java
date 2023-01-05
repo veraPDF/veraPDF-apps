@@ -123,8 +123,9 @@ class CheckerPanel extends JPanel {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
 				if (validationInProgress) {
-					validateWorker.cancel(true);
 					execute.setEnabled(false);
+					validationInProgress = false;
+					validateWorker.cancel(true);
 					return;
 				}
 				try {
@@ -595,10 +596,12 @@ class CheckerPanel extends JPanel {
 
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
-		this.validationInProgress = false;
 		this.execute.setEnabled(true);
 		this.execute.setText(GUIConstants.VALIDATE_BUTTON_TEXT);
-
+		if (!validationInProgress) {
+			return;
+		}
+		this.validationInProgress = false;
 		if (!this.isValidationErrorOccurred) {
 			try {
 				ValidateWorker.ValidateWorkerSummary result = this.validateWorker.get();
