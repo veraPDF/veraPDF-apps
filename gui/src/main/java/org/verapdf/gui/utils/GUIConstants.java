@@ -71,6 +71,7 @@ public final class GUIConstants {
 	public static final String CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT = "Please, specify validation profile";
 	public static final String CUSTOM_PROFILE_COMBOBOX_TEXT = "Custom profile";
 	public static final String AUTO_FLAVOUR_COMBOBOX_TEXT = "Auto-detect";
+	public static final String AUTO_ARLINGTON_FLAVOUR_COMBOBOX_TEXT = "Arlington (auto)";
 	public static final String OFF_LEVEL = "OFF";
 	public static final String SEVERE_LEVEL = "SEVERE";
 	public static final String WARNING_LEVEL = "WARNING, SEVERE";
@@ -98,7 +99,7 @@ public final class GUIConstants {
 	public static final String LABEL_TEXT = "     Please choose a PDF and a Validation Profile, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
 	public static final String CONSORTIUM_TEXT = "© 2015-2022 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String PREFORMA_FUNDED_TEXT = "Funded by the European Commission’s PREFORMA Project";
-	public static final String TITLE = "veraPDF Conformance Checker";
+	public static final String TITLE = "veraPDF Arlington model checker";
 	public static final String ENCRYPTED_PDF = "Document is password encrypted and can not be processed.";
 	public static final String ERROR_IN_PARSING = "Failed to parse pdf document.";
 	public static final String ERROR_IN_VALIDATING = "Could not complete validation due to an error.";

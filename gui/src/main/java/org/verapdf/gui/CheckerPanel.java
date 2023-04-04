@@ -23,6 +23,7 @@ import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.gui.utils.*;
 import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+import org.verapdf.pdfa.flavours.PDFAFlavours;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
@@ -316,7 +317,8 @@ class CheckerPanel extends JPanel {
 
 		Vector<String> availableFlavours = new Vector<>();
 		availableFlavours.add(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
-		availableFlavours.add(GUIConstants.AUTO_FLAVOUR_COMBOBOX_TEXT);
+//		availableFlavours.add(GUIConstants.AUTO_FLAVOUR_COMBOBOX_TEXT);
+		availableFlavours.add(GUIConstants.AUTO_ARLINGTON_FLAVOUR_COMBOBOX_TEXT);
 		SortedSet<String> sortedFlavours = new TreeSet<>();
 		for (PDFAFlavour flavour : Profiles.getVeraProfileDirectory().getPDFAFlavours()) {
 			String flavourReadableText = getFlavourReadableText(flavour);
@@ -861,6 +863,9 @@ class CheckerPanel extends JPanel {
 
 	private PDFAFlavour getCurrentFlavour() {
 		String selectedItem = (String) this.chooseFlavour.getSelectedItem();
+		if (GUIConstants.AUTO_ARLINGTON_FLAVOUR_COMBOBOX_TEXT.equals(selectedItem)) {
+			return PDFAFlavour.NO_ARLINGTON_FLAVOUR;
+		}
 		PDFAFlavour flavour = FLAVOURS_MAP.get(selectedItem);
 		return flavour == null ? PDFAFlavour.NO_FLAVOUR : flavour;
 	}
@@ -877,6 +882,10 @@ class CheckerPanel extends JPanel {
 	}
 
 	protected static String getFlavourReadableText(PDFAFlavour flavour) {
+		if (PDFAFlavour.Specification.ISO_32000_1_0.getFamily().equals(flavour.getPart().getFamily()) ||
+				PDFAFlavour.Specification.ISO_32000_2_0.getFamily().equals(flavour.getPart().getFamily())) {
+			return PDFAFlavours.ARLINGTON + " (" + flavour.getId().substring(PDFAFlavours.ARLINGTON_PREFIX.length()) + ")";
+		}
 		return String.format(flavour.getPart().getFamily() + "-%d%S", flavour.getPart().getPartNumber(), //$NON-NLS-1$
 				flavour.getLevel().getCode());
 	}

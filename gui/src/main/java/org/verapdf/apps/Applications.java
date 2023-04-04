@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import javax.xml.bind.JAXBException;
 
 import org.verapdf.ReleaseDetails;
+import org.verapdf.pdfa.flavours.PDFAFlavours;
 import org.verapdf.processor.FormatOption;
 
 /**
@@ -260,7 +261,7 @@ public final class Applications {
 		} else {
 			path += File.separator;
 		}
-		path += VERAPDF + File.separator + DEFAULT_CONFIG_ROOT_NAME;
+		path += VERAPDF + "-" + PDFAFlavours.ARLINGTON_PREFIX + File.separator + DEFAULT_CONFIG_ROOT_NAME;
 		File localRoot = new File(path);
 		if (localRoot.exists() && areDirectoryFilesWritable(localRoot)) {
 			return localRoot;
