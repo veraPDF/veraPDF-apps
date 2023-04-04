@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.verapdf</groupId>
-    <artifactId>verapdf-apps</artifactId>
+    <artifactId>verapdf-apps-jakarta</artifactId>
     <version>1.23.0-SNAPSHOT</version>
   </parent>
   <groupId>org.verapdf.apps</groupId>
@@ -49,41 +49,41 @@
 
     <dependency>
       <groupId>org.verapdf</groupId>
-      <artifactId>pdfbox-feature-reporting</artifactId>
+      <artifactId>pdfbox-feature-reporting-jakarta</artifactId>
       <version>${verapdf.pdfbox.validation.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.verapdf</groupId>
-      <artifactId>pdfbox-validation-model</artifactId>
+      <artifactId>pdfbox-validation-model-jakarta</artifactId>
       <version>${verapdf.pdfbox.validation.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.verapdf</groupId>
-      <artifactId>pdfbox-metadata-fixer</artifactId>
+      <artifactId>pdfbox-metadata-fixer-jakarta</artifactId>
       <version>${verapdf.pdfbox.validation.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.verapdf.apps</groupId>
-      <artifactId>gui</artifactId>
+      <artifactId>gui-jakarta</artifactId>
       <version>${project.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-core</artifactId>
-     </dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+    </dependency>
 
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-core</artifactId>
     </dependency>
 
     <dependency>

@@ -25,12 +25,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.verapdf</groupId>
-    <artifactId>verapdf-apps</artifactId>
+    <artifactId>verapdf-apps-jakarta</artifactId>
     <version>1.23.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.verapdf.apps</groupId>
-  <artifactId>installer</artifactId>
+  <artifactId>installer-jakarta</artifactId>
   <name>veraPDF Installer</name>
   <description>Builds the veraPDF software installer.</description>
 
@@ -44,7 +44,7 @@
     <izpack.scripts>${project.build.scriptSourceDirectory}</izpack.scripts>
     <mvn.assembly.version>3.1.0</mvn.assembly.version>
     <project.main.dir>${project.basedir}/..</project.main.dir>
-    <verapdf.apps.package>greenfield-apps</verapdf.apps.package>
+    <verapdf.apps.package>greenfield-apps-jakarta</verapdf.apps.package>
     <verapdf.apps.package.name>Greenfield</verapdf.apps.package.name>
     <verapdf.wrapper.gui>org.verapdf.apps.GreenfieldGuiWrapper</verapdf.wrapper.gui>
     <verapdf.wrapper.cli>org.verapdf.apps.GreenfieldCliWrapper</verapdf.wrapper.cli>
@@ -327,7 +327,7 @@
       <dependencies>
         <dependency>
           <groupId>org.verapdf.apps</groupId>
-          <artifactId>greenfield-apps</artifactId>
+          <artifactId>greenfield-apps-jakarta</artifactId>
           <version>${project.version}</version>
         </dependency>
       </dependencies>

@@ -30,7 +30,7 @@ import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.TaskType;
 import org.verapdf.processor.plugins.PluginsCollectionConfig;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;

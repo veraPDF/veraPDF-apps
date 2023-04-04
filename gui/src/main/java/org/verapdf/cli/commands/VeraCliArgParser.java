@@ -46,7 +46,7 @@ import org.verapdf.processor.TaskType;
 import org.verapdf.processor.plugins.PluginsCollectionConfig;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.File;

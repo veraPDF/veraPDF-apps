@@ -29,7 +29,7 @@ import java.nio.file.Files;
 import java.util.EnumSet;
 import java.util.logging.Level;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.junit.Test;
 import org.verapdf.features.FeatureExtractorConfig;

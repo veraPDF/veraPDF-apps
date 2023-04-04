@@ -2,11 +2,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.verapdf</groupId>
-    <artifactId>verapdf-apps</artifactId>
+    <artifactId>verapdf-apps-jakarta</artifactId>
     <version>1.23.0-SNAPSHOT</version>
   </parent>
   <groupId>org.verapdf.apps</groupId>
-  <artifactId>greenfield-apps</artifactId>
+  <artifactId>greenfield-apps-jakarta</artifactId>
   <name>veraPDF Greenfield Applications</name>
   <description>Wrapper for the greenfield GUI and CLI applications.</description>
 
@@ -49,29 +49,29 @@
 
     <dependency>
       <groupId>org.verapdf</groupId>
-      <artifactId>validation-model</artifactId>
+      <artifactId>validation-model-jakarta</artifactId>
       <version>${verapdf.validation.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.verapdf.apps</groupId>
-      <artifactId>gui</artifactId>
+      <artifactId>gui-jakarta</artifactId>
       <version>${project.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>javax.xml.bind</groupId>
-      <artifactId>jaxb-api</artifactId>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-core</artifactId>
-     </dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+    </dependency>
 
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-core</artifactId>
     </dependency>
 
     <dependency>

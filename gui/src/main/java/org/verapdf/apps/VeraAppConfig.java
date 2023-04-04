@@ -25,7 +25,7 @@ package org.verapdf.apps;
 
 import org.verapdf.processor.FormatOption;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>

@@ -26,7 +26,7 @@ import java.io.Writer;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.verapdf.ReleaseDetails;
 import org.verapdf.processor.FormatOption;

@@ -31,7 +31,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 
 import org.junit.Test;
 
