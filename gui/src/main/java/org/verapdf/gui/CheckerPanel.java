@@ -843,10 +843,10 @@ class CheckerPanel extends JPanel {
 		}
 		PDFAFlavour flavour = getCurrentFlavour();
 		return ValidatorFactory.createConfig(flavour, validatorConfig.getDefaultFlavour(),
-		                                     validatorConfig.isRecordPasses(), maxFails,
-		                                     validatorConfig.isDebug(), validatorConfig.isLogsEnabled(),
-		                                     validatorConfig.getLoggingLevel(), validatorConfig.getMaxNumberOfDisplayedFailedChecks(),
-		                                     validatorConfig.showErrorMessages(), null, validatorConfig.getShowProgress());
+				validatorConfig.isRecordPasses(), maxFails,
+				validatorConfig.isDebug(), validatorConfig.isLogsEnabled(),
+				validatorConfig.getLoggingLevel(), validatorConfig.getMaxNumberOfDisplayedFailedChecks(),
+				validatorConfig.showErrorMessages(), null, validatorConfig.getShowProgress(), false);
 	}
 
 	VeraAppConfig appConfigFromState() {
