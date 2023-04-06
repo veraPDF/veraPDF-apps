@@ -27,9 +27,11 @@ import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.core.VeraPDFException;
+import org.verapdf.core.utils.FileUtils;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.features.FeatureObjectType;
+import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.Foundries;
@@ -567,7 +569,7 @@ public class VeraCliArgParser {
 	public ValidatorConfig validatorConfig() {
 		return ValidatorFactory.createConfig(this.flavour, this.defaultFlavour, this.logPassed(), this.maxFailures,
 				this.debug, this.addLogs(), getLoggerLevel(), this.maxFailuresDisplayed, !isDisableErrorMessages(),
-				                             this.getPassword(), this.getShowProgress());
+				                             this.getPassword(), this.getShowProgress(), this.nonPdfExt());
 	}
 
 	public FeatureExtractorConfig featureExtractorConfig() {
@@ -725,6 +727,15 @@ public class VeraCliArgParser {
 		}
 		if (Foundries.defaultParserIsPDFBox() && this.password != null) {
 			LOGGER.log(Level.WARNING, "Password handling for encrypted files is not supported in PDFBox validator.");
+			this.password = null;
+		}
+		if (getPdfPaths().size() > 1 && this.password != null) {
+			LOGGER.log(Level.WARNING, "Password handling for encrypted files is not supported for batch processing.");
+			this.password = null;
+		}
+		if (!getPdfPaths().isEmpty() && FileUtils.hasExtNoCase(getPdfPaths().get(0), GUIConstants.ZIP) && this.password != null) {
+			LOGGER.log(Level.WARNING, "Password handling for encrypted files is not supported for zip processing.");
+			this.password = null;
 		}
 		if (isMultiprocessing() && this.showProgress) {
 			LOGGER.log(Level.WARNING, "Validation progress output is not supported for multiprocessing.");

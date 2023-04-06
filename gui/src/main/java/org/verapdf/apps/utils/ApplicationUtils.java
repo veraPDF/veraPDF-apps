@@ -70,21 +70,21 @@ public final class ApplicationUtils {
 					LOGGER.log(Level.SEVERE, "File " + file.getAbsolutePath() + " doesn't have a .pdf extension. Try using --nonpdfext flag");
 				}
 			} else if (file.isDirectory()) {
-				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive));
+				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive, nonPdfExt));
 			}
 		}
 		return Collections.unmodifiableList(retVal);
 	}
 
 	private static List<File> filterPdfFilesFromDirs(final List<File> toFilter,
-											 final boolean isRecursive) {
+											 final boolean isRecursive, final boolean nonPdfExt) {
 		Applications.checkArgNotNull(toFilter, "toFilter"); //$NON-NLS-1$
 		List<File> retVal = new ArrayList<>();
 		for (File file : toFilter) {
-			if (file.isFile() && FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
+			if (file.isFile() && (nonPdfExt || FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF))) {
 				retVal.add(file);
 			} else if (file.isDirectory() && isRecursive) {
-				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive));
+				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive, nonPdfExt));
 			}
 		}
 		return Collections.unmodifiableList(retVal);
