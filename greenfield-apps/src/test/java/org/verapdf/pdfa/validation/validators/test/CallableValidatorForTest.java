@@ -3,6 +3,7 @@ package org.verapdf.pdfa.validation.validators.test;
 import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.PDFAParser;
 import org.verapdf.pdfa.PDFAValidator;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.results.ValidationResult;
 
 import java.io.File;
@@ -21,7 +22,7 @@ public class CallableValidatorForTest implements Callable<ValidationResult> {
 		ValidationResult result;
 		try (FileInputStream fis = new FileInputStream(this.fileToValidate);
 				PDFAParser parser = Foundries.defaultInstance().createParser(fis); 
-				PDFAValidator validator = Foundries.defaultInstance().createValidator(parser.getFlavour(), false)) {
+				PDFAValidator validator = Foundries.defaultInstance().createValidator(PDFAFlavour.ARLINGTON1_4, false)) {
 			result = validator.validate(parser);
 		}
 		return result;
