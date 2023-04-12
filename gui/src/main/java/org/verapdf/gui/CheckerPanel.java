@@ -20,6 +20,7 @@ import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.ProcessType;
 import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.apps.utils.ApplicationUtils;
+import org.verapdf.core.utils.FileUtils;
 import org.verapdf.gui.utils.*;
 import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -852,6 +853,15 @@ class CheckerPanel extends JPanel {
 	VeraAppConfig appConfigFromState() {
 		Builder builder = Applications.createConfigBuilder(CheckerPanel.config.getApplicationConfig());
 		ProcessType selectedItem = (ProcessType) this.ProcessTypes.getSelectedItem();
+		if (isFixMetadata() && CheckerPanel.config.getApplicationConfig().getFixesFolder().isEmpty()) {
+			for (File pdf : pdfsToProcess) {
+				if (FileUtils.hasExtNoCase(pdf.getName(), GUIConstants.ZIP)) {
+					logger.log(Level.WARNING, "Fixing metadata are not supported for zip processing, if save folder isn't defined");
+					this.fixMetadata.setSelected(false);
+					break;
+				}
+			}
+		}
 		if (isFixMetadata()) {
 			selectedItem = ProcessType.addProcess(selectedItem, ProcessType.FIX);
 		}

@@ -40,7 +40,7 @@ public enum ProcessType {
 	FIX("fix", EnumSet.of(TaskType.VALIDATE, TaskType.FIX_METADATA)),
 	EXTRACT("Features", EnumSet.of(TaskType.EXTRACT_FEATURES)),
 	VALIDATE_EXTRACT("Validation and Features",EnumSet.of(TaskType.VALIDATE, TaskType.EXTRACT_FEATURES)),
-	EXTRACT_FIX("extract and fix", EnumSet.of(TaskType.VALIDATE, TaskType.FIX_METADATA,	TaskType.EXTRACT_FEATURES)),
+	EXTRACT_FIX("extract and fix", EnumSet.of(TaskType.VALIDATE, TaskType.FIX_METADATA, TaskType.EXTRACT_FEATURES)),
 	POLICY("Policy", EnumSet.of(TaskType.VALIDATE, TaskType.EXTRACT_FEATURES)),
 	POLICY_FIX("policy and fix", EnumSet.of(TaskType.VALIDATE, TaskType.FIX_METADATA, TaskType.EXTRACT_FEATURES)),
 	NO_PROCESS("", EnumSet.noneOf(TaskType.class));
