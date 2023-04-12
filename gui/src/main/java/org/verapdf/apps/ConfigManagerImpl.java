@@ -27,6 +27,7 @@ import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.ProcessorConfig;
@@ -80,7 +81,14 @@ final class ConfigManagerImpl implements ConfigManager {
 	@Override
 	public ValidatorConfig getValidatorConfig() {
 		try (InputStream fis = new FileInputStream(this.validatorFile)) {
-			return ValidatorFactory.createConfig(fis);
+			ValidatorConfig config = ValidatorFactory.createConfig(fis);
+			if (config.getFlavour() == null) {
+				config.setFlavour(PDFAFlavour.NO_FLAVOUR);
+			}
+			if (config.getDefaultFlavour() == null) {
+				config.setDefaultFlavour(PDFAFlavour.NO_FLAVOUR);
+			}
+			return config;
 		} catch (IOException | JAXBException excep) {
 			LOGGER.log(Level.WARNING, "The validator config file is missing or damaged");
 			return ValidatorFactory.defaultConfig();
