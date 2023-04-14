@@ -336,7 +336,7 @@ class CheckerPanel extends JPanel {
 		if (availableFlavours.contains(fromConfigFlavourText)) {
 			this.chooseFlavour.setSelectedItem(fromConfigFlavourText);
 		} else {
-			this.chooseFlavour.setSelectedItem(GUIConstants.AUTO_FLAVOUR_COMBOBOX_TEXT);
+			this.chooseFlavour.setSelectedItem(GUIConstants.AUTO_ARLINGTON_FLAVOUR_COMBOBOX_TEXT);
 		}
 		setGridBagConstraintsParameters(gbc, GUIConstants.CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_X,
 				GUIConstants.CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_Y,
