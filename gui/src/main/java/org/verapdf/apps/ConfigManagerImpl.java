@@ -90,7 +90,7 @@ final class ConfigManagerImpl implements ConfigManager {
 			}
 			return config;
 		} catch (IOException | JAXBException excep) {
-			LOGGER.log(Level.WARNING, "The validator config file is missing or damaged");
+			LOGGER.log(Level.WARNING, "The validator config file " + validatorFile.getAbsolutePath() + " is missing or damaged");
 			return ValidatorFactory.defaultConfig();
 		}
 	}
@@ -103,7 +103,7 @@ final class ConfigManagerImpl implements ConfigManager {
 		try (InputStream fis = new FileInputStream(this.featuresFile)) {
 			return FeatureFactory.configFromXml(fis);
 		} catch (IOException | JAXBException excep) {
-			LOGGER.log(Level.WARNING, "The features config file is missing or damaged");
+			LOGGER.log(Level.WARNING, "The features config file " + featuresFile.getAbsolutePath() + " is missing or damaged");
 			return FeatureFactory.defaultConfig();
 		}
 	}
@@ -113,7 +113,7 @@ final class ConfigManagerImpl implements ConfigManager {
 		try (InputStream fis = new FileInputStream(this.pluginsFile)) {
 			return PluginsCollectionConfig.create(fis);
 		} catch (IOException | JAXBException excep) {
-			LOGGER.log(Level.WARNING, "The plugins config file is missing or damaged");
+			LOGGER.log(Level.WARNING, "The plugins config file " + pluginsFile.getAbsolutePath() + " is missing or damaged");
 			return PluginsCollectionConfig.defaultConfig();
 		}
 	}
@@ -126,7 +126,7 @@ final class ConfigManagerImpl implements ConfigManager {
 		try (InputStream fis = new FileInputStream(this.fixerFile)) {
 			return FixerFactory.configFromXml(fis);
 		} catch (IOException | JAXBException excep) {
-			LOGGER.log(Level.WARNING, "The fixer config file is missing or damaged");
+			LOGGER.log(Level.WARNING, "The fixer config file " + fixerFile.getAbsolutePath() + " is missing or damaged");
 			return FixerFactory.defaultConfig();
 		}
 	}
@@ -166,7 +166,7 @@ final class ConfigManagerImpl implements ConfigManager {
 		try (InputStream fis = new FileInputStream(this.appFile)) {
 			return VeraAppConfigImpl.fromXml(fis);
 		} catch (IOException | JAXBException excep) {
-			LOGGER.log(Level.WARNING, "The application config file is missing or damaged");
+			LOGGER.log(Level.WARNING, "The application config file " + appFile.getAbsolutePath() + " is missing or damaged");
 			return VeraAppConfigImpl.defaultInstance();
 		}
 	}
