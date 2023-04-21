@@ -289,7 +289,7 @@ class CheckerPanel extends JPanel {
 			this.fixMetadata.setSelected(false);
 			this.fixMetadata.setEnabled(false);
 		} else {
-			this.fixMetadata.setSelected(config.createProcessorConfig().getTasks().contains(TaskType.FIX_METADATA));
+			this.fixMetadata.setSelected(false);
 		}
 		setGridBagConstraintsParameters(gbc, GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_X,
 				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_Y,
