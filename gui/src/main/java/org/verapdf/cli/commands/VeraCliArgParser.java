@@ -710,7 +710,7 @@ public class VeraCliArgParser {
 			LOGGER.log(Level.WARNING, "Log messages in report are supported only in xml (mrr), json and html formats.");
 		}
 		if (Foundries.defaultParserIsPDFBox() && this.fixMetadata) {
-			LOGGER.log(Level.WARNING, "Fixing metadata are not supported in PDFBox validator.");
+			LOGGER.log(Level.WARNING, "Fixing metadata is not supported in PDFBox validator.");
 			this.fixMetadata = false;
 		}
 		if (Foundries.defaultParserIsPDFBox() && !this.disableErrorMessages) {
@@ -740,13 +740,16 @@ public class VeraCliArgParser {
 		if (isMultiprocessing() && this.showProgress) {
 			LOGGER.log(Level.WARNING, "Validation progress output is not supported for multiprocessing.");
 		}
-		if (this.fixMetadata && saveFolder().isEmpty()) {
-			for (String pdfPath : getPdfPaths()) {
-				if (FileUtils.hasExtNoCase(pdfPath, GUIConstants.ZIP)) {
-					LOGGER.log(Level.WARNING, "Fixing metadata are not supported for zip processing, if save folder isn't defined");
+		for (String pdfPath : getPdfPaths()) {
+			if (FileUtils.hasExtNoCase(pdfPath, GUIConstants.ZIP)) {
+				if (this.fixMetadata && saveFolder().isEmpty()) {
+					LOGGER.log(Level.WARNING, "Fixing metadata is not supported for zip processing, if save folder isn't defined");
 					this.fixMetadata = false;
-					break;
 				}
+				if (isMultiprocessing()) {
+					LOGGER.log(Level.WARNING, "Multiprocessing is not supported for zip processing");
+				}
+				break;
 			}
 		}
 	}
