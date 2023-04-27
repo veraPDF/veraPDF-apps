@@ -25,5 +25,5 @@ jobs:
              owner: 'veraPDF',
              repo: 'verapdf-integration-tests',
              workflow_id: 'run-pdfa-tests-workflow.yml',
-             ref: 'rc/1.24'
+             ref: 'integration'
             })
