@@ -141,7 +141,7 @@
             </configuration>
           </execution>
           <execution>
-            <!-- Copy REAME, RELEASENOTES and manual from project root dir. -->
+            <!-- Copy REAME and manual from project root dir. -->
             <id>verapdf-documents</id>
             <phase>validate</phase>
             <goals>
@@ -154,7 +154,6 @@
                   <directory>${project.main.dir}</directory>
                   <includes>
                     <include>README.md</include>
-                    <include>RELEASENOTES.md</include>
                     <include>veraPDFPDFAConformanceCheckerGUI.pdf</include>
                   </includes>
                 </resource>
@@ -208,29 +207,42 @@
 <!--          </execution>-->
           <execution>
             <!-- Download the veraPDF validation profiles from GitHub -->
-            <id>profiles-integration</id>
+            <id>profiles-rc/1.24</id>
             <phase>package</phase>
             <goals>
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/veraPDF/veraPDF-validation-profiles/archive/integration.zip</url>
+              <url>https://github.com/veraPDF/veraPDF-validation-profiles/archive/rc/1.24.zip</url>
               <unpack>false</unpack>
               <skipCache>true</skipCache>
               <outputDirectory>${project.build.directory}/staging/profiles</outputDirectory>
             </configuration>
           </execution>
           <execution>
-            <id>model-integration</id>
+            <id>model-rc/1.24</id>
             <phase>package</phase>
             <goals>
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/veraPDF/veraPDF-model/archive/integration.zip</url>
+              <url>https://github.com/veraPDF/veraPDF-model/archive/rc/1.24.zip</url>
               <unpack>false</unpack>
               <skipCache>true</skipCache>
               <outputDirectory>${project.build.directory}/staging/model</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>release-notes</id>
+            <phase>package</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://raw.githubusercontent.com/veraPDF/veraPDF-library/rc/1.24/RELEASENOTES.md</url>
+              <unpack>false</unpack>
+              <skipCache>true</skipCache>
+              <outputDirectory>${project.build.directory}/staging/documents</outputDirectory>
             </configuration>
           </execution>
           <execution>
@@ -240,7 +252,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>http://software.verapdf.org/dev/veraPDF-sample-plugin-pack.zip</url>
+              <url>http://software.verapdf.org/dev/veraPDF-sample-plugin-pack-rc.zip</url>
               <unpack>false</unpack>
               <skipCache>true</skipCache>
               <outputDirectory>${project.build.directory}/staging/plugins</outputDirectory>
