@@ -141,7 +141,7 @@
             </configuration>
           </execution>
           <execution>
-            <!-- Copy REAME, RELEASENOTES and manual from project root dir. -->
+            <!-- Copy REAME and manual from project root dir. -->
             <id>verapdf-documents</id>
             <phase>validate</phase>
             <goals>
@@ -154,7 +154,6 @@
                   <directory>${project.main.dir}</directory>
                   <includes>
                     <include>README.md</include>
-                    <include>RELEASENOTES.md</include>
                     <include>veraPDFPDFAConformanceCheckerGUI.pdf</include>
                   </includes>
                 </resource>
@@ -234,13 +233,26 @@
             </configuration>
           </execution>
           <execution>
+            <id>release-notes</id>
+            <phase>package</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://raw.githubusercontent.com/veraPDF/veraPDF-library/integration/RELEASENOTES.md</url>
+              <unpack>false</unpack>
+              <skipCache>true</skipCache>
+              <outputDirectory>${project.build.directory}/staging/documents</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
             <id>plugin-pack-integration</id>
             <phase>package</phase>
             <goals>
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>http://software.verapdf.org/dev/veraPDF-sample-plugin-pack.zip</url>
+              <url>http://software.verapdf.org/dev/veraPDF-sample-plugin-pack-dev.zip</url>
               <unpack>false</unpack>
               <skipCache>true</skipCache>
               <outputDirectory>${project.build.directory}/staging/plugins</outputDirectory>
