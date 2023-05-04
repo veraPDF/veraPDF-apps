@@ -118,12 +118,12 @@ public class VeraCliArgParser {
 	private boolean showVersion = false;
 
 	@Parameter(names = { FLAVOUR_FLAG,
-			FLAVOUR }, description = "Chooses built-in Validation Profile flavour, e.g. '1b'. Alternatively, supply '0' or no argument for automatic flavour detection based on a file's metadata.", converter = FlavourConverter.class)
-	private PDFAFlavour flavour = PDFAFlavour.NO_FLAVOUR;
+			FLAVOUR }, description = "Chooses built-in Validation Profile flavour, e.g. 'arlington1.4'. Alternatively, supply '0a' or no argument for automatic flavour detection based on a file's metadata.", converter = FlavourConverter.class)
+	private PDFAFlavour flavour = PDFAFlavour.NO_ARLINGTON_FLAVOUR;
 
 	@Parameter(names = { DEFAULT_FLAVOUR_FLAG,
-	                     DEFAULT_FLAVOUR }, description = "Chooses built-in Validation Profile default flavour, e.g. '1b'. This flavour will be applied if automatic flavour detection based on a file's metadata doesn't work.", converter = FlavourConverter.class)
-	private PDFAFlavour defaultFlavour = PDFAFlavour.PDFA_1_B;
+	                     DEFAULT_FLAVOUR }, description = "Chooses built-in Validation Profile default flavour, e.g. 'arlington1.4'. This flavour will be applied if automatic flavour detection based on a file's metadata doesn't work.", converter = FlavourConverter.class)
+	private PDFAFlavour defaultFlavour = PDFAFlavour.ARLINGTON1_4;
 
 	@Parameter(names = { SUCCESS, PASSED }, description = "Logs successful validation checks.")
 	private boolean passed = ValidatorFactory.defaultConfig().isRecordPasses();

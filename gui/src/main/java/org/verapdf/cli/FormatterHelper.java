@@ -70,7 +70,7 @@ public class FormatterHelper extends DefaultUsageFormatter {
 				if (PDFAFlavour.class.getCanonicalName().equals(type.getName())) {
 					EnumSet<PDFAFlavour> flavours = EnumSet.copyOf(Profiles.getVeraProfileDirectory().getPDFAFlavours());
 					if (FLAVOUR.equals(pd.getParameterized().getName())) {
-						flavours.add(PDFAFlavour.NO_FLAVOUR);
+						flavours.add(PDFAFlavour.NO_ARLINGTON_FLAVOUR);
 					}
 					valueList = flavours.toString();
 				} else {
