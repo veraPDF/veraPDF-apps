@@ -212,7 +212,7 @@ public class VeraPdfCliProcessorTest {
 		jCommander.parse();
 		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
 		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
-			assertSame(PDFAFlavour.NO_FLAVOUR, proc.getProcessorConfig().getValidatorConfig().getFlavour());
+			assertSame(PDFAFlavour.NO_ARLINGTON_FLAVOUR, proc.getProcessorConfig().getValidatorConfig().getFlavour());
 		}
 		ProfileDirectory directory = Profiles.getVeraProfileDirectory();
 		assertTrue(directory.getValidationProfiles().size() > 0);
@@ -251,7 +251,7 @@ public class VeraPdfCliProcessorTest {
 		jCommander.parse();
 		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
 		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
-			assertSame(proc.getProcessorConfig().getValidatorConfig().getFlavour(), PDFAFlavour.NO_FLAVOUR);
+			assertSame(proc.getProcessorConfig().getValidatorConfig().getFlavour(), PDFAFlavour.NO_ARLINGTON_FLAVOUR);
 		}
 		for (String argVal : argVals) {
 			jCommander.parse(argVal, PDFAFlavour.NO_FLAVOUR.getId());
