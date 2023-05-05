@@ -24,9 +24,9 @@
   xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
 
   <info>
-    <appname>veraPDF Software</appname>
+    <appname>veraPDF Arlington Software</appname>
     <appversion>@project.version@</appversion>
-    <appsubpath>verapdf</appsubpath>
+    <appsubpath>verapdf-arlington</appsubpath>
     <url>http://verapdf.org/</url>
     <javaversion>1.7</javaversion>
     <authors>
@@ -64,7 +64,7 @@
     <variable name="VERSION" value="v@project.version@"/>
     <variable name="APP_NAME" value="@verapdf.apps.package.name@"/>
     <variable name="BUILD_DATE" value="Built @verapdf.timestamp@"/>
-    <variable name="TargetPanel.dir" value="$USER_HOME/verapdf"/>
+    <variable name="TargetPanel.dir" value="$USER_HOME/verapdf-arlington"/>
   </variables>
 
   <panels>

@@ -162,7 +162,7 @@ public class VeraCliArgParser {
 	@Parameter(names = { MAX_FAILURES }, description = "Sets maximum amount of failed checks.")
 	private int maxFailures = ValidatorFactory.defaultConfig().getMaxFails();
 
-	@Parameter(names = { FIX_METADATA }, description = "Performs metadata fixes.")
+	@Parameter(names = { FIX_METADATA }, description = "Performs metadata fixes.", hidden = true)
 	private boolean fixMetadata = false;
 
 	@Parameter(names = { ADD_LOGS }, description = "Add logs to mrr, json or html report.")
