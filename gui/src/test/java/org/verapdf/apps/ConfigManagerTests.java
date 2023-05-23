@@ -28,9 +28,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.EnumSet;
 import java.util.logging.Level;
-
 import javax.xml.bind.JAXBException;
-
 import org.junit.Test;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureFactory;
@@ -40,8 +38,13 @@ import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.validators.BaseValidator;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
+import org.verapdf.processor.app.ConfigManager;
+import org.verapdf.processor.app.VeraAppConfig;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -54,7 +57,7 @@ public class ConfigManagerTests {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.apps.ConfigManagerImpl#getValidatorConfig()}.
+	 * {@link org.verapdf.processor.app.ConfigManagerImpl#getValidatorConfig()}.
 	 */
 	@Test
 	public void testGetValidatorConfig() {
@@ -64,7 +67,7 @@ public class ConfigManagerTests {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.apps.ConfigManagerImpl#getFeaturesConfig()}.
+	 * {@link org.verapdf.processor.app.ConfigManagerImpl#getFeaturesConfig()}.
 	 */
 	@Test
 	public void testGetFeaturesConfig() {
@@ -74,7 +77,7 @@ public class ConfigManagerTests {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.apps.ConfigManagerImpl#getFixerConfig()}.
+	 * {@link org.verapdf.processor.app.ConfigManagerImpl#getFixerConfig()}.
 	 */
 	@Test
 	public void testGetFixerConfig() {
@@ -84,7 +87,7 @@ public class ConfigManagerTests {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.apps.ConfigManagerImpl#getApplicationConfig()}.
+	 * {@link org.verapdf.processor.app.ConfigManagerImpl#getApplicationConfig()}.
 	 */
 	@Test
 	public void testGetApplicationConfig() {
@@ -94,7 +97,7 @@ public class ConfigManagerTests {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.apps.ConfigManagerImpl#getConfigDir()}.
+	 * {@link org.verapdf.processor.app.ConfigManagerImpl#getConfigDir()}.
 	 */
 	@Test
 	public void testGetConfigDir() throws IOException {
@@ -106,7 +109,7 @@ public class ConfigManagerTests {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.apps.ConfigManagerImpl#updateValidatorConfig(org.verapdf.pdfa.validation.validators.ValidatorConfig)}.
+	 * {@link org.verapdf.processor.app.ConfigManagerImpl#updateValidatorConfig(org.verapdf.pdfa.validation.validators.ValidatorConfig)}.
 	 */
 	@Test
 	public void testUpdateValidatorConfig() throws JAXBException, IOException {
@@ -124,7 +127,7 @@ public class ConfigManagerTests {
 	/**
 	 * FIXME
 	 * Test method for
-	 * {@link org.verapdf.apps.ConfigManagerImpl#updateFeaturesConfig(org.verapdf.features.FeatureExtractorConfig)}.
+	 * {@link org.verapdf.processor.app.ConfigManagerImpl#updateFeaturesConfig(org.verapdf.features.FeatureExtractorConfig)}.
 	 */
 	@Test
 	public void testUpdateFeaturesConfig() throws JAXBException, IOException {
@@ -138,7 +141,7 @@ public class ConfigManagerTests {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.apps.ConfigManagerImpl#updateFixerConfig(org.verapdf.metadata.fixer.MetadataFixerConfig)}.
+	 * {@link org.verapdf.processor.app.ConfigManagerImpl#updateFixerConfig(org.verapdf.metadata.fixer.MetadataFixerConfig)}.
 	 */
 	@Test
 	public void testUpdateFixerConfig() throws JAXBException, IOException {
@@ -153,7 +156,7 @@ public class ConfigManagerTests {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.apps.ConfigManagerImpl#updateAppConfig(org.verapdf.apps.VeraAppConfig)}.
+	 * {@link org.verapdf.processor.app.ConfigManagerImpl#updateAppConfig(org.verapdf.processor.app.VeraAppConfig)}.
 	 */
 	@Test
 	public void testUpdateAppConfig() throws JAXBException, IOException {
