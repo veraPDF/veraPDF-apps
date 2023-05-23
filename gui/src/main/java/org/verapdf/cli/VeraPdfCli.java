@@ -28,7 +28,6 @@ import java.util.logging.Logger;
 
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
-import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.SoftwareUpdater;
 import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
@@ -43,6 +42,7 @@ import org.verapdf.processor.FeaturesPluginsLoader;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import org.verapdf.processor.app.ConfigManager;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>

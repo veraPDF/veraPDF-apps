@@ -22,9 +22,6 @@ package org.verapdf.cli.commands;
 
 import com.beust.jcommander.*;
 import org.verapdf.apps.Applications;
-import org.verapdf.apps.ConfigManager;
-import org.verapdf.apps.ProcessType;
-import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.core.utils.FileUtils;
@@ -45,6 +42,10 @@ import org.verapdf.processor.FormatOption;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.ProcessorFactory;
 import org.verapdf.processor.TaskType;
+import org.verapdf.processor.app.AppConfigBuilder;
+import org.verapdf.processor.app.ConfigManager;
+import org.verapdf.processor.app.ProcessType;
+import org.verapdf.processor.app.VeraAppConfig;
 import org.verapdf.processor.plugins.PluginsCollectionConfig;
 import org.xml.sax.SAXException;
 
@@ -585,7 +586,7 @@ public class VeraCliArgParser {
 	}
 
 	public VeraAppConfig appConfig(final VeraAppConfig base) {
-		Applications.Builder configBuilder = Applications.Builder.fromConfig(base);
+		AppConfigBuilder configBuilder = Applications.createConfigBuilder(base);
 		configBuilder.format(this.getFormat()).isVerbose(this.isVerbose()).fixerFolder(this.saveFolder)
 		             .wikiPath(this.getProfilesWikiPath()).policyFile(this.getPolicyFileName());
 		configBuilder.type(typeFromArgs(this));

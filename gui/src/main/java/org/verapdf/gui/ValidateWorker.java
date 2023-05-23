@@ -14,9 +14,6 @@
  */
 package org.verapdf.gui;
 
-import org.verapdf.apps.ConfigManager;
-import org.verapdf.apps.ProcessType;
-import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.core.utils.LogsFileHandler;
@@ -25,7 +22,14 @@ import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.policy.PolicyChecker;
-import org.verapdf.processor.*;
+import org.verapdf.processor.BatchProcessor;
+import org.verapdf.processor.FormatOption;
+import org.verapdf.processor.ProcessorConfig;
+import org.verapdf.processor.ProcessorFactory;
+import org.verapdf.processor.TaskType;
+import org.verapdf.processor.app.ConfigManager;
+import org.verapdf.processor.app.ProcessType;
+import org.verapdf.processor.app.VeraAppConfig;
 import org.verapdf.processor.reports.BatchSummary;
 import org.verapdf.report.HTMLReport;
 import org.w3c.dom.Document;
