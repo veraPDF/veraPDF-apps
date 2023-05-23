@@ -50,17 +50,17 @@ import javax.xml.stream.XMLStreamException;
 
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
-import org.verapdf.apps.Applications.Builder;
 import org.verapdf.core.utils.LogsFileHandler;
 import org.verapdf.gui.utils.GUIConstants;
-import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.SoftwareUpdater;
-import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.FeaturesPluginsLoader;
+import org.verapdf.processor.app.AppConfigBuilder;
+import org.verapdf.processor.app.ConfigManager;
+import org.verapdf.processor.app.VeraAppConfig;
 
 /**
  * Main frame of the PDFA Conformance Checker
@@ -121,7 +121,7 @@ public class PDFValidationApplication extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (PDFValidationApplication.this.settingsPanel != null && PDFValidationApplication.this.settingsPanel
 						.showDialog(PDFValidationApplication.this, "Settings", configManager)) {
-					Builder confBuilder = Builder.fromConfig(configManager.getApplicationConfig());
+					AppConfigBuilder confBuilder = AppConfigBuilder.fromConfig(configManager.getApplicationConfig());
 					confBuilder.wikiPath(PDFValidationApplication.this.settingsPanel.getProfilesWikiPath());
 					confBuilder.fixerFolder(
 							PDFValidationApplication.this.settingsPanel.getFixMetadataDirectory().toString());

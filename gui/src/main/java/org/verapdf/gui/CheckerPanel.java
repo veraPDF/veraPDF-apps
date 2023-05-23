@@ -15,10 +15,6 @@
 package org.verapdf.gui;
 
 import org.verapdf.apps.Applications;
-import org.verapdf.apps.Applications.Builder;
-import org.verapdf.apps.ConfigManager;
-import org.verapdf.apps.ProcessType;
-import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.core.utils.FileUtils;
 import org.verapdf.gui.utils.*;
@@ -49,6 +45,10 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.verapdf.processor.app.AppConfigBuilder;
+import org.verapdf.processor.app.ConfigManager;
+import org.verapdf.processor.app.ProcessType;
+import org.verapdf.processor.app.VeraAppConfig;
 
 /**
  * Panel with functionality for checker.
@@ -853,7 +853,7 @@ class CheckerPanel extends JPanel {
 	}
 
 	VeraAppConfig appConfigFromState() {
-		Builder builder = Applications.createConfigBuilder(CheckerPanel.config.getApplicationConfig());
+		AppConfigBuilder builder = Applications.createConfigBuilder(CheckerPanel.config.getApplicationConfig());
 		ProcessType selectedItem = (ProcessType) this.ProcessTypes.getSelectedItem();
 		if (isFixMetadata() && CheckerPanel.config.getApplicationConfig().getFixesFolder().isEmpty()) {
 			for (File pdf : pdfsToProcess) {

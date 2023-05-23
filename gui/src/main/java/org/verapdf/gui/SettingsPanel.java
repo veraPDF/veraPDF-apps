@@ -46,13 +46,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import org.verapdf.apps.ConfigManager;
-import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
+import org.verapdf.processor.app.ConfigManager;
+import org.verapdf.processor.app.VeraAppConfig;
 
 /**
  * Settings Panel
