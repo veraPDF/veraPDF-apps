@@ -43,8 +43,8 @@ class MiniLogoPanel extends JPanel {
 	MiniLogoPanel(String logoPath, String arlingtonlogoPath) throws IOException {
 
 		setLayout(new FlowLayout(FlowLayout.LEFT));
-		addLogo(logoPath, "", 0.3);
-		addLogo(arlingtonlogoPath, GUIConstants.LABEL_TEXT, 0.312);
+		addLogo(arlingtonlogoPath, "", 0.312);
+		addLogo(logoPath, GUIConstants.LABEL_TEXT, 0.3);
 	}
 
 	private void addLogo(String logoPath, String text, double scale) throws IOException {

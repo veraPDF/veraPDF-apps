@@ -388,7 +388,7 @@ public class PDFValidationApplication extends JFrame {
 				}
 				try {
 					PDFValidationApplication frame = new PDFValidationApplication(finalFrameScale);
-					URL url = ClassLoader.getSystemResource("org/verapdf/gui/images/icon.png");
+					URL url = ClassLoader.getSystemResource("org/verapdf/gui/images/arlington-logo.png");
 					Toolkit kit = Toolkit.getDefaultToolkit();
 					frame.setIconImage(kit.createImage(url));
 					frame.setVisible(true);

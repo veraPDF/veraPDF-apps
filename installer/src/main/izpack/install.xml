@@ -24,7 +24,7 @@
   xsi:schemaLocation="http://izpack.org/schema/installation http://izpack.org/schema/5.0/izpack-installation-5.0.xsd">
 
   <info>
-    <appname>veraPDF Arlington Software</appname>
+    <appname>Arlington PDF Model checker by veraPDF</appname>
     <appversion>@project.version@</appversion>
     <appsubpath>arlington-pdf-model-checker</appsubpath>
     <url>http://verapdf.org/</url>
@@ -57,7 +57,7 @@
     <res id="veraLogo" src="veralogo.jpg"/>
     <res id="arlingtonLogo" src="arlingtonlogo.png"/>
     <res id="customicons.xml" src="customicons.xml" />
-    <res id="JFrameIcon" src="icon.png"/>
+    <res id="JFrameIcon" src="arlingtonlogo.png"/>
   </resources>
 
   <variables>
