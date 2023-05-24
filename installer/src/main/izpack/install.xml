@@ -26,7 +26,7 @@
   <info>
     <appname>veraPDF Arlington Software</appname>
     <appversion>@project.version@</appversion>
-    <appsubpath>verapdf-arlington</appsubpath>
+    <appsubpath>arlington-pdf-model-checker</appsubpath>
     <url>http://verapdf.org/</url>
     <javaversion>1.7</javaversion>
     <authors>
@@ -55,6 +55,7 @@
   <resources>
     <res id="HTMLHelloPanel.welcome" src="welcome.html"/>
     <res id="veraLogo" src="veralogo.jpg"/>
+    <res id="arlingtonLogo" src="arlingtonlogo.png"/>
     <res id="customicons.xml" src="customicons.xml" />
     <res id="JFrameIcon" src="icon.png"/>
   </resources>
@@ -64,7 +65,7 @@
     <variable name="VERSION" value="v@project.version@"/>
     <variable name="APP_NAME" value="@verapdf.apps.package.name@"/>
     <variable name="BUILD_DATE" value="Built @verapdf.timestamp@"/>
-    <variable name="TargetPanel.dir" value="$USER_HOME/verapdf-arlington"/>
+    <variable name="TargetPanel.dir" value="$USER_HOME/arlington-pdf-model-checker"/>
   </variables>
 
   <panels>
@@ -90,29 +91,29 @@
       <description>Scripts for using the veraPDF software.</description>
       <os family="unix"/>
       <updatecheck>
-        <include name="verapdf-gui"/>
-        <include name="verapdf"/>
+        <include name="arlington-pdf-model-checker-gui"/>
+        <include name="arlington-pdf-model-checker"/>
       </updatecheck>
-      <singlefile src="scripts/verapdf-gui.sh" target="$INSTALL_PATH/verapdf-gui"/>
-      <parsable targetfile="$INSTALL_PATH/verapdf-gui" type="shell"/>
-      <executable targetfile="$INSTALL_PATH/verapdf-gui"/>
-      <singlefile src="scripts/verapdf.sh" target="$INSTALL_PATH/verapdf"/>
-      <parsable targetfile="$INSTALL_PATH/verapdf" type="shell"/>
-      <executable targetfile="$INSTALL_PATH/verapdf"/>
+      <singlefile src="scripts/arlington-pdf-model-checker-gui.sh" target="$INSTALL_PATH/arlington-pdf-model-checker-gui"/>
+      <parsable targetfile="$INSTALL_PATH/arlington-pdf-model-checker-gui" type="shell"/>
+      <executable targetfile="$INSTALL_PATH/arlington-pdf-model-checker-gui"/>
+      <singlefile src="scripts/arlington-pdf-model-checker.sh" target="$INSTALL_PATH/arlington-pdf-model-checker"/>
+      <parsable targetfile="$INSTALL_PATH/arlington-pdf-model-checker" type="shell"/>
+      <executable targetfile="$INSTALL_PATH/arlington-pdf-model-checker"/>
     </pack>
     <pack name="veraPDF Batch files" required="yes">
       <description>Scripts for using the veraPDF software.</description>
       <os family="windows"/>
       <updatecheck>
-        <include name="verapdf-gui.bat"/>
-        <include name="verapdf.bat"/>
+        <include name="arlington-pdf-model-checker-gui.bat"/>
+        <include name="arlington-pdf-model-checker.bat"/>
       </updatecheck>
-      <file targetdir="$INSTALL_PATH" src="scripts/verapdf-gui.bat"/>
-      <parsable targetfile="$INSTALL_PATH/verapdf-gui.bat" type="shell"/>
-      <executable targetfile="$INSTALL_PATH/verapdf-gui.bat"/>
-      <file targetdir="$INSTALL_PATH" src="scripts/verapdf.bat"/>
-      <parsable targetfile="$INSTALL_PATH/verapdf.bat" type="shell"/>
-      <executable targetfile="$INSTALL_PATH/verapdf.bat"/>
+      <file targetdir="$INSTALL_PATH" src="scripts/arlington-pdf-model-checker-gui.bat"/>
+      <parsable targetfile="$INSTALL_PATH/arlington-pdf-model-checker-gui.bat" type="shell"/>
+      <executable targetfile="$INSTALL_PATH/arlington-pdf-model-checker-gui.bat"/>
+      <file targetdir="$INSTALL_PATH" src="scripts/arlington-pdf-model-checker.bat"/>
+      <parsable targetfile="$INSTALL_PATH/arlington-pdf-model-checker.bat" type="shell"/>
+      <executable targetfile="$INSTALL_PATH/arlington-pdf-model-checker.bat"/>
     </pack>
     <pack name="veraPDF Validation model" required="no" preselected="no">
       <description>The veraPDF validation model API.</description>

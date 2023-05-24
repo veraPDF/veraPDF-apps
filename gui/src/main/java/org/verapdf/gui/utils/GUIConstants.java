@@ -29,6 +29,7 @@ public final class GUIConstants {
 	// Paths
 	private static final String imgRoot = "org/verapdf/gui/images/"; //$NON-NLS-1$
 	public static final String LOGO_NAME = imgRoot + "veraPDF-logo.jpg"; //$NON-NLS-1$
+	public static final String ARLINGTON_LOGO_NAME = imgRoot + "arlington-logo.png"; //$NON-NLS-1$
 	public static final String PARTNERS_NAME = imgRoot + "partners.png"; //$NON-NLS-1$
 	public static final String XML_LOGO_NAME = imgRoot + "xml-logo.png"; //$NON-NLS-1$
 	public static final String HTML_LOGO_NAME = imgRoot + "html-logo.png"; //$NON-NLS-1$
@@ -71,7 +72,7 @@ public final class GUIConstants {
 	public static final String CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT = "Please, specify validation profile";
 	public static final String CUSTOM_PROFILE_COMBOBOX_TEXT = "Custom profile";
 	public static final String AUTO_FLAVOUR_COMBOBOX_TEXT = "Auto-detect";
-	public static final String AUTO_ARLINGTON_FLAVOUR_COMBOBOX_TEXT = "Arlington (auto)";
+	public static final String AUTO_ARLINGTON_FLAVOUR_COMBOBOX_TEXT = "Auto";
 	public static final String OFF_LEVEL = "OFF";
 	public static final String SEVERE_LEVEL = "SEVERE";
 	public static final String WARNING_LEVEL = "WARNING, SEVERE";
@@ -96,10 +97,10 @@ public final class GUIConstants {
 	public static final String ERROR_SAVING_REPORT = "Unresolvable problem occured when saving the %S report.";
 	public static final String IOEXCEP_OPENING_REPORT = "Could not open %s using the default Desktop application for %S file type. Please, try opening this file manually.";
 	public static final String IOEXCEP_SAVING_REPORT = "IOException when saving the %S report.";
-	public static final String LABEL_TEXT = "     Please choose a PDF and a Validation Profile, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
-	public static final String CONSORTIUM_TEXT = "© 2015-2022 veraPDF Consortium"; //$NON-NLS-1$
+	public static final String LABEL_TEXT = "     Please choose a PDF and a PDF Flavour, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
+	public static final String CONSORTIUM_TEXT = "© 2015-2023 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String PREFORMA_FUNDED_TEXT = "Funded by the European Commission’s PREFORMA Project";
-	public static final String TITLE = "veraPDF Arlington model checker";
+	public static final String TITLE = "Arlington PDF Model checker by veraPDF";
 	public static final String ENCRYPTED_PDF = "Document is password encrypted and can not be processed.";
 	public static final String ERROR_IN_PARSING = "Failed to parse pdf document.";
 	public static final String ERROR_IN_VALIDATING = "Could not complete validation due to an error.";
@@ -116,10 +117,10 @@ public final class GUIConstants {
 	public static final String PROCESSING_TYPE = " Report type:   ";
 	public static final String CHOOSE_FLAVOUR = "PDF flavour:   ";
 	public static final String CHOOSE_LOGGING_LEVEL = "Logging level:   ";
-	public static final String DISPLAY_PASSED_RULES = "Include passed rules:";
+	public static final String DISPLAY_PASSED_RULES = "Include passed checks:";
 	public static final String PLUGINS_ENABLED_TEXT = "Use plugins when extracting features:";
-	public static final String MAX_NUMBER_FAILED_DISPLAYED_CHECKS = "Display failed checks for rule: ";
-	public static final String MAX_NUMBER_FAILED_CHECKS = "Halt validation after failed checks:";
+	public static final String MAX_NUMBER_FAILED_DISPLAYED_CHECKS = "Display deviations for rule: ";
+	public static final String MAX_NUMBER_FAILED_CHECKS = "Halt validation after deviations:";
 	public static final String FEATURES_GENERATED_CORRECT = "Features report generated.";
 	public static final String MAX_FAILED_CHECKS_SETTING_TIP = "1 to 999999 or empty for unlimited";
 	public static final String MAX_FAILED_CHECKS_DISP_SETTING_TIP = "1 to 999999 or empty for unlimited";

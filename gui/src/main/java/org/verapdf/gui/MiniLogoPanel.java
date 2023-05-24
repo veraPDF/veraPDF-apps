@@ -40,16 +40,18 @@ class MiniLogoPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -199053265127458738L;
 
-	MiniLogoPanel(String logoPath) throws IOException {
+	MiniLogoPanel(String logoPath, String arlingtonlogoPath) throws IOException {
 
 		setLayout(new FlowLayout(FlowLayout.LEFT));
+		addLogo(logoPath, "", 0.3);
+		addLogo(arlingtonlogoPath, GUIConstants.LABEL_TEXT, 0.312);
+	}
 
-		JLabel label = new JLabel(GUIConstants.LABEL_TEXT);
+	private void addLogo(String logoPath, String text, double scale) throws IOException {
+		JLabel label = new JLabel(text);
 		try (InputStream is = getClass().getClassLoader().getResourceAsStream(logoPath)) {
 			final BufferedImage image = ImageIO.read(is);
 			Icon icon = new Icon() {
-
-				private static final double SCALE = 0.3;
 
 				@Override
 				public void paintIcon(Component c, Graphics g, int x, int y) {
@@ -59,12 +61,12 @@ class MiniLogoPanel extends JPanel {
 
 				@Override
 				public int getIconWidth() {
-					return (int) (image.getWidth() * SCALE);
+					return (int) (image.getWidth() * scale);
 				}
 
 				@Override
 				public int getIconHeight() {
-					return (int) (image.getHeight() * SCALE);
+					return (int) (image.getHeight() * scale);
 				}
 			};
 			label.setIcon(icon);

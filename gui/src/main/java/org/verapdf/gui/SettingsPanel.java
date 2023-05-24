@@ -89,7 +89,7 @@ class SettingsPanel extends JPanel {
 		setLayout(new BorderLayout());
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(10, 2));
+		panel.setLayout(new GridLayout(7, 2));
 
 		panel.add(new JLabel(GUIConstants.DISPLAY_PASSED_RULES));
 		this.hidePassedRules = new JCheckBox();
@@ -126,12 +126,12 @@ class SettingsPanel extends JPanel {
 		panel2.add(this.numberOfFailedDisplay);
 		panel.add(panel2);
 
-		panel.add(new JLabel(GUIConstants.FIX_METADATA_PREFIX_LABEL_TEXT));
+//		panel.add(new JLabel(GUIConstants.FIX_METADATA_PREFIX_LABEL_TEXT));
 		this.fixMetadataPrefix = new JTextField(GUIConstants.SETTINGS_DIALOG_MAX_CHARS_TEXTFIELD);
-		this.fixMetadataPrefix.setTransferHandler(null);
-		panel.add(this.fixMetadataPrefix);
+//		this.fixMetadataPrefix.setTransferHandler(null);
+//		panel.add(this.fixMetadataPrefix);
 
-		panel.add(new JLabel(GUIConstants.SELECTED_PATH_FOR_FIXER_LABEL_TEXT));
+//		panel.add(new JLabel(GUIConstants.SELECTED_PATH_FOR_FIXER_LABEL_TEXT));
 
 		File currentDir = new File(new File(GUIConstants.DOT).getCanonicalPath());
 
@@ -157,11 +157,11 @@ class SettingsPanel extends JPanel {
 		});
 		this.fixMetadataFolder = new JTextField(GUIConstants.SETTINGS_DIALOG_MAX_CHARS_TEXTFIELD);
 		this.fixMetadataFolder.setToolTipText(GUIConstants.SELECTED_PATH_FOR_FIXER_TOOLTIP);
-		JPanel panel4 = new JPanel();
-		panel4.setLayout(new BoxLayout(panel4, BoxLayout.X_AXIS));
-		panel4.add(this.fixMetadataFolder);
-		panel4.add(choose2);
-		panel.add(panel4);
+//		JPanel panel4 = new JPanel();
+//		panel4.setLayout(new BoxLayout(panel4, BoxLayout.X_AXIS));
+//		panel4.add(this.fixMetadataFolder);
+//		panel4.add(choose2);
+//		panel.add(panel4);
 
 		this.fixMetadataPrefix.addKeyListener(new KeyAdapter() {
 			@Override
@@ -177,11 +177,11 @@ class SettingsPanel extends JPanel {
 			}
 		});
 
-		panel.add(new JLabel(GUIConstants.SELECTED_PROFILES_WIKI_PATH));
+//		panel.add(new JLabel(GUIConstants.SELECTED_PROFILES_WIKI_PATH));
 		this.profilesWikiPath = new JTextField(GUIConstants.SETTINGS_DIALOG_MAX_CHARS_TEXTFIELD);
-		panel.add(this.profilesWikiPath);
+//		panel.add(this.profilesWikiPath);
 
-		panel.add(new JLabel("Default flavour:"));
+		panel.add(new JLabel("Default PDF flavour:"));
 		Vector<String> availableFlavours = new Vector<>();
 		SortedSet<String> sortedFlavours = new TreeSet<>();
 		for (PDFAFlavour flavour : Profiles.getVeraProfileDirectory().getPDFAFlavours()) {
@@ -200,8 +200,8 @@ class SettingsPanel extends JPanel {
 			this.chooseDefaultFlavour.setSelectedItem(fromConfigDefaultFlavourText);
 			currentDefaultFlavour = fromConfig;
 		} else {
-			this.chooseDefaultFlavour.setSelectedItem(CheckerPanel.getFlavourReadableText(PDFAFlavour.PDFA_1_B));
-			currentDefaultFlavour = PDFAFlavour.PDFA_1_B;
+			this.chooseDefaultFlavour.setSelectedItem(CheckerPanel.getFlavourReadableText(PDFAFlavour.ARLINGTON1_4));
+			currentDefaultFlavour = PDFAFlavour.ARLINGTON1_4;
 		}
 		panel.add(this.chooseDefaultFlavour);
 
@@ -309,7 +309,7 @@ class SettingsPanel extends JPanel {
 		VeraAppConfig appConfig = settings.getApplicationConfig();
 		this.fixMetadataFolder.setText(appConfig.getFixesFolder());
 
-		this.profilesWikiPath.setText(appConfig.getWikiPath());
+//		this.profilesWikiPath.setText(appConfig.getWikiPath());
 
 		Frame owner;
 		if (parent instanceof Frame) {

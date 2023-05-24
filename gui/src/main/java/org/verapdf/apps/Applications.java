@@ -50,7 +50,9 @@ public final class Applications {
 	public static final String UPDATE_URI = "http://downloads.verapdf.org/rel/verapdf-installer.zip"; //$NON-NLS-1$
 	
 	private static final String VERAPDF = "verapdf";
-	private static final String VERAPDF_WITH_BAT = VERAPDF + ".bat";
+	private static final String ARLINGTON = "arlington-pdf-model-checker";
+
+	private static final String VERAPDF_WITH_BAT = ARLINGTON + ".bat";
 
 	private static final String APPDATA_NAME = "APPDATA";
 	private static final String USER_HOME_PROPERTY = "user.home";
@@ -72,7 +74,7 @@ public final class Applications {
 	}
 
 	private static File getStartFile(File veraPdfDirectory) {
-		File unixStartFile = new File(veraPdfDirectory, VERAPDF);
+		File unixStartFile = new File(veraPdfDirectory, ARLINGTON);
 		if (unixStartFile.isFile()) {
 			return unixStartFile;
 		}
@@ -261,7 +263,7 @@ public final class Applications {
 		} else {
 			path += File.separator;
 		}
-		path += VERAPDF + "-" + PDFAFlavours.ARLINGTON_PREFIX + File.separator + DEFAULT_CONFIG_ROOT_NAME;
+		path += ARLINGTON + File.separator + DEFAULT_CONFIG_ROOT_NAME;
 		File localRoot = new File(path);
 		if (localRoot.exists() && areDirectoryFilesWritable(localRoot)) {
 			return localRoot;

@@ -69,6 +69,11 @@ class AboutPanel extends JPanel {
 
 		mainPanel.add(logo);
 
+		LogoPanel arlingtonLogo = new LogoPanel(GUIConstants.ARLINGTON_LOGO_NAME, GUIConstants.LOGO_BACKGROUND,
+				GUIConstants.LOGO_PANEL_BORDER_WIDTH);
+
+		mainPanel.add(arlingtonLogo);
+
 		PartnersPanel partners = new PartnersPanel(GUIConstants.PARTNERS_NAME, GUIConstants.PARTNERS_BACKGROUND);
 
 		mainPanel.add(partners);

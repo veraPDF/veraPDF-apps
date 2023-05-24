@@ -180,10 +180,10 @@ public class VeraCliArgParser {
 	@Parameter(names = { PROGRESS }, description = "Shows the current status of the validation job.")
 	private boolean showProgress;
 
-	@Parameter(names = { FIX_METADATA_PREFIX }, description = "Sets file name prefix for any fixed files.")
+	@Parameter(names = { FIX_METADATA_PREFIX }, description = "Sets file name prefix for any fixed files.", hidden = true)
 	private String prefix = FixerFactory.defaultConfig().getFixesPrefix();
 
-	@Parameter(names = { FIX_METADATA_FOLDER }, description = "Sets output directory for any fixed files.")
+	@Parameter(names = { FIX_METADATA_FOLDER }, description = "Sets output directory for any fixed files.", hidden = true)
 	private String saveFolder = ""; //$NON-NLS-1$
 
 	@Parameter(names = { NON_PDF_EXTENSION }, description = "Select files without .pdf extension")
@@ -194,7 +194,7 @@ public class VeraCliArgParser {
 	private File policyFile;
 
 	 @Parameter(names = { PROFILES_WIKI_FLAG,
-	                      PROFILES_WIKI }, description = "Sets location of the Validation Profiles wiki.")
+	                      PROFILES_WIKI }, description = "Sets location of the Validation Profiles wiki.", hidden = true)
 	 private String profilesWikiPath = Applications.defaultConfig().getWikiPath();
 
 	@Parameter(names = { VALID_OFF_FLAG, VALID_OFF }, description = "Turns off validation")
