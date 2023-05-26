@@ -25,11 +25,11 @@ package org.verapdf.cli.commands;
 
 import org.junit.Test;
 import org.verapdf.apps.Applications;
-import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.cli.FormatterHelper;
 import org.verapdf.processor.TaskType;
 
 import com.beust.jcommander.JCommander;
+import org.verapdf.processor.app.VeraAppConfig;
 
 import static org.junit.Assert.*;
 

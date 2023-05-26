@@ -26,7 +26,6 @@ package org.verapdf.cli;
 import com.beust.jcommander.JCommander;
 import org.junit.Test;
 import org.verapdf.apps.Applications;
-import org.verapdf.apps.ConfigManager;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.features.FeatureFactory;
@@ -42,6 +41,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.EnumSet;
+import org.verapdf.processor.app.ConfigManager;
 
 import static org.junit.Assert.*;
 

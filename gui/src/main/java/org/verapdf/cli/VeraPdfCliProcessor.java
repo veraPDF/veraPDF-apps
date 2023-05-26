@@ -17,15 +17,14 @@
  */
 package org.verapdf.cli;
 
-import org.verapdf.apps.ConfigManager;
-import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
-import org.verapdf.core.utils.LogsFileHandler;
 import org.verapdf.policy.PolicyChecker;
 import org.verapdf.processor.*;
+import org.verapdf.processor.app.ConfigManager;
+import org.verapdf.processor.app.VeraAppConfig;
 import org.verapdf.processor.reports.BatchSummary;
 import org.verapdf.processor.reports.ItemDetails;
 
