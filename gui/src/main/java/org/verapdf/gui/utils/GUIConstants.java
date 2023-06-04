@@ -69,7 +69,7 @@ public final class GUIConstants {
 	public static final String CHOOSE_PROFILE_BUTTON_TEXT = "Choose Profile";
 	public static final String CHOOSE_POLICY_BUTTON_TEXT = "Choose Policy";
 	public static final String POLICY_TITLE = "Policy Creator";
-	public static final String CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT = "Please, specify validation profile";
+	public static final String CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT = "Profile not chosen";
 	public static final String CUSTOM_PROFILE_COMBOBOX_TEXT = "Custom profile";
 	public static final String AUTO_FLAVOUR_COMBOBOX_TEXT = "Auto-detect";
 	public static final String AUTO_ARLINGTON_FLAVOUR_COMBOBOX_TEXT = "Auto";
@@ -86,8 +86,8 @@ public final class GUIConstants {
 	public static final String POLICY_PROFILE_NOT_CHOSEN = "Policy file not chosen";
 	public static final String VALIDATE_BUTTON_TEXT = "Execute";
 	public static final String CANCEL_BUTTON_TEXT = "Cancel";
-	public static final String VALIDATION_OK = "PDF file does not contain deviations from the Arlington model";
-	public static final String VALIDATION_FALSE = "PDF file contains deviations from the Arlington model";
+	public static final String VALIDATION_OK = "PDF file does not contain deviations from the Arlington PDF Model";
+	public static final String VALIDATION_FALSE = "PDF file contains deviations from the Arlington PDF Model";
 	public static final String POLICY_FALSE = "PDF file is not compliant with Policy requirements";
 	public static final String SAVE_REPORT_BUTTON_TEXT = "Save XML";
 	public static final String VIEW_REPORT_BUTTON_TEXT = "View XML";
@@ -97,7 +97,7 @@ public final class GUIConstants {
 	public static final String ERROR_SAVING_REPORT = "Unresolvable problem occured when saving the %S report.";
 	public static final String IOEXCEP_OPENING_REPORT = "Could not open %s using the default Desktop application for %S file type. Please, try opening this file manually.";
 	public static final String IOEXCEP_SAVING_REPORT = "IOException when saving the %S report.";
-	public static final String LABEL_TEXT = "     Please choose a PDF and a PDF Flavour, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
+	public static final String LABEL_TEXT = "     Choose a PDF and a PDF Flavour, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
 	public static final String CONSORTIUM_TEXT = "© 2015-2023 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String PREFORMA_FUNDED_TEXT = "Funded by the European Commission’s PREFORMA Project";
 	public static final String TITLE = "Arlington PDF Model checker by veraPDF";
@@ -120,7 +120,7 @@ public final class GUIConstants {
 	public static final String DISPLAY_PASSED_RULES = "Include passed checks:";
 	public static final String PLUGINS_ENABLED_TEXT = "Use plugins when extracting features:";
 	public static final String MAX_NUMBER_FAILED_DISPLAYED_CHECKS = "Display deviations for rule: ";
-	public static final String MAX_NUMBER_FAILED_CHECKS = "Halt validation after deviations:";
+	public static final String MAX_NUMBER_FAILED_CHECKS = "Halt execution after deviations:";
 	public static final String FEATURES_GENERATED_CORRECT = "Features report generated.";
 	public static final String MAX_FAILED_CHECKS_SETTING_TIP = "1 to 999999 or empty for unlimited";
 	public static final String MAX_FAILED_CHECKS_DISP_SETTING_TIP = "1 to 999999 or empty for unlimited";
