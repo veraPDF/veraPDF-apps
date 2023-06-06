@@ -40,11 +40,10 @@ class MiniLogoPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -199053265127458738L;
 
-	MiniLogoPanel(String logoPath, String arlingtonlogoPath) throws IOException {
+	MiniLogoPanel(String arlingtonlogoPath) throws IOException {
 
 		setLayout(new FlowLayout(FlowLayout.LEFT));
-		addLogo(arlingtonlogoPath, "", 0.312);
-		addLogo(logoPath, GUIConstants.LABEL_TEXT, 0.3);
+		addLogo(arlingtonlogoPath, GUIConstants.LABEL_TEXT, 0.075);
 	}
 
 	private void addLogo(String logoPath, String text, double scale) throws IOException {

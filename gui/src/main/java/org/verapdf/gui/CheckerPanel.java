@@ -659,7 +659,7 @@ class CheckerPanel extends JPanel {
 				String.format("Items processed: %d", result.getBatchSummary().getTotalJobs())); //$NON-NLS-1$
 		String end = String.format("%s Parsing Error: %d", divisor, result.getBatchSummary().getFailedParsingJobs()); //$NON-NLS-1$
 		if (result.getBatchSummary().getValidationSummary().getTotalJobCount() > 0) {
-			end = String.format("%sValid: %d%sInvalid: %d%sError: %d", divisor, //$NON-NLS-1$
+			end = String.format("%sNo deviations: %d%sDeviations: %d%sError: %d", divisor, //$NON-NLS-1$
 					result.getBatchSummary().getValidationSummary().getCompliantPdfaCount(), divisor,
 					result.getBatchSummary().getValidationSummary().getNonCompliantPdfaCount(), divisor,
 					result.getBatchSummary().getValidationSummary().getFailedJobCount());

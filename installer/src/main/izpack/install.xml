@@ -55,7 +55,7 @@
   <resources>
     <res id="HTMLHelloPanel.welcome" src="welcome.html"/>
     <res id="veraLogo" src="veralogo.jpg"/>
-    <res id="arlingtonLogo" src="arlingtonlogo.png"/>
+    <res id="arlingtonLogo" src="arlington-vera-logo.png"/>
     <res id="customicons.xml" src="customicons.xml" />
     <res id="JFrameIcon" src="arlingtonlogo.png"/>
   </resources>

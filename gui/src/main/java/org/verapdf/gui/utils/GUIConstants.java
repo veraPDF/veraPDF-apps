@@ -29,7 +29,7 @@ public final class GUIConstants {
 	// Paths
 	private static final String imgRoot = "org/verapdf/gui/images/"; //$NON-NLS-1$
 	public static final String LOGO_NAME = imgRoot + "veraPDF-logo.jpg"; //$NON-NLS-1$
-	public static final String ARLINGTON_LOGO_NAME = imgRoot + "arlington-logo.png"; //$NON-NLS-1$
+	public static final String ARLINGTON_LOGO_NAME = imgRoot + "arlington-veraPDF-logo.png"; //$NON-NLS-1$
 	public static final String PARTNERS_NAME = imgRoot + "partners.png"; //$NON-NLS-1$
 	public static final String XML_LOGO_NAME = imgRoot + "xml-logo.png"; //$NON-NLS-1$
 	public static final String HTML_LOGO_NAME = imgRoot + "html-logo.png"; //$NON-NLS-1$
