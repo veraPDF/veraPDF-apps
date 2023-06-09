@@ -68,7 +68,7 @@ public final class GUIConstants {
 	public static final String CHOOSE_PROFILE_BUTTON_TEXT = "Choose Profile";
 	public static final String CHOOSE_POLICY_BUTTON_TEXT = "Choose Policy";
 	public static final String POLICY_TITLE = "Policy Creator";
-	public static final String CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT = "Please, specify validation profile";
+	public static final String CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT = "Validation profile not chosen";
 	public static final String CUSTOM_PROFILE_COMBOBOX_TEXT = "Custom profile";
 	public static final String AUTO_FLAVOUR_COMBOBOX_TEXT = "Auto-detect";
 	public static final String OFF_LEVEL = "OFF";

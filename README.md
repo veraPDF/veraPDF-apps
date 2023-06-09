@@ -75,26 +75,28 @@ Life will be easier if you also use [Git](https://git-scm.com/) to obtain and ma
 
 ### Building veraPDF
 First you'll need to obtain a version of the veraPDF-apps source code. You can compile either the latest release version or the latest development source.
+
 #### Downloading the latest release source
 Use Git to clone the repository and ensure that the `master` branch is checked out:
-```
-git clone https://github.com/veraPDF/veraPDF-apps
-git checkout master
-```
+
+    git clone https://github.com/veraPDF/veraPDF-apps
+    cd veraPDF-apps
+    git checkout master
+
 or download the latest [tar archive](https://github.com/veraPDF/veraPDF-apps/archive/master.tar.gz "veraPDF-apps latest GitHub tar archive") or [zip archive](https://github.com/veraPDF/veraPDF-apps/archive/master.zip "veraPDF-apps latest GitHub zip archive") from GitHub.
 
 #### Downloading the latest development source
 Use Git to clone the repository and ensure that the `integration` branch is checked out:
 
     git clone https://github.com/veraPDF/veraPDF-apps
+    cd veraPDF-apps
     git checkout integration
 
 or download the latest [tar archive](https://github.com/veraPDF/veraPDF-apps/archive/integration.tar.gz "veraPDF-apps latest GitHub tar archive") or [zip archive](https://github.com/veraPDF/veraPDF-apps/archive/integration.zip "veraPDF-apps latest GitHub zip archive") from GitHub.
 
 #### Use Maven to compile the source
-Move to the downloaded project directory and call Maven install:
+Call Maven install:
 
-    cd veraPDF-apps
     mvn clean install
 
 #### Testing the build
