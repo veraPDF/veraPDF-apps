@@ -325,7 +325,7 @@ public class PDFValidationApplication extends JFrame {
 
 		MiniLogoPanel logoPanel = null;
 		try {
-			logoPanel = new MiniLogoPanel(GUIConstants.ARLINGTON_LOGO_NAME);
+			logoPanel = new MiniLogoPanel(GUIConstants.ARLINGTON_SMALL_LOGO_NAME);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in creating mini logo.",
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
