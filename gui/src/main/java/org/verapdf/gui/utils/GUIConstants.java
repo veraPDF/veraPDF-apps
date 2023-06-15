@@ -100,8 +100,8 @@ public final class GUIConstants {
 	public static final String IOEXCEP_SAVING_REPORT = "IOException when saving the %S report.";
 	public static final String LABEL_TEXT = "     Choose a PDF and a PDF Flavour, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
 	public static final String CONSORTIUM_TEXT = "© 2015-2023 veraPDF Consortium"; //$NON-NLS-1$
-	public static final String PREFORMA_FUNDED_TEXT = "Funded by the European Commission’s PREFORMA Project";
-	public static final String TITLE = "Arlington PDF Model checker by veraPDF";
+	public static final String PREFORMA_FUNDED_TEXT = "Originally funded by the European Commission’s PREFORMA Project";
+	public static final String TITLE = "Arlington PDF Model file checker by veraPDF";
 	public static final String ENCRYPTED_PDF = "Document is password encrypted and can not be processed.";
 	public static final String ERROR_IN_PARSING = "Failed to parse pdf document.";
 	public static final String ERROR_IN_VALIDATING = "Could not complete validation due to an error.";

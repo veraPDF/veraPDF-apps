@@ -240,7 +240,7 @@ public class PDFValidationApplication extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (PDFValidationApplication.this.aboutPanel != null) {
-					PDFValidationApplication.this.aboutPanel.showDialog(PDFValidationApplication.this, "About Arlington PDF Model checker by verapdf");
+					PDFValidationApplication.this.aboutPanel.showDialog(PDFValidationApplication.this, "About Arlington PDF Model file checker by verapdf");
 				}
 			}
 		});
