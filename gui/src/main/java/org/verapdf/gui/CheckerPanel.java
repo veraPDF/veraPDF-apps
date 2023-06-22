@@ -853,7 +853,7 @@ class CheckerPanel extends JPanel {
 	VeraAppConfig appConfigFromState() {
 		AppConfigBuilder builder = Applications.createConfigBuilder(CheckerPanel.config.getApplicationConfig());
 		ProcessType selectedItem = (ProcessType) this.ProcessTypes.getSelectedItem();
-		if (isFixMetadata() && CheckerPanel.config.getApplicationConfig().getFixesFolder().isEmpty()) {
+		if (isFixMetadata() && CheckerPanel.config.getApplicationConfig().getFixesFolder().isEmpty() && this.pdfsToProcess != null) {
 			for (File pdf : pdfsToProcess) {
 				if (FileUtils.hasExtNoCase(pdf.getName(), GUIConstants.ZIP)) {
 					logger.log(Level.WARNING, "Fixing metadata are not supported for zip processing, if save folder isn't defined");
