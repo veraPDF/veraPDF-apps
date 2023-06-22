@@ -1,1 +1,1 @@
-See https://github.com/veraPDF/veraPDF-library/blob/rc/1.24/RELEASENOTES.md
+See https://github.com/veraPDF/veraPDF-library/blob/rel/1.24/RELEASENOTES.md
