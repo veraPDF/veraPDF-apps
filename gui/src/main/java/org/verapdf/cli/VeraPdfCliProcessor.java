@@ -150,20 +150,20 @@ final class VeraPdfCliProcessor implements Closeable {
 	}
 
 	private static ExitCodes exitStatusFromSummary(final BatchSummary summary) {
-		if (summary.getFailedParsingJobs() > 0) {
-			return ExitCodes.FAILED_PARSING;
-		}
-		if (summary.getFailedEncryptedJobs() > 0) {
-			return ExitCodes.ENCRYPTED_FILES;
-		}
-		if (summary.getValidationSummary().getNonCompliantPdfaCount() > 0) {
-			return ExitCodes.INVALID;
-		}
 		if (summary.getOutOfMemory() > 0) {
 			return ExitCodes.OOM;
 		}
 		if (summary.getVeraExceptions() > 0) {
 			return ExitCodes.VERAPDF_EXCEPTION;
+		}
+		if (summary.getFailedEncryptedJobs() > 0) {
+			return ExitCodes.ENCRYPTED_FILES;
+		}
+		if (summary.getFailedParsingJobs() > 0) {
+			return ExitCodes.FAILED_PARSING;
+		}
+		if (summary.getValidationSummary().getNonCompliantPdfaCount() > 0) {
+			return ExitCodes.INVALID;
 		}
 		return ExitCodes.VALID;
 	}
