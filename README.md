@@ -42,9 +42,9 @@ Once downloaded unzip the archive which contains the installer jar with batch an
 
 Where `${project.version}` is the last development or release version.
 
-Windows users should run the 'verapdf-install.bat' dos batch file, while Linux and OSX users should run the shell script, `verapdf-install.sh`. It's possible to run the installer directly on any platform:
+Windows users should run the 'verapdf-install.bat' batch file, while Linux and OSX users should run the shell script, `verapdf-install.sh`. It's possible to run the installer directly on any platform:
 
-    java - jar <path-to-installer-jar>/verapdf-izpack-installer-${project.version}.jar
+    java -jar <path-to-installer-jar>/verapdf-izpack-installer-${project.version}.jar
 
 #### Linux full command line download and install
 Linux users can download and execute the veraPDF installer using the following commands:
