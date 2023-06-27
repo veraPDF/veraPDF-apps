@@ -18,24 +18,22 @@
 package org.verapdf.cli;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
-import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.SoftwareUpdater;
 import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.cli.multithread.MultiThreadProcessor;
 import org.verapdf.core.VeraPDFException;
+import org.verapdf.core.utils.LogsFileHandler;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
@@ -44,15 +42,16 @@ import org.verapdf.processor.FeaturesPluginsLoader;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import org.verapdf.processor.app.ConfigManager;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
  */
 public final class VeraPdfCli {
-	private static final Logger logger = Logger.getLogger(VeraCliArgParser.class.getCanonicalName());
+	private static final Logger logger = Logger.getLogger(VeraPdfCli.class.getCanonicalName());
 	private static final ConfigManager configManager = Applications.createAppConfigManager();
 	private static final int MEGABYTE = (1024 * 1024);
-	private static final String FLAVOURS_HEADING = CliConstants.APP_NAME + " supported PDF/A profiles:"; //$NON-NLS-1$
+	private static final String FLAVOURS_HEADING = CliConstants.APP_NAME + " supported PDF/A and PDF/UA profiles:"; //$NON-NLS-1$
 	private static final ProfileDirectory PROFILES = Profiles.getVeraProfileDirectory();
 
 	public static final String EXIT = "q";
@@ -68,12 +67,17 @@ public final class VeraPdfCli {
 	 *             using Apache commons CLI.
 	 */
 	public static void main(final String[] args) throws VeraPDFException {
+		LogsFileHandler.configLogs();
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
 		FeaturesPluginsLoader.setBaseFolderPath(System.getProperty(Applications.APP_HOME_PROPERTY));
 		ReleaseDetails.addDetailsFromResource(
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
 		VeraCliArgParser cliArgParser = new VeraCliArgParser();
 		JCommander jCommander = new JCommander(cliArgParser);
+		if (Arrays.asList(args).contains(VeraCliArgParser.USE_CONFIG)) {
+			cliArgParser.setValuesFromConfig(configManager);
+		}
+		jCommander.setUsageFormatter(new FormatterHelper(jCommander));
 		jCommander.setProgramName(CliConstants.APP_NAME);
 
 		try {
@@ -85,13 +89,19 @@ public final class VeraPdfCli {
 		if (cliArgParser.isHelp()) {
 			displayHelpAndExit(cliArgParser, jCommander, ExitCodes.VALID);
 		}
+		LogsFileHandler.setLoggingLevel(cliArgParser.getLoggerLevel());
 		messagesFromParser(cliArgParser);
+		cliArgParser.checkParametersCompatibility();
 		if (isProcess(cliArgParser)) {
-			if (args.length == 0) {
-				jCommander.usage();
+			try {
+				if (args.length == 0 && System.in.available() == 0) {
+					jCommander.usage();
+				}
+			} catch (IOException e) {
+				logger.log(Level.SEVERE,"STDIN is not available", e);
 			}
 			try {
-				if (cliArgParser.isServerMode() || cliArgParser.getNumberOfProcesses() < 2) {
+				if (!cliArgParser.isMultiprocessing()) {
 					System.exit(singleThreadProcess(cliArgParser).value);
 				} else {
 					System.exit(MultiThreadProcessor.process(cliArgParser).value);
@@ -124,13 +134,13 @@ public final class VeraPdfCli {
 		try (VeraPdfCliProcessor processor = VeraPdfCliProcessor.createProcessorFromArgs(cliArgParser,
 				configManager)) {
 			// FIXME: trap policy IO Exception (deliberately left un-caught for development)
-			ExitCodes retVal = processor.processPaths(cliArgParser.getPdfPaths());
+			ExitCodes retVal = processor.processPaths(cliArgParser.getPdfPaths(), cliArgParser.nonPdfExt());
 			if (cliArgParser.isServerMode()) {
 				File tempFile = processor.getTempFile();
 				if (tempFile != null) {
 					System.out.println(tempFile.getAbsoluteFile());
 				}
-				try (Scanner scanner = new Scanner(System.in);) {
+				try (Scanner scanner = new Scanner(System.in)) {
 					while (scanner.hasNextLine()) {
 						String path = scanner.nextLine();
 						if (path != null) {
@@ -139,7 +149,7 @@ public final class VeraPdfCli {
 							}
 							List<String> paths = new ArrayList<>();
 							paths.add(path);
-							ExitCodes exitCode = processor.processPaths(paths);
+							ExitCodes exitCode = processor.processPaths(paths, cliArgParser.nonPdfExt());
 							System.out.println(processor.getTempFile().getAbsolutePath());
 							if (exitCode.value > retVal.value) {
 								retVal = exitCode;

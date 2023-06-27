@@ -2,7 +2,7 @@ package org.verapdf.apps.test;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
+import org.verapdf.gf.foundry.VeraGreenfieldFoundryProvider;
 import org.verapdf.pdfa.results.ValidationResult;
 import org.verapdf.pdfa.validation.validators.test.CallableValidatorForTest;
 

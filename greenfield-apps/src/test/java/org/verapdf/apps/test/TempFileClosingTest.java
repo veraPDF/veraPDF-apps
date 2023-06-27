@@ -1,7 +1,5 @@
 package org.verapdf.apps.test;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.verapdf.apps.GreenfieldCliWrapper;
 import org.verapdf.core.VeraPDFException;
 

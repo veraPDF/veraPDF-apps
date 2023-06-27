@@ -17,38 +17,23 @@
  */
 package org.verapdf.cli;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.xml.bind.JAXBException;
-
-import org.verapdf.apps.ConfigManager;
-import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.policy.PolicyChecker;
-import org.verapdf.processor.BatchProcessor;
-import org.verapdf.processor.ItemProcessor;
-import org.verapdf.processor.ProcessorConfig;
-import org.verapdf.processor.ProcessorFactory;
-import org.verapdf.processor.ProcessorResult;
+import org.verapdf.processor.*;
+import org.verapdf.processor.app.ConfigManager;
+import org.verapdf.processor.app.VeraAppConfig;
 import org.verapdf.processor.reports.BatchSummary;
 import org.verapdf.processor.reports.ItemDetails;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -65,8 +50,6 @@ final class VeraPdfCliProcessor implements Closeable {
 	private final File tempMrrFile;
 	private final File policyFile;
 	private boolean isStdOut = true;
-	private boolean appendData = true;
-	private String baseDirectory = ""; //$NON-NLS-1$
 	private OutputStream os;
 	private File tempFile;
 
@@ -84,19 +67,7 @@ final class VeraPdfCliProcessor implements Closeable {
 		this.policyFile = args.getPolicyFile();
 		this.appConfig = args.appConfig(configManager.getApplicationConfig());
 		this.processorConfig = args.processorConfig(this.appConfig.getProcessType(),
-				this.configManager.getFeaturesConfig(), this.configManager.getPluginsCollectionConfig());
-		if (this.configManager.getApplicationConfig().isOverwriteReport()) {
-			File file = new File(this.configManager.getApplicationConfig().getReportFile());
-			if (file.exists()) {
-				try {
-					file.delete();
-				} catch (SecurityException ex) {
-					String message = String.format(CliConstants.EXCEP_REPORT_OVERWRITE, file.getPath());
-					logger.log(Level.WARNING, message, ex);
-				}
-			}
-		}
-
+		                                            this.configManager.getPluginsCollectionConfig());
 	}
 
 	VeraAppConfig getConfig() {
@@ -107,7 +78,7 @@ final class VeraPdfCliProcessor implements Closeable {
 		return this.processorConfig;
 	}
 
-	ExitCodes processPaths(final List<String> pdfPaths) throws VeraPDFException {
+	ExitCodes processPaths(final List<String> pdfPaths, boolean nonPdfExt) throws VeraPDFException {
 		ExitCodes retStatus = ExitCodes.VALID;
 		if (isServerMode) {
 			try {
@@ -120,10 +91,10 @@ final class VeraPdfCliProcessor implements Closeable {
 			this.os = System.out;
 		}
 		// If the path list is empty then process the STDIN stream
-		if (pdfPaths.isEmpty()) {
+		if (pdfPaths.isEmpty() && !isServerMode) {
 			retStatus = processStdIn();
 		} else {
-			retStatus = processFilePaths(pdfPaths);
+			retStatus = processFilePaths(pdfPaths, nonPdfExt);
 		}
 
 		if (this.isPolicy) {
@@ -138,20 +109,24 @@ final class VeraPdfCliProcessor implements Closeable {
 	}
 
 	private ExitCodes processStdIn() {
-		for (String messageLine : CliConstants.MESS_PROC_STDIN) {
-			System.out.println(messageLine);
+		try {
+			if (System.in.available() == 0) {
+				return ExitCodes.VALID;
+			}
+		} catch (IOException e) {
+			logger.log(Level.SEVERE,"STDIN is not available", e);
 		}
 		ItemDetails item = ItemDetails.fromValues(CliConstants.NAME_STDIN);
 		return processStream(item, System.in);
 
 	}
 
-	private ExitCodes processFilePaths(final List<String> paths) {
+	private ExitCodes processFilePaths(final List<String> paths, boolean nonPdfExt) {
 		List<File> toFilter = new ArrayList<>();
 		for (String path : paths) {
 			toFilter.add(new File(path));
 		}
-		List<File> toProcess = ApplicationUtils.filterPdfFiles(toFilter, this.isRecursive);
+		List<File> toProcess = ApplicationUtils.filterPdfFiles(toFilter, this.isRecursive, nonPdfExt);
 		if (toProcess.isEmpty()) {
 			logger.log(Level.SEVERE, "There are no files to process.");
 			return ExitCodes.NO_FILES;
@@ -160,8 +135,7 @@ final class VeraPdfCliProcessor implements Closeable {
 				OutputStream reportStream = this.getReportStream()) {
 			BatchSummary summary = processor.process(toProcess,
 					ProcessorFactory.getHandler(this.appConfig.getFormat(), this.appConfig.isVerbose(), reportStream,
-							this.appConfig.getMaxFailsDisplayed(),
-							this.processorConfig.getValidatorConfig().isRecordPasses()));
+							this.processorConfig.getValidatorConfig().isRecordPasses(), this.appConfig.getWikiPath()));
 			reportStream.flush();
 			return exitStatusFromSummary(summary);
 		} catch (VeraPDFException excep) {
@@ -185,6 +159,12 @@ final class VeraPdfCliProcessor implements Closeable {
 		if (summary.getValidationSummary().getNonCompliantPdfaCount() > 0) {
 			return ExitCodes.INVALID;
 		}
+		if (summary.getOutOfMemory() > 0) {
+			return ExitCodes.OOM;
+		}
+		if (summary.getVeraExceptions() > 0) {
+			return ExitCodes.VERAPDF_EXCEPTION;
+		}
 		return ExitCodes.VALID;
 	}
 
@@ -196,8 +176,13 @@ final class VeraPdfCliProcessor implements Closeable {
 			OutputStream outputReportStream = this.getReportStream();
 
 			try {
+
+				BatchProcessingHandler handler = ProcessorFactory.getHandler(this.appConfig.getFormat(),
+						this.appConfig.isVerbose(), outputReportStream,
+						this.processorConfig.getValidatorConfig().isRecordPasses());
+
 				if (result.isPdf() && !result.isEncryptedPdf()) {
-					ProcessorFactory.resultToXml(result, outputReportStream, true);
+					ProcessorFactory.writeSingleResultReport(result, handler, processorConfig);
 					if (!result.getValidationResult().isCompliant()) {
 						retVal = ExitCodes.INVALID;
 					}
@@ -209,10 +194,12 @@ final class VeraPdfCliProcessor implements Closeable {
 					retVal = (result.isPdf()) ? ExitCodes.ENCRYPTED_FILES : ExitCodes.FAILED_PARSING; 
 				}
 
-			} catch (JAXBException | IOException excep) {
+			} catch (IOException excep) {
 				// TODO Auto-generated catch block
 				logger.log(Level.SEVERE, CliConstants.EXCEP_REPORT_MARSHAL, excep);
 				retVal = ExitCodes.JAXB_EXCEPTION;
+			} catch (VeraPDFException e) {
+				logger.log(Level.SEVERE, "STDIN is not available", e);
 			}
 
 			if (!this.isStdOut) {
@@ -261,48 +248,6 @@ final class VeraPdfCliProcessor implements Closeable {
 		if (!tempPolicyResult.delete()) {
 			tempPolicyResult.deleteOnExit();
 		}
-	}
-
-	private String constructReportPath(final String itemName) {
-		String reportPath = "";
-		if (!this.configManager.getApplicationConfig().getReportFolder().isEmpty()) {
-			Path fileAbsolutePath = Paths.get(itemName);
-			String pdfFileName = fileAbsolutePath.getFileName().toString();
-			String pdfFileDirectory = fileAbsolutePath.getParent().toString();
-			String extension = "." + this.configManager.getApplicationConfig().getFormat().toString();
-			String outputFileName = pdfFileName.replace(".pdf", extension);
-			String reportFolder = this.configManager.getApplicationConfig().getReportFolder();
-
-			if (pdfFileDirectory.length() > this.baseDirectory.length()) {
-				StringBuilder reportFolderBuilder = new StringBuilder();
-				reportFolderBuilder.append(reportFolder);
-
-				String subDirectory = pdfFileDirectory.substring(this.baseDirectory.length());
-				reportFolderBuilder.append(subDirectory);
-
-				reportFolder = reportFolderBuilder.toString();
-
-				File dir = new File(reportFolder);
-
-				if (!dir.exists()) {
-					try {
-						dir.mkdirs();
-					} catch (SecurityException ex) {
-						logger.log(Level.SEVERE, "Cannot create subdirectories the: " + ex.toString() + "\n");
-						reportFolder = this.configManager.getApplicationConfig().getReportFolder();
-					}
-				}
-			}
-
-			File reportFile = new File(reportFolder, outputFileName);
-			reportPath = reportFile.getAbsolutePath();
-			this.appendData = false;
-		} else if (!this.configManager.getApplicationConfig().getReportFile().isEmpty()) {
-			File reportFile = new File(this.configManager.getApplicationConfig().getReportFile());
-			reportPath = reportFile.getAbsolutePath();
-			this.appendData = true;
-		}
-		return reportPath;
 	}
 
 	@Override

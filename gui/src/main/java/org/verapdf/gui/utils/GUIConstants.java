@@ -36,7 +36,7 @@ public final class GUIConstants {
 	// GUI Colors
 	public static final Color LOGO_BACKGROUND = Color.WHITE;
 	public static final Color PARTNERS_BACKGROUND = Color.WHITE;
-	
+
 	// URLs
 	public static final String LOGO_LINK_TEXT = "Visit veraPDF.org"; //$NON-NLS-1$
 	public static final String LOGO_LINK_URL = "http://www.verapdf.org"; //$NON-NLS-1$
@@ -47,6 +47,7 @@ public final class GUIConstants {
 
 	// File extensions
 	public static final String PDF = "pdf"; //$NON-NLS-1$
+	public static final String ZIP = "zip"; //$NON-NLS-1$
 	public static final String XML = "xml"; //$NON-NLS-1$
 	public static final String HTML = "html"; //$NON-NLS-1$
 	public static final String SCH = "sch"; //$NON-NLS-1$
@@ -70,6 +71,11 @@ public final class GUIConstants {
 	public static final String CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT = "Please, specify validation profile";
 	public static final String CUSTOM_PROFILE_COMBOBOX_TEXT = "Custom profile";
 	public static final String AUTO_FLAVOUR_COMBOBOX_TEXT = "Auto-detect";
+	public static final String OFF_LEVEL = "OFF";
+	public static final String SEVERE_LEVEL = "SEVERE";
+	public static final String WARNING_LEVEL = "WARNING, SEVERE";
+	public static final String CONFIG_LEVEL = "CONFIG, INFO, WARNING, SEVERE";
+	public static final String ALL_LEVEL = "ALL";
 	public static final String VALIDATION_PROFILE_NOT_CHOSEN = "Validation profile not chosen";
 	public static final String OK = "OK"; //$NON-NLS-1$
 	public static final String CANCEL = "Cancel"; //$NON-NLS-1$
@@ -77,24 +83,26 @@ public final class GUIConstants {
 	public static final String ARG_REQUIRED ="Argument required";
 	public static final String POLICY_PROFILE_NOT_CHOSEN = "Policy file not chosen";
 	public static final String VALIDATE_BUTTON_TEXT = "Execute";
+	public static final String CANCEL_BUTTON_TEXT = "Cancel";
 	public static final String VALIDATION_OK = "PDF file is compliant with Validation Profile requirements";
 	public static final String VALIDATION_FALSE = "PDF file is not compliant with Validation Profile requirements";
+	public static final String POLICY_FALSE = "PDF file is not compliant with Policy requirements";
 	public static final String SAVE_REPORT_BUTTON_TEXT = "Save XML";
 	public static final String VIEW_REPORT_BUTTON_TEXT = "View XML";
 	public static final String SAVE_HTML_REPORT_BUTTON_TEXT = "Save HTML";
 	public static final String VIEW_HTML_REPORT_BUTTON_TEXT = "View HTML";
 	public static final String REPORT = "Report";
 	public static final String ERROR_SAVING_REPORT = "Unresolvable problem occured when saving the %S report.";
-	public static final String IOEXCEP_OPENING_REPORT = "IOException when opening the %S report.";
+	public static final String IOEXCEP_OPENING_REPORT = "Could not open %s using the default Desktop application for %S file type. Please, try opening this file manually.";
 	public static final String IOEXCEP_SAVING_REPORT = "IOException when saving the %S report.";
 	public static final String LABEL_TEXT = "     Please choose a PDF and a Validation Profile, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
-	public static final String CONSORTIUM_TEXT = "© 2015-2018 veraPDF Consortium"; //$NON-NLS-1$
+	public static final String CONSORTIUM_TEXT = "© 2015-2023 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String PREFORMA_FUNDED_TEXT = "Funded by the European Commission’s PREFORMA Project";
-	public static final String TITLE = "PDF/A Conformance Checker";
+	public static final String TITLE = "veraPDF Conformance Checker";
 	public static final String ENCRYPTED_PDF = "Document is password encrypted and can not be processed.";
 	public static final String ERROR_IN_PARSING = "Failed to parse pdf document.";
 	public static final String ERROR_IN_VALIDATING = "Could not complete validation due to an error.";
-	public static final String ERROR_IN_FEATURES = "Could not complet feature extraction due to an error.";
+	public static final String ERROR_IN_FEATURES = "Could not complete feature extraction due to an error.";
 	public static final String ERROR_IN_INCREMETAL_SAVE = "An error occurred when saving changes";
 	public static final String ERROR_INTERRUPTED = "Process has been interrupted: ";
 	public static final String ERROR_EXECUTION = "Execution exception in processing: ";
@@ -105,20 +113,24 @@ public final class GUIConstants {
 	public static final String WARN_FILE_EXISTS = "Overwrite existing file %s?.";
 	public static final String TITLE_OVERWRITE = "Confirm Overwrite";
 	public static final String PROCESSING_TYPE = " Report type:   ";
-	public static final String CHOOSE_FLAVOUR = "PDF/A flavour:   ";
+	public static final String CHOOSE_FLAVOUR = "PDF flavour:   ";
+	public static final String CHOOSE_LOGGING_LEVEL = "Logging level:   ";
 	public static final String DISPLAY_PASSED_RULES = "Include passed rules:";
 	public static final String PLUGINS_ENABLED_TEXT = "Use plugins when extracting features:";
 	public static final String MAX_NUMBER_FAILED_DISPLAYED_CHECKS = "Display failed checks for rule: ";
 	public static final String MAX_NUMBER_FAILED_CHECKS = "Halt validation after failed checks:";
 	public static final String FEATURES_GENERATED_CORRECT = "Features report generated.";
 	public static final String MAX_FAILED_CHECKS_SETTING_TIP = "1 to 999999 or empty for unlimited";
-	public static final String MAX_FAILED_CHECKS_DISP_SETTING_TIP = "0 to 999999 or empty for unlimited";
+	public static final String MAX_FAILED_CHECKS_DISP_SETTING_TIP = "1 to 999999 or empty for unlimited";
+	public static final String LOGS_LABEL_TEXT = "Add logs to xml and html reports:";
+	public static final String SHOW_ERROR_MESSAGES_TEXT = "Add detailed errors to report:";
 	public static final String FIX_METADATA_LABEL_TEXT = "       Fix metadata:";
 	public static final String SELECTED_PATH_FOR_FIXER_LABEL_TEXT = "Save repaired files into the folder:";
 	public static final String FIX_METADATA_PREFIX_LABEL_TEXT = "Save repaired files with prefix:";
 	public static final String SELECTED_PATH_FOR_FIXER_TOOLTIP = "Select a folder for saving repaired files to. If not set then they'll be saved next to the original.";
 	public static final String SELECTED_PROFILES_WIKI_PATH = "Validation Profiles wiki root:";
 	public static final String CHECK_FOR_UPDATES_TEXT = "Check for Updates...";
+	public static final String UNSUPPORTED_OPERATION_EXC_BROWSE = "Couldn't open online help. Please, try opening this link manually %s";
 
 	public static final int EMPTY_BORDER_INSETS = 5;
 	public static final int FRAME_COORD_X = 100;

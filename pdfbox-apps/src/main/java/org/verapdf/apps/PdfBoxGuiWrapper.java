@@ -4,7 +4,7 @@
 package org.verapdf.apps;
 
 import org.verapdf.gui.PDFValidationApplication;
-import org.verapdf.pdfa.PdfBoxFoundryProvider;
+import org.verapdf.pdfbox.foundry.PdfBoxFoundryProvider;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>

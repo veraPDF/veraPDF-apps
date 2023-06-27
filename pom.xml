@@ -28,12 +28,12 @@
   <parent>
     <artifactId>verapdf-parent</artifactId>
     <groupId>org.verapdf</groupId>
-    <version>1.14.3</version>
+    <version>1.24.1</version>
   </parent>
 
   <groupId>org.verapdf</groupId>
   <artifactId>verapdf-apps</artifactId>
-  <version>1.14.0</version>
+  <version>1.24.0</version>
   <packaging>pom</packaging>
 
   <name>veraPDF PDF/A Validation Applications</name>
@@ -72,9 +72,9 @@
   <properties>
     <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
     <sonar.language>java</sonar.language>
-    <verapdf.library.version>[1.14.0,1.15.0)</verapdf.library.version>
-    <verapdf.pdfbox.validation.version>[1.14.0,1.15.0)</verapdf.pdfbox.validation.version>
-    <verapdf.validation.version>[1.14.0,1.15.0)</verapdf.validation.version>
+    <verapdf.library.version>[1.24.0,1.25.0)</verapdf.library.version>
+    <verapdf.pdfbox.validation.version>[1.24.0,1.25.0)</verapdf.pdfbox.validation.version>
+    <verapdf.validation.version>[1.24.0,1.25.0)</verapdf.validation.version>
   </properties>
 
   <dependencyManagement>
@@ -83,7 +83,7 @@
       <dependency>
         <groupId>com.beust</groupId>
         <artifactId>jcommander</artifactId>
-        <version>1.69</version>
+        <version>1.81</version>
       </dependency>
 
       <dependency>
@@ -107,14 +107,14 @@
       <dependency>
         <groupId>nl.jqno.equalsverifier</groupId>
         <artifactId>equalsverifier</artifactId>
-        <version>1.7.8</version>
+        <version>3.7.2</version>
         <scope>test</scope>
       </dependency>
 
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.12</version>
+        <version>4.13.1</version>
         <scope>test</scope>
       </dependency>
 
@@ -134,13 +134,18 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/*IT.java</exclude>
-          </excludes>
-        </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+      </plugin>
     </plugins>
   </build>
 

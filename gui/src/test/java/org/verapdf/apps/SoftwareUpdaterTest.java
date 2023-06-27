@@ -6,8 +6,8 @@ package org.verapdf.apps;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.verapdf.SemanticVersionNumber;
-import org.verapdf.Versions;
+import org.verapdf.version.SemanticVersionNumber;
+import org.verapdf.version.Versions;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>

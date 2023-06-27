@@ -50,16 +50,17 @@ import javax.xml.stream.XMLStreamException;
 
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
-import org.verapdf.apps.Applications.Builder;
+import org.verapdf.core.utils.LogsFileHandler;
 import org.verapdf.gui.utils.GUIConstants;
-import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.SoftwareUpdater;
-import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.FeaturesPluginsLoader;
+import org.verapdf.processor.app.AppConfigBuilder;
+import org.verapdf.processor.app.ConfigManager;
+import org.verapdf.processor.app.VeraAppConfig;
 
 /**
  * Main frame of the PDFA Conformance Checker
@@ -81,7 +82,6 @@ public class PDFValidationApplication extends JFrame {
 	private PolicyPanel policyConfig;
 
 	private PDFValidationApplication(double frameScale) {
-		addWindowListener(new ExitWindowAdapter());
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(GUIConstants.FRAME_COORD_X, GUIConstants.FRAME_COORD_Y, (int) (GUIConstants.FRAME_WIDTH*frameScale),
 				(int) (GUIConstants.FRAME_HEIGHT*frameScale));
@@ -108,7 +108,7 @@ public class PDFValidationApplication extends JFrame {
 		menuBar.add(file);
 
 		try {
-			this.settingsPanel = new SettingsPanel();
+			this.settingsPanel = new SettingsPanel(configManager);
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error initialising settings panel.",
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
@@ -121,9 +121,8 @@ public class PDFValidationApplication extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (PDFValidationApplication.this.settingsPanel != null && PDFValidationApplication.this.settingsPanel
 						.showDialog(PDFValidationApplication.this, "Settings", configManager)) {
-					Builder confBuilder = Builder.fromConfig(configManager.getApplicationConfig());
+					AppConfigBuilder confBuilder = AppConfigBuilder.fromConfig(configManager.getApplicationConfig());
 					confBuilder.wikiPath(PDFValidationApplication.this.settingsPanel.getProfilesWikiPath());
-					confBuilder.maxFails(PDFValidationApplication.this.settingsPanel.getFailedChecksDisplayNumber());
 					confBuilder.fixerFolder(
 							PDFValidationApplication.this.settingsPanel.getFixMetadataDirectory().toString());
 					try {
@@ -135,8 +134,15 @@ public class PDFValidationApplication extends JFrame {
 
 					ValidatorConfig validConf = ValidatorFactory.createConfig(
 							configManager.getValidatorConfig().getFlavour(),
+							PDFValidationApplication.this.settingsPanel.getCurrentDefaultFlavour(),
 							PDFValidationApplication.this.settingsPanel.isDispPassedRules(),
-							PDFValidationApplication.this.settingsPanel.getFailedChecksNumber());
+							PDFValidationApplication.this.settingsPanel.getFailedChecksNumber(),
+							configManager.getValidatorConfig().isDebug(),
+							PDFValidationApplication.this.settingsPanel.isLogsEnabled(),
+							PDFValidationApplication.this.settingsPanel.getLoggingLevel(),
+							PDFValidationApplication.this.settingsPanel.getFailedChecksDisplayNumber(),
+							PDFValidationApplication.this.settingsPanel.showErrorMessages(),
+							null, false, false);
 					try {
 						configManager.updateValidatorConfig(validConf);
 					} catch (JAXBException | IOException excep) {
@@ -184,7 +190,7 @@ public class PDFValidationApplication extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (PDFValidationApplication.this.featuresPanel != null
 						&& PDFValidationApplication.this.featuresPanel.showDialog(PDFValidationApplication.this,
-								"Features Config", configManager.getFeaturesConfig())) {
+						"Features Config", configManager.getFeaturesConfig())) {
 					try {
 						configManager
 								.updateFeaturesConfig(PDFValidationApplication.this.featuresPanel.getFeaturesConfig());
@@ -259,8 +265,8 @@ public class PDFValidationApplication extends JFrame {
 							String.format(
 									Applications.UPDATE_OLD_VERSION,
 									details.getVersion(), updater.getLatestVersion(details))
-							+ String.format("Do you want to download the latest version from:\n%s?",
-							Applications.UPDATE_URI),
+									+ String.format("Do you want to download the latest version from:\n%s?",
+									Applications.UPDATE_URI),
 							GUIConstants.CHECK_FOR_UPDATES_TEXT,
 							JOptionPane.YES_NO_OPTION,
 							JOptionPane.WARNING_MESSAGE);
@@ -343,8 +349,9 @@ public class PDFValidationApplication extends JFrame {
 	private void attemptURIOpen(String uri) {
 		try {
 			Desktop.getDesktop().browse(new URI(uri));
-		} catch (IOException | URISyntaxException excep) {
-			JOptionPane.showMessageDialog(PDFValidationApplication.this, GUIConstants.ERROR, GUIConstants.ERROR,
+		} catch (IOException | URISyntaxException | UnsupportedOperationException excep) {
+			String message = String.format(GUIConstants.UNSUPPORTED_OPERATION_EXC_BROWSE, uri);
+			JOptionPane.showMessageDialog(PDFValidationApplication.this, message, GUIConstants.ERROR,
 					JOptionPane.ERROR_MESSAGE);
 			logger.log(Level.SEVERE, "Exception in opening link " + uri, excep); //$NON-NLS-1$
 		}
@@ -357,6 +364,7 @@ public class PDFValidationApplication extends JFrame {
 	 *            command line arguments
 	 */
 	public static void main(String[] args) {
+		LogsFileHandler.configLogs();
 		FeaturesPluginsLoader.setBaseFolderPath(System.getProperty(Applications.APP_HOME_PROPERTY));
 		double frameScale = 1;
 		if (args.length > 1 && "--frameScale".equals(args[0]) && args[1] != null) {

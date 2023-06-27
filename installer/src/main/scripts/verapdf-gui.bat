@@ -64,7 +64,8 @@ set SAVE_DIR=
 goto repoSetup
 
 :WinNTGetScriptDir
-set BASEDIR=%~dp0\
+set BASEDIR=%~dp0
+if %BASEDIR:~-1%==\ set BASEDIR=%BASEDIR:~0,-1%
 
 :repoSetup
 set REPO=
@@ -91,7 +92,7 @@ if NOT "%CLASSPATH_PREFIX%" == "" set CLASSPATH=%CLASSPATH_PREFIX%;%CLASSPATH%
 @REM If you have problems with a cramped window and invisible window controls you can increase the SCALE_FACTOR below to 1.5 or even 2.0
 set SCALE_FACTOR=1.0
 
-"%JAVACMD%" %JAVA_OPTS%  -classpath %CLASSPATH% -XX:+IgnoreUnrecognizedVMOptions -Dfile.encoding=UTF8 -Dapp.name="VeraPDF validation GUI" -Dapp.repo="%REPO%" -Dapp.home="%BASEDIR%" -Dbasedir="%BASEDIR%" @verapdf.wrapper.gui@ --frameScale %SCALE_FACTOR% %CMD_LINE_ARGS%
+"%JAVACMD%" %JAVA_OPTS%  -classpath %CLASSPATH% -XX:+IgnoreUnrecognizedVMOptions -Dfile.encoding=UTF8 -Dapp.name="VeraPDF validation GUI" -Dapp.repo="%REPO%" -Dapp.home="%BASEDIR%" -Dbasedir="%BASEDIR%" --add-exports=java.base/sun.security.pkcs=ALL-UNNAMED @verapdf.wrapper.gui@ --frameScale %SCALE_FACTOR% %CMD_LINE_ARGS%
 if %ERRORLEVEL% NEQ 0 goto error
 goto end
 

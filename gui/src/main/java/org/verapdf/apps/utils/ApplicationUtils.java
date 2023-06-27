@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.verapdf.apps.utils;
 
@@ -47,14 +47,14 @@ public final class ApplicationUtils {
 	/**
 	 * Filters the passed list files by removing all files without a ".pdf"
 	 * extension.
-	 * 
+	 *
 	 * @param toFilter
 	 *            the list of files to filter, can not be null
 	 * @return an immutable list of the filtered files, i.e. all PDF extenstions
 	 * @throws IllegalArgumentException
 	 *             when toFilter is null
 	 */
-	public static List<File> filterPdfFiles(final List<File> toFilter, final boolean isRecursive) {
+	public static List<File> filterPdfFiles(final List<File> toFilter, final boolean isRecursive, boolean nonPdfExt) {
 		Applications.checkArgNotNull(toFilter, "toFilter"); //$NON-NLS-1$
 		List<File> retVal = new ArrayList<>();
 		for (File file : toFilter) {
@@ -63,27 +63,28 @@ public final class ApplicationUtils {
 				continue;
 			}
 			if (file.isFile()) {
-				if (FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
+				if (nonPdfExt || FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF) ||
+						FileUtils.hasExtNoCase(file.getName(), GUIConstants.ZIP)) {
 					retVal.add(file);
 				} else {
-					LOGGER.log(Level.SEVERE, "File " + file.getAbsolutePath() + " doesn't have a .pdf extension.");
+					LOGGER.log(Level.SEVERE, "File " + file.getAbsolutePath() + " doesn't have a .pdf extension. Try using --nonpdfext flag");
 				}
 			} else if (file.isDirectory()) {
-				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive));
+				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive, nonPdfExt));
 			}
 		}
 		return Collections.unmodifiableList(retVal);
 	}
 
 	private static List<File> filterPdfFilesFromDirs(final List<File> toFilter,
-											 final boolean isRecursive) {
+											 final boolean isRecursive, final boolean nonPdfExt) {
 		Applications.checkArgNotNull(toFilter, "toFilter"); //$NON-NLS-1$
 		List<File> retVal = new ArrayList<>();
 		for (File file : toFilter) {
-			if (file.isFile() && FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
+			if (file.isFile() && (nonPdfExt || FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF))) {
 				retVal.add(file);
 			} else if (file.isDirectory() && isRecursive) {
-				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive));
+				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive, nonPdfExt));
 			}
 		}
 		return Collections.unmodifiableList(retVal);
@@ -92,7 +93,7 @@ public final class ApplicationUtils {
 	/**
 	 * Checks all files in a list to ensure that they exist and returns true if
 	 * and only if all files in the list exist.
-	 * 
+	 *
 	 * @param toCheck
 	 *            the list of files to test
 	 * @return true if all files in the list exist, otherwise false.
@@ -115,7 +116,7 @@ public final class ApplicationUtils {
 	/**
 	 * Checks a list of files to ensure that they all have an extension supplied
 	 * in the list of extensions
-	 * 
+	 *
 	 * @param toCheck
 	 *            the list of files to check the extensions of
 	 * @param extensions
@@ -136,6 +137,10 @@ public final class ApplicationUtils {
 					}
 				}
 				if (!isExtMatch) {
+					return false;
+				}
+			} else if (file.isDirectory()) {
+				if (!isLegalExtension(Arrays.asList(file.listFiles()), extensions)) {
 					return false;
 				}
 			}
@@ -172,9 +177,7 @@ public final class ApplicationUtils {
 				resFeatures.add(feature);
 			}
 		}
-		for (FeatureObjectType type : currentConfig.getEnabledFeatures()) {
-			resFeatures.add(type);
-		}
+		resFeatures.addAll(currentConfig.getEnabledFeatures());
 		return FeatureFactory.configFromValues(resFeatures);
 	}
 }

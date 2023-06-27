@@ -26,7 +26,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Vector;
+import java.util.TreeSet;
+import java.util.SortedSet;
+import java.util.logging.Level;
 
+import javax.swing.JComboBox;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -39,8 +46,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import org.verapdf.apps.ConfigManager;
 import org.verapdf.gui.utils.GUIConstants;
+import org.verapdf.pdfa.Foundries;
+import org.verapdf.pdfa.flavours.PDFAFlavour;
+import org.verapdf.pdfa.validation.profiles.Profiles;
+import org.verapdf.pdfa.validation.validators.ValidatorConfig;
+import org.verapdf.processor.app.ConfigManager;
+import org.verapdf.processor.app.VeraAppConfig;
 
 /**
  * Settings Panel
@@ -49,6 +61,9 @@ import org.verapdf.gui.utils.GUIConstants;
  */
 class SettingsPanel extends JPanel {
 
+	private static final char[] FORBIDDEN_SYMBOLS_IN_FILE_NAME = new char[] { '\\', '/', ':', '*', '?', '\"', '<', '>',
+			'|', '+', '\0', '%' };
+
 	private static final long serialVersionUID = -5688021756073449469L;
 	private JButton okButton;
 	boolean ok;
@@ -56,22 +71,37 @@ class SettingsPanel extends JPanel {
 	private JTextField numberOfFailed;
 	private JTextField numberOfFailedDisplay;
 	private JCheckBox hidePassedRules;
+	private JCheckBox logs;
+	private JCheckBox showErrorMessages;
 	private JTextField fixMetadataPrefix;
+	private PDFAFlavour currentDefaultFlavour;
 	JTextField fixMetadataFolder;
 	JFileChooser folderChooser;
 	private JTextField profilesWikiPath;
+	private static final Map<String, PDFAFlavour> FLAVOURS_MAP = new HashMap<>();
+	private static final Map<String, Integer> LOGGING_LEVELS_MAP = new HashMap<>();
+	private JComboBox<String> chooseDefaultFlavour;
+	private JComboBox<String> chooseLoggingLevel;
 
-	SettingsPanel() throws IOException {
+	SettingsPanel(final ConfigManager config) throws IOException {
 		setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS,
 				GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS));
 		setLayout(new BorderLayout());
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(6, 2));
+		panel.setLayout(new GridLayout(10, 2));
 
 		panel.add(new JLabel(GUIConstants.DISPLAY_PASSED_RULES));
 		this.hidePassedRules = new JCheckBox();
 		panel.add(this.hidePassedRules);
+
+		panel.add(new JLabel(GUIConstants.LOGS_LABEL_TEXT));
+		this.logs = new JCheckBox();
+		panel.add(this.logs);
+
+		panel.add(new JLabel(GUIConstants.SHOW_ERROR_MESSAGES_TEXT));
+		this.showErrorMessages = new JCheckBox();
+		panel.add(this.showErrorMessages);
 
 		panel.add(new JLabel(GUIConstants.MAX_NUMBER_FAILED_CHECKS));
 		this.numberOfFailed = new JTextField();
@@ -80,7 +110,7 @@ class SettingsPanel extends JPanel {
 		this.numberOfFailed.setToolTipText(GUIConstants.MAX_FAILED_CHECKS_SETTING_TIP);
 		JPanel panel1 = new JPanel();
 		panel1.setLayout(null);
-		this.numberOfFailed.setBounds(0, 0, 65, 23);
+		this.numberOfFailed.setBounds(0, 0, 65, 28);
 		panel1.add(this.numberOfFailed);
 		panel.add(panel1);
 
@@ -88,11 +118,11 @@ class SettingsPanel extends JPanel {
 
 		this.numberOfFailedDisplay = new JTextField();
 		this.numberOfFailedDisplay.setTransferHandler(null);
-		this.numberOfFailedDisplay.addKeyListener(getKeyAdapter(this.numberOfFailedDisplay, true));
+		this.numberOfFailedDisplay.addKeyListener(getKeyAdapter(this.numberOfFailedDisplay, false));
 		this.numberOfFailedDisplay.setToolTipText(GUIConstants.MAX_FAILED_CHECKS_DISP_SETTING_TIP);
 		JPanel panel2 = new JPanel();
 		panel2.setLayout(null);
-		this.numberOfFailedDisplay.setBounds(0, 0, 65, 23);
+		this.numberOfFailedDisplay.setBounds(0, 0, 65, 28);
 		panel2.add(this.numberOfFailedDisplay);
 		panel.add(panel2);
 
@@ -151,12 +181,59 @@ class SettingsPanel extends JPanel {
 		this.profilesWikiPath = new JTextField(GUIConstants.SETTINGS_DIALOG_MAX_CHARS_TEXTFIELD);
 		panel.add(this.profilesWikiPath);
 
+		panel.add(new JLabel("Default flavour:"));
+		Vector<String> availableFlavours = new Vector<>();
+		SortedSet<String> sortedFlavours = new TreeSet<>();
+		for (PDFAFlavour flavour : Profiles.getVeraProfileDirectory().getPDFAFlavours()) {
+			String flavourReadableText = CheckerPanel.getFlavourReadableText(flavour);
+			sortedFlavours.add(flavourReadableText);
+			FLAVOURS_MAP.put(flavourReadableText, flavour);
+		}
+		availableFlavours.addAll(sortedFlavours);
+		this.chooseDefaultFlavour = new JComboBox<>(availableFlavours);
+		this.chooseDefaultFlavour.setOpaque(true);
+		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
+		this.chooseDefaultFlavour.setRenderer(renderer);
+		PDFAFlavour fromConfig = config.createProcessorConfig().getValidatorConfig().getDefaultFlavour();
+		String fromConfigDefaultFlavourText = CheckerPanel.getFlavourReadableText(fromConfig);
+		if (availableFlavours.contains(fromConfigDefaultFlavourText)) {
+			this.chooseDefaultFlavour.setSelectedItem(fromConfigDefaultFlavourText);
+			currentDefaultFlavour = fromConfig;
+		} else {
+			this.chooseDefaultFlavour.setSelectedItem(CheckerPanel.getFlavourReadableText(PDFAFlavour.PDFA_1_B));
+			currentDefaultFlavour = PDFAFlavour.PDFA_1_B;
+		}
+		panel.add(this.chooseDefaultFlavour);
+
+		panel.add(new JLabel(GUIConstants.CHOOSE_LOGGING_LEVEL));
+		Vector<String> availableLoggingLevels = new Vector<>();
+		availableLoggingLevels.add(GUIConstants.OFF_LEVEL);
+		availableLoggingLevels.add(GUIConstants.SEVERE_LEVEL);
+		availableLoggingLevels.add(GUIConstants.WARNING_LEVEL);
+		availableLoggingLevels.add(GUIConstants.CONFIG_LEVEL);
+		availableLoggingLevels.add(GUIConstants.ALL_LEVEL);
+		for (int i = 0; i < availableLoggingLevels.size(); ++i){
+			LOGGING_LEVELS_MAP.put(availableLoggingLevels.get(i), i);
+		}
+		this.chooseLoggingLevel = new JComboBox<>(availableLoggingLevels);
+		this.chooseLoggingLevel.setOpaque(true);
+		this.chooseLoggingLevel.setRenderer(new ChooseFlavourRenderer());
+		String levelFromConfig = LOGGING_LEVELS_MAP.keySet()
+				.stream()
+				.filter(l -> l.startsWith(config.getValidatorConfig().getLoggingLevel().toString()))
+				.findFirst()
+				.orElse(GUIConstants.WARNING_LEVEL);
+		this.chooseLoggingLevel.setSelectedItem(levelFromConfig);
+		panel.add(this.chooseLoggingLevel);
+
 		add(panel, BorderLayout.CENTER);
 
 		this.okButton = new JButton(GUIConstants.OK);
 		this.okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent event) {
+				String selectedItem = (String) chooseDefaultFlavour.getSelectedItem();
+				currentDefaultFlavour = FLAVOURS_MAP.get(selectedItem);
 				boolean isEverythingValid = true;
 				Path mdPath = FileSystems.getDefault().getPath(SettingsPanel.this.fixMetadataFolder.getText());
 				if (mdPath == null || (!mdPath.toString().isEmpty()
@@ -190,26 +267,49 @@ class SettingsPanel extends JPanel {
 
 		this.ok = false;
 
-		this.hidePassedRules.setSelected(settings.createProcessorConfig().getValidatorConfig().isRecordPasses());
+		ValidatorConfig validatorConfig = settings.createProcessorConfig().getValidatorConfig();
+		this.hidePassedRules.setSelected(validatorConfig.isRecordPasses());
 
-		int numbOfFail = settings.createProcessorConfig().getValidatorConfig().getMaxFails();
+		if (Foundries.defaultParserIsPDFBox()) {
+			this.showErrorMessages.setSelected(false);
+			this.showErrorMessages.setEnabled(false);
+		} else {
+			this.showErrorMessages.setSelected(validatorConfig.showErrorMessages());
+		}
+
+		this.logs.setSelected(validatorConfig.isLogsEnabled());
+
+		int numbOfFail = validatorConfig.getMaxFails();
 		if (numbOfFail == -1) {
 			this.numberOfFailed.setText("");
 		} else {
 			this.numberOfFailed.setText(String.valueOf(numbOfFail));
 		}
 
-		int numbOfFailDisp = settings.getApplicationConfig().getMaxFailsDisplayed();
+		int numbOfFailDisp = validatorConfig.getMaxNumberOfDisplayedFailedChecks();
 		if (numbOfFailDisp == -1) {
 			this.numberOfFailedDisplay.setText("");
 		} else {
 			this.numberOfFailedDisplay.setText(String.valueOf(numbOfFailDisp));
 		}
 
-		this.fixMetadataPrefix.setText(settings.createProcessorConfig().getFixerConfig().getFixesPrefix());
-		this.fixMetadataFolder.setText(settings.getApplicationConfig().getFixesFolder());
+		String defaultLevel = LOGGING_LEVELS_MAP.keySet()
+				.stream()
+				.filter(l -> l.startsWith(validatorConfig.getLoggingLevel().toString()))
+				.findFirst()
+				.orElse(GUIConstants.WARNING_LEVEL);
+		this.chooseLoggingLevel.setSelectedItem(defaultLevel);
 
-		this.profilesWikiPath.setText(settings.getApplicationConfig().getWikiPath());
+		PDFAFlavour defaultFlavour = validatorConfig.getDefaultFlavour();
+		String fromConfigDefaultFlavourText = CheckerPanel.getFlavourReadableText(defaultFlavour);
+		this.chooseDefaultFlavour.setSelectedItem(fromConfigDefaultFlavourText);
+
+		this.fixMetadataPrefix.setText(settings.createProcessorConfig().getFixerConfig().getFixesPrefix());
+
+		VeraAppConfig appConfig = settings.getApplicationConfig();
+		this.fixMetadataFolder.setText(appConfig.getFixesFolder());
+
+		this.profilesWikiPath.setText(appConfig.getWikiPath());
 
 		Frame owner;
 		if (parent instanceof Frame) {
@@ -231,6 +331,10 @@ class SettingsPanel extends JPanel {
 		this.dialog.setVisible(true);
 
 		return this.ok;
+	}
+
+	public PDFAFlavour getCurrentDefaultFlavour() {
+		return currentDefaultFlavour;
 	}
 
 	private static KeyAdapter getKeyAdapter(final JTextField field, final boolean fromZero) {
@@ -272,6 +376,18 @@ class SettingsPanel extends JPanel {
 		return this.hidePassedRules.isSelected();
 	}
 
+	boolean isLogsEnabled() {
+		return this.logs.isSelected();
+	}
+
+	boolean showErrorMessages() {
+		return this.showErrorMessages.isSelected();
+	}
+
+	Level getLoggingLevel() {
+		return Level.parse(((String)this.chooseLoggingLevel.getSelectedItem()).split(",")[0]);
+	}
+
 	int getFailedChecksNumber() {
 		String str = this.numberOfFailed.getText();
 		return str.length() > 0 ? Integer.parseInt(str) : -1;
@@ -293,9 +409,6 @@ class SettingsPanel extends JPanel {
 	String getProfilesWikiPath() {
 		return this.profilesWikiPath.getText();
 	}
-
-	private static final char[] FORBIDDEN_SYMBOLS_IN_FILE_NAME = new char[] { '\\', '/', ':', '*', '?', '\"', '<', '>',
-			'|', '+', '\0', '%' };
 
 	public static final boolean isValidFileNameCharacter(char c) {
 		for (char ch : FORBIDDEN_SYMBOLS_IN_FILE_NAME) {

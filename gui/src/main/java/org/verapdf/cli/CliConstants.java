@@ -16,9 +16,6 @@ import java.util.List;
  */
 
 public final class CliConstants {
-	private CliConstants() {
-		throw new AssertionError("Should never be here."); //$NON-NLS-1$
-	}
 
 	public static final String APP_NAME = "veraPDF"; //$NON-NLS-1$
 
@@ -32,16 +29,10 @@ public final class CliConstants {
 
 	public static final String MESS_PDF_ENCRYPTED = "%s is an encrypted PDF document.";
 	public static final String MESS_PDF_NOT_VALID = "%s is not a valid PDF document.";
-	public static final String MESS_PROC_STDIN_1 = "veraPDF is processing STDIN and is expecting an EOF marker.";
-	public static final String MESS_PROC_STDIN_2 = "If this isn't your intention you can terminate by typing an EOF equivalent:";
-	public static final String MESS_PROC_STDIN_3 = " - Linux or Mac users should type CTRL-D";
-	public static final String MESS_PROC_STDIN_4 = " - Windows users should type CTRL-Z";
-	public static final List<String> MESS_PROC_STDIN = Arrays.asList(new String[] {
-			MESS_PROC_STDIN_1,
-			MESS_PROC_STDIN_2,
-			MESS_PROC_STDIN_3,
-			MESS_PROC_STDIN_4
-	});
+
+	private CliConstants() {
+		throw new AssertionError("Should never be here."); //$NON-NLS-1$
+	}
 
 	/**
 	 * All valid exit codes from veraPDF CLI

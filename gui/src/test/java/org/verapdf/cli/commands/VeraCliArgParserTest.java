@@ -23,15 +23,15 @@
  */
 package org.verapdf.cli.commands;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.verapdf.apps.Applications;
-import org.verapdf.apps.VeraAppConfig;
+import org.verapdf.cli.FormatterHelper;
 import org.verapdf.processor.TaskType;
 
 import com.beust.jcommander.JCommander;
+import org.verapdf.processor.app.VeraAppConfig;
+
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -53,16 +53,14 @@ public class VeraCliArgParserTest {
         // Test empty String[] args doesn't change that
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] {});
-        assertTrue(parser.showVersion() == VeraCliArgParser.DEFAULT_ARGS
-                .showVersion());
+        jCommander.parse();
+        assertEquals(VeraCliArgParser.DEFAULT_ARGS.showVersion(), parser.showVersion());
 
         // Test other flags & options doesn't change that
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "-h", "--success" });
-        assertTrue(parser.showVersion() == VeraCliArgParser.DEFAULT_ARGS
-                .showVersion());
+        jCommander.parse("-l", "-h", "--success");
+        assertEquals(VeraCliArgParser.DEFAULT_ARGS.showVersion(), parser.showVersion());
     }
 
     /**
@@ -75,16 +73,14 @@ public class VeraCliArgParserTest {
         JCommander jCommander = initialiseJCommander(parser);
 
         // Test option works
-        jCommander.parse(new String[] { "--version" });
-        assertFalse(parser.showVersion() == VeraCliArgParser.DEFAULT_ARGS
-                .showVersion());
+        jCommander.parse("--version");
+        assertNotEquals(VeraCliArgParser.DEFAULT_ARGS.showVersion(), parser.showVersion());
 
         // Test option works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "--version", "-l", "--passed" });
-        assertFalse(parser.showVersion() == VeraCliArgParser.DEFAULT_ARGS
-                .showVersion());
+        jCommander.parse("--version", "-l", "--passed");
+        assertNotEquals(VeraCliArgParser.DEFAULT_ARGS.showVersion(), parser.showVersion());
     }
 
     /**
@@ -99,16 +95,14 @@ public class VeraCliArgParserTest {
         // Test empty String[] args doesn't change that
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] {});
-        assertTrue(parser.listProfiles() == VeraCliArgParser.DEFAULT_ARGS
-                .listProfiles());
+        jCommander.parse();
+        assertEquals(VeraCliArgParser.DEFAULT_ARGS.listProfiles(), parser.listProfiles());
 
         // Test other flags & options doesn't change that
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "--version", "-h", "--success" });
-        assertTrue(parser.listProfiles() == VeraCliArgParser.DEFAULT_ARGS
-                .listProfiles());
+        jCommander.parse("--version", "-h", "--success");
+        assertEquals(VeraCliArgParser.DEFAULT_ARGS.listProfiles(), parser.listProfiles());
     }
 
     /**
@@ -121,15 +115,15 @@ public class VeraCliArgParserTest {
         JCommander jCommander = initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse(new String[] { "-l" });
-        assertFalse(parser.listProfiles() == VeraCliArgParser.DEFAULT_ARGS
+        jCommander.parse("-l");
+        assertNotEquals(parser.listProfiles(), VeraCliArgParser.DEFAULT_ARGS
                 .listProfiles());
 
         // Test flag works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "--version", "-l", "--passed", "-h" });
-        assertFalse(parser.listProfiles() == VeraCliArgParser.DEFAULT_ARGS
+        jCommander.parse("--version", "-l", "--passed", "-h");
+        assertNotEquals(parser.listProfiles(), VeraCliArgParser.DEFAULT_ARGS
                 .listProfiles());
     }
 
@@ -143,15 +137,15 @@ public class VeraCliArgParserTest {
         JCommander jCommander = initialiseJCommander(parser);
 
         // Test option works
-        jCommander.parse(new String[] { "--list" });
-        assertFalse(parser.listProfiles() == VeraCliArgParser.DEFAULT_ARGS
+        jCommander.parse("--list");
+        assertNotEquals(parser.listProfiles(), VeraCliArgParser.DEFAULT_ARGS
                 .listProfiles());
 
         // Test option works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-h", "--list", "--passed" });
-        assertFalse(parser.listProfiles() == VeraCliArgParser.DEFAULT_ARGS
+        jCommander.parse("-h", "--list", "--passed");
+        assertNotEquals(parser.listProfiles(), VeraCliArgParser.DEFAULT_ARGS
                 .listProfiles());
     }
 
@@ -167,14 +161,14 @@ public class VeraCliArgParserTest {
         // Test empty String[] args doesn't change that
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] {});
-        assertTrue(parser.isHelp() == VeraCliArgParser.DEFAULT_ARGS.isHelp());
+        jCommander.parse();
+        assertEquals(VeraCliArgParser.DEFAULT_ARGS.isHelp(), parser.isHelp());
 
         // Test other flags & options doesn't change that
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--version", "--success" });
-        assertTrue(parser.isHelp() == VeraCliArgParser.DEFAULT_ARGS.isHelp());
+        jCommander.parse("-l", "--version", "--success");
+        assertEquals(VeraCliArgParser.DEFAULT_ARGS.isHelp(), parser.isHelp());
     }
 
     /**
@@ -187,14 +181,14 @@ public class VeraCliArgParserTest {
         JCommander jCommander = initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse(new String[] { "-h" });
-        assertFalse(parser.isHelp() == VeraCliArgParser.DEFAULT_ARGS.isHelp());
+        jCommander.parse("-h");
+        assertNotEquals(VeraCliArgParser.DEFAULT_ARGS.isHelp(), parser.isHelp());
 
         // Test flag works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--format", "mrr", "-h" });
-        assertFalse(parser.isHelp() == VeraCliArgParser.DEFAULT_ARGS.isHelp());
+        jCommander.parse("-l", "--format", "mrr", "-h");
+        assertNotEquals(parser.isHelp(), VeraCliArgParser.DEFAULT_ARGS.isHelp());
     }
 
     /**
@@ -207,14 +201,14 @@ public class VeraCliArgParserTest {
         JCommander jCommander = initialiseJCommander(parser);
 
         // Test option works
-        jCommander.parse(new String[] { "--help" });
-        assertFalse(parser.isHelp() == VeraCliArgParser.DEFAULT_ARGS.isHelp());
+        jCommander.parse("--help");
+        assertNotEquals(VeraCliArgParser.DEFAULT_ARGS.isHelp(), parser.isHelp());
 
         // Test option works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--format", "xml", "--help" });
-        assertFalse(parser.isHelp() == VeraCliArgParser.DEFAULT_ARGS.isHelp());
+        jCommander.parse("-l", "--format", "xml", "--help");
+        assertNotEquals(VeraCliArgParser.DEFAULT_ARGS.isHelp(), parser.isHelp());
     }
 
     /**
@@ -229,17 +223,15 @@ public class VeraCliArgParserTest {
         // Test empty String[] args doesn't change that
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] {});
-        assertTrue(parser.logPassed() == VeraCliArgParser.DEFAULT_ARGS
-                .logPassed());
+        jCommander.parse();
+        assertEquals(VeraCliArgParser.DEFAULT_ARGS.logPassed(), parser.logPassed());
 
         // Test other flags & options doesn't change that
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--flavour", "1a", "--version",
-                "-h" });
-        assertTrue(parser.logPassed() == VeraCliArgParser.DEFAULT_ARGS
-                .logPassed());
+        jCommander.parse("-l", "--flavour", "1a", "--version",
+                "-h");
+        assertEquals(VeraCliArgParser.DEFAULT_ARGS.logPassed(), parser.logPassed());
     }
 
     /**
@@ -252,16 +244,15 @@ public class VeraCliArgParserTest {
         JCommander jCommander = initialiseJCommander(parser);
 
         // Test option works
-        jCommander.parse(new String[] { "--passed" });
-        assertFalse(parser.logPassed() == VeraCliArgParser.DEFAULT_ARGS
-                .logPassed());
+        jCommander.parse("--passed");
+        assertNotEquals(VeraCliArgParser.DEFAULT_ARGS
+                .logPassed(), parser.logPassed());
 
         // Test option works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--passed", "--flavour", "3b" });
-        assertFalse(parser.logPassed() == VeraCliArgParser.DEFAULT_ARGS
-                .logPassed());
+        jCommander.parse("-l", "--passed", "--flavour", "3b");
+        assertNotEquals(VeraCliArgParser.DEFAULT_ARGS.logPassed(), parser.logPassed());
     }
 
     /**
@@ -274,16 +265,14 @@ public class VeraCliArgParserTest {
         JCommander jCommander = initialiseJCommander(parser);
 
         // Test option works
-        jCommander.parse(new String[] { "--success" });
-        assertFalse(parser.logPassed() == VeraCliArgParser.DEFAULT_ARGS
-                .logPassed());
+        jCommander.parse("--success");
+        assertNotEquals(VeraCliArgParser.DEFAULT_ARGS.logPassed(), parser.logPassed());
 
         // Test option works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--success", "--flavour", "3b" });
-        assertFalse(parser.logPassed() == VeraCliArgParser.DEFAULT_ARGS
-                .logPassed());
+        jCommander.parse("-l", "--success", "--flavour", "3b");
+        assertNotEquals(VeraCliArgParser.DEFAULT_ARGS.logPassed(), parser.logPassed());
     }
 
     /**
@@ -298,16 +287,14 @@ public class VeraCliArgParserTest {
         // Test empty String[] args doesn't change that
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] {});
-        assertTrue(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
-                .extractFeatures());
+        jCommander.parse();
+        assertEquals(VeraCliArgParser.DEFAULT_ARGS.extractFeatures(), parser.extractFeatures());
 
         // Test other flags & options doesn't change that
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--flavour", "1a", "-h" });
-        assertTrue(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
-                .extractFeatures());
+        jCommander.parse("-l", "--flavour", "1a", "-h");
+        assertEquals(VeraCliArgParser.DEFAULT_ARGS.extractFeatures(), parser.extractFeatures());
     }
 
     /**
@@ -320,16 +307,14 @@ public class VeraCliArgParserTest {
         JCommander jCommander = initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse(new String[] { "-x" });
-        assertFalse(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
-                .extractFeatures());
+        jCommander.parse("-x", "informationDict");
+        assertNotEquals(parser.extractFeatures(), VeraCliArgParser.DEFAULT_ARGS.extractFeatures());
 
         // Test flag works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-x", "--format", "xml", "-h" });
-        assertFalse(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
-                .extractFeatures());
+        jCommander.parse("-x", "informationDict", "--format", "xml", "-h");
+        assertNotEquals(parser.extractFeatures(), VeraCliArgParser.DEFAULT_ARGS.extractFeatures());
     }
 
     /**
@@ -342,16 +327,14 @@ public class VeraCliArgParserTest {
         JCommander jCommander = initialiseJCommander(parser);
 
         // Test option works
-        jCommander.parse(new String[] { "--extract" });
-        assertFalse(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
-                .extractFeatures());
+        jCommander.parse("--extract", "informationDict");
+        assertNotEquals(parser.extractFeatures(), VeraCliArgParser.DEFAULT_ARGS.extractFeatures());
 
         // Test option works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--extract", "--flavour", "3b" });
-        assertFalse(parser.extractFeatures() == VeraCliArgParser.DEFAULT_ARGS
-                .extractFeatures());
+        jCommander.parse("-l", "--extract", "informationDict", "--flavour", "3b");
+        assertNotEquals(parser.extractFeatures(), VeraCliArgParser.DEFAULT_ARGS.extractFeatures());
     }
 
     @Test
@@ -360,26 +343,27 @@ public class VeraCliArgParserTest {
         JCommander jCommander = initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse(new String[] {});
+        jCommander.parse();
         VeraAppConfig config = parser.appConfig(Applications.defaultConfig());
         assertFalse(parser.isValidationOff());
         assertTrue(config.getProcessType().getTasks().contains(TaskType.VALIDATE));
 
         // Test flag works
-        jCommander.parse(new String[] { "-o" });
+        jCommander.parse("-o");
         config = parser.appConfig(Applications.defaultConfig());
         assertTrue(parser.isValidationOff());
         assertFalse(config.getProcessType().getTasks().contains(TaskType.VALIDATE));
 
         // Test flag works
-        jCommander.parse(new String[] { "--off" });
+        jCommander.parse("--off");
         config = parser.appConfig(Applications.defaultConfig());
-        assertTrue(parser.isValidationOff());
-        assertFalse(config.getProcessType().getTasks().contains(TaskType.VALIDATE));
+        assertFalse(parser.isValidationOff());
+        assertTrue(config.getProcessType().getTasks().contains(TaskType.VALIDATE));
     }
 
     static final JCommander initialiseJCommander(final VeraCliArgParser parser) {
         JCommander jCommander = new JCommander(parser);
+        jCommander.setUsageFormatter(new FormatterHelper(jCommander));
         jCommander.setProgramName(APP_NAME);
         jCommander.setAllowParameterOverwriting(true);
         return jCommander;

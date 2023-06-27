@@ -32,6 +32,7 @@ import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.TaskType;
 import org.verapdf.processor.plugins.PluginsCollectionConfig;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -52,7 +53,7 @@ public class VeraCliTasksTest {
 	public void testFixMetadata() throws VeraPDFException {
 		String [] args = {"-o" , "--fixmetadata"};
 		ProcessorConfig config = VeraCliTasksTest.getConfig(args);
-		assertTrue("taskSize = " + config.getTasks().size(), config.getTasks().size() == 2);
+		assertEquals("taskSize = " + config.getTasks().size(), 2, config.getTasks().size());
 		assertTrue(config.getTasks().contains(TaskType.FIX_METADATA));
 		assertTrue(config.getTasks().contains(TaskType.VALIDATE));
 	}
@@ -62,9 +63,9 @@ public class VeraCliTasksTest {
 	 */
 	@Test
 	public void testExtractFeatures() throws VeraPDFException {
-		String [] args = {"-o" , "-x"};
+		String [] args = {"-o" , "-x", "informationDict"};
 		ProcessorConfig config = VeraCliTasksTest.getConfig(args);
-		assertTrue("taskSize = " + config.getTasks().size(), config.getTasks().size() == 1);
+		assertEquals("taskSize = " + config.getTasks().size(), 1, config.getTasks().size());
 		assertTrue(config.getTasks().contains(TaskType.EXTRACT_FEATURES));
 	}
 
@@ -75,7 +76,7 @@ public class VeraCliTasksTest {
 	public void testValidate() throws VeraPDFException {
 		String [] args = {};
 		ProcessorConfig config = VeraCliTasksTest.getConfig(args);
-		assertTrue("taskSize = " + config.getTasks().size(), config.getTasks().size() == 1);
+		assertEquals("taskSize = " + config.getTasks().size(), 1, config.getTasks().size());
 		assertTrue(config.getTasks().contains(TaskType.VALIDATE));
 	}
 
@@ -84,9 +85,9 @@ public class VeraCliTasksTest {
 	 */
 	@Test
 	public void testExtractAndValidation() throws VeraPDFException {
-		String [] args = {"-x"};
+		String [] args = {"-x", "informationDict"};
 		ProcessorConfig config = VeraCliTasksTest.getConfig(args);
-		assertTrue("taskSize = " + config.getTasks().size(), config.getTasks().size() == 2);
+		assertEquals("taskSize = " + config.getTasks().size(), 2, config.getTasks().size());
 		assertTrue(config.getTasks().contains(TaskType.EXTRACT_FEATURES));
 		assertTrue(config.getTasks().contains(TaskType.VALIDATE));
 	}
@@ -96,15 +97,15 @@ public class VeraCliTasksTest {
 	 */
 	@Test
 	public void testExtractFixAndValidation() throws VeraPDFException {
-		String [] args = {"-x", "--fixmetadata"};
+		String [] args = {"-x", "informationDict", "--fixmetadata"};
 		ProcessorConfig config = VeraCliTasksTest.getConfig(args);
-		assertTrue("taskSize = " + config.getTasks().size(), config.getTasks().size() == 3);
+		assertEquals("taskSize = " + config.getTasks().size(), 3, config.getTasks().size());
 		assertTrue(config.getTasks().contains(TaskType.EXTRACT_FEATURES));
 		assertTrue(config.getTasks().contains(TaskType.VALIDATE));
 		assertTrue(config.getTasks().contains(TaskType.FIX_METADATA));
 	}
 
-	private static ProcessorConfig getConfig (final String [] args) throws VeraPDFException {
+	private static ProcessorConfig getConfig(final String [] args) throws VeraPDFException {
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = VeraCliArgParserTest
                 .initialiseJCommander(parser);
@@ -113,6 +114,6 @@ public class VeraCliTasksTest {
         jCommander.parse(args);
         
         return parser.processorConfig(parser.appConfig(Applications.defaultConfig()).getProcessType(),
-				FeatureFactory.defaultConfig(), PluginsCollectionConfig.defaultConfig());
+                                      PluginsCollectionConfig.defaultConfig());
 	}
 }

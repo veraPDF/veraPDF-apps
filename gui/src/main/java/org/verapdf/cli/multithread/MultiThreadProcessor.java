@@ -2,7 +2,6 @@ package org.verapdf.cli.multithread;
 
 import org.verapdf.apps.Applications;
 import org.verapdf.apps.utils.ApplicationUtils;
-import org.verapdf.cli.CliConstants;
 import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.processor.FormatOption;
@@ -10,12 +9,11 @@ import org.verapdf.processor.reports.ResultStructure;
 import org.verapdf.processor.reports.multithread.MultiThreadProcessingHandler;
 import org.verapdf.processor.reports.multithread.MultiThreadProcessingHandlerImpl;
 import org.verapdf.processor.reports.multithread.writer.ReportWriter;
+import org.verapdf.report.HTMLReport;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.OutputStream;
+import javax.xml.transform.TransformerException;
+import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.*;
@@ -41,19 +39,35 @@ public class MultiThreadProcessor {
 	private MultiThreadProcessingHandler processingHandler;
 
 	private boolean isFirstReport = true;
+	private boolean isHTMLReport;
+	private File xmlReport;
+	private String wikiPath;
 
 	private ExitCodes currentExitCode = ExitCodes.VALID;
 	private CountDownLatch latch;
 
 	private MultiThreadProcessor(VeraCliArgParser cliArgParser) {
-		this.os = new BufferedOutputStream(System.out, DEFAULT_BUFFER_SIZE * COEFFICIENT_BUFFER_SIZE);
+		this.isHTMLReport = cliArgParser.getFormat() == FormatOption.HTML;
+		if (isHTMLReport) {
+			try {
+				this.xmlReport = File.createTempFile("veraPDF", "report.xml");
+				this.os = new BufferedOutputStream(new FileOutputStream(xmlReport), DEFAULT_BUFFER_SIZE * COEFFICIENT_BUFFER_SIZE);
+			} catch (IOException e) {
+				isHTMLReport = false;
+				LOGGER.log(Level.WARNING, "Problem with generating html report");
+			}
+		}
+		if (!isHTMLReport) {
+			this.os = new BufferedOutputStream(System.out, DEFAULT_BUFFER_SIZE * COEFFICIENT_BUFFER_SIZE);
+		}
 
+		this.wikiPath = cliArgParser.getProfilesWikiPath();
 		this.errorStream = new BufferedOutputStream(System.err, DEFAULT_BUFFER_SIZE);
 
 		this.veraPDFStarterPath = getVeraPdfStarterFile(cliArgParser);
 		this.veraPDFParameters = VeraCliArgParser.getBaseVeraPDFParameters(cliArgParser);
 		this.filesToProcess = new ConcurrentLinkedQueue<>();
-		this.filesToProcess.addAll(getFiles(cliArgParser.getPdfPaths(), cliArgParser.isRecurse()));
+		this.filesToProcess.addAll(getFiles(cliArgParser.getPdfPaths(), cliArgParser.isRecurse(), cliArgParser.nonPdfExt()));
 		this.filesQuantity = filesToProcess.size();
 
 		FormatOption outputFormat = getOutputFormat(cliArgParser.getFormat().getOption());
@@ -86,7 +100,11 @@ public class MultiThreadProcessor {
 	}
 
 	private FormatOption getOutputFormat(String outputFormat) {
-		return FormatOption.fromOption(outputFormat);
+		FormatOption formatOption = FormatOption.fromOption(outputFormat);
+		if (formatOption == FormatOption.HTML) {
+			return FormatOption.XML;
+		}
+		return formatOption;
 	}
 
 	public synchronized void write(ResultStructure result) {
@@ -102,14 +120,22 @@ public class MultiThreadProcessor {
 
 		if (filesQuantity == 0) {
 			processingHandler.endReport();
+			if (isHTMLReport) {
+				this.os = new BufferedOutputStream(System.out, DEFAULT_BUFFER_SIZE * COEFFICIENT_BUFFER_SIZE);
+				try (InputStream inputStream = new FileInputStream(xmlReport)) {
+					HTMLReport.writeHTMLReport(inputStream, os, true, wikiPath, true);
+				} catch (IOException | TransformerException e) {
+					LOGGER.log(Level.WARNING, "Problem with generating html report");
+				}
+			}
 		}
 	}
 
-	private List<File> getFiles(List<String> pdfPaths, boolean isRecurse) {
+	private List<File> getFiles(List<String> pdfPaths, boolean isRecurse, boolean nonPdfExt) {
 		List<File> toFilter = new ArrayList<>(pdfPaths.size());
 		pdfPaths.forEach(path -> toFilter.add(new File(path)));
 
-		return ApplicationUtils.filterPdfFiles(toFilter, isRecurse);
+		return ApplicationUtils.filterPdfFiles(toFilter, isRecurse, nonPdfExt);
 	}
 
 	private ExitCodes startProcesses(int numberOfProcesses) throws InterruptedException {

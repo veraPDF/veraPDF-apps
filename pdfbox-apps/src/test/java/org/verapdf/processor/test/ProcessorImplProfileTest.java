@@ -23,7 +23,7 @@ package org.verapdf.processor.test;
 import org.junit.Test;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.metadata.fixer.FixerFactory;
-import org.verapdf.pdfa.PdfBoxFoundryProvider;
+import org.verapdf.pdfbox.foundry.PdfBoxFoundryProvider;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
