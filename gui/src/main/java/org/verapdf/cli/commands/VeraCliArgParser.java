@@ -168,7 +168,7 @@ public class VeraCliArgParser {
 	@Parameter(names = { FIX_METADATA }, description = "Performs metadata fixes.", hidden = true)
 	private boolean fixMetadata = false;
 
-	@Parameter(names = { ADD_LOGS }, description = "Add logs to mrr, json or html report.")
+	@Parameter(names = { ADD_LOGS }, description = "Add logs to xml (mrr), json or html report.")
 	private boolean addLogs = false;
 
 	@Parameter(names = {DISABLE_ERROR_MESSAGES}, description = "Disable detailed error messages in the validation report.")
@@ -362,7 +362,7 @@ public class VeraCliArgParser {
 
 	/**
 	 * @return format if policy file is not specified,
-	 * otherwise ignore all report format settings and always use mrr report
+	 * otherwise ignore all report format settings and always use xml (mrr) report
 	 */
 	public FormatOption getFormat() {
 		return this.format;

@@ -37,12 +37,12 @@ If you want to try the latest development version you can obtain it from our [de
 Once downloaded unzip the archive which contains the installer jar with batch and shell scripts to launch, the zip contents are as follows:
 
     verapdf-${project.version}/verapdf-install.bat
-    verapdf-${project.version}/verapdf-install.sh
+    verapdf-${project.version}/verapdf-install
     verapdf-${project.version}/verapdf-izpack-installer-${project.version}.jar
 
 Where `${project.version}` is the last development or release version.
 
-Windows users should run the 'verapdf-install.bat' batch file, while Linux and OSX users should run the shell script, `verapdf-install.sh`. It's possible to run the installer directly on any platform:
+Windows users should run the 'verapdf-install.bat' batch file, while Linux and OSX users should run the shell script, `verapdf-install`. It's possible to run the installer directly on any platform:
 
     java -jar <path-to-installer-jar>/verapdf-izpack-installer-${project.version}.jar
 
@@ -52,7 +52,7 @@ Linux users can download and execute the veraPDF installer using the following c
     wget http://downloads.verapdf.org/rel/verapdf-installer.zip
     unzip verapdf-installer.zip
     cd verapdf-<version>
-    ./verapdf-install.sh
+    ./verapdf-install
 
 #### veraPDF GUI manual
 We've prepared a manual for the GUI which is included in the library project and can be [downloaded from GitHub](https://github.com/veraPDF/veraPDF-apps/raw/integration/veraPDFPDFAConformanceCheckerGUI.pdf).
