@@ -8,6 +8,7 @@ import org.verapdf.pdfa.validation.profiles.Profiles;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
 
 public class FormatterHelper extends DefaultUsageFormatter {
@@ -94,7 +95,9 @@ public class FormatterHelper extends DefaultUsageFormatter {
 				Type fieldGenericType = pd.getParameterized().findFieldGenericType();
 				String valueList = null;
 				if (FeatureObjectType.class.equals(fieldGenericType)) {
-					valueList = Arrays.asList(FeatureObjectType.values()).toString();
+					List<FeatureObjectType> featuresList = new LinkedList<>(Arrays.asList(FeatureObjectType.values()));
+					featuresList.remove(FeatureObjectType.ERROR);
+					valueList = featuresList.toString();
 				}
 				if (valueList != null) {
 					String possibleValues = "Possible Values: " + valueList;
