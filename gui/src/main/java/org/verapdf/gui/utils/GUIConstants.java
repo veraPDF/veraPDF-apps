@@ -98,7 +98,11 @@ public final class GUIConstants {
 	public static final String ERROR_SAVING_REPORT = "Unresolvable problem occured when saving the %S report.";
 	public static final String IOEXCEP_OPENING_REPORT = "Could not open %s using the default Desktop application for %S file type. Please, try opening this file manually.";
 	public static final String IOEXCEP_SAVING_REPORT = "IOException when saving the %S report.";
-	public static final String LABEL_TEXT = "     Choose a PDF and a PDF Flavour, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
+	public static final String LABEL_TEXT = "     Choose a PDF and a PDF flavour or custom profile, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
+
+	public static final String LABEL_TOOL_TIP = "<html>PDF flavour: arlington part<br>" +
+			"Validation profile: custom collection of validation rules</html>";
+
 	public static final String CONSORTIUM_TEXT = "© 2015-2023 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String PREFORMA_FUNDED_TEXT = "Originally funded by the European Commission’s PREFORMA Project";
 	public static final String TITLE = "Arlington PDF Model file checker by veraPDF";
@@ -173,63 +177,63 @@ public final class GUIConstants {
 	public static final int CHOOSE_PDF_BUTTON_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_GRID_X = 0;
-	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_GRID_Y = 3;
+	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_GRID_Y = 1;
 	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_WEIGHT_X = 0;
 	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int PROCESS_TYPE_LABEL_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_X = 1;
-	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_Y = 3;
+	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_Y = 1;
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_WEIGHT_X = 0;
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_HEIGHT = 1;
 
-	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_X = 2;
-	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_Y = 3;
-	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_WEIGHT_X = 1;
+	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_X = 4;
+	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_Y = 1;
+	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_WEIGHT_X = 0;
 	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_HEIGHT = 1;
 
-	public static final int CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_X = 3;
-	public static final int CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_Y = 3;
-	public static final int CHOOSE_FLAVOUR_LABEL_CONSTRAINT_WEIGHT_X = 0;
+	public static final int CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_X = 2;
+	public static final int CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_Y = 1;
+	public static final int CHOOSE_FLAVOUR_LABEL_CONSTRAINT_WEIGHT_X = 1;
 	public static final int CHOOSE_FLAVOUR_LABEL_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_HEIGHT = 1;
 
-	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_X = 4;
-	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_Y = 3;
-	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_WEIGHT_X = 0;
+	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_X = 3;
+	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_Y = 1;
+	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_WEIGHT_X = 1;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_X = 0;
-	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_Y = 1;
+	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_Y = 2;
 	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_WEIGHT_X = 4;
 	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_WIDTH = 4;
 	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_X = 4;
-	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_Y = 1;
+	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_Y = 2;
 	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_WEIGHT_X = 0;
 	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_X = 0;
-	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_Y = 2;
+	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_Y = 3;
 	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_WEIGHT_X = 4;
 	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_WIDTH = 4;
 	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_GRID_X = 4;
-	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_GRID_Y = 2;
+	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_GRID_Y = 3;
 	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_WEIGHT_X = 0;
 	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_GRID_WIDTH = 1;

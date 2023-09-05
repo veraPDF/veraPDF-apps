@@ -22,9 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.imageio.ImageIO;
-import javax.swing.Icon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import org.verapdf.gui.utils.GUIConstants;
 
@@ -48,6 +46,7 @@ class MiniLogoPanel extends JPanel {
 
 	private void addLogo(String logoPath, String text, double scale) throws IOException {
 		JLabel label = new JLabel(text);
+		label.setToolTipText(GUIConstants.LABEL_TOOL_TIP);
 		try (InputStream is = getClass().getClassLoader().getResourceAsStream(logoPath)) {
 			final BufferedImage image = ImageIO.read(is);
 			Icon icon = new Icon() {
