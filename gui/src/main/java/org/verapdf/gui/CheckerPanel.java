@@ -80,7 +80,7 @@ class CheckerPanel extends JPanel {
 	private File htmlReport;
 	private File policy;
 
-	private JComboBox<ProcessType> ProcessTypes;
+	private JComboBox<ProcessType> processTypes;
 	private JCheckBox fixMetadata;
 	private JComboBox<String> chooseFlavour;
 
@@ -229,6 +229,27 @@ class CheckerPanel extends JPanel {
 		this.setLayout(gbl);
 		GridBagConstraints gbc = new GridBagConstraints();
 
+		this.setupChosenPDFField(gbl, gbc);
+		this.setupChoosePDFButton(gbl, gbc);
+		this.setupProcessTypesLabel(gbl, gbc);
+		this.setupProcessTypesBox(gbl, gbc);
+		this.setupFixMetadataCheckBox(gbl, gbc);
+		this.setupChooseFlavourLabel(gbl, gbc);
+		this.setupChooseFlavourBox(gbl, gbc);
+		this.setupChosenProfileTextField(gbl, gbc);
+		this.setupProfileButton(gbl, gbc);
+		this.setupPolicyTextField(gbl, gbc);
+		this.setupPolicyButton(gbl, gbc);
+		this.setupResultLabel(gbl, gbc);
+		this.setupProgressBar(gbl, gbc);
+		this.setupExecuteButton(gbl, gbc);
+
+		JPanel reports = createReportPanel(gbl, gbc);
+		this.add(reports);
+		this.setupReportPanel(reports);
+	}
+
+	private void setupChosenPDFField(final GridBagLayout gbl, final GridBagConstraints gbc) {
 		this.chosenPDF = new JTextField(GUIConstants.PDF_NOT_CHOSEN_TEXT);
 		this.chosenPDF.setEditable(false);
 		setGridBagConstraintsParameters(gbc, GUIConstants.CHOSEN_PDF_LABEL_CONSTRAINT_GRID_X,
@@ -243,7 +264,9 @@ class CheckerPanel extends JPanel {
 				GUIConstants.PDF, GUIConstants.ZIP);
 		targetPDF = new DropTarget(this.chosenPDF, DnDConstants.ACTION_COPY_OR_MOVE,
 				dtdPDFListener, true, null);
+	}
 
+	private void setupChoosePDFButton(final GridBagLayout gbl, final GridBagConstraints gbc) {
 		JButton choosePDF = new JButton(GUIConstants.CHOOSE_PDF_BUTTON_TEXT);
 		setGridBagConstraintsParameters(gbc, GUIConstants.CHOOSE_PDF_BUTTON_CONSTRAINT_GRID_X,
 				GUIConstants.CHOOSE_PDF_BUTTON_CONSTRAINT_GRID_Y, GUIConstants.CHOOSE_PDF_BUTTON_CONSTRAINT_WEIGHT_X,
@@ -259,7 +282,9 @@ class CheckerPanel extends JPanel {
 				CheckerPanel.this.chooseFile(CheckerPanel.this.pdfChooser, new String[] { GUIConstants.PDF });
 			}
 		});
+	}
 
+	private void setupProcessTypesLabel(final GridBagLayout gbl, final GridBagConstraints gbc) {
 		final JLabel processType = new JLabel(GUIConstants.PROCESSING_TYPE);
 		setGridBagConstraintsParameters(gbc, GUIConstants.PROCESS_TYPE_LABEL_CONSTRAINT_GRID_X,
 				GUIConstants.PROCESS_TYPE_LABEL_CONSTRAINT_GRID_Y, GUIConstants.PROCESS_TYPE_LABEL_CONSTRAINT_WEIGHT_X,
@@ -269,20 +294,24 @@ class CheckerPanel extends JPanel {
 		gbl.setConstraints(processType, gbc);
 		processType.setHorizontalAlignment(SwingConstants.RIGHT);
 		this.add(processType);
+	}
 
-		this.ProcessTypes = new JComboBox<>(ProcessType.getOptionValues());
-		this.ProcessTypes.setSelectedItem(config.getApplicationConfig().getProcessType());
+	private void setupProcessTypesBox(final GridBagLayout gbl, final GridBagConstraints gbc) {
+		this.processTypes = new JComboBox<>(ProcessType.getOptionValues());
+		this.processTypes.setSelectedItem(config.getApplicationConfig().getProcessType());
 		ProcessingTypeRenderer processingTypeRenderer = new ProcessingTypeRenderer();
-		this.ProcessTypes.setRenderer(processingTypeRenderer);
+		this.processTypes.setRenderer(processingTypeRenderer);
 		setGridBagConstraintsParameters(gbc, GUIConstants.PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_X,
 				GUIConstants.PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_Y,
 				GUIConstants.PROCESSING_TYPE_COMBOBOX_CONSTRAINT_WEIGHT_X,
 				GUIConstants.PROCESSING_TYPE_COMBOBOX_CONSTRAINT_WEIGHT_Y,
 				GUIConstants.PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_WIDTH,
 				GUIConstants.PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
-		gbl.setConstraints(this.ProcessTypes, gbc);
-		this.add(this.ProcessTypes);
+		gbl.setConstraints(this.processTypes, gbc);
+		this.add(this.processTypes);
+	}
 
+	private void setupFixMetadataCheckBox(final GridBagLayout gbl, final GridBagConstraints gbc) {
 		this.fixMetadata = new JCheckBox(GUIConstants.FIX_METADATA_LABEL_TEXT);
 		this.fixMetadata.setHorizontalTextPosition(SwingConstants.LEFT);
 		if (Foundries.defaultParserIsPDFBox()) {
@@ -303,7 +332,9 @@ class CheckerPanel extends JPanel {
 		if (config.getApplicationConfig().getProcessType() == ProcessType.EXTRACT) {
 			this.fixMetadata.setEnabled(false);
 		}
+	}
 
+	private void setupChooseFlavourLabel(final GridBagLayout gbl, final GridBagConstraints gbc) {
 		final JLabel chooseFlavourLabel = new JLabel(GUIConstants.CHOOSE_FLAVOUR);
 		setGridBagConstraintsParameters(gbc, GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_X,
 				GUIConstants.CHOOSE_FLAVOUR_LABEL_CONSTRAINT_GRID_Y,
@@ -314,7 +345,9 @@ class CheckerPanel extends JPanel {
 		chooseFlavourLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		gbl.setConstraints(chooseFlavourLabel, gbc);
 		this.add(chooseFlavourLabel);
+	}
 
+	private void setupChooseFlavourBox(final GridBagLayout gbl, final GridBagConstraints gbc) throws IOException {
 		Vector<String> availableFlavours = new Vector<>();
 		availableFlavours.add(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
 		availableFlavours.add(GUIConstants.AUTO_FLAVOUR_COMBOBOX_TEXT);
@@ -345,7 +378,9 @@ class CheckerPanel extends JPanel {
 				GUIConstants.CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.chooseFlavour, gbc);
 		this.add(this.chooseFlavour);
+	}
 
+	private void setupChosenProfileTextField(final GridBagLayout gbl, final GridBagConstraints gbc) {
 		this.chosenProfile = new JTextField(GUIConstants.VALIDATION_PROFILE_NOT_CHOSEN);
 		this.chosenProfile.setEditable(false);
 		this.chosenProfile.setEnabled(false);
@@ -369,106 +404,6 @@ class CheckerPanel extends JPanel {
 		} else {
 			this.chosenProfile.setText(GUIConstants.CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT);
 		}
-
-		this.setupProfileButton(gbl, gbc);
-
-		String policyPath = config.getApplicationConfig().getPolicyFile();
-		if (policyPath != null && !policyPath.isEmpty()) {
-			this.policy = new File(policyPath);
-		} else {
-			policyPath = GUIConstants.POLICY_PROFILE_NOT_CHOSEN;
-		}
-		this.chosenPolicy = new JTextField(policyPath);
-		this.chosenPolicy.setEditable(false);
-		this.chosenPolicy.setEnabled(this.ProcessTypes.getSelectedItem() == ProcessType.POLICY);
-		setGridBagConstraintsParameters(gbc, GUIConstants.CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_X,
-				GUIConstants.CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_Y,
-				GUIConstants.CHOSEN_POLICY_LABEL_CONSTRAINT_WEIGHT_X,
-				GUIConstants.CHOSEN_POLICY_LABEL_CONSTRAINT_WEIGHT_Y,
-				GUIConstants.CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_WIDTH,
-				GUIConstants.CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
-		gbl.setConstraints(this.chosenPolicy, gbc);
-		this.add(this.chosenPolicy);
-
-		PanelDropTargetListener dtdPolicyListener = new PanelDropTargetListener(1,
-				GUIConstants.SCH, GUIConstants.XSL, GUIConstants.XSLT);
-		targetPolicy = new DropTarget(this.chosenPolicy, DnDConstants.ACTION_COPY_OR_MOVE,
-				dtdPolicyListener, true, null);
-		targetPolicy.setActive(this.ProcessTypes.getSelectedItem() == ProcessType.POLICY);
-
-		this.setupPolicyButton(gbl, gbc);
-
-		this.resultLabel = new JLabel();
-		this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
-		this.resultLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-		setGridBagConstraintsParameters(gbc, GUIConstants.RESULT_LABEL_CONSTRAINT_GRID_X,
-				GUIConstants.RESULT_LABEL_CONSTRAINT_GRID_Y, GUIConstants.RESULT_LABEL_CONSTRAINT_WEIGHT_X,
-				GUIConstants.RESULT_LABEL_CONSTRAINT_WEIGHT_Y, GUIConstants.RESULT_LABEL_CONSTRAINT_GRID_WIDTH,
-				GUIConstants.RESULT_LABEL_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.CENTER);
-		gbl.setConstraints(this.resultLabel, gbc);
-		this.add(this.resultLabel);
-
-		this.progressBar = new JProgressBar();
-		this.progressBar.setIndeterminate(true);
-		this.progressBar.setVisible(false);
-		setGridBagConstraintsParameters(gbc, GUIConstants.PROGRESSBAR_CONSTRAINT_GRID_X,
-				GUIConstants.PROGRESSBAR_CONSTRAINT_GRID_Y, GUIConstants.PROGRESSBAR_CONSTRAINT_WEIGHT_X,
-				GUIConstants.PROGRESSBAR_CONSTRAINT_WEIGHT_Y, GUIConstants.PROGRESSBAR_CONSTRAINT_GRID_WIDTH,
-				GUIConstants.PROGRESSBAR_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
-		gbl.setConstraints(this.progressBar, gbc);
-		this.add(this.progressBar);
-
-		this.execute = new JButton(GUIConstants.VALIDATE_BUTTON_TEXT);
-		this.execute.setEnabled(false);
-		setGridBagConstraintsParameters(gbc, GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_X,
-				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_Y, GUIConstants.VALIDATE_BUTTON_CONSTRAINT_WEIGHT_X,
-				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_WEIGHT_Y, GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_WIDTH,
-				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
-		gbl.setConstraints(this.execute, gbc);
-		this.add(this.execute);
-
-		JPanel reports = createReportPanel(gbl, gbc);
-		this.add(reports);
-		this.setupReportPanel(reports);
-	}
-
-	private static JPanel createReportPanel(final GridBagLayout gbl, final GridBagConstraints gbc) {
-		JPanel reports = new JPanel();
-		reports.setBorder(BorderFactory.createTitledBorder(GUIConstants.REPORT));
-		reports.setLayout(
-				new GridLayout(GUIConstants.REPORT_PANEL_LINES_NUMBER, GUIConstants.REPORT_PANEL_COLUMNS_NUMBER));
-		setGridBagConstraintsParameters(gbc, GUIConstants.REPORT_PANEL_CONSTRAINT_GRID_X,
-				GUIConstants.REPORT_PANEL_CONSTRAINT_GRID_Y, GUIConstants.REPORT_PANEL_CONSTRAINT_WEIGHT_X,
-				GUIConstants.REPORT_PANEL_CONSTRAINT_WEIGHT_Y, GUIConstants.REPORT_PANEL_CONSTRAINT_GRID_WIDTH,
-				GUIConstants.REPORT_PANEL_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
-		gbl.setConstraints(reports, gbc);
-		return reports;
-	}
-
-	private void setupReportPanel(final JPanel reports) throws IOException {
-		LogoPanel xmlLogo = new LogoPanel(GUIConstants.XML_LOGO_NAME, reports.getBackground(),
-				GUIConstants.XML_LOGO_BORDER_WIDTH);
-		reports.add(xmlLogo);
-
-		this.saveXML = new JButton(GUIConstants.SAVE_REPORT_BUTTON_TEXT);
-		this.saveXML.setEnabled(false);
-		reports.add(this.saveXML);
-
-		this.viewXML = new JButton(GUIConstants.VIEW_REPORT_BUTTON_TEXT);
-		this.viewXML.setEnabled(false);
-		reports.add(this.viewXML);
-
-		LogoPanel htmlLogo = new LogoPanel(GUIConstants.HTML_LOGO_NAME, reports.getBackground(),
-				GUIConstants.HTML_LOGO_BORDER_WIDTH);
-		reports.add(htmlLogo);
-
-		this.saveHTML = new JButton(GUIConstants.SAVE_HTML_REPORT_BUTTON_TEXT);
-		this.saveHTML.setEnabled(false);
-		reports.add(this.saveHTML);
-
-		this.viewHTML = new JButton(GUIConstants.VIEW_HTML_REPORT_BUTTON_TEXT);
-		this.viewHTML.setEnabled(false);
-		reports.add(this.viewHTML);
 	}
 
 	private void setupProfileButton(final GridBagLayout gbl, final GridBagConstraints gbc) {
@@ -514,10 +449,37 @@ class CheckerPanel extends JPanel {
 
 	}
 
+	private void setupPolicyTextField(final GridBagLayout gbl, final GridBagConstraints gbc) {
+		String policyPath = config.getApplicationConfig().getPolicyFile();
+		if (policyPath != null && !policyPath.isEmpty()) {
+			this.policy = new File(policyPath);
+		} else {
+			policyPath = GUIConstants.POLICY_PROFILE_NOT_CHOSEN;
+		}
+
+		this.chosenPolicy = new JTextField(policyPath);
+		this.chosenPolicy.setEditable(false);
+		this.chosenPolicy.setEnabled(this.processTypes.getSelectedItem() == ProcessType.POLICY);
+		setGridBagConstraintsParameters(gbc, GUIConstants.CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_X,
+				GUIConstants.CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_Y,
+				GUIConstants.CHOSEN_POLICY_LABEL_CONSTRAINT_WEIGHT_X,
+				GUIConstants.CHOSEN_POLICY_LABEL_CONSTRAINT_WEIGHT_Y,
+				GUIConstants.CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
+		gbl.setConstraints(this.chosenPolicy, gbc);
+		this.add(this.chosenPolicy);
+
+		PanelDropTargetListener dtdPolicyListener = new PanelDropTargetListener(1,
+				GUIConstants.SCH, GUIConstants.XSL, GUIConstants.XSLT);
+		targetPolicy = new DropTarget(this.chosenPolicy, DnDConstants.ACTION_COPY_OR_MOVE,
+				dtdPolicyListener, true, null);
+		targetPolicy.setActive(this.processTypes.getSelectedItem() == ProcessType.POLICY);
+	}
+
 	private void setupPolicyButton(final GridBagLayout gbl, final GridBagConstraints gbc) {
 
 		final JButton choosePolicy = new JButton(GUIConstants.CHOOSE_POLICY_BUTTON_TEXT);
-		choosePolicy.setEnabled(this.ProcessTypes.getSelectedItem() == ProcessType.POLICY);
+		choosePolicy.setEnabled(this.processTypes.getSelectedItem() == ProcessType.POLICY);
 		setGridBagConstraintsParameters(gbc, GUIConstants.CHOOSE_POLICY_BUTTON_CONSTRAINT_GRID_X,
 				GUIConstants.CHOOSE_POLICY_BUTTON_CONSTRAINT_GRID_Y,
 				GUIConstants.CHOOSE_POLICY_BUTTON_CONSTRAINT_WEIGHT_X,
@@ -554,10 +516,10 @@ class CheckerPanel extends JPanel {
 			}
 		});
 
-		this.ProcessTypes.addActionListener(new ActionListener() {
+		this.processTypes.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				ProcessType item = (ProcessType) CheckerPanel.this.ProcessTypes.getSelectedItem();
+				ProcessType item = (ProcessType) CheckerPanel.this.processTypes.getSelectedItem();
 				switch (item) {
 					case VALIDATE:
 						updateEnabling(!Foundries.defaultParserIsPDFBox(), false);
@@ -591,6 +553,80 @@ class CheckerPanel extends JPanel {
 			}
 		});
 
+	}
+
+	private void setupResultLabel(final GridBagLayout gbl, final GridBagConstraints gbc) {
+		this.resultLabel = new JLabel();
+		this.resultLabel.setForeground(GUIConstants.BEFORE_VALIDATION_COLOR);
+		this.resultLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+		setGridBagConstraintsParameters(gbc, GUIConstants.RESULT_LABEL_CONSTRAINT_GRID_X,
+				GUIConstants.RESULT_LABEL_CONSTRAINT_GRID_Y, GUIConstants.RESULT_LABEL_CONSTRAINT_WEIGHT_X,
+				GUIConstants.RESULT_LABEL_CONSTRAINT_WEIGHT_Y, GUIConstants.RESULT_LABEL_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.RESULT_LABEL_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.CENTER);
+		gbl.setConstraints(this.resultLabel, gbc);
+		this.add(this.resultLabel);
+	}
+
+	private void setupProgressBar(final GridBagLayout gbl, final GridBagConstraints gbc) {
+		this.progressBar = new JProgressBar();
+		this.progressBar.setIndeterminate(true);
+		this.progressBar.setVisible(false);
+		setGridBagConstraintsParameters(gbc, GUIConstants.PROGRESSBAR_CONSTRAINT_GRID_X,
+				GUIConstants.PROGRESSBAR_CONSTRAINT_GRID_Y, GUIConstants.PROGRESSBAR_CONSTRAINT_WEIGHT_X,
+				GUIConstants.PROGRESSBAR_CONSTRAINT_WEIGHT_Y, GUIConstants.PROGRESSBAR_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.PROGRESSBAR_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
+		gbl.setConstraints(this.progressBar, gbc);
+		this.add(this.progressBar);
+	}
+
+	private void setupExecuteButton(final GridBagLayout gbl, final GridBagConstraints gbc) {
+		this.execute = new JButton(GUIConstants.VALIDATE_BUTTON_TEXT);
+		this.execute.setEnabled(false);
+		setGridBagConstraintsParameters(gbc, GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_X,
+				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_Y, GUIConstants.VALIDATE_BUTTON_CONSTRAINT_WEIGHT_X,
+				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_WEIGHT_Y, GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.VALIDATE_BUTTON_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
+		gbl.setConstraints(this.execute, gbc);
+		this.add(this.execute);
+	}
+
+	private static JPanel createReportPanel(final GridBagLayout gbl, final GridBagConstraints gbc) {
+		JPanel reports = new JPanel();
+		reports.setBorder(BorderFactory.createTitledBorder(GUIConstants.REPORT));
+		reports.setLayout(
+				new GridLayout(GUIConstants.REPORT_PANEL_LINES_NUMBER, GUIConstants.REPORT_PANEL_COLUMNS_NUMBER));
+		setGridBagConstraintsParameters(gbc, GUIConstants.REPORT_PANEL_CONSTRAINT_GRID_X,
+				GUIConstants.REPORT_PANEL_CONSTRAINT_GRID_Y, GUIConstants.REPORT_PANEL_CONSTRAINT_WEIGHT_X,
+				GUIConstants.REPORT_PANEL_CONSTRAINT_WEIGHT_Y, GUIConstants.REPORT_PANEL_CONSTRAINT_GRID_WIDTH,
+				GUIConstants.REPORT_PANEL_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
+		gbl.setConstraints(reports, gbc);
+		return reports;
+	}
+
+	private void setupReportPanel(final JPanel reports) throws IOException {
+		LogoPanel xmlLogo = new LogoPanel(GUIConstants.XML_LOGO_NAME, reports.getBackground(),
+				GUIConstants.XML_LOGO_BORDER_WIDTH);
+		reports.add(xmlLogo);
+
+		this.saveXML = new JButton(GUIConstants.SAVE_REPORT_BUTTON_TEXT);
+		this.saveXML.setEnabled(false);
+		reports.add(this.saveXML);
+
+		this.viewXML = new JButton(GUIConstants.VIEW_REPORT_BUTTON_TEXT);
+		this.viewXML.setEnabled(false);
+		reports.add(this.viewXML);
+
+		LogoPanel htmlLogo = new LogoPanel(GUIConstants.HTML_LOGO_NAME, reports.getBackground(),
+				GUIConstants.HTML_LOGO_BORDER_WIDTH);
+		reports.add(htmlLogo);
+
+		this.saveHTML = new JButton(GUIConstants.SAVE_HTML_REPORT_BUTTON_TEXT);
+		this.saveHTML.setEnabled(false);
+		reports.add(this.saveHTML);
+
+		this.viewHTML = new JButton(GUIConstants.VIEW_HTML_REPORT_BUTTON_TEXT);
+		this.viewHTML.setEnabled(false);
+		reports.add(this.viewHTML);
 	}
 
 	void validationEnded(File xmlReportFile, File htmlReportFile) {
@@ -639,7 +675,7 @@ class CheckerPanel extends JPanel {
 				}
 
 				if (htmlReportFile != null
-						&& !(result.getBatchSummary().isMultiJob() && this.ProcessTypes.getSelectedItem() == ProcessType.EXTRACT)) {
+						&& !(result.getBatchSummary().isMultiJob() && this.processTypes.getSelectedItem() == ProcessType.EXTRACT)) {
 					this.saveHTML.setEnabled(true);
 					this.viewHTML.setEnabled(true);
 				}
@@ -698,11 +734,11 @@ class CheckerPanel extends JPanel {
 		File currentDir = new File(new File(GUIConstants.DOT).getCanonicalPath());
 		res.setCurrentDirectory(currentDir);
 		res.setAcceptAllFileFilterUsed(allFilesAccept);
-		res.setFileFilter(new FileNameExtensionFilter(elementsCommaDelimeted(types), types));
+		res.setFileFilter(new FileNameExtensionFilter(elementsCommaDelimited(types), types));
 		return res;
 	}
 
-	private static String elementsCommaDelimeted(String... elements) {
+	private static String elementsCommaDelimited(String... elements) {
 		StringBuilder description = new StringBuilder(elements[0]);
 		for (int i = 1; i < elements.length; ++i) {
 			description.append(",").append(elements[i]); //$NON-NLS-1$
@@ -852,7 +888,7 @@ class CheckerPanel extends JPanel {
 
 	VeraAppConfig appConfigFromState() {
 		AppConfigBuilder builder = Applications.createConfigBuilder(CheckerPanel.config.getApplicationConfig());
-		ProcessType selectedItem = (ProcessType) this.ProcessTypes.getSelectedItem();
+		ProcessType selectedItem = (ProcessType) this.processTypes.getSelectedItem();
 		if (isFixMetadata() && CheckerPanel.config.getApplicationConfig().getFixesFolder().isEmpty() && this.pdfsToProcess != null) {
 			for (File pdf : pdfsToProcess) {
 				if (FileUtils.hasExtNoCase(pdf.getName(), GUIConstants.ZIP)) {
@@ -879,7 +915,7 @@ class CheckerPanel extends JPanel {
 		return (this.pdfsToProcess != null
 				&& (!this.profilePath.toString().isEmpty()
 				|| !this.chooseFlavour.getSelectedItem().equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT))
-				&& (this.ProcessTypes.getSelectedItem() != ProcessType.POLICY || this.policy != null));
+				&& (this.processTypes.getSelectedItem() != ProcessType.POLICY || this.policy != null));
 	}
 
 	private boolean isFixMetadata() {
