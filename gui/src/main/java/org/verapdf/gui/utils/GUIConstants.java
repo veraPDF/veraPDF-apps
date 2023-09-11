@@ -164,12 +164,12 @@ public final class GUIConstants {
 
 	public static final int CHOSEN_PDF_LABEL_CONSTRAINT_GRID_X = 0;
 	public static final int CHOSEN_PDF_LABEL_CONSTRAINT_GRID_Y = 0;
-	public static final int CHOSEN_PDF_LABEL_CONSTRAINT_WEIGHT_X = 4;
+	public static final int CHOSEN_PDF_LABEL_CONSTRAINT_WEIGHT_X = 5;
 	public static final int CHOSEN_PDF_LABEL_CONSTRAINT_WEIGHT_Y = 1;
-	public static final int CHOSEN_PDF_LABEL_CONSTRAINT_GRID_WIDTH = 4;
+	public static final int CHOSEN_PDF_LABEL_CONSTRAINT_GRID_WIDTH = 5;
 	public static final int CHOSEN_PDF_LABEL_CONSTRAINT_GRID_HEIGHT = 1;
 
-	public static final int CHOOSE_PDF_BUTTON_CONSTRAINT_GRID_X = 4;
+	public static final int CHOOSE_PDF_BUTTON_CONSTRAINT_GRID_X = 5;
 	public static final int CHOOSE_PDF_BUTTON_CONSTRAINT_GRID_Y = 0;
 	public static final int CHOOSE_PDF_BUTTON_CONSTRAINT_WEIGHT_X = 0;
 	public static final int CHOOSE_PDF_BUTTON_CONSTRAINT_WEIGHT_Y = 1;
@@ -206,19 +206,19 @@ public final class GUIConstants {
 
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_X = 3;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_Y = 1;
-	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_WEIGHT_X = 1;
+	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_WEIGHT_X = 0;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_X = 0;
 	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_Y = 2;
-	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_WEIGHT_X = 4;
+	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_WEIGHT_X = 5;
 	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_WEIGHT_Y = 1;
-	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_WIDTH = 4;
+	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_WIDTH = 5;
 	public static final int CHOSEN_PROFILE_LABEL_CONSTRAINT_GRID_HEIGHT = 1;
 
-	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_X = 4;
+	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_X = 5;
 	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_GRID_Y = 2;
 	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_WEIGHT_X = 0;
 	public static final int CHOOSE_PROFILE_BUTTON_CONSTRAINT_WEIGHT_Y = 1;
@@ -227,12 +227,12 @@ public final class GUIConstants {
 
 	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_X = 0;
 	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_Y = 3;
-	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_WEIGHT_X = 4;
+	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_WEIGHT_X = 5;
 	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_WEIGHT_Y = 1;
-	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_WIDTH = 4;
+	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_WIDTH = 5;
 	public static final int CHOSEN_POLICY_LABEL_CONSTRAINT_GRID_HEIGHT = 1;
 
-	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_GRID_X = 4;
+	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_GRID_X = 5;
 	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_GRID_Y = 3;
 	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_WEIGHT_X = 0;
 	public static final int CHOOSE_POLICY_BUTTON_CONSTRAINT_WEIGHT_Y = 1;
@@ -241,19 +241,19 @@ public final class GUIConstants {
 
 	public static final int RESULT_LABEL_CONSTRAINT_GRID_X = 0;
 	public static final int RESULT_LABEL_CONSTRAINT_GRID_Y = 4;
-	public static final int RESULT_LABEL_CONSTRAINT_WEIGHT_X = 4;
+	public static final int RESULT_LABEL_CONSTRAINT_WEIGHT_X = 5;
 	public static final int RESULT_LABEL_CONSTRAINT_WEIGHT_Y = 1;
-	public static final int RESULT_LABEL_CONSTRAINT_GRID_WIDTH = 4;
+	public static final int RESULT_LABEL_CONSTRAINT_GRID_WIDTH = 5;
 	public static final int RESULT_LABEL_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int PROGRESSBAR_CONSTRAINT_GRID_X = 0;
 	public static final int PROGRESSBAR_CONSTRAINT_GRID_Y = 4;
-	public static final int PROGRESSBAR_CONSTRAINT_WEIGHT_X = 4;
+	public static final int PROGRESSBAR_CONSTRAINT_WEIGHT_X = 5;
 	public static final int PROGRESSBAR_CONSTRAINT_WEIGHT_Y = 1;
-	public static final int PROGRESSBAR_CONSTRAINT_GRID_WIDTH = 4;
+	public static final int PROGRESSBAR_CONSTRAINT_GRID_WIDTH = 5;
 	public static final int PROGRESSBAR_CONSTRAINT_GRID_HEIGHT = 1;
 
-	public static final int VALIDATE_BUTTON_CONSTRAINT_GRID_X = 4;
+	public static final int VALIDATE_BUTTON_CONSTRAINT_GRID_X = 5;
 	public static final int VALIDATE_BUTTON_CONSTRAINT_GRID_Y = 4;
 	public static final int VALIDATE_BUTTON_CONSTRAINT_WEIGHT_X = 0;
 	public static final int VALIDATE_BUTTON_CONSTRAINT_WEIGHT_Y = 1;
@@ -262,9 +262,9 @@ public final class GUIConstants {
 
 	public static final int REPORT_PANEL_CONSTRAINT_GRID_X = 0;
 	public static final int REPORT_PANEL_CONSTRAINT_GRID_Y = 5;
-	public static final int REPORT_PANEL_CONSTRAINT_WEIGHT_X = 5;
+	public static final int REPORT_PANEL_CONSTRAINT_WEIGHT_X = 6;
 	public static final int REPORT_PANEL_CONSTRAINT_WEIGHT_Y = 3;
-	public static final int REPORT_PANEL_CONSTRAINT_GRID_WIDTH = 5;
+	public static final int REPORT_PANEL_CONSTRAINT_GRID_WIDTH = 6;
 	public static final int REPORT_PANEL_CONSTRAINT_GRID_HEIGHT = 1;
 
 	public static final int REPORT_PANEL_LINES_NUMBER = 2;
