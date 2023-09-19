@@ -212,7 +212,7 @@ class SettingsPanel extends JPanel {
 		availableLoggingLevels.add(GUIConstants.WARNING_LEVEL);
 		availableLoggingLevels.add(GUIConstants.CONFIG_LEVEL);
 		availableLoggingLevels.add(GUIConstants.ALL_LEVEL);
-		for (int i = 0; i < availableLoggingLevels.size(); ++i){
+		for (int i = 0; i < availableLoggingLevels.size(); ++i) {
 			LOGGING_LEVELS_MAP.put(availableLoggingLevels.get(i), i);
 		}
 		this.chooseLoggingLevel = new JComboBox<>(availableLoggingLevels);

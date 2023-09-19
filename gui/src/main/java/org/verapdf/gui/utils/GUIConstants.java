@@ -139,7 +139,7 @@ public final class GUIConstants {
 	public static final int EMPTY_BORDER_INSETS = 5;
 	public static final int FRAME_COORD_X = 100;
 	public static final int FRAME_COORD_Y = 100;
-	public static final int FRAME_WIDTH = 710;
+	public static final int FRAME_WIDTH = 800;
 	public static final int FRAME_HEIGHT = 370;
 
 	public static final int BORDER_WIDTH = 4;
@@ -182,7 +182,7 @@ public final class GUIConstants {
 
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_X = 1;
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_Y = 1;
-	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_WEIGHT_X = 0;
+	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_WEIGHT_X = 1;
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int PROCESSING_TYPE_COMBOBOX_CONSTRAINT_GRID_HEIGHT = 1;
@@ -203,7 +203,7 @@ public final class GUIConstants {
 
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_X = 3;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_Y = 1;
-	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_WEIGHT_X = 0;
+	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_WEIGHT_X = 1;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_WEIGHT_Y = 1;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_WIDTH = 1;
 	public static final int CHOOSE_FLAVOUR_COMBOBOX_CONSTRAINT_GRID_HEIGHT = 1;
