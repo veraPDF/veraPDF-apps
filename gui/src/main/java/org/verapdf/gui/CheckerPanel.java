@@ -257,7 +257,6 @@ class CheckerPanel extends JPanel {
 				GUIConstants.CHOSEN_PDF_LABEL_CONSTRAINT_WEIGHT_Y, GUIConstants.CHOSEN_PDF_LABEL_CONSTRAINT_GRID_WIDTH,
 				GUIConstants.CHOSEN_PDF_LABEL_CONSTRAINT_GRID_HEIGHT, GridBagConstraints.HORIZONTAL);
 		gbl.setConstraints(this.chosenPDF, gbc);
-		gbc.fill = GridBagConstraints.HORIZONTAL;
 		this.add(this.chosenPDF);
 
 		PanelDropTargetListener dtdPDFListener = new PanelDropTargetListener(-1,
