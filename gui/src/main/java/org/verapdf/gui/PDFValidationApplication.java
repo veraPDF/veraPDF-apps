@@ -151,7 +151,7 @@ public class PDFValidationApplication extends JFrame {
 					}
 
 					MetadataFixerConfig fixConf = FixerFactory
-							.configFromValues(PDFValidationApplication.this.settingsPanel.getFixMetadataPrefix(), true);
+							.configFromValues(PDFValidationApplication.this.settingsPanel.getFixMetadataPrefix());
 					try {
 						configManager.updateFixerConfig(fixConf);
 					} catch (JAXBException | IOException excep) {
