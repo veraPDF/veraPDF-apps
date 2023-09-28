@@ -582,7 +582,7 @@ public class VeraCliArgParser {
 	}
 
 	public MetadataFixerConfig fixerConfig() {
-		return FixerFactory.configFromValues(this.prefix, true);
+		return FixerFactory.configFromValues(this.prefix);
 	}
 
 	public VeraAppConfig appConfig(final VeraAppConfig base) {

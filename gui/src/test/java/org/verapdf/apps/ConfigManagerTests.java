@@ -149,7 +149,7 @@ public class ConfigManagerTests {
 		ConfigManager newManager = Applications.createTmpConfigManager();
 		assertNotSame(defaultConfig, newManager.getFixerConfig());
 		assertEquals(defaultConfig, newManager.getFixerConfig());
-		MetadataFixerConfig newConfig = FixerFactory.configFromValues("NOT_DEFAULT", !defaultConfig.isFixId());
+		MetadataFixerConfig newConfig = FixerFactory.configFromValues("NOT_DEFAULT");
 		newManager.updateFixerConfig(newConfig);
 		assertNotEquals(defaultConfig, newManager.getFixerConfig());
 	}
