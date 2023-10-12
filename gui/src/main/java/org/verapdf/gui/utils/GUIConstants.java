@@ -101,7 +101,7 @@ public final class GUIConstants {
 	public static final String LABEL_TEXT = "     Choose a PDF and a PDF flavour or custom profile, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
 
 	public static final String LABEL_TOOL_TIP = "<html>PDF flavour: arlington part<br>" +
-			"Validation profile: custom collection of validation rules</html>";
+			"Profile: custom collection of rules</html>";
 
 	public static final String CONSORTIUM_TEXT = "© 2015-2023 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String PREFORMA_FUNDED_TEXT = "Originally funded by the European Commission’s PREFORMA Project";
