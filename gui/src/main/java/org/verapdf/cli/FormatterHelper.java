@@ -4,12 +4,10 @@ import com.beust.jcommander.*;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
+import org.verapdf.processor.FormatOption;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class FormatterHelper extends DefaultUsageFormatter {
 
@@ -74,7 +72,11 @@ public class FormatterHelper extends DefaultUsageFormatter {
 						flavours.add(PDFAFlavour.NO_ARLINGTON_FLAVOUR);
 					}
 					valueList = flavours.toString();
-				} else {
+				} else if (FormatOption.class.getCanonicalName().equals(type.getName())) {
+					List<FormatOption> formatOptions = new LinkedList<>(Arrays.asList(FormatOption.values()));
+					formatOptions.remove(FormatOption.MRR);
+					valueList = formatOptions.toString();
+				}else {
 					valueList = EnumSet.allOf((Class<? extends Enum>) type).toString();
 				}
 				String possibleValues = "Possible Values: " + valueList;
