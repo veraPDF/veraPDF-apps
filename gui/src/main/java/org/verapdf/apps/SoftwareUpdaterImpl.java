@@ -10,17 +10,19 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.verapdf.ReleaseDetails;
 import org.verapdf.version.SemanticVersionNumber;
 import org.verapdf.version.Versions;
-import org.xml.sax.Attributes;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -30,12 +32,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class SoftwareUpdaterImpl implements SoftwareUpdater {
 	private final static Logger logger = Logger.getLogger(SoftwareUpdaterImpl.class.getCanonicalName());
-	private final static SAXParserFactory saxFact = SAXParserFactory.newInstance();
-	private final static String jenkinsRoot = "http://jenkins.openpreservation.org/job/veraPDF-apps"; //$NON-NLS-1$
-	private final static String jenkinsApiPath = "/lastStableBuild/api/xml"; //$NON-NLS-1$
-	private final static String latestGF = jenkinsRoot + jenkinsApiPath;
-	private final static String latestPDFBox = jenkinsRoot + "-" + Versions.PDFBOX_BUILD_INFO.toLowerCase() //$NON-NLS-1$
-			+ jenkinsApiPath;
+	private final static String latestGF = "https://search.maven.org/solrsearch/select?q=g:org.verapdf.apps+AND+a:greenfield-apps&core=gav&rows=20&wt=xml";
+	private final static String latestPDFBox = "https://search.maven.org/solrsearch/select?q=g:org.verapdf.apps+AND+a:pdfbox-apps&core=gav&rows=20&wt=xml";
 	private final String currentVersion = Applications.getAppDetails().getVersion();
 
 	/**
@@ -47,17 +45,18 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 
 	@Override
 	public boolean isOnline() {
+		String stringURL = getEndpointForVersion(this.currentVersion);
 		try {
-			URL url = new URL(getEndpointForVersion(this.currentVersion));
+			URL url = new URL(stringURL);
 			HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-			huc.setRequestMethod("HEAD"); //$NON-NLS-1$
+			huc.setRequestMethod("GET"); //$NON-NLS-1$
 			huc.connect();
 			if (huc.getResponseCode() == 200) {
 				url.openStream();
 				return true;
 			}
 		} catch (MalformedURLException excep) {
-			throw new IllegalStateException(String.format("Problem parsing hard coded URL %s", jenkinsRoot), excep); //$NON-NLS-1$
+			throw new IllegalStateException(String.format("Problem parsing hard coded URL %s", stringURL), excep); //$NON-NLS-1$
 		} catch (IOException excep) {
 			logger.log(Level.INFO, "Couldn't get latest version info from Jenkins.", excep); //$NON-NLS-1$
 		}
@@ -81,8 +80,9 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 
 	@Override
 	public boolean isUpdateAvailable(final String versionString) {
-		if (!this.isOnline())
+		if (!this.isOnline()) {
 			return false;
+		}
 		SemanticVersionNumber current = Versions.fromString(versionString);
 		String endpoint = getEndpointForVersion(versionString);
 		SemanticVersionNumber available = getLatestVersionFromUrl(endpoint);
@@ -108,47 +108,23 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 		return getLatestVersion(details.getVersion());
 	}
 
-	private static final SemanticVersionNumber getLatestVersionFromUrl(final String endpoint) {
+	private static SemanticVersionNumber getLatestVersionFromUrl(final String endpoint) {
 		try {
 			URL url = new URL(endpoint);
-			SAXParser saxParser = saxFact.newSAXParser();
-			VersionParser versionParser = new VersionParser();
-			saxParser.parse(new InputSource(url.openStream()), versionParser);
-			return versionParser.getVersion();
-		} catch (IOException | ParserConfigurationException | SAXException excep) {
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			builder.setErrorHandler(null);
+			Document doc = builder.parse(new InputSource(url.openStream()));
+			XPath path = XPathFactory.newInstance().newXPath();
+			NodeList versions = ((NodeList) path.evaluate("//str[@name='v']", doc, XPathConstants.NODESET));
+			return Versions.fromString(versions.item(0).getFirstChild().getNodeValue());
+		} catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException excep) {
 			excep.printStackTrace();
 			throw new IllegalStateException(String.format("Problem parsing version number from URL %s", endpoint), //$NON-NLS-1$
 					excep);
 		}
 	}
 
-	private static final String getEndpointForVersion(final String versionString) {
+	private static String getEndpointForVersion(final String versionString) {
 		return versionString.endsWith(Versions.PDFBOX_BUILD_INFO) ? latestPDFBox : latestGF;
-	}
-
-	static class VersionParser extends DefaultHandler {
-		private static final String verQName = "displayName"; //$NON-NLS-1$
-		private SemanticVersionNumber versionNumber = Versions.fromInts(0, 0, 0);
-		private boolean isVersion = false;
-
-		public SemanticVersionNumber getVersion() {
-			return this.versionNumber;
-		}
-
-		@Override
-		public void startElement(final String namespaceURI, final String localName, final String qName,
-				final Attributes atts) {
-			this.isVersion = qName.equalsIgnoreCase(verQName);
-
-		}
-
-		@Override
-		public void characters(final char ch[], final int start, final int length) {
-			if (!this.isVersion)
-				return;
-			String version = new String(ch, start, length);
-			this.versionNumber = Versions.fromString(version);
-			this.isVersion = false;
-		}
 	}
 }

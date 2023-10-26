@@ -95,7 +95,7 @@ public final class GUIConstants {
 	public static final String ERROR_SAVING_REPORT = "Unresolvable problem occured when saving the %S report.";
 	public static final String IOEXCEP_OPENING_REPORT = "Could not open %s using the default Desktop application for %S file type. Please, try opening this file manually.";
 	public static final String IOEXCEP_SAVING_REPORT = "IOException when saving the %S report.";
-	public static final String LABEL_TEXT = "     Please choose a PDF and a PDF flavour or custom validation profile, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
+	public static final String LABEL_TEXT = "     Choose a PDF and a PDF flavour or a custom validation profile, then press \"" + VALIDATE_BUTTON_TEXT + "\"";
 
 	public static final String LABEL_TOOL_TIP = "<html>PDF flavour: the PDF/A or PDF/UA part and conformance level<br>" +
 			"Validation profile: custom collection of validation rules</html>";
