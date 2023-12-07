@@ -70,7 +70,7 @@ public final class GUIConstants {
 	public static final String CHOOSE_PROFILE_BUTTON_TEXT = "Choose Profile";
 	public static final String CHOOSE_POLICY_BUTTON_TEXT = "Choose Policy";
 	public static final String POLICY_TITLE = "Policy Creator";
-	public static final String CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT = "Profile not chosen";
+	public static final String CHOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT = "Profile not chosen";
 	public static final String CUSTOM_PROFILE_COMBOBOX_TEXT = "Custom profile";
 	public static final String AUTO_FLAVOUR_COMBOBOX_TEXT = "Auto-detect";
 	public static final String AUTO_ARLINGTON_FLAVOUR_COMBOBOX_TEXT = "Auto";
@@ -95,7 +95,7 @@ public final class GUIConstants {
 	public static final String SAVE_HTML_REPORT_BUTTON_TEXT = "Save HTML";
 	public static final String VIEW_HTML_REPORT_BUTTON_TEXT = "View HTML";
 	public static final String REPORT = "Report";
-	public static final String ERROR_SAVING_REPORT = "Unresolvable problem occured when saving the %S report.";
+	public static final String ERROR_SAVING_REPORT = "Unresolvable problem occurred when saving the %S report.";
 	public static final String IOEXCEP_OPENING_REPORT = "Could not open %s using the default Desktop application for %S file type. Please, try opening this file manually.";
 	public static final String IOEXCEP_SAVING_REPORT = "IOException when saving the %S report.";
 	public static final String LABEL_TEXT = "     Choose a PDF and a PDF flavour or a custom profile, then press \"" + VALIDATE_BUTTON_TEXT + "\"";

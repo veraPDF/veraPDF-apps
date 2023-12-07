@@ -19,7 +19,7 @@ import org.verapdf.version.Versions;
  */
 
 public class SoftwareUpdaterTest {
-	SoftwareUpdater updater = Applications.softwareUpdater();
+	final SoftwareUpdater updater = Applications.softwareUpdater();
 
 	/**
 	 * Test method for {@link org.verapdf.apps.SoftwareUpdaterImpl#getLatestAppsVersion()}.

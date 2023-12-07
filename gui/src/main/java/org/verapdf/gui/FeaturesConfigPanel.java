@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -45,10 +46,10 @@ public class FeaturesConfigPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -6602264333993164990L;
 
-	private JButton okButton;
+	private final JButton okButton;
 	boolean ok;
 	JDialog dialog;
-	private EnumMap<FeatureObjectType, JCheckBox> featureGrid = new EnumMap<>(FeatureObjectType.class);
+	private final EnumMap<FeatureObjectType, JCheckBox> featureGrid = new EnumMap<>(FeatureObjectType.class);
 
 	FeaturesConfigPanel() {
 		setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS,
@@ -121,9 +122,9 @@ public class FeaturesConfigPanel extends JPanel {
 
 	FeatureExtractorConfig getFeaturesConfig() {
 		EnumSet<FeatureObjectType> enabledFeatures = EnumSet.noneOf(FeatureObjectType.class);
-		for (FeatureObjectType type : this.featureGrid.keySet()) {
-			if (this.featureGrid.get(type).isSelected()) {
-				enabledFeatures.add(type);
+		for (Map.Entry<FeatureObjectType, JCheckBox> entry : this.featureGrid.entrySet()) {
+			if (entry.getValue().isSelected()) {
+				enabledFeatures.add(entry.getKey());
 			}
 		}
 		return FeatureFactory.configFromValues(enabledFeatures);

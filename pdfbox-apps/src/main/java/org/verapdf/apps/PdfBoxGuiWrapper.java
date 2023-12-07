@@ -28,7 +28,7 @@ public final class PdfBoxGuiWrapper {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// Initialiser PDF Box Foundry
+		// Initializer PDF Box Foundry
 		PdfBoxFoundryProvider.initialise();
 		PDFValidationApplication.main(args);	
 	}

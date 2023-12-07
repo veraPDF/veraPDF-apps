@@ -53,7 +53,7 @@ class AboutPanel extends JPanel {
 
 	static final Logger logger = Logger.getLogger(AboutPanel.class.getCanonicalName());
 
-	private JButton okButton;
+	private final JButton okButton;
 	JDialog dialog;
 
 	AboutPanel() throws IOException {
