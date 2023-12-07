@@ -27,7 +27,6 @@ import com.beust.jcommander.JCommander;
 import org.junit.Test;
 import org.verapdf.apps.Applications;
 import org.verapdf.core.VeraPDFException;
-import org.verapdf.features.FeatureFactory;
 import org.verapdf.processor.ProcessorConfig;
 import org.verapdf.processor.TaskType;
 import org.verapdf.processor.plugins.PluginsCollectionConfig;

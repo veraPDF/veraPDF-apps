@@ -3,8 +3,6 @@
  */
 package org.verapdf.cli;
 
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>

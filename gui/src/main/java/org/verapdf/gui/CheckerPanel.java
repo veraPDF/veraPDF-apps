@@ -56,7 +56,7 @@ import org.verapdf.processor.app.VeraAppConfig;
  */
 @SuppressWarnings("synthetic-access")
 class CheckerPanel extends JPanel {
-	private static transient ConfigManager config;
+	private transient ConfigManager config;
 	/**
 	 * ID for serialisation
 	 */
@@ -67,10 +67,10 @@ class CheckerPanel extends JPanel {
 	private static final Map<String, PDFAFlavour> FLAVOURS_MAP = new HashMap<>();
 	private static final String emptyString = ""; //$NON-NLS-1$
 
-	private JFileChooser pdfChooser;
-	private JFileChooser xmlChooser;
-	private JFileChooser htmlChooser;
-	private JFileChooser policyChooser;
+	private final JFileChooser pdfChooser;
+	private final JFileChooser xmlChooser;
+	private final JFileChooser htmlChooser;
+	private final JFileChooser policyChooser;
 	private List<File> pdfsToProcess;
 	private JTextField chosenPDF;
 	private JTextField chosenProfile;
@@ -104,7 +104,7 @@ class CheckerPanel extends JPanel {
 	private boolean validationInProgress = false;
 
 	CheckerPanel(final ConfigManager config) throws IOException {
-		CheckerPanel.config = config;
+		this.config = config;
 		this.profilePath = FileSystems.getDefault().getPath(emptyString);
 
 		this.initGui();
@@ -138,7 +138,7 @@ class CheckerPanel extends JPanel {
 						}
 					}
 					CheckerPanel.this.validateWorker = new ValidateWorker(CheckerPanel.this,
-							CheckerPanel.this.pdfsToProcess, CheckerPanel.config, customProfile,
+							CheckerPanel.this.pdfsToProcess, config, customProfile,
 							CheckerPanel.this.policy);
 					CheckerPanel.this.progressBar.setVisible(true);
 					CheckerPanel.this.resultLabel.setVisible(false);
@@ -346,7 +346,7 @@ class CheckerPanel extends JPanel {
 		this.add(chooseFlavourLabel);
 	}
 
-	private void setupChooseFlavourBox(final GridBagLayout gbl, final GridBagConstraints gbc) throws IOException {
+	private void setupChooseFlavourBox(final GridBagLayout gbl, final GridBagConstraints gbc) {
 		Vector<String> availableFlavours = new Vector<>();
 		availableFlavours.add(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT);
 		availableFlavours.add(GUIConstants.AUTO_FLAVOUR_COMBOBOX_TEXT);
@@ -401,7 +401,7 @@ class CheckerPanel extends JPanel {
 		if (!this.profilePath.toString().isEmpty()) {
 			this.chosenProfile.setText(this.profilePath.toString());
 		} else {
-			this.chosenProfile.setText(GUIConstants.CHOOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT);
+			this.chosenProfile.setText(GUIConstants.CHOSEN_PROFILE_TEXTFIELD_DEFAULT_TEXT);
 		}
 	}
 
@@ -420,8 +420,8 @@ class CheckerPanel extends JPanel {
 		this.chooseFlavour.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent actionEvent) {
-				if (CheckerPanel.this.chooseFlavour.getSelectedItem()
-						.equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT)) {
+				if (GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT
+						.equals(CheckerPanel.this.chooseFlavour.getSelectedItem())) {
 					chooseProfile.setEnabled(true);
 					CheckerPanel.this.chosenProfile.setEnabled(true);
 					CheckerPanel.this.targetProfile.setActive(true);
@@ -740,7 +740,7 @@ class CheckerPanel extends JPanel {
 	private static String elementsCommaDelimited(String... elements) {
 		StringBuilder description = new StringBuilder(elements[0]);
 		for (int i = 1; i < elements.length; ++i) {
-			description.append(",").append(elements[i]); //$NON-NLS-1$
+			description.append(',').append(elements[i]); //$NON-NLS-1$
 		}
 		return description.toString();
 	}
@@ -818,7 +818,7 @@ class CheckerPanel extends JPanel {
 	}
 
 	private static String getSelectedPathsMessage(List<File> files) {
-		if (files != null && files.size() > 0) {
+		if (files != null && !files.isEmpty()) {
 			StringBuilder builder = new StringBuilder();
 			for (File file : files) {
 				builder.append(file.getAbsolutePath()).append(", "); //$NON-NLS-1$
@@ -886,9 +886,9 @@ class CheckerPanel extends JPanel {
 	}
 
 	VeraAppConfig appConfigFromState() {
-		AppConfigBuilder builder = Applications.createConfigBuilder(CheckerPanel.config.getApplicationConfig());
+		AppConfigBuilder builder = Applications.createConfigBuilder(config.getApplicationConfig());
 		ProcessType selectedItem = (ProcessType) this.processTypes.getSelectedItem();
-		if (isFixMetadata() && CheckerPanel.config.getApplicationConfig().getFixesFolder().isEmpty() && this.pdfsToProcess != null) {
+		if (isFixMetadata() && config.getApplicationConfig().getFixesFolder().isEmpty() && this.pdfsToProcess != null) {
 			for (File pdf : pdfsToProcess) {
 				if (FileUtils.hasExtNoCase(pdf.getName(), GUIConstants.ZIP)) {
 					logger.log(Level.WARNING, "Fixing metadata are not supported for zip processing, if save folder isn't defined");
@@ -913,7 +913,7 @@ class CheckerPanel extends JPanel {
 	private boolean isExecute() {
 		return (this.pdfsToProcess != null
 				&& (!this.profilePath.toString().isEmpty()
-				|| !this.chooseFlavour.getSelectedItem().equals(GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT))
+				|| !GUIConstants.CUSTOM_PROFILE_COMBOBOX_TEXT.equals(this.chooseFlavour.getSelectedItem()))
 				&& (this.processTypes.getSelectedItem() != ProcessType.POLICY || this.policy != null));
 	}
 
@@ -939,7 +939,7 @@ class CheckerPanel extends JPanel {
 		}
 	}
 
-	private class ProcessingTypeRenderer extends JLabel implements ListCellRenderer<ProcessType> {
+	private static class ProcessingTypeRenderer extends JLabel implements ListCellRenderer<ProcessType> {
 
 		/**
 		 *
@@ -966,11 +966,11 @@ class CheckerPanel extends JPanel {
 		private static final String UNSUPPORTED_FLAVOUR = "Unsupported flavour error.";
 		private static final String CASTING_ERROR = "Casting transfer to files type error.";
 
-		private int acceptableFilesCount;
+		private final int acceptableFilesCount;
 
 		private List<File> selectedFiles = new ArrayList<>();
 
-		private String[] acceptableExtensions;
+		private final String[] acceptableExtensions;
 
 		public PanelDropTargetListener(int acceptableFilesCount, String...acceptableExtensions) {
 			this.acceptableFilesCount = acceptableFilesCount;
@@ -1009,7 +1009,8 @@ class CheckerPanel extends JPanel {
 			// "-1" indicates that we can take any non-zero files or dirs
 			if (acceptableFilesCount != -1 && acceptableFilesCount != selectedFiles.size()) {
 				return false;
-			} else if (selectedFiles.size() == 0){
+			}
+			if (selectedFiles.isEmpty()) {
 				return false;
 			}
 			return ApplicationUtils.isLegalExtension(selectedFiles, acceptableExtensions);
