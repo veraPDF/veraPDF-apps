@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 public final class DialogUtils {
 
 	private DialogUtils() {
-		throw new AssertionError("Shoul'd never happen."); //$NON-NLS-1$
+		throw new AssertionError("Should never happen."); //$NON-NLS-1$
 	}
 
 	public static void errorDialog(final Component parent, final String message) {

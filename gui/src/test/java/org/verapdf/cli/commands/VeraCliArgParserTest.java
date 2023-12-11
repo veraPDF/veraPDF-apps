@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
  */
 @SuppressWarnings("static-method")
 public class VeraCliArgParserTest {
-    private final static String APP_NAME = VeraCliArgParserTest.class.getName();
+    private static final String APP_NAME = VeraCliArgParserTest.class.getName();
 
     /**
      * Test method for

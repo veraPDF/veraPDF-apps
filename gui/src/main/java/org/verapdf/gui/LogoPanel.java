@@ -39,8 +39,8 @@ class LogoPanel extends JPanel {
 	private static final long serialVersionUID = -3623071197419943686L;
 
 	private final transient BufferedImage logo;
-	private int borderWidth;
-	private Color background;
+	private final int borderWidth;
+	private final Color background;
 
 	LogoPanel(String logoName, Color backgroundColor, int borderWidth) throws IOException {
 		this.borderWidth = borderWidth;

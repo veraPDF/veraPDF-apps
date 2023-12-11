@@ -202,9 +202,6 @@ public final class Applications {
 		if (files == null) {
 			return Files.isWritable(directory.toPath());
 		}
-		if (files.length == 0) {
-			return true;
-		}
 		for (String fileName : files) {
 			if (!Files.isWritable(new File(directory + File.separator + fileName).toPath())) {
 				return false;

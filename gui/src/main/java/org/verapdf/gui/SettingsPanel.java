@@ -65,23 +65,23 @@ class SettingsPanel extends JPanel {
 			'|', '+', '\0', '%' };
 
 	private static final long serialVersionUID = -5688021756073449469L;
-	private JButton okButton;
+	private final JButton okButton;
 	boolean ok;
 	JDialog dialog;
-	private JTextField numberOfFailed;
-	private JTextField numberOfFailedDisplay;
-	private JCheckBox hidePassedRules;
-	private JCheckBox logs;
-	private JCheckBox showErrorMessages;
-	private JTextField fixMetadataPrefix;
+	private final JTextField numberOfFailed;
+	private final JTextField numberOfFailedDisplay;
+	private final JCheckBox hidePassedRules;
+	private final JCheckBox logs;
+	private final JCheckBox showErrorMessages;
+	private final JTextField fixMetadataPrefix;
 	private PDFAFlavour currentDefaultFlavour;
 	JTextField fixMetadataFolder;
 	JFileChooser folderChooser;
-	private JTextField profilesWikiPath;
+	private final JTextField profilesWikiPath;
 	private static final Map<String, PDFAFlavour> FLAVOURS_MAP = new HashMap<>();
 	private static final Map<String, Integer> LOGGING_LEVELS_MAP = new HashMap<>();
-	private JComboBox<String> chooseDefaultFlavour;
-	private JComboBox<String> chooseLoggingLevel;
+	private final JComboBox<String> chooseDefaultFlavour;
+	private final JComboBox<String> chooseLoggingLevel;
 
 	SettingsPanel(final ConfigManager config) throws IOException {
 		setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS,
@@ -182,14 +182,13 @@ class SettingsPanel extends JPanel {
 		panel.add(this.profilesWikiPath);
 
 		panel.add(new JLabel("Default flavour:"));
-		Vector<String> availableFlavours = new Vector<>();
 		SortedSet<String> sortedFlavours = new TreeSet<>();
 		for (PDFAFlavour flavour : Profiles.getVeraProfileDirectory().getPDFAFlavours()) {
 			String flavourReadableText = CheckerPanel.getFlavourReadableText(flavour);
 			sortedFlavours.add(flavourReadableText);
 			FLAVOURS_MAP.put(flavourReadableText, flavour);
 		}
-		availableFlavours.addAll(sortedFlavours);
+		Vector<String> availableFlavours = new Vector<>(sortedFlavours);
 		this.chooseDefaultFlavour = new JComboBox<>(availableFlavours);
 		this.chooseDefaultFlavour.setOpaque(true);
 		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
@@ -343,11 +342,11 @@ class SettingsPanel extends JPanel {
 			public void keyTyped(KeyEvent e) {
 				char c = e.getKeyChar();
 				if ((field.getText().length() == 6)
-						&& ((field.getSelectedText() == null) || (field.getSelectedText().length() == 0))
+						&& ((field.getSelectedText() == null) || (field.getSelectedText().isEmpty()))
 						&& (c != KeyEvent.VK_BACK_SPACE) && (c != KeyEvent.VK_DELETE)) {
 					e.consume();
 				} else if (c == '0'
-						&& ((!fromZero && field.getText().length() == 0) || field.getText().startsWith("0"))) {
+						&& ((!fromZero && field.getText().isEmpty()) || field.getText().startsWith("0"))) {
 					e.consume();
 				} else if (!(((c >= '0') && (c <= '9')) || (c == KeyEvent.VK_BACK_SPACE)
 						|| (c == KeyEvent.VK_DELETE))) {
@@ -359,7 +358,7 @@ class SettingsPanel extends JPanel {
 			public void keyReleased(KeyEvent e) {
 				if (field.getText().startsWith("0")) {
 					field.setText(field.getText().replaceFirst("0*", ""));
-					if (field.getText().length() == 0) {
+					if (field.getText().isEmpty()) {
 						if (fromZero) {
 							field.setText("0");
 						} else {
@@ -390,12 +389,12 @@ class SettingsPanel extends JPanel {
 
 	int getFailedChecksNumber() {
 		String str = this.numberOfFailed.getText();
-		return str.length() > 0 ? Integer.parseInt(str) : -1;
+		return !str.isEmpty() ? Integer.parseInt(str) : -1;
 	}
 
 	int getFailedChecksDisplayNumber() {
 		String str = this.numberOfFailedDisplay.getText();
-		return str.length() > 0 ? Integer.parseInt(str) : -1;
+		return !str.isEmpty() ? Integer.parseInt(str) : -1;
 	}
 
 	Path getFixMetadataDirectory() {

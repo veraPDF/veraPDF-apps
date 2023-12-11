@@ -16,7 +16,7 @@ import org.junit.rules.TemporaryFolder;
 
 public class AppUtilsTest {
 	@Rule
-	public TemporaryFolder tempFolder = new TemporaryFolder();
+	public final TemporaryFolder tempFolder = new TemporaryFolder();
 
 	
 	@Test

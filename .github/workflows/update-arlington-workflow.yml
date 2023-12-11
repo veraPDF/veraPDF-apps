@@ -29,7 +29,7 @@ jobs:
         run: |
           git fetch origin arlington:arlington
           git checkout -b test-branch arlington
-      - name: Configure user nameF
+      - name: Configure user name
         run: |
           git config user.name "Git User"
           git config user.email "user@test.com"

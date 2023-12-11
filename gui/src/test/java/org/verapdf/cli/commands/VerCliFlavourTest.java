@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>

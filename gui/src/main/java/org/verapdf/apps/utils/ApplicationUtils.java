@@ -50,7 +50,7 @@ public final class ApplicationUtils {
 	 *
 	 * @param toFilter
 	 *            the list of files to filter, can not be null
-	 * @return an immutable list of the filtered files, i.e. all PDF extenstions
+	 * @return an immutable list of the filtered files, i.e. all PDF extensions
 	 * @throws IllegalArgumentException
 	 *             when toFilter is null
 	 */
@@ -158,7 +158,7 @@ public final class ApplicationUtils {
 		SimpleNamespaceContext nsc = new SimpleNamespaceContext();
 		nsc.setPrefix(SchematronGenerator.SCH_PREFIX, SchematronGenerator.SCH_NAMESPACE);
 		xpath.setNamespaceContext(nsc);
-		String path = "/" + SchematronGenerator.SCH_PREFIX + ":" + SchematronGenerator.ROOT_NAME
+		String path = '/' + SchematronGenerator.SCH_PREFIX + ':' + SchematronGenerator.ROOT_NAME
 				+ "/@" + SchematronGenerator.ENABLED_FEATURES_ATTRIBUTE_NAME;
 		String value = (String) xpath.evaluate(path,
 				document,

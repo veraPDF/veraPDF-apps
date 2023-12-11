@@ -19,7 +19,7 @@ public class FormatterHelper extends DefaultUsageFormatter {
 
 	@Override
 	public void appendAllParametersDetails(StringBuilder out, int indentCount, String indent, List<ParameterDescription> sortedParameters) {
-		if (sortedParameters.size() > 0) {
+		if (!sortedParameters.isEmpty()) {
 			out.append(indent).append("  Options:\n");
 		}
 
@@ -33,7 +33,7 @@ public class FormatterHelper extends DefaultUsageFormatter {
 			   .append("  ")
 			   .append(parameter.required() ? "* " : "  ")
 			   .append(pd.getNames())
-			   .append("\n");
+			   .append('\n');
 
 			if (hasDescription) {
 				wrapDescription(out, indentCount, s(indentCount) + description);
@@ -107,11 +107,11 @@ public class FormatterHelper extends DefaultUsageFormatter {
 					out.append(possibleValues);
 				}
 			}
-			out.append("\n");
+			out.append('\n');
 		}
 	}
 
 	private static String newLineAndIndent(int indent) {
-		return "\n" + s(indent);
+		return '\n' + s(indent);
 	}
 }

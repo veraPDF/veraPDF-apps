@@ -30,18 +30,18 @@ public class MultiThreadProcessor {
 
 	private int filesQuantity;
 
-	private File veraPDFStarterPath;
-	private List<String> veraPDFParameters;
+	private final File veraPDFStarterPath;
+	private final List<String> veraPDFParameters;
 	private OutputStream os;
-	private OutputStream errorStream;
+	private final OutputStream errorStream;
 
-	private ReportWriter reportWriter;
-	private MultiThreadProcessingHandler processingHandler;
+	private final ReportWriter reportWriter;
+	private final MultiThreadProcessingHandler processingHandler;
 
 	private boolean isFirstReport = true;
 	private boolean isHTMLReport;
 	private File xmlReport;
-	private String wikiPath;
+	private final String wikiPath;
 
 	private ExitCodes currentExitCode = ExitCodes.VALID;
 	private CountDownLatch latch;
