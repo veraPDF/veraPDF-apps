@@ -472,10 +472,12 @@ public class VeraCliArgParser {
 	 	this.saveFolder = veraAppConfig.getFixesFolder();
 	 	this.format = veraAppConfig.getFormat();
 	 	this.isVerbose = veraAppConfig.isVerbose();
-	 	this.policyFile = veraAppConfig.getPolicyFile().isEmpty() ? null : new File(veraAppConfig.getPolicyFile());
+		if (veraAppConfig.getProcessType() == ProcessType.POLICY || veraAppConfig.getProcessType() == ProcessType.POLICY_FIX) {
+			this.policyFile = veraAppConfig.getPolicyFile().isEmpty() ? null : new File(veraAppConfig.getPolicyFile());
+		}
 	 	this.profilesWikiPath = veraAppConfig.getWikiPath();
 
-	 	EnumSet<TaskType> taskTypes =  veraAppConfig.getProcessType().getTasks();
+	 	EnumSet<TaskType> taskTypes = veraAppConfig.getProcessType().getTasks();
 		this.fixMetadata = taskTypes.contains(TaskType.FIX_METADATA);
 
 		this.features = new ArrayList<>();
