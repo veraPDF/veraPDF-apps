@@ -100,7 +100,7 @@ public final class GUIConstants {
 	public static final String LABEL_TOOL_TIP = "<html>PDF flavour: the PDF/A or PDF/UA part and conformance level<br>" +
 			"Validation profile: custom collection of validation rules</html>";
 
-	public static final String CONSORTIUM_TEXT = "© 2015-2023 veraPDF Consortium"; //$NON-NLS-1$
+	public static final String CONSORTIUM_TEXT = "© 2015-2024 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String PREFORMA_FUNDED_TEXT = "Funded by the European Commission’s PREFORMA Project";
 	public static final String TITLE = "veraPDF Conformance Checker";
 	public static final String ENCRYPTED_PDF = "Document is password encrypted and can not be processed.";

@@ -317,7 +317,7 @@ class CheckerPanel extends JPanel {
 			this.fixMetadata.setSelected(false);
 			this.fixMetadata.setEnabled(false);
 		} else {
-			this.fixMetadata.setSelected(config.createProcessorConfig().getTasks().contains(TaskType.FIX_METADATA));
+			this.fixMetadata.setSelected(config.getApplicationConfig().getProcessType().getTasks().contains(TaskType.FIX_METADATA));
 		}
 		setGridBagConstraintsParameters(gbc, GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_X,
 				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_Y,
@@ -362,7 +362,7 @@ class CheckerPanel extends JPanel {
 		this.chooseFlavour.setOpaque(true);
 		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
 		this.chooseFlavour.setRenderer(renderer);
-		PDFAFlavour fromConfig = config.createProcessorConfig().getValidatorConfig().getFlavour();
+		PDFAFlavour fromConfig = config.getValidatorConfig().getFlavour();
 		String fromConfigFlavourText = getFlavourReadableText(fromConfig);
 		if (availableFlavours.contains(fromConfigFlavourText)) {
 			this.chooseFlavour.setSelectedItem(fromConfigFlavourText);
@@ -882,7 +882,7 @@ class CheckerPanel extends JPanel {
 				validatorConfig.isRecordPasses(), maxFails,
 				validatorConfig.isDebug(), validatorConfig.isLogsEnabled(),
 				validatorConfig.getLoggingLevel(), validatorConfig.getMaxNumberOfDisplayedFailedChecks(),
-				validatorConfig.showErrorMessages(), null, validatorConfig.getShowProgress(), false);
+				validatorConfig.showErrorMessages(), null, validatorConfig.getShowProgress(), validatorConfig.getNonPDFExtension());
 	}
 
 	VeraAppConfig appConfigFromState() {

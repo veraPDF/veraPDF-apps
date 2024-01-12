@@ -19,6 +19,7 @@ import org.verapdf.core.VeraPDFException;
 import org.verapdf.core.utils.LogsFileHandler;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.gui.utils.GUIConstants;
+import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.policy.PolicyChecker;
@@ -109,15 +110,10 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 					this.parent.handleValidationError(ERROR_IN_OBTAINING_POLICY_FEATURES + ": ", e);
 				}
 			}
-			ProcessorConfig resultConfig = this.customProfile == null
-					? ProcessorFactory.fromValues(validatorConfig, featuresConfig,
-					                              this.configManager.getPluginsCollectionConfig(),
-					                              this.configManager.getFixerConfig(), tasks,
-					                              veraAppConfig.getFixesFolder())
-					: ProcessorFactory.fromValues(validatorConfig, featuresConfig,
-					                              this.configManager.getPluginsCollectionConfig(),
-					                              this.configManager.getFixerConfig(), tasks,
-					                              this.customProfile, veraAppConfig.getFixesFolder());
+			ProcessorConfig resultConfig = ProcessorFactory.fromValues(validatorConfig, featuresConfig, 
+					this.configManager.getPluginsCollectionConfig(), this.configManager.getFixerConfig(), tasks, 
+					this.customProfile == null ? Profiles.defaultProfile() : this.customProfile, 
+					veraAppConfig.getFixesFolder());
 			try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(resultConfig)) {
 				VeraAppConfig applicationConfig = this.configManager.getApplicationConfig();
 				BatchSummary batchSummary = processor.process(this.pdfs,
