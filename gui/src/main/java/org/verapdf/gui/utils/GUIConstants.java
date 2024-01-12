@@ -103,7 +103,7 @@ public final class GUIConstants {
 	public static final String LABEL_TOOL_TIP = "<html>PDF flavour: arlington part<br>" +
 			"Profile: custom collection of rules</html>";
 
-	public static final String CONSORTIUM_TEXT = "© 2015-2023 veraPDF Consortium"; //$NON-NLS-1$
+	public static final String CONSORTIUM_TEXT = "© 2015-2024 veraPDF Consortium"; //$NON-NLS-1$
 	public static final String PREFORMA_FUNDED_TEXT = "Originally funded by the European Commission’s PREFORMA Project";
 	public static final String TITLE = "Arlington PDF Model file checker by veraPDF";
 	public static final String ENCRYPTED_PDF = "Document is password encrypted and can not be processed.";

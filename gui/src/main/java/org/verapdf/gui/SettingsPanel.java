@@ -193,7 +193,7 @@ class SettingsPanel extends JPanel {
 		this.chooseDefaultFlavour.setOpaque(true);
 		ChooseFlavourRenderer renderer = new ChooseFlavourRenderer();
 		this.chooseDefaultFlavour.setRenderer(renderer);
-		PDFAFlavour fromConfig = config.createProcessorConfig().getValidatorConfig().getDefaultFlavour();
+		PDFAFlavour fromConfig = config.getValidatorConfig().getDefaultFlavour();
 		String fromConfigDefaultFlavourText = CheckerPanel.getFlavourReadableText(fromConfig);
 		if (availableFlavours.contains(fromConfigDefaultFlavourText)) {
 			this.chooseDefaultFlavour.setSelectedItem(fromConfigDefaultFlavourText);
@@ -266,7 +266,7 @@ class SettingsPanel extends JPanel {
 
 		this.ok = false;
 
-		ValidatorConfig validatorConfig = settings.createProcessorConfig().getValidatorConfig();
+		ValidatorConfig validatorConfig = settings.getValidatorConfig();
 		this.hidePassedRules.setSelected(validatorConfig.isRecordPasses());
 
 		if (Foundries.defaultParserIsPDFBox()) {
@@ -303,7 +303,7 @@ class SettingsPanel extends JPanel {
 		String fromConfigDefaultFlavourText = CheckerPanel.getFlavourReadableText(defaultFlavour);
 		this.chooseDefaultFlavour.setSelectedItem(fromConfigDefaultFlavourText);
 
-		this.fixMetadataPrefix.setText(settings.createProcessorConfig().getFixerConfig().getFixesPrefix());
+		this.fixMetadataPrefix.setText(settings.getFixerConfig().getFixesPrefix());
 
 		VeraAppConfig appConfig = settings.getApplicationConfig();
 		this.fixMetadataFolder.setText(appConfig.getFixesFolder());
