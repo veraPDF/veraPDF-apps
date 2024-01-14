@@ -117,25 +117,25 @@ public class VeraCliArgParser {
 	@Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
 	private boolean help = false;
 
-	@Parameter(names = { VERSION }, description = "Displays veraPDF version information.")
+	@Parameter(names = { VERSION }, description = "Displays arlington-pdf-model-checker version information.")
 	private boolean showVersion = false;
 
 	@Parameter(names = { FLAVOUR_FLAG,
-			FLAVOUR }, description = "Chooses built-in Validation Profile flavour, e.g. 'arlington1.4'. Alternatively, supply '0a' or no argument for automatic flavour detection based on a file's metadata.", converter = FlavourConverter.class)
+			FLAVOUR }, description = "Chooses built-in Profile flavour, e.g. 'arlington1.4'. Alternatively, supply '0a' or no argument for automatic flavour detection based on a file's header or a version in catalog.", converter = FlavourConverter.class)
 	private PDFAFlavour flavour = PDFAFlavour.NO_ARLINGTON_FLAVOUR;
 
 	@Parameter(names = { DEFAULT_FLAVOUR_FLAG,
-	                     DEFAULT_FLAVOUR }, description = "Chooses built-in Validation Profile default flavour, e.g. 'arlington1.4'. This flavour will be applied if automatic flavour detection based on a file's metadata doesn't work.", converter = FlavourConverter.class)
+	                     DEFAULT_FLAVOUR }, description = "Chooses built-in Profile default flavour, e.g. 'arlington1.4'. This flavour will be applied if automatic flavour detection based on a file's header or a version in catalog doesn't work.", converter = FlavourConverter.class)
 	private PDFAFlavour defaultFlavour = PDFAFlavour.ARLINGTON1_4;
 
-	@Parameter(names = { SUCCESS, PASSED }, description = "Logs successful validation checks.")
+	@Parameter(names = { SUCCESS, PASSED }, description = "Logs passed checks.")
 	private boolean passed = ValidatorFactory.defaultConfig().isRecordPasses();
 
-	@Parameter(names = { LIST_FLAG, LIST }, description = "Lists built-in Validation Profiles.")
+	@Parameter(names = { LIST_FLAG, LIST }, description = "Lists built-in Profiles.")
 	private boolean listProfiles = false;
 
 	@Parameter(names = { LOAD_PROFILE_FLAG,
-			LOAD_PROFILE }, description = "Loads a Validation Profile from given path and exits if loading fails. This overrides any choice or default implied by the -f / --flavour option.", validateWith = FileValidator.class)
+			LOAD_PROFILE }, description = "Loads a Profile from given path and exits if loading fails. This overrides any choice or default implied by the -f / --flavour option.", validateWith = FileValidator.class)
 	private File profileFile;
 
 	@Parameter(names = { EXTRACT_FLAG,
@@ -152,17 +152,17 @@ public class VeraCliArgParser {
 	@Parameter(names = {SERVER_MODE}, description = "Run veraPDF in server mode. Changes output and ignore " + NUMBER_OF_PROCESSES_FLAG + "argument.", hidden = true)
 	private boolean isServerMode = false;
 
-	@Parameter(names = { VERBOSE_FLAG, VERBOSE }, description = "Adds failed test information to text output.")
+	@Parameter(names = { VERBOSE_FLAG, VERBOSE }, description = "Adds information about test with deviations to text output.")
 	private boolean isVerbose = false;
 
 	@Parameter(names = { DEBUG_FLAG, DEBUG }, description = "Outputs all processed file names.")
 	private boolean debug = false;
 
 	@Parameter(names = {
-			MAX_FAILURES_DISPLAYED }, description = "Sets maximum amount of failed checks displayed for each rule. -1 for unlimited number of failed checks.")
+			MAX_FAILURES_DISPLAYED }, description = "Sets maximum amount of deviations displayed for each rule. -1 for unlimited number of deviations.")
 	private int maxFailuresDisplayed = BaseValidator.DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS;
 
-	@Parameter(names = { MAX_FAILURES }, description = "Sets maximum amount of failed checks.")
+	@Parameter(names = { MAX_FAILURES }, description = "Sets maximum amount of deviations.")
 	private int maxFailures = ValidatorFactory.defaultConfig().getMaxFails();
 
 	@Parameter(names = { FIX_METADATA }, description = "Performs metadata fixes.", hidden = true)
@@ -171,7 +171,7 @@ public class VeraCliArgParser {
 	@Parameter(names = { ADD_LOGS }, description = "Add logs to xml (mrr), json or html report.")
 	private boolean addLogs = false;
 
-	@Parameter(names = {DISABLE_ERROR_MESSAGES}, description = "Disable detailed error messages in the validation report.")
+	@Parameter(names = {DISABLE_ERROR_MESSAGES}, description = "Disable detailed error messages in the report.")
 	private boolean disableErrorMessages = false;
 
 	@Parameter(names = { PASSWORD }, description = "Sets the password for an encrypted document.")
@@ -180,7 +180,7 @@ public class VeraCliArgParser {
 	@Parameter(names = { LOG_LEVEL }, description = "Enables logs with level: 0 - OFF, 1 - SEVERE, 2 - WARNING, SEVERE (default), 3 - CONFIG, INFO, WARNING, SEVERE, 4 - ALL.")
 	private int logLevel = 2;
 
-	@Parameter(names = { PROGRESS }, description = "Shows the current status of the validation job.")
+	@Parameter(names = { PROGRESS }, description = "Shows the current status of file checking")
 	private boolean showProgress;
 
 	@Parameter(names = { FIX_METADATA_PREFIX }, description = "Sets file name prefix for any fixed files.", hidden = true)
@@ -197,10 +197,10 @@ public class VeraCliArgParser {
 	private File policyFile;
 
 	 @Parameter(names = { PROFILES_WIKI_FLAG,
-	                      PROFILES_WIKI }, description = "Sets location of the Validation Profiles wiki.", hidden = true)
+	                      PROFILES_WIKI }, description = "Sets location of the Profiles wiki.", hidden = true)
 	 private String profilesWikiPath = Applications.defaultConfig().getWikiPath();
 
-	@Parameter(names = { VALID_OFF_FLAG, VALID_OFF }, description = "Turns off validation")
+	@Parameter(names = { VALID_OFF_FLAG, VALID_OFF }, description = "Turns off file checking")
 	private boolean isValidationOff = false;
 
 	@Parameter(names = {NUMBER_OF_PROCESSES_FLAG}, description = "The number of processes which will be used.")
@@ -741,7 +741,7 @@ public class VeraCliArgParser {
 			this.password = null;
 		}
 		if (isMultiprocessing() && this.showProgress) {
-			LOGGER.log(Level.WARNING, "Validation progress output is not supported for multiprocessing.");
+			LOGGER.log(Level.WARNING, "File checking progress output is not supported for multiprocessing.");
 		}
 		for (String pdfPath : getPdfPaths()) {
 			if (FileUtils.hasExtNoCase(pdfPath, GUIConstants.ZIP)) {

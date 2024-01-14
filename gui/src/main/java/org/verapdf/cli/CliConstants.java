@@ -15,7 +15,7 @@ package org.verapdf.cli;
 
 public final class CliConstants {
 
-	public static final String APP_NAME = "veraPDF"; //$NON-NLS-1$
+	public static final String APP_NAME = "arlington-pdf-model-checker"; //$NON-NLS-1$
 
 	public static final String EXCEP_PROCESSOR_CLOSE = "IOException raised when closing ItemProcessor";
 	public static final String EXCEP_REPORT_MARSHAL = "JAXBException raised when marshalling report.";
