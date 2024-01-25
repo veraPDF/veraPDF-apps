@@ -25,19 +25,19 @@ jobs:
         run: mvn --batch-mode --update-snapshots -Dmaven.javadoc.skip=true -V -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2 -Dmaven.wagon.http.pool=false verify
       - name: Upload greenfield coverage report
         if: matrix.java-version == 8
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: greenfield-report
           path: greenfield-apps/target/site/jacoco/
       - name: Upload GUI coverage report
         if: matrix.java-version == 8
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: gui-report
           path: gui/target/site/jacoco/
       - name: Upload PDFBox coverage report
         if: matrix.java-version == 8
-        uses: actions/upload-artifact@master
+        uses: actions/upload-artifact@v4
         with:
           name: pdfbox-report
           path: pdfbox-apps/target/site/jacoco/
