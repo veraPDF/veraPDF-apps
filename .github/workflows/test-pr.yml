@@ -50,17 +50,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download greenfield coverage report
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v4
         with:
           name: greenfield-report
           path: greenfield-apps/target/site/jacoco/
       - name: Download GUI coverage report
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v4
         with:
           name: gui-report
           path: gui/target/site/jacoco/
       - name: Download PDFBox coverage report
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v4
         with:
           name: pdfbox-report
           path: pdfbox-apps/target/site/jacoco/
