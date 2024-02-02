@@ -51,17 +51,15 @@ public class VeraCliGetPathsTest {
         VeraCliArgParser parser = new VeraCliArgParser();
         JCommander jCommander = VeraCliArgParserTest
                 .initialiseJCommander(parser);
-        jCommander.parse(new String[] {});
+        jCommander.parse();
         assertEquals(VeraCliArgParser.DEFAULT_ARGS.getPdfPaths(),
                 parser.getPdfPaths());
 
         // Test other flags & options don't change that
         parser = new VeraCliArgParser();
         jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--success", "--format", "xml",
-                "-h" });
-        assertEquals(VeraCliArgParser.DEFAULT_ARGS.getPdfPaths(),
-                parser.getPdfPaths());
+        jCommander.parse("-l", "--success", "--format", "xml", "-h");
+        assertEquals(VeraCliArgParser.DEFAULT_ARGS.getPdfPaths(), parser.getPdfPaths());
     }
 
     /**
@@ -74,17 +72,14 @@ public class VeraCliGetPathsTest {
         JCommander jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
 
         // Test flag works
-        jCommander.parse(new String[] { "path 1", "path 2", "path 3" });
-        assertNotEquals(parser.getPdfPaths(), VeraCliArgParser.DEFAULT_ARGS
-                .getPdfPaths());
+        jCommander.parse("path 1", "path 2", "path 3");
+        assertNotEquals(parser.getPdfPaths(), VeraCliArgParser.DEFAULT_ARGS.getPdfPaths());
     
         // Test flag works with other options & flags
         parser = new VeraCliArgParser();
         jCommander = VeraCliArgParserTest.initialiseJCommander(parser);
-        jCommander.parse(new String[] { "-l", "--success", "--format", "mrr",
-                "-h", "path 1", "path 2", "path 3" });
-        assertNotEquals(parser.getPdfPaths(), VeraCliArgParser.DEFAULT_ARGS
-                .getPdfPaths());
+        jCommander.parse("-l", "--success", "--format", "mrr", "-h", "path 1", "path 2", "path 3");
+        assertNotEquals(parser.getPdfPaths(), VeraCliArgParser.DEFAULT_ARGS.getPdfPaths());
     }
 
 }

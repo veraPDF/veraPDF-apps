@@ -6,8 +6,8 @@ package org.verapdf.apps;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.verapdf.SemanticVersionNumber;
-import org.verapdf.Versions;
+import org.verapdf.version.SemanticVersionNumber;
+import org.verapdf.version.Versions;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -19,7 +19,7 @@ import org.verapdf.Versions;
  */
 
 public class SoftwareUpdaterTest {
-	SoftwareUpdater updater = Applications.softwareUpdater();
+	final SoftwareUpdater updater = Applications.softwareUpdater();
 
 	/**
 	 * Test method for {@link org.verapdf.apps.SoftwareUpdaterImpl#getLatestAppsVersion()}.

@@ -2,7 +2,7 @@ package org.verapdf.apps.test;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.verapdf.pdfa.VeraGreenfieldFoundryProvider;
+import org.verapdf.gf.foundry.VeraGreenfieldFoundryProvider;
 import org.verapdf.pdfa.results.ValidationResult;
 import org.verapdf.pdfa.validation.validators.test.CallableValidatorForTest;
 
@@ -32,7 +32,7 @@ public class MultithreadingTest {
 		List<Future<ValidationResult>> futureResult = startValidation(fileToValidate, numberOfThreads);
 		List<ValidationResult> validationResults = getValidationResult(futureResult);
 
-		Boolean isExpectedResults = compareResultsFromDifferentThreads(validationResults);
+		boolean isExpectedResults = compareResultsFromDifferentThreads(validationResults);
 
 		assertTrue(isExpectedResults);
 	}

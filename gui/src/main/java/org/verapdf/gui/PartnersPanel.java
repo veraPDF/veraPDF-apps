@@ -47,10 +47,10 @@ class PartnersPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -5926089530817358566L;
 	private final transient BufferedImage partnersLogo;
-	private Color background;
-	private JLabel consortium;
-	private JLabel preforma;
-	private JLabel version;
+	private final Color background;
+	private final JLabel consortium;
+	private final JLabel preforma;
+	private final JLabel version;
 
 	PartnersPanel(String logoName, Color backgroundColor) throws IOException {
 		try (InputStream is = getClass().getClassLoader().getResourceAsStream(logoName)) {

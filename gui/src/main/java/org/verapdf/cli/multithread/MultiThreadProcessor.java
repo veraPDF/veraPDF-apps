@@ -30,23 +30,23 @@ public class MultiThreadProcessor {
 
 	private int filesQuantity;
 
-	private File veraPDFStarterPath;
-	private List<String> veraPDFParameters;
+	private final File veraPDFStarterPath;
+	private final List<String> veraPDFParameters;
 	private OutputStream os;
-	private OutputStream errorStream;
+	private final OutputStream errorStream;
 
-	private ReportWriter reportWriter;
-	private MultiThreadProcessingHandler processingHandler;
+	private final ReportWriter reportWriter;
+	private final MultiThreadProcessingHandler processingHandler;
 
 	private boolean isFirstReport = true;
 	private boolean isHTMLReport;
 	private File xmlReport;
-	private String wikiPath;
+	private final String wikiPath;
 
 	private ExitCodes currentExitCode = ExitCodes.VALID;
 	private CountDownLatch latch;
 
-	private MultiThreadProcessor(VeraCliArgParser cliArgParser, String wikiPath) {
+	private MultiThreadProcessor(VeraCliArgParser cliArgParser) {
 		this.isHTMLReport = cliArgParser.getFormat() == FormatOption.HTML;
 		if (isHTMLReport) {
 			try {
@@ -61,7 +61,7 @@ public class MultiThreadProcessor {
 			this.os = new BufferedOutputStream(System.out, DEFAULT_BUFFER_SIZE * COEFFICIENT_BUFFER_SIZE);
 		}
 
-		this.wikiPath = wikiPath;
+		this.wikiPath = cliArgParser.getProfilesWikiPath();
 		this.errorStream = new BufferedOutputStream(System.err, DEFAULT_BUFFER_SIZE);
 
 		this.veraPDFStarterPath = getVeraPdfStarterFile(cliArgParser);
@@ -75,8 +75,8 @@ public class MultiThreadProcessor {
 		this.processingHandler = new MultiThreadProcessingHandlerImpl(reportWriter);
 	}
 
-	public static ExitCodes process(VeraCliArgParser cliArgParser, String wikiPath) throws InterruptedException {
-		MultiThreadProcessor processor = new MultiThreadProcessor(cliArgParser, wikiPath);
+	public static ExitCodes process(VeraCliArgParser cliArgParser) throws InterruptedException {
+		MultiThreadProcessor processor = new MultiThreadProcessor(cliArgParser);
 		if (processor.currentExitCode != ExitCodes.VALID) {
 			return processor.currentExitCode;
 		}
@@ -102,7 +102,7 @@ public class MultiThreadProcessor {
 	private FormatOption getOutputFormat(String outputFormat) {
 		FormatOption formatOption = FormatOption.fromOption(outputFormat);
 		if (formatOption == FormatOption.HTML) {
-			return FormatOption.MRR;
+			return FormatOption.XML;
 		}
 		return formatOption;
 	}

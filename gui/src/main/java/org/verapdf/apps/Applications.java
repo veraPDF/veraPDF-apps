@@ -19,17 +19,13 @@ package org.verapdf.apps;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
-
-import javax.xml.bind.JAXBException;
-
 import org.verapdf.ReleaseDetails;
-import org.verapdf.processor.FormatOption;
+import org.verapdf.processor.app.AppConfigBuilder;
+import org.verapdf.processor.app.ConfigManager;
+import org.verapdf.processor.app.ConfigManagerImpl;
+import org.verapdf.processor.app.VeraAppConfig;
+import org.verapdf.processor.app.VeraAppConfigImpl;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -143,38 +139,12 @@ public final class Applications {
 		return VeraAppConfigImpl.defaultInstance();
 	}
 
-	public static Applications.Builder defaultConfigBuilder() {
-		return Applications.Builder.defaultBuilder();
+	public static AppConfigBuilder defaultConfigBuilder() {
+		return AppConfigBuilder.defaultBuilder();
 	}
 
-	public static Applications.Builder createConfigBuilder(VeraAppConfig base) {
-		return Applications.Builder.fromConfig(base);
-	}
-
-	public static String toXml(final VeraAppConfig toConvert, Boolean prettyXml) throws JAXBException, IOException {
-		return VeraAppConfigImpl.toXml(toConvert, prettyXml);
-	}
-
-	public static void toXml(final VeraAppConfig toConvert, final OutputStream stream, Boolean prettyXml)
-			throws JAXBException {
-		VeraAppConfigImpl.toXml(toConvert, stream, prettyXml);
-	}
-
-	public static VeraAppConfigImpl fromXml(final InputStream toConvert) throws JAXBException {
-		return VeraAppConfigImpl.fromXml(toConvert);
-	}
-
-	public static void toXml(final VeraAppConfig toConvert, final Writer writer, Boolean prettyXml)
-			throws JAXBException {
-		VeraAppConfigImpl.toXml(toConvert, writer, prettyXml);
-	}
-
-	public static VeraAppConfigImpl fromXml(final Reader toConvert) throws JAXBException {
-		return VeraAppConfigImpl.fromXml(toConvert);
-	}
-
-	public static VeraAppConfigImpl fromXml(final String toConvert) throws JAXBException {
-		return VeraAppConfigImpl.fromXml(toConvert);
+	public static AppConfigBuilder createConfigBuilder(VeraAppConfig base) {
+		return AppConfigBuilder.fromConfig(base);
 	}
 
 	public static SoftwareUpdater softwareUpdater() {
@@ -184,93 +154,6 @@ public final class Applications {
 	public static void checkArgNotNull(final Object arg, final String argName) {
 		if (arg == null) {
 			throw new IllegalArgumentException(String.format("Parameter %s can not be null", argName)); //$NON-NLS-1$
-		}
-	}
-
-	public static class Builder {
-		private ProcessType _type = ProcessType.VALIDATE;
-		private boolean _isOverwrite = false;
-		private String _fixerFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
-		private FormatOption _format = FormatOption.MRR;
-		private String _wikiPath = "https://github.com/veraPDF/veraPDF-validation-profiles/wiki/"; //$NON-NLS-1$
-		private String _reportFile = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
-		private String _reportFolder = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
-		private String _policyFile = FileSystems.getDefault().getPath("").toString(); //$NON-NLS-1$
-		private boolean _isVerbose = false;
-
-		private Builder() {
-			super();
-		}
-
-		private Builder(VeraAppConfig config) {
-			super();
-			this._type = config.getProcessType();
-			this._isOverwrite = config.isOverwriteReport();
-			this._fixerFolder = config.getFixesFolder();
-			this._format = config.getFormat();
-			this._isVerbose = config.isVerbose();
-			this._wikiPath = config.getWikiPath();
-			this._reportFile = config.getReportFile();
-			this._reportFolder = config.getReportFolder();
-			this._policyFile = config.getPolicyFile();
-		}
-
-		public Builder type(ProcessType type) {
-			this._type = type;
-			return this;
-		}
-
-		public Builder overwrite(boolean overwrite) {
-			this._isOverwrite = overwrite;
-			return this;
-		}
-
-		public Builder fixerFolder(String fixerFold) {
-			this._fixerFolder = fixerFold;
-			return this;
-		}
-
-		public Builder format(FormatOption format) {
-			this._format = format;
-			return this;
-		}
-
-		public Builder isVerbose(boolean isVerbose) {
-			this._isVerbose = isVerbose;
-			return this;
-		}
-
-		public Builder wikiPath(String path) {
-			this._wikiPath = path;
-			return this;
-		}
-
-		public Builder reportFile(String report) {
-			this._reportFile = report;
-			return this;
-		}
-
-		public Builder reportFolder(String reports) {
-			this._reportFolder = reports;
-			return this;
-		}
-
-		public Builder policyFile(String policy) {
-			this._policyFile = policy;
-			return this;
-		}
-
-		public static Builder fromConfig(VeraAppConfig config) {
-			return new Builder(config);
-		}
-
-		public static Builder defaultBuilder() {
-			return new Builder();
-		}
-
-		public VeraAppConfig build() {
-			return new VeraAppConfigImpl(this._type, this._isOverwrite, this._fixerFolder, this._format,
-					this._isVerbose, this._wikiPath, this._reportFile, this._reportFolder, this._policyFile);
 		}
 	}
 
@@ -318,9 +201,6 @@ public final class Applications {
 		String[] files = directory.list();
 		if (files == null) {
 			return Files.isWritable(directory.toPath());
-		}
-		if (files.length == 0) {
-			return true;
 		}
 		for (String fileName : files) {
 			if (!Files.isWritable(new File(directory + File.separator + fileName).toPath())) {

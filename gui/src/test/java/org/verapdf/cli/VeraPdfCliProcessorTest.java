@@ -23,19 +23,13 @@
  */
 package org.verapdf.cli;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.file.Files;
-
+import com.beust.jcommander.JCommander;
 import org.junit.Test;
 import org.verapdf.apps.Applications;
-import org.verapdf.apps.ConfigManager;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
+import org.verapdf.features.FeatureFactory;
+import org.verapdf.features.FeatureObjectType;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
@@ -43,14 +37,20 @@ import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.processor.FormatOption;
 import org.verapdf.processor.TaskType;
 
-import com.beust.jcommander.JCommander;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.EnumSet;
+import org.verapdf.processor.app.ConfigManager;
+
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
  */
 @SuppressWarnings("static-method")
 public class VeraPdfCliProcessorTest {
-	private final static String APP_NAME = VeraPdfCliProcessorTest.class.getName();
+	private static final String APP_NAME = VeraPdfCliProcessorTest.class.getName();
 
 	/**
 	 * Test method for
@@ -65,19 +65,18 @@ public class VeraPdfCliProcessorTest {
 	public final void testCreateProcessorFromArgsFormat() throws IOException, VeraPDFException {
 		VeraCliArgParser parser = new VeraCliArgParser();
 		JCommander jCommander = initialiseJCommander(parser);
-		jCommander.parse(new String[] {});
+		jCommander.parse();
 		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
 		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
 			assertNotNull(proc.getConfig());
-			assertTrue(proc.getConfig().getFormat() == FormatOption.MRR);
+			assertSame(proc.getConfig().getFormat(), FormatOption.XML);
 		}
 		for (FormatOption format : FormatOption.values()) {
 			parser = new VeraCliArgParser();
 			jCommander = initialiseJCommander(parser);
-			jCommander.parse(new String[] { "--format", format.getOption() });
+			jCommander.parse("--format", format.getOption());
 			try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
-				assertTrue("Expected:" + format + " == " + proc.getConfig().getFormat(),
-						proc.getConfig().getFormat() == format);
+				assertSame("Expected:" + format + " == " + proc.getConfig().getFormat(), proc.getConfig().getFormat(), format);
 			}
 		}
 	}
@@ -96,13 +95,13 @@ public class VeraPdfCliProcessorTest {
 		String[] argVals = new String[] { "--passed", "--success" };
 		VeraCliArgParser parser = new VeraCliArgParser();
 		JCommander jCommander = initialiseJCommander(parser);
-		jCommander.parse(new String[] {});
+		jCommander.parse();
 		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
 		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
 			assertFalse(proc.getProcessorConfig().getValidatorConfig().isRecordPasses());
 		}
 		for (String argVal : argVals) {
-			jCommander.parse(new String[] { argVal });
+			jCommander.parse(argVal);
 			try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
 				assertTrue(proc.getProcessorConfig().getValidatorConfig().isRecordPasses());
 			}
@@ -122,18 +121,72 @@ public class VeraPdfCliProcessorTest {
 	 */
 	@Test
 	public final void testCreateProcessorFromArgsExtract() throws IOException, VeraPDFException {
-		String[] argVals = new String[] { "-x", "--extract" };
+		String[][] argVals = new String[][] { {"-x", "informationDict"}, {"--extract", "informationDict" }};
 		VeraCliArgParser parser = new VeraCliArgParser();
 		JCommander jCommander = initialiseJCommander(parser);
-		jCommander.parse(new String[] {});
+		jCommander.parse();
 		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
 		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
 			assertFalse(proc.getProcessorConfig().getTasks().contains(TaskType.EXTRACT_FEATURES));
 		}
-		for (String argVal : argVals) {
-			jCommander.parse(new String[]{argVal});
+		for (String[] argVal : argVals) {
+			jCommander.parse(argVal);
 			try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
 				assertTrue(proc.getProcessorConfig().getTasks().contains(TaskType.EXTRACT_FEATURES));
+			}
+			parser = new VeraCliArgParser();
+			jCommander = initialiseJCommander(parser);
+		}
+	}
+
+	@Test
+	public final void testCreateProcessorFromArgsExtractSeveralFeatures() throws IOException, VeraPDFException {
+		String[][] argVals = new String[][] { {"-x", "shading,actions,font,page"}, {"--extract", "shading,actions,font,page" }};
+		VeraCliArgParser parser = new VeraCliArgParser();
+		JCommander jCommander = initialiseJCommander(parser);
+		jCommander.parse();
+		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
+		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+			assertEquals(proc.getProcessorConfig().getFeatureConfig(), FeatureFactory.defaultConfig());
+		}
+		for (String[] argVal : argVals) {
+			jCommander.parse(argVal);
+			try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+				EnumSet<FeatureObjectType> features = proc.getProcessorConfig().getFeatureConfig().getEnabledFeatures();
+				assertTrue(features.contains(FeatureObjectType.SHADING));
+				assertTrue(features.contains(FeatureObjectType.ACTION));
+				assertTrue(features.contains(FeatureObjectType.FONT));
+				assertTrue(features.contains(FeatureObjectType.PAGE));
+			}
+			parser = new VeraCliArgParser();
+			jCommander = initialiseJCommander(parser);
+		}
+	}
+
+	@Test
+	public final void testCreateProcessorFromArgsConfig() throws IOException, VeraPDFException {
+		String[] initialArgs = new String[] { "--verbose", "--format", "json", "-df", "1a" };
+		String[] args = new String[] { "--config" };
+		VeraCliArgParser parser = new VeraCliArgParser();
+		JCommander jCommander = initialiseJCommander(parser);
+		jCommander.parse(initialArgs);
+		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
+		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+			assertTrue(proc.getConfig().isVerbose());
+			assertEquals(FormatOption.JSON, proc.getConfig().getFormat());
+			assertEquals(PDFAFlavour.PDFA_1_A, proc.getProcessorConfig().getValidatorConfig().getDefaultFlavour());
+
+			assertFalse(manager.getApplicationConfig().isVerbose());
+			assertNotEquals(FormatOption.JSON, manager.getApplicationConfig().getFormat());
+			assertNotEquals(PDFAFlavour.PDFA_1_A, manager.getValidatorConfig().getDefaultFlavour());
+		}
+		for (String argVal : args) {
+			jCommander.parse(argVal);
+			parser.setValuesFromConfig(manager);
+			try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
+				assertFalse(proc.getConfig().isVerbose());
+				assertNotEquals(FormatOption.JSON, proc.getConfig().getFormat());
+				assertNotEquals(PDFAFlavour.PDFA_1_A, proc.getProcessorConfig().getValidatorConfig().getDefaultFlavour());
 			}
 			parser = new VeraCliArgParser();
 			jCommander = initialiseJCommander(parser);
@@ -155,18 +208,18 @@ public class VeraPdfCliProcessorTest {
 		String[] argVals = new String[] { "-f", "--flavour" };
 		VeraCliArgParser parser = new VeraCliArgParser();
 		JCommander jCommander = initialiseJCommander(parser);
-		jCommander.parse(new String[] {});
+		jCommander.parse();
 		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
 		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
-			assertTrue(proc.getProcessorConfig().getValidatorConfig().getFlavour() == PDFAFlavour.NO_FLAVOUR);
+			assertSame(PDFAFlavour.NO_FLAVOUR, proc.getProcessorConfig().getValidatorConfig().getFlavour());
 		}
 		ProfileDirectory directory = Profiles.getVeraProfileDirectory();
-		assertTrue(directory.getValidationProfiles().size() > 0);
+		assertTrue(!directory.getValidationProfiles().isEmpty());
 		for (String argVal : argVals) {
 			for (ValidationProfile profile : directory.getValidationProfiles()) {
-				jCommander.parse(new String[] { argVal, profile.getPDFAFlavour().getId() });
+				jCommander.parse(argVal, profile.getPDFAFlavour().getId());
 				try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
-					assertTrue(proc.getProcessorConfig().getValidatorConfig().getFlavour() == profile.getPDFAFlavour());
+					assertSame(profile.getPDFAFlavour(), proc.getProcessorConfig().getValidatorConfig().getFlavour());
 				}
 				parser = new VeraCliArgParser();
 				jCommander = initialiseJCommander(parser);
@@ -190,17 +243,17 @@ public class VeraPdfCliProcessorTest {
 	 */
 	@Test
 	public final void testCreateProcessorFromArgsNoFlavour()
-			throws FileNotFoundException, IOException, VeraPDFException {
+			throws IOException, VeraPDFException {
 		String[] argVals = new String[] { "-f", "--flavour" };
 		VeraCliArgParser parser = new VeraCliArgParser();
 		JCommander jCommander = initialiseJCommander(parser);
-		jCommander.parse(new String[] {});
+		jCommander.parse();
 		ConfigManager manager = Applications.createConfigManager(Files.createTempDirectory("").toFile());
 		try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
-			assertTrue(proc.getProcessorConfig().getValidatorConfig().getFlavour() == PDFAFlavour.NO_FLAVOUR);
+			assertSame(proc.getProcessorConfig().getValidatorConfig().getFlavour(), PDFAFlavour.NO_FLAVOUR);
 		}
 		for (String argVal : argVals) {
-			jCommander.parse(new String[] { argVal, PDFAFlavour.NO_FLAVOUR.getId() });
+			jCommander.parse(argVal, PDFAFlavour.NO_FLAVOUR.getId());
 			try (VeraPdfCliProcessor proc = VeraPdfCliProcessor.createProcessorFromArgs(parser, manager)) {
 			}
 			parser = new VeraCliArgParser();

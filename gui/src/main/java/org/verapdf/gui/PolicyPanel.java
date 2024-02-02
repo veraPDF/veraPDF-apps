@@ -51,23 +51,23 @@ public class PolicyPanel extends JPanel {
 
 	private File policyFile;
 
-	private JButton okButton;
+	private final JButton okButton;
 	private JDialog dialog;
 	private boolean ok;
-	private JPanel mainPanel;
-	private JPanel assertionsPanel;
-	private LayoutManager mainPanelLayout;
-	private JScrollPane scrollPane;
+	private final JPanel mainPanel;
+	private final JPanel assertionsPanel;
+	private final LayoutManager mainPanelLayout;
+	private final JScrollPane scrollPane;
 
-	private List<JComboBox<FeatureObjectType>> featureTypes;
-	private List<JTextField> arguments;
-	private List<JComboBox<Feature>> features;
-	private List<JComboBox<SchematronOperation>> operations;
-	private List<JButton> removeLineButtons;
-	private List<JPanel> layoutPanels;
+	private final List<JComboBox<FeatureObjectType>> featureTypes;
+	private final List<JTextField> arguments;
+	private final List<JComboBox<Feature>> features;
+	private final List<JComboBox<SchematronOperation>> operations;
+	private final List<JButton> removeLineButtons;
+	private final List<JPanel> layoutPanels;
 
-	private JPanel buttonPanel;
-	private JButton addLineButton;
+	private final JPanel buttonPanel;
+	private final JButton addLineButton;
 
 	public PolicyPanel() {
 		setPreferredSize(
@@ -87,7 +87,7 @@ public class PolicyPanel extends JPanel {
 				if (PolicyPanel.this.okButton.hasFocus()) {
 					JTextField emptyArguments = PolicyPanel.this.findEmptyNumberArguments();
 					if (emptyArguments == null) {
-						if (PolicyPanel.this.layoutPanels.size() > 0) {
+						if (!PolicyPanel.this.layoutPanels.isEmpty()) {
 							org.verapdf.gui.PolicyPanel.this.ok = true;
 						}
 						org.verapdf.gui.PolicyPanel.this.dialog.setVisible(false);
@@ -341,7 +341,7 @@ public class PolicyPanel extends JPanel {
 		if (type == Feature.FeatureType.NUMBER) {
 			String argumentValue = argument.getText();
 			try {
-				if (argumentValue.length() > 0) {
+				if (!argumentValue.isEmpty()) {
 					Double.valueOf(argumentValue);
 				}
 			} catch (NumberFormatException e) {
@@ -372,7 +372,7 @@ public class PolicyPanel extends JPanel {
 		Vector<FeatureObjectType> res = new Vector<>();
 		for (FeatureObjectType type : FeatureObjectType.values()) {
 			List<Feature> features = FeaturesStructureContainer.getFeaturesListForType(type);
-			if (!(features.size() == 1 && features.get(0).getFeatureName().equals(ERROR_IDS)) && features.size() != 0) {
+			if (!(features.size() == 1 && features.get(0).getFeatureName().equals(ERROR_IDS)) && !features.isEmpty()) {
 				res.add(type);
 			}
 		}
@@ -448,7 +448,7 @@ public class PolicyPanel extends JPanel {
 		return new Insets(2, 2, 2, 2);
 	}
 
-	private class FeatureObjectTypeRenderer extends JLabel implements ListCellRenderer<FeatureObjectType> {
+	private static class FeatureObjectTypeRenderer extends JLabel implements ListCellRenderer<FeatureObjectType> {
 		private static final long serialVersionUID = -8167306132255766422L;
 
 		@Override
@@ -472,7 +472,7 @@ public class PolicyPanel extends JPanel {
 				GUIConstants.PREFERRED_POLICY_WINDOW_ELEMENT_HEIGHT));
 	}
 
-	private class FeatureRenderer extends JLabel implements ListCellRenderer<Feature> {
+	private static class FeatureRenderer extends JLabel implements ListCellRenderer<Feature> {
 		private static final long serialVersionUID = 1669321048267902682L;
 
 		@Override
@@ -487,7 +487,7 @@ public class PolicyPanel extends JPanel {
 		}
 	}
 
-	private class OperationsRenderer extends JLabel implements ListCellRenderer<SchematronOperation> {
+	private static class OperationsRenderer extends JLabel implements ListCellRenderer<SchematronOperation> {
 		private static final long serialVersionUID = 8259625674253427340L;
 
 		@Override

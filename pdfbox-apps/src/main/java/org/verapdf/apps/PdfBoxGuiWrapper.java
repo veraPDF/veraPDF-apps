@@ -4,7 +4,7 @@
 package org.verapdf.apps;
 
 import org.verapdf.gui.PDFValidationApplication;
-import org.verapdf.pdfa.PdfBoxFoundryProvider;
+import org.verapdf.pdfbox.foundry.PdfBoxFoundryProvider;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -28,7 +28,7 @@ public final class PdfBoxGuiWrapper {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// Initialiser PDF Box Foundry
+		// Initializer PDF Box Foundry
 		PdfBoxFoundryProvider.initialise();
 		PDFValidationApplication.main(args);	
 	}

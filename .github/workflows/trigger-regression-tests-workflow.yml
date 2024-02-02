@@ -1,4 +1,4 @@
-name: Trigger increment action in webapp-server
+name: Trigger pdf/a and pdf/ua regression tests in integration-tests
 
 on:
   push:
@@ -23,7 +23,7 @@ jobs:
           script: |
             await github.rest.actions.createWorkflowDispatch({
              owner: 'veraPDF',
-             repo: 'verapdf-webapp-server',
-             workflow_id: 'version-auto-increment.yml',
-             ref: 'master'
+             repo: 'verapdf-integration-tests',
+             workflow_id: 'run-pdfa-tests-workflow.yml',
+             ref: 'integration'
             })

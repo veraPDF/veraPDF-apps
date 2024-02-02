@@ -50,7 +50,7 @@ public final class ApplicationUtils {
 	 *
 	 * @param toFilter
 	 *            the list of files to filter, can not be null
-	 * @return an immutable list of the filtered files, i.e. all PDF extenstions
+	 * @return an immutable list of the filtered files, i.e. all PDF extensions
 	 * @throws IllegalArgumentException
 	 *             when toFilter is null
 	 */
@@ -63,27 +63,28 @@ public final class ApplicationUtils {
 				continue;
 			}
 			if (file.isFile()) {
-				if (nonPdfExt || FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
+				if (nonPdfExt || FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF) ||
+						FileUtils.hasExtNoCase(file.getName(), GUIConstants.ZIP)) {
 					retVal.add(file);
 				} else {
 					LOGGER.log(Level.SEVERE, "File " + file.getAbsolutePath() + " doesn't have a .pdf extension. Try using --nonpdfext flag");
 				}
 			} else if (file.isDirectory()) {
-				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive));
+				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive, nonPdfExt));
 			}
 		}
 		return Collections.unmodifiableList(retVal);
 	}
 
 	private static List<File> filterPdfFilesFromDirs(final List<File> toFilter,
-											 final boolean isRecursive) {
+											 final boolean isRecursive, final boolean nonPdfExt) {
 		Applications.checkArgNotNull(toFilter, "toFilter"); //$NON-NLS-1$
 		List<File> retVal = new ArrayList<>();
 		for (File file : toFilter) {
-			if (file.isFile() && FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF)) {
+			if (file.isFile() && (nonPdfExt || FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF))) {
 				retVal.add(file);
 			} else if (file.isDirectory() && isRecursive) {
-				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive));
+				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive, nonPdfExt));
 			}
 		}
 		return Collections.unmodifiableList(retVal);
@@ -157,7 +158,7 @@ public final class ApplicationUtils {
 		SimpleNamespaceContext nsc = new SimpleNamespaceContext();
 		nsc.setPrefix(SchematronGenerator.SCH_PREFIX, SchematronGenerator.SCH_NAMESPACE);
 		xpath.setNamespaceContext(nsc);
-		String path = "/" + SchematronGenerator.SCH_PREFIX + ":" + SchematronGenerator.ROOT_NAME
+		String path = '/' + SchematronGenerator.SCH_PREFIX + ':' + SchematronGenerator.ROOT_NAME
 				+ "/@" + SchematronGenerator.ENABLED_FEATURES_ATTRIBUTE_NAME;
 		String value = (String) xpath.evaluate(path,
 				document,
@@ -176,9 +177,7 @@ public final class ApplicationUtils {
 				resFeatures.add(feature);
 			}
 		}
-		for (FeatureObjectType type : currentConfig.getEnabledFeatures()) {
-			resFeatures.add(type);
-		}
+		resFeatures.addAll(currentConfig.getEnabledFeatures());
 		return FeatureFactory.configFromValues(resFeatures);
 	}
 }

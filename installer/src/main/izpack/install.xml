@@ -34,7 +34,7 @@
     </authors>
   </info>
 
-  <guiprefs height="400" resizable="no" width="640">
+  <guiprefs height="450" resizable="no" width="640">
     <modifier key="useButtonIcons" value="yes"/>
     <modifier key="useLabelIcons" value="no"/>
     <modifier key="labelGap" value="2"/>
@@ -136,7 +136,7 @@
         <include name="plugins/**"/>
         <include name="config/**"/>
       </updatecheck>
-      <file targetdir="$INSTALL_PATH" src="plugins/veraPDF-sample-plugin-pack.zip" unpack="true"/>
+      <file targetdir="$INSTALL_PATH" src="plugins/veraPDF-sample-plugin-pack-dev.zip" unpack="true"/>
       <parsable targetfile="$INSTALL_PATH/config/plugins.xml" type="xml"/>
     </pack>
   </packs>

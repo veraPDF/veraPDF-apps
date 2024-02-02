@@ -22,21 +22,18 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
-import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.SoftwareUpdater;
 import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.cli.multithread.MultiThreadProcessor;
 import org.verapdf.core.VeraPDFException;
+import org.verapdf.core.utils.LogsFileHandler;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.ProfileDirectory;
 import org.verapdf.pdfa.validation.profiles.Profiles;
@@ -45,12 +42,13 @@ import org.verapdf.processor.FeaturesPluginsLoader;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
+import org.verapdf.processor.app.ConfigManager;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
  */
 public final class VeraPdfCli {
-	private static final Logger logger = Logger.getLogger(VeraCliArgParser.class.getCanonicalName());
+	private static final Logger logger = Logger.getLogger(VeraPdfCli.class.getCanonicalName());
 	private static final ConfigManager configManager = Applications.createAppConfigManager();
 	private static final int MEGABYTE = (1024 * 1024);
 	private static final String FLAVOURS_HEADING = CliConstants.APP_NAME + " supported PDF/A and PDF/UA profiles:"; //$NON-NLS-1$
@@ -69,12 +67,16 @@ public final class VeraPdfCli {
 	 *             using Apache commons CLI.
 	 */
 	public static void main(final String[] args) throws VeraPDFException {
+		LogsFileHandler.configLogs();
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
 		FeaturesPluginsLoader.setBaseFolderPath(System.getProperty(Applications.APP_HOME_PROPERTY));
 		ReleaseDetails.addDetailsFromResource(
 				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
 		VeraCliArgParser cliArgParser = new VeraCliArgParser();
 		JCommander jCommander = new JCommander(cliArgParser);
+		if (Arrays.asList(args).contains(VeraCliArgParser.USE_CONFIG)) {
+			cliArgParser.setValuesFromConfig(configManager);
+		}
 		jCommander.setUsageFormatter(new FormatterHelper(jCommander));
 		jCommander.setProgramName(CliConstants.APP_NAME);
 
@@ -87,7 +89,9 @@ public final class VeraPdfCli {
 		if (cliArgParser.isHelp()) {
 			displayHelpAndExit(cliArgParser, jCommander, ExitCodes.VALID);
 		}
+		LogsFileHandler.setLoggingLevel(cliArgParser.getLoggerLevel());
 		messagesFromParser(cliArgParser);
+		cliArgParser.checkParametersCompatibility();
 		if (isProcess(cliArgParser)) {
 			try {
 				if (args.length == 0 && System.in.available() == 0) {
@@ -97,11 +101,10 @@ public final class VeraPdfCli {
 				logger.log(Level.SEVERE,"STDIN is not available", e);
 			}
 			try {
-				if (cliArgParser.isServerMode() || cliArgParser.getNumberOfProcesses() < 2) {
+				if (!cliArgParser.isMultiprocessing()) {
 					System.exit(singleThreadProcess(cliArgParser).value);
-				} else {
-					System.exit(MultiThreadProcessor.process(cliArgParser, configManager.getApplicationConfig().getWikiPath()).value);
 				}
+				System.exit(MultiThreadProcessor.process(cliArgParser).value);
 			} catch (InterruptedException e) {
 				logger.log(Level.WARNING, "Interrupted", e);
 				System.exit(ExitCodes.INTERRUPTED_EXCEPTION.value);
@@ -112,7 +115,7 @@ public final class VeraPdfCli {
 				long maxMemory = heapUsage.getMax() / MEGABYTE;
 				long usedMemory = heapUsage.getUsed() / MEGABYTE;
 				System.out.format(",%s\n", message); //$NON-NLS-1$
-				System.out.format("Memory Use: %sM/%sM\n", Long.valueOf(usedMemory), Long.valueOf(maxMemory)); //$NON-NLS-1$
+				System.out.format("Memory Use: %sM/%sM\n", usedMemory, maxMemory); //$NON-NLS-1$
 				System.out.format(
 						"To increase the memory available to the JVM please assign the JAVA_OPTS environment variable.\n"); //$NON-NLS-1$
 				System.out.format("The examples below increase the maximum heap available to the JVM to 2GB:\n"); //$NON-NLS-1$
@@ -136,7 +139,7 @@ public final class VeraPdfCli {
 				if (tempFile != null) {
 					System.out.println(tempFile.getAbsoluteFile());
 				}
-				try (Scanner scanner = new Scanner(System.in);) {
+				try (Scanner scanner = new Scanner(System.in)) {
 					while (scanner.hasNextLine()) {
 						String path = scanner.nextLine();
 						if (path != null) {
@@ -201,7 +204,7 @@ public final class VeraPdfCli {
 			return;
 		}
 		if (!updater.isUpdateAvailable(details)) {
-			System.out.format(Applications.UPDATE_LATEST_VERSION, ",", details.getVersion() + "\n"); //$NON-NLS-1$
+			System.out.format(Applications.UPDATE_LATEST_VERSION, ',', details.getVersion() + '\n'); //$NON-NLS-1$
 			return;
 		}
 		System.out.format(

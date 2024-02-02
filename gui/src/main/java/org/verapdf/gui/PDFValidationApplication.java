@@ -50,16 +50,17 @@ import javax.xml.stream.XMLStreamException;
 
 import org.verapdf.ReleaseDetails;
 import org.verapdf.apps.Applications;
-import org.verapdf.apps.Applications.Builder;
+import org.verapdf.core.utils.LogsFileHandler;
 import org.verapdf.gui.utils.GUIConstants;
-import org.verapdf.apps.ConfigManager;
 import org.verapdf.apps.SoftwareUpdater;
-import org.verapdf.apps.VeraAppConfig;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.pdfa.validation.validators.ValidatorFactory;
 import org.verapdf.processor.FeaturesPluginsLoader;
+import org.verapdf.processor.app.AppConfigBuilder;
+import org.verapdf.processor.app.ConfigManager;
+import org.verapdf.processor.app.VeraAppConfig;
 
 /**
  * Main frame of the PDFA Conformance Checker
@@ -75,10 +76,10 @@ public class PDFValidationApplication extends JFrame {
 
 	private AboutPanel aboutPanel;
 	private SettingsPanel settingsPanel;
-	private FeaturesConfigPanel featuresPanel;
+	private final FeaturesConfigPanel featuresPanel;
 	private CheckerPanel checkerPanel;
-	private VeraAppConfig config;
-	private PolicyPanel policyConfig;
+	private final VeraAppConfig config;
+	private final PolicyPanel policyConfig;
 
 	private PDFValidationApplication(double frameScale) {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -120,7 +121,7 @@ public class PDFValidationApplication extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (PDFValidationApplication.this.settingsPanel != null && PDFValidationApplication.this.settingsPanel
 						.showDialog(PDFValidationApplication.this, "Settings", configManager)) {
-					Builder confBuilder = Builder.fromConfig(configManager.getApplicationConfig());
+					AppConfigBuilder confBuilder = AppConfigBuilder.fromConfig(configManager.getApplicationConfig());
 					confBuilder.wikiPath(PDFValidationApplication.this.settingsPanel.getProfilesWikiPath());
 					confBuilder.fixerFolder(
 							PDFValidationApplication.this.settingsPanel.getFixMetadataDirectory().toString());
@@ -140,7 +141,8 @@ public class PDFValidationApplication extends JFrame {
 							PDFValidationApplication.this.settingsPanel.isLogsEnabled(),
 							PDFValidationApplication.this.settingsPanel.getLoggingLevel(),
 							PDFValidationApplication.this.settingsPanel.getFailedChecksDisplayNumber(),
-							PDFValidationApplication.this.settingsPanel.showErrorMessages());
+							PDFValidationApplication.this.settingsPanel.showErrorMessages(),
+							null, false, false);
 					try {
 						configManager.updateValidatorConfig(validConf);
 					} catch (JAXBException | IOException excep) {
@@ -149,7 +151,7 @@ public class PDFValidationApplication extends JFrame {
 					}
 
 					MetadataFixerConfig fixConf = FixerFactory
-							.configFromValues(PDFValidationApplication.this.settingsPanel.getFixMetadataPrefix(), true);
+							.configFromValues(PDFValidationApplication.this.settingsPanel.getFixMetadataPrefix());
 					try {
 						configManager.updateFixerConfig(fixConf);
 					} catch (JAXBException | IOException excep) {
@@ -274,7 +276,7 @@ public class PDFValidationApplication extends JFrame {
 				} else {
 					JOptionPane.showMessageDialog(
 							PDFValidationApplication.this,
-							String.format(Applications.UPDATE_LATEST_VERSION, "\n", details.getVersion()),
+							String.format(Applications.UPDATE_LATEST_VERSION, '\n', details.getVersion()),
 							GUIConstants.CHECK_FOR_UPDATES_TEXT,
 							JOptionPane.INFORMATION_MESSAGE);
 				}
@@ -362,11 +364,12 @@ public class PDFValidationApplication extends JFrame {
 	 *            command line arguments
 	 */
 	public static void main(String[] args) {
+		LogsFileHandler.configLogs();
 		FeaturesPluginsLoader.setBaseFolderPath(System.getProperty(Applications.APP_HOME_PROPERTY));
 		double frameScale = 1;
 		if (args.length > 1 && "--frameScale".equals(args[0]) && args[1] != null) {
 			try {
-				frameScale = Double.valueOf(args[1]);
+				frameScale = Double.parseDouble(args[1]);
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			}

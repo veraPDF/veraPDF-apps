@@ -3,8 +3,6 @@
  */
 package org.verapdf.cli;
 
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author  <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -16,9 +14,6 @@ import java.util.List;
  */
 
 public final class CliConstants {
-	private CliConstants() {
-		throw new AssertionError("Should never be here."); //$NON-NLS-1$
-	}
 
 	public static final String APP_NAME = "veraPDF"; //$NON-NLS-1$
 
@@ -32,6 +27,10 @@ public final class CliConstants {
 
 	public static final String MESS_PDF_ENCRYPTED = "%s is an encrypted PDF document.";
 	public static final String MESS_PDF_NOT_VALID = "%s is not a valid PDF document.";
+
+	private CliConstants() {
+		throw new AssertionError("Should never be here."); //$NON-NLS-1$
+	}
 
 	/**
 	 * All valid exit codes from veraPDF CLI
