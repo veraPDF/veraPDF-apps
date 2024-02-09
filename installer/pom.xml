@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.verapdf</groupId>
     <artifactId>verapdf-apps</artifactId>
-    <version>1.25.0-SNAPSHOT</version>
+    <version>1.26.0-RC1</version>
   </parent>
 
   <groupId>org.verapdf.apps</groupId>
@@ -141,7 +141,7 @@
             </configuration>
           </execution>
           <execution>
-            <!-- Copy REAME and manual from project root dir. -->
+            <!-- Copy README and manual from project root dir. -->
             <id>verapdf-documents</id>
             <phase>validate</phase>
             <goals>
@@ -207,26 +207,26 @@
 <!--          </execution>-->
           <execution>
             <!-- Download the veraPDF validation profiles from GitHub -->
-            <id>profiles-integration</id>
+            <id>profiles-rc/1.26</id>
             <phase>package</phase>
             <goals>
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/veraPDF/veraPDF-validation-profiles/archive/integration.zip</url>
+              <url>https://github.com/veraPDF/veraPDF-validation-profiles/archive/rc/1.26.zip</url>
               <unpack>false</unpack>
               <skipCache>true</skipCache>
               <outputDirectory>${project.build.directory}/staging/profiles</outputDirectory>
             </configuration>
           </execution>
           <execution>
-            <id>model-integration</id>
+            <id>model-rc/1.26</id>
             <phase>package</phase>
             <goals>
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/veraPDF/veraPDF-model/archive/integration.zip</url>
+              <url>https://github.com/veraPDF/veraPDF-model/archive/rc/1.26.zip</url>
               <unpack>false</unpack>
               <skipCache>true</skipCache>
               <outputDirectory>${project.build.directory}/staging/model</outputDirectory>
@@ -252,7 +252,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>http://software.verapdf.org/dev/veraPDF-sample-plugin-pack-dev.zip</url>
+              <url>http://software.verapdf.org/dev/veraPDF-sample-plugin-pack-rc.zip</url>
               <unpack>false</unpack>
               <skipCache>true</skipCache>
               <outputDirectory>${project.build.directory}/staging/plugins</outputDirectory>
