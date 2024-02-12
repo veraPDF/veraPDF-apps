@@ -65,7 +65,7 @@ class PartnersPanel extends JPanel {
 		this.consortium.setFont(new Font(this.consortium.getFont().getName(), this.consortium.getFont().getStyle(),
 				(int) (this.consortium.getFont().getSize() * GUIConstants.CONSORTIUM_FONT_SCALE)));
 		Rectangle2D rec = new TextLayout(GUIConstants.CONSORTIUM_TEXT, this.consortium.getFont(),
-				new FontRenderContext(null, true, true)).getBounds();
+				new FontRenderContext(null, true, false)).getBounds();
 		this.consortium.setSize((int) (rec.getWidth()) + GUIConstants.BORDER_WIDTH * 4,
 				(int) (rec.getHeight() + GUIConstants.BORDER_WIDTH));
 
@@ -77,7 +77,7 @@ class PartnersPanel extends JPanel {
 		this.preforma.setFont(new Font(this.preforma.getFont().getName(), this.preforma.getFont().getStyle(),
 				(int) (this.preforma.getFont().getSize() * GUIConstants.PREFORMA_FUNDED_FONT_SCALE)));
 		Rectangle2D rec2 = new TextLayout(GUIConstants.PREFORMA_FUNDED_TEXT, this.preforma.getFont(),
-				new FontRenderContext(null, true, true)).getBounds();
+				new FontRenderContext(null, true, false)).getBounds();
 		this.preforma.setSize((int) (rec2.getWidth()) + GUIConstants.BORDER_WIDTH * 2,
 				(int) (rec2.getHeight() + GUIConstants.BORDER_WIDTH));
 
@@ -91,7 +91,7 @@ class PartnersPanel extends JPanel {
 
 		this.version.setHorizontalTextPosition(SwingConstants.CENTER);
 		Rectangle2D recVer = new TextLayout(versionText, this.version.getFont(),
-				new FontRenderContext(null, true, true)).getBounds();
+				new FontRenderContext(null, true, false)).getBounds();
 		this.version.setSize((int) (recVer.getWidth() + GUIConstants.BORDER_WIDTH * 2),
 				(int) (recVer.getHeight() + GUIConstants.BORDER_WIDTH));
 		add(this.version);
