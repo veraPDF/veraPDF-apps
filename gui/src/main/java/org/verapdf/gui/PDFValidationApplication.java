@@ -235,6 +235,20 @@ public class PDFValidationApplication extends JFrame {
 
 		policy.add(policyPanel);
 
+		final JMenuItem showConfigLocation = new JMenuItem(GUIConstants.SHOW_CONFIG_LOCATION);
+		showConfigLocation.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Desktop.getDesktop().open(configManager.getConfigDir());
+				} catch (IOException ex) {
+					logger.log(Level.WARNING, "Exception in opening config location", ex);
+				}
+			}
+		});
+		
+		policy.add(showConfigLocation);
+
 		JMenuItem about = new JMenuItem("About");
 		about.addActionListener(new ActionListener() {
 			@Override
