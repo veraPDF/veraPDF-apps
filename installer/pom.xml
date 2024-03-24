@@ -141,7 +141,7 @@
             </configuration>
           </execution>
           <execution>
-            <!-- Copy REAME and manual from project root dir. -->
+            <!-- Copy README and manual from project root dir. -->
             <id>verapdf-documents</id>
             <phase>validate</phase>
             <goals>
