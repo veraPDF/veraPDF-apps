@@ -76,6 +76,7 @@ public final class VeraPdfCli {
 		JCommander jCommander = new JCommander(cliArgParser);
 		if (Arrays.asList(args).contains(VeraCliArgParser.USE_CONFIG)) {
 			cliArgParser.setValuesFromConfig(configManager);
+			logger.config("Config location: " + configManager.getConfigDir().toPath().toString());
 		}
 		jCommander.setUsageFormatter(new FormatterHelper(jCommander));
 		jCommander.setProgramName(CliConstants.APP_NAME);

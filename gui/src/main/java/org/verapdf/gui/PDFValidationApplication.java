@@ -180,7 +180,7 @@ public class PDFValidationApplication extends JFrame {
 
 		file.add(quit);
 
-		final JMenu policy = new JMenu("Configs");
+		final JMenu configs = new JMenu("Configs");
 
 		this.featuresPanel = new FeaturesConfigPanel();
 
@@ -201,8 +201,8 @@ public class PDFValidationApplication extends JFrame {
 			}
 		});
 
-		menuBar.add(policy);
-		policy.add(features);
+		menuBar.add(configs);
+		configs.add(features);
 
 		this.policyConfig = new PolicyPanel();
 		final JMenuItem policyPanel = new JMenuItem("Policy Config");
@@ -233,7 +233,21 @@ public class PDFValidationApplication extends JFrame {
 			}
 		});
 
-		policy.add(policyPanel);
+		configs.add(policyPanel);
+
+		final JMenuItem showConfigLocation = new JMenuItem(GUIConstants.SHOW_CONFIG_LOCATION);
+		showConfigLocation.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Desktop.getDesktop().open(configManager.getConfigDir());
+				} catch (IOException ex) {
+					logger.log(Level.WARNING, "Exception in opening config location", ex);
+				}
+			}
+		});
+		
+		configs.add(showConfigLocation);
 
 		JMenuItem about = new JMenuItem("About");
 		about.addActionListener(new ActionListener() {
