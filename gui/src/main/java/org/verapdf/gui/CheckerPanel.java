@@ -20,6 +20,7 @@ import org.verapdf.core.utils.FileUtils;
 import org.verapdf.gui.utils.*;
 import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
+import org.verapdf.pdfa.flavours.PDFFlavours;
 import org.verapdf.pdfa.flavours.PDFAFlavours;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
@@ -927,6 +928,10 @@ class CheckerPanel extends JPanel {
 	}
 
 	protected static String getFlavourReadableText(PDFAFlavour flavour) {
+		if (PDFFlavours.isWTPDFFlavour(flavour)) {
+			return flavour.getPart().getFamily().getFamily() + " " + flavour.getPart().getPartNumber() + 
+					"." + flavour.getPart().getSubpartNumber() + " " + flavour.getLevel().getCode();
+		}
 		if (PDFAFlavour.SpecificationFamily.ARLINGTON == flavour.getPart().getFamily()) {
 			return flavour.getId().substring(PDFAFlavours.ARLINGTON_PREFIX.length());
 		}
