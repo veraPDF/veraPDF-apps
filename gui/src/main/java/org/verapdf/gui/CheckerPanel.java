@@ -927,8 +927,7 @@ class CheckerPanel extends JPanel {
 	}
 
 	protected static String getFlavourReadableText(PDFAFlavour flavour) {
-		if (PDFAFlavour.SpecificationFamily.ARLINGTON_1 == flavour.getPart().getFamily() ||
-				PDFAFlavour.SpecificationFamily.ARLINGTON_2 == flavour.getPart().getFamily()) {
+		if (PDFAFlavour.SpecificationFamily.ARLINGTON == flavour.getPart().getFamily()) {
 			return flavour.getId().substring(PDFAFlavours.ARLINGTON_PREFIX.length());
 		}
 		return String.format(flavour.getPart().getFamily() + "-%d%S", flavour.getPart().getPartNumber(), //$NON-NLS-1$
