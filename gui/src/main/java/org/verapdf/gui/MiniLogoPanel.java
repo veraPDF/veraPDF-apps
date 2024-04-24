@@ -46,30 +46,37 @@ class MiniLogoPanel extends JPanel {
 		label.setToolTipText(GUIConstants.LABEL_TOOL_TIP);
 		try (InputStream is = getClass().getClassLoader().getResourceAsStream(logoPath)) {
 			final BufferedImage image = ImageIO.read(is);
-			Icon icon = new Icon() {
-
-				private static final double SCALE = 0.3;
-
-				@Override
-				public void paintIcon(Component c, Graphics g, int x, int y) {
-					g.drawImage(image, 0, 0, getIconWidth(), getIconHeight(), 0, 0, image.getWidth(), image.getHeight(),
-							null);
-				}
-
-				@Override
-				public int getIconWidth() {
-					return (int) (image.getWidth() * SCALE);
-				}
-
-				@Override
-				public int getIconHeight() {
-					return (int) (image.getHeight() * SCALE);
-				}
-			};
+			Icon icon = new VeraPDFIcon(image);
 			label.setIcon(icon);
 		}
 
 		add(label);
 
+	}
+
+	private static class VeraPDFIcon implements Icon {
+
+		private static final double SCALE = 0.3;
+		private final BufferedImage image;
+
+		public VeraPDFIcon(BufferedImage image) {
+			this.image = image;
+		}
+
+		@Override
+		public void paintIcon(Component c, Graphics g, int x, int y) {
+			g.drawImage(image, 0, 0, getIconWidth(), getIconHeight(), 0, 0, image.getWidth(), image.getHeight(),
+					null);
+		}
+
+		@Override
+		public int getIconWidth() {
+			return (int) (image.getWidth() * SCALE);
+		}
+
+		@Override
+		public int getIconHeight() {
+			return (int) (image.getHeight() * SCALE);
+		}
 	}
 }

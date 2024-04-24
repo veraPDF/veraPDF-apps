@@ -21,10 +21,10 @@ public class TempFileClosingTest {
     private int initialFileAmount;
 
     public void test() throws VeraPDFException {
-        File testFile = new File(TEST_FILE);
         switchTempDir();
         initialFileAmount = getAmountOfFiles(currentTempDir);
         try {
+            File testFile = new File(TEST_FILE);
             GreenfieldCliWrapper.main(new String[] {testFile.getAbsolutePath(), FORMAT_OPTION, TEXT_VARIANT});
         } catch (VeraPDFException e) {
             System.setProperty(TEMP_DIR_PROPERTY, initialTempDir.getAbsolutePath());

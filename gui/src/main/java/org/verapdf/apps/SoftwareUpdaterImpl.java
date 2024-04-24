@@ -110,9 +110,9 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 
 	private static SemanticVersionNumber getLatestVersionFromUrl(final String endpoint) {
 		try {
-			URL url = new URL(endpoint);
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			builder.setErrorHandler(null);
+			URL url = new URL(endpoint);
 			Document doc = builder.parse(new InputSource(url.openStream()));
 			XPath path = XPathFactory.newInstance().newXPath();
 			NodeList versions = ((NodeList) path.evaluate("//str[@name='v']", doc, XPathConstants.NODESET));
