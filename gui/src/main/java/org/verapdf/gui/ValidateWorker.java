@@ -162,8 +162,8 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 
 	private void writeHtmlReport() {
 		final String extension = "html";
-		final String ext = '.' + extension;
 		try {
+			final String ext = '.' + extension;
 			this.htmlReport = File.createTempFile("veraPDF-tempHTMLReport", ext); //$NON-NLS-1$
 			this.htmlReport.deleteOnExit();
 			try (InputStream xmlStream = new FileInputStream(this.xmlReport);
@@ -173,10 +173,10 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 					                           this.configManager.getApplicationConfig().getWikiPath(), true);
 
 			} catch (IOException | TransformerException excep) {
-				final String message = String.format(GUIConstants.IOEXCEP_SAVING_REPORT, extension);
 				JOptionPane.showMessageDialog(this.parent,
 						String.format(GUIConstants.IOEXCEP_SAVING_REPORT, extension), GUIConstants.ERROR,
 						JOptionPane.ERROR_MESSAGE);
+				final String message = String.format(GUIConstants.IOEXCEP_SAVING_REPORT, extension);
 				logger.log(Level.SEVERE, message, excep);
 				this.htmlReport = null;
 			}

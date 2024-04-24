@@ -133,10 +133,9 @@ class SettingsPanel extends JPanel {
 
 //		panel.add(new JLabel(GUIConstants.SELECTED_PATH_FOR_FIXER_LABEL_TEXT));
 
-		File currentDir = new File(new File(GUIConstants.DOT).getCanonicalPath());
-
 		JButton choose2 = new JButton(GUIConstants.FIX_METADATA_FOLDER_CHOOSE_BUTTON);
 		this.folderChooser = new JFileChooser();
+		File currentDir = new File(new File(GUIConstants.DOT).getCanonicalPath());
 		this.folderChooser.setCurrentDirectory(currentDir);
 		this.folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		choose2.addActionListener(new ActionListener() {

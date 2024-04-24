@@ -79,7 +79,6 @@ final class VeraPdfCliProcessor implements Closeable {
 	}
 
 	ExitCodes processPaths(final List<String> pdfPaths, boolean nonPdfExt) throws VeraPDFException {
-		ExitCodes retStatus = ExitCodes.VALID;
 		if (isServerMode) {
 			try {
 				this.tempFile = Files.createTempFile("tempReport", ".xml").toFile();
@@ -91,6 +90,7 @@ final class VeraPdfCliProcessor implements Closeable {
 			this.os = System.out;
 		}
 		// If the path list is empty then process the STDIN stream
+		ExitCodes retStatus = ExitCodes.VALID;
 		if (pdfPaths.isEmpty() && !isServerMode) {
 			retStatus = processStdIn();
 		} else {
