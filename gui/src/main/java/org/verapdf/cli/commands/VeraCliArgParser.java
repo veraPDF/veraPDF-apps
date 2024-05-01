@@ -25,6 +25,7 @@ import org.verapdf.apps.Applications;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.core.utils.FileUtils;
+import org.verapdf.extensions.ExtensionObjectType;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.features.FeatureObjectType;
@@ -59,6 +60,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * This class holds all command-line options used by VeraPDF application.
@@ -86,6 +88,8 @@ public class VeraCliArgParser {
 	public static final String LOAD_PROFILE = OPTION_SEP + "profile"; //$NON-NLS-1$
 	public static final String EXTRACT_FLAG = FLAG_SEP + 'x'; //$NON-NLS-1$
 	public static final String EXTRACT = OPTION_SEP + "extract"; //$NON-NLS-1$
+	public static final String EXTENSIONS_FLAG = FLAG_SEP + 'e'; //$NON-NLS-1$
+	public static final String EXTENSIONS = OPTION_SEP + "extensions"; //$NON-NLS-1$
 	public static final String FORMAT = OPTION_SEP + "format"; //$NON-NLS-1$
 	public static final String RECURSE_FLAG = FLAG_SEP + 'r'; //$NON-NLS-1$
 	public static final String RECURSE = OPTION_SEP + "recurse"; //$NON-NLS-1$
@@ -141,6 +145,10 @@ public class VeraCliArgParser {
 	@Parameter(names = { EXTRACT_FLAG,
 	                     EXTRACT }, description = "Extracts and reports PDF features. Features must be passed separated by commas without spaces between them.", converter = FeatureConverter.class)
 	private List<FeatureObjectType> features;
+
+	@Parameter(names = { EXTENSIONS_FLAG,
+			EXTENSIONS }, description = "Choose Arlington PDF model extensions. Extensions must be passed separated by commas without spaces between them.", converter = ExtensionConverter.class)
+	private List<ExtensionObjectType> extensions;
 
 	@Parameter(names = { FORMAT }, description = "Chooses output format.", converter = FormatConverter.class)
 	private FormatOption format = Applications.defaultConfig().getFormat();
@@ -382,6 +390,10 @@ public class VeraCliArgParser {
 		return this.features != null || this.isPolicy();
 	}
 
+	public EnumSet<ExtensionObjectType> extensions() {
+		return EnumSet.copyOf(this.extensions);
+	}
+
 	public PDFAFlavour getDefaultFlavour() {
 		return this.defaultFlavour;
 	}
@@ -467,6 +479,7 @@ public class VeraCliArgParser {
 	 	this.maxFailures = validatorConfig.getMaxFails();
 	 	this.maxFailuresDisplayed = validatorConfig.getMaxNumberOfDisplayedFailedChecks();
 	 	this.disableErrorMessages = !validatorConfig.showErrorMessages();
+	 	this.extensions = new LinkedList<>(validatorConfig.getEnabledExtensions());
 
 	 	VeraAppConfig veraAppConfig = configManager.getApplicationConfig();
 	 	this.saveFolder = veraAppConfig.getFixesFolder();
@@ -548,6 +561,19 @@ public class VeraCliArgParser {
 		}
 	}
 
+	public static final class ExtensionConverter implements IStringConverter<ExtensionObjectType> {
+
+		@Override
+		public ExtensionObjectType convert(final String value) {
+			for (ExtensionObjectType type : ExtensionObjectType.values()) {
+				if (type.toString().equals(value)) {
+					return type;
+				}
+			}
+			throw new ParameterException("Illegal --extensions argument:" + value);
+		}
+	}
+
 	/**
 	 * JCommander parameter validator for {@link File}, see
 	 * {@link IParameterValidator}. Enforces an existing, readable file.
@@ -572,7 +598,7 @@ public class VeraCliArgParser {
 	public ValidatorConfig validatorConfig() {
 		return ValidatorFactory.createConfig(this.flavour, this.defaultFlavour, this.logPassed(), this.maxFailures,
 				this.debug, this.addLogs(), getLoggerLevel(), this.maxFailuresDisplayed, !isDisableErrorMessages(),
-				                             this.getPassword(), this.getShowProgress(), this.nonPdfExt());
+				                             this.getPassword(), this.getShowProgress(), this.nonPdfExt(), this.extensions());
 	}
 
 	public FeatureExtractorConfig featureExtractorConfig() {
@@ -637,6 +663,10 @@ public class VeraCliArgParser {
 		}
 		if (cliArgParser.fixMetadata()) {
 			veraPDFParameters.add(FIX_METADATA);
+		}
+		if (cliArgParser.extensions() != null) {
+			veraPDFParameters.add(EXTENSIONS_FLAG);
+			veraPDFParameters.add(cliArgParser.extensions().stream().map(ExtensionObjectType::toString).collect(Collectors.joining("&")));
 		}
 		if (cliArgParser.addLogs()) {
 			veraPDFParameters.add(ADD_LOGS);

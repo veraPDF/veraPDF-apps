@@ -77,6 +77,7 @@ public class PDFValidationApplication extends JFrame {
 	private AboutPanel aboutPanel;
 	private SettingsPanel settingsPanel;
 	private final FeaturesConfigPanel featuresPanel;
+	private final ExtensionsConfigPanel extensionsPanel;
 	private CheckerPanel checkerPanel;
 	private final VeraAppConfig config;
 	private final PolicyPanel policyConfig;
@@ -142,7 +143,8 @@ public class PDFValidationApplication extends JFrame {
 							PDFValidationApplication.this.settingsPanel.getLoggingLevel(),
 							PDFValidationApplication.this.settingsPanel.getFailedChecksDisplayNumber(),
 							PDFValidationApplication.this.settingsPanel.showErrorMessages(),
-							null, false, false);
+							null, false, false, 
+							configManager.getValidatorConfig().getEnabledExtensions());
 					try {
 						configManager.updateValidatorConfig(validConf);
 					} catch (JAXBException | IOException excep) {
@@ -203,6 +205,27 @@ public class PDFValidationApplication extends JFrame {
 
 		menuBar.add(configs);
 		configs.add(features);
+
+		this.extensionsPanel = new ExtensionsConfigPanel();
+
+		final JMenuItem extensions = new JMenuItem("Extensions Config");
+		extensions.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (PDFValidationApplication.this.extensionsPanel != null
+						&& PDFValidationApplication.this.extensionsPanel.showDialog(PDFValidationApplication.this,
+						"Extensions Config", configManager.getValidatorConfig().getEnabledExtensions())) {
+					try {
+						PDFValidationApplication.this.extensionsPanel.updateEnabledExtensions(configManager);
+					} catch (JAXBException | IOException exp) {
+						logger.log(Level.SEVERE, "Exception in updating validator config", exp); //$NON-NLS-1$
+					}
+				}
+			}
+		});
+
+		menuBar.add(configs);
+		configs.add(extensions);
 
 		this.policyConfig = new PolicyPanel();
 		final JMenuItem policyPanel = new JMenuItem("Policy Config");
