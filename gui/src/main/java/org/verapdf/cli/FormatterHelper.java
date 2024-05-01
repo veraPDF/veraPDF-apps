@@ -1,6 +1,7 @@
 package org.verapdf.cli;
 
 import com.beust.jcommander.*;
+import org.verapdf.extensions.ExtensionObjectType;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
@@ -100,6 +101,9 @@ public class FormatterHelper extends DefaultUsageFormatter {
 					List<FeatureObjectType> featuresList = new LinkedList<>(Arrays.asList(FeatureObjectType.values()));
 					featuresList.remove(FeatureObjectType.ERROR);
 					valueList = featuresList.toString();
+				} else if (ExtensionObjectType.class.equals(fieldGenericType)) {
+					List<ExtensionObjectType> extensionsList = new LinkedList<>(Arrays.asList(ExtensionObjectType.values()));
+					valueList = extensionsList.toString();
 				}
 				if (valueList != null) {
 					String possibleValues = "Possible Values: " + valueList;

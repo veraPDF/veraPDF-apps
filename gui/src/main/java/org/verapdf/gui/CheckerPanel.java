@@ -884,7 +884,8 @@ class CheckerPanel extends JPanel {
 				validatorConfig.isRecordPasses(), maxFails,
 				validatorConfig.isDebug(), validatorConfig.isLogsEnabled(),
 				validatorConfig.getLoggingLevel(), validatorConfig.getMaxNumberOfDisplayedFailedChecks(),
-				validatorConfig.showErrorMessages(), null, validatorConfig.getShowProgress(), validatorConfig.getNonPDFExtension());
+				validatorConfig.showErrorMessages(), null, validatorConfig.getShowProgress(), 
+				validatorConfig.getNonPDFExtension(), validatorConfig.getEnabledExtensions());
 	}
 
 	VeraAppConfig appConfigFromState() {
