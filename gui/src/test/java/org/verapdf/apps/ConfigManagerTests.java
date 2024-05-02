@@ -30,6 +30,7 @@ import java.util.EnumSet;
 import java.util.logging.Level;
 import javax.xml.bind.JAXBException;
 import org.junit.Test;
+import org.verapdf.extensions.ExtensionObjectType;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.metadata.fixer.FixerFactory;
@@ -119,7 +120,8 @@ public class ConfigManagerTests {
 		assertEquals(defaultConfig, newManager.getValidatorConfig());
 		ValidatorConfig newConfig = ValidatorFactory.createConfig(PDFAFlavour.PDFA_1_A, PDFAFlavour.PDFA_1_B,
 				!defaultConfig.isRecordPasses(), defaultConfig.getMaxFails() + 20, false, false,
-				Level.WARNING, BaseValidator.DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS, false, null, false, false);
+				Level.WARNING, BaseValidator.DEFAULT_MAX_NUMBER_OF_DISPLAYED_FAILED_CHECKS, false, 
+				null, false, false, EnumSet.noneOf(ExtensionObjectType.class));
 		newManager.updateValidatorConfig(newConfig);
 		assertNotEquals(defaultConfig, newManager.getValidatorConfig());
 	}
