@@ -391,7 +391,7 @@ public class VeraCliArgParser {
 	}
 
 	public EnumSet<ExtensionObjectType> extensions() {
-		return EnumSet.copyOf(this.extensions);
+		return this.extensions != null && !this.extensions.isEmpty() ? EnumSet.copyOf(this.extensions) : EnumSet.noneOf(ExtensionObjectType.class);
 	}
 
 	public PDFAFlavour getDefaultFlavour() {
