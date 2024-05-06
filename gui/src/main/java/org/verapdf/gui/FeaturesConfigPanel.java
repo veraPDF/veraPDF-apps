@@ -97,7 +97,6 @@ public class FeaturesConfigPanel extends JPanel {
 
 		for (FeatureObjectType type : FeatureObjectType.values()) {
 			if (type != FeatureObjectType.ERROR) {
-				this.featureGrid.get(type).setSelected(true);
 				this.featureGrid.get(type).setSelected(featureExtractorConfig.isFeatureEnabled(type));
 			}
 		}

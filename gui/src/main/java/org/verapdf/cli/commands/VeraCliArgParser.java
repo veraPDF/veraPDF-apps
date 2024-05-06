@@ -660,6 +660,7 @@ public class VeraCliArgParser {
 		veraPDFParameters.add(SERVER_MODE);
 		if (cliArgParser.extractFeatures()) {
 			veraPDFParameters.add(EXTRACT_FLAG);
+			veraPDFParameters.add(cliArgParser.features.stream().map(FeatureObjectType::toString).collect(Collectors.joining(",")));
 		}
 		if (cliArgParser.fixMetadata()) {
 			veraPDFParameters.add(FIX_METADATA);
