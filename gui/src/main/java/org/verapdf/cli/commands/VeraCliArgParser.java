@@ -59,6 +59,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * This class holds all command-line options used by VeraPDF application.
@@ -634,6 +635,7 @@ public class VeraCliArgParser {
 		veraPDFParameters.add(SERVER_MODE);
 		if (cliArgParser.extractFeatures()) {
 			veraPDFParameters.add(EXTRACT_FLAG);
+			veraPDFParameters.add(cliArgParser.features.stream().map(FeatureObjectType::toString).collect(Collectors.joining(",")));
 		}
 		if (cliArgParser.fixMetadata()) {
 			veraPDFParameters.add(FIX_METADATA);

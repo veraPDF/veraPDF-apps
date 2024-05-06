@@ -115,6 +115,56 @@ public class PDFValidationApplication extends JFrame {
 			logger.log(Level.SEVERE, "Exception in initialising settings panel", e);
 		}
 
+		file.add(getSettings());
+		
+		file.addSeparator();
+
+		file.add(getQuit());
+
+		final JMenu configs = new JMenu("Configs");
+
+		this.featuresPanel = new FeaturesConfigPanel();
+
+		menuBar.add(configs);
+		configs.add(getFeatures());
+
+		this.policyConfig = new PolicyPanel();
+
+		configs.add(getPolicyPanel());
+
+		configs.add(getShowConfigLocation());
+
+		JMenu help = new JMenu("Help");
+		help.add(getGuiHelp());
+		help.add(getValidationHelp());
+		help.add(getPolicyHelp());
+		help.addSeparator();
+		help.add(getCheckForUpdates());
+		help.add(getAbout());
+
+		menuBar.add(help);
+
+		JPanel contentPanel = new JPanel();
+		contentPanel.setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS,
+				GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS));
+		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+		setContentPane(contentPanel);
+		
+		contentPanel.add(getLogoPanel());
+
+		this.checkerPanel = null;
+		try {
+			this.checkerPanel = new CheckerPanel(configManager);
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in loading xml or html image.",
+					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
+			logger.log(Level.WARNING, "Exception in loading xml or html image", e);
+		}
+		contentPanel.add(this.checkerPanel);
+
+	}
+
+	private JMenuItem getSettings() {
 		final JMenuItem sett = new JMenuItem("Settings");
 		sett.addActionListener(new ActionListener() {
 			@Override
@@ -162,11 +212,10 @@ public class PDFValidationApplication extends JFrame {
 				}
 			}
 		});
+		return sett;
+	}
 
-		file.add(sett);
-
-		file.addSeparator();
-
+	private JMenuItem getQuit() {
 		final JMenuItem quit = new JMenuItem("Quit");
 		quit.addActionListener(new ActionListener() {
 			@Override
@@ -177,13 +226,10 @@ public class PDFValidationApplication extends JFrame {
 		});
 
 		quit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK));
+		return quit;
+	}
 
-		file.add(quit);
-
-		final JMenu configs = new JMenu("Configs");
-
-		this.featuresPanel = new FeaturesConfigPanel();
-
+	private JMenuItem getFeatures() {
 		final JMenuItem features = new JMenuItem("Features Config");
 		features.addActionListener(new ActionListener() {
 			@Override
@@ -200,11 +246,10 @@ public class PDFValidationApplication extends JFrame {
 				}
 			}
 		});
+		return features;
+	}
 
-		menuBar.add(configs);
-		configs.add(features);
-
-		this.policyConfig = new PolicyPanel();
+	private JMenuItem getPolicyPanel() {
 		final JMenuItem policyPanel = new JMenuItem("Policy Config");
 		policyPanel.addActionListener(new ActionListener() {
 			@Override
@@ -232,9 +277,10 @@ public class PDFValidationApplication extends JFrame {
 				}
 			}
 		});
+		return policyPanel;
+	}
 
-		configs.add(policyPanel);
-
+	private static JMenuItem getShowConfigLocation() {
 		final JMenuItem showConfigLocation = new JMenuItem(GUIConstants.SHOW_CONFIG_LOCATION);
 		showConfigLocation.addActionListener(new ActionListener() {
 			@Override
@@ -246,19 +292,43 @@ public class PDFValidationApplication extends JFrame {
 				}
 			}
 		});
-		
-		configs.add(showConfigLocation);
+		return showConfigLocation;
+	}
 
-		JMenuItem about = new JMenuItem("About");
-		about.addActionListener(new ActionListener() {
+	private JMenuItem getGuiHelp() {
+		JMenuItem guiHelp = new JMenuItem("GUI");
+		guiHelp.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (PDFValidationApplication.this.aboutPanel != null) {
-					PDFValidationApplication.this.aboutPanel.showDialog(PDFValidationApplication.this, "About veraPDF");
-				}
+				PDFValidationApplication.this.attemptURIOpen(GUIConstants.DOCS_GUI_LINK_URL);
 			}
 		});
+		return guiHelp;
+	}
 
+	private JMenuItem getValidationHelp() {
+		JMenuItem validationHelp = new JMenuItem("Validation");
+		validationHelp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PDFValidationApplication.this.attemptURIOpen(GUIConstants.DOCS_VALIDATION_LINK_URL);
+			}
+		});
+		return validationHelp;
+	}
+
+	private JMenuItem getPolicyHelp() {
+		JMenuItem policyHelp = new JMenuItem("Policy");
+		policyHelp.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PDFValidationApplication.this.attemptURIOpen(GUIConstants.DOCS_POLICY_LINK_URL);
+			}
+		});
+		return policyHelp;
+	}
+
+	private JMenuItem getCheckForUpdates() {
 		JMenuItem checkForUpdates = new JMenuItem(GUIConstants.CHECK_FOR_UPDATES_TEXT);
 		checkForUpdates.addActionListener(new ActionListener() {
 			@Override
@@ -296,47 +366,23 @@ public class PDFValidationApplication extends JFrame {
 				}
 			}
 		});
+		return checkForUpdates;
+	}
 
-		JMenuItem guiHelp = new JMenuItem("GUI");
-		guiHelp.addActionListener(new ActionListener() {
+	private JMenuItem getAbout() {
+		JMenuItem about = new JMenuItem("About");
+		about.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PDFValidationApplication.this.attemptURIOpen(GUIConstants.DOCS_GUI_LINK_URL);
+				if (PDFValidationApplication.this.aboutPanel != null) {
+					PDFValidationApplication.this.aboutPanel.showDialog(PDFValidationApplication.this, "About veraPDF");
+				}
 			}
 		});
+		return about;
+	}
 
-		JMenuItem validationHelp = new JMenuItem("Validation");
-		validationHelp.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				PDFValidationApplication.this.attemptURIOpen(GUIConstants.DOCS_VALIDATION_LINK_URL);
-			}
-		});
-
-		JMenuItem policyHelp = new JMenuItem("Policy");
-		policyHelp.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				PDFValidationApplication.this.attemptURIOpen(GUIConstants.DOCS_POLICY_LINK_URL);
-			}
-		});
-
-		JMenu help = new JMenu("Help");
-		help.add(guiHelp);
-		help.add(validationHelp);
-		help.add(policyHelp);
-		help.addSeparator();
-		help.add(checkForUpdates);
-		help.add(about);
-
-		menuBar.add(help);
-
-		JPanel contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS,
-				GUIConstants.EMPTY_BORDER_INSETS, GUIConstants.EMPTY_BORDER_INSETS));
-		contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
-		setContentPane(contentPane);
-
+	private MiniLogoPanel getLogoPanel() {
 		MiniLogoPanel logoPanel = null;
 		try {
 			logoPanel = new MiniLogoPanel(GUIConstants.LOGO_NAME);
@@ -345,19 +391,7 @@ public class PDFValidationApplication extends JFrame {
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
 			logger.log(Level.WARNING, "Exception in creating mini logo", e);
 		}
-
-		contentPane.add(logoPanel);
-
-		this.checkerPanel = null;
-		try {
-			this.checkerPanel = new CheckerPanel(configManager);
-		} catch (IOException e) {
-			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in loading xml or html image.",
-					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			logger.log(Level.WARNING, "Exception in loading xml or html image", e);
-		}
-		contentPane.add(this.checkerPanel);
-
+		return logoPanel;
 	}
 
 	private void attemptURIOpen(String uri) {
