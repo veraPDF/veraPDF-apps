@@ -667,7 +667,7 @@ public class VeraCliArgParser {
 		}
 		if (cliArgParser.extensions() != null) {
 			veraPDFParameters.add(EXTENSIONS_FLAG);
-			veraPDFParameters.add(cliArgParser.extensions().stream().map(ExtensionObjectType::toString).collect(Collectors.joining("&")));
+			veraPDFParameters.add(cliArgParser.extensions().stream().map(ExtensionObjectType::toString).collect(Collectors.joining(",")));
 		}
 		if (cliArgParser.addLogs()) {
 			veraPDFParameters.add(ADD_LOGS);
