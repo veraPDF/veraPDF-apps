@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         java-version: [11, 17, 21]
 
@@ -21,6 +22,7 @@ jobs:
           ref: integration
       - name: JDK setup
         uses: actions/setup-java@v3
+        continue-on-error: true
         with:
           java-version: ${{ matrix.java-version }}
           distribution: 'temurin'
