@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.verapdf</groupId>
     <artifactId>verapdf-apps</artifactId>
-    <version>1.26.0-RC1</version>
+    <version>1.26.0</version>
   </parent>
 
   <groupId>org.verapdf.apps</groupId>
@@ -207,26 +207,26 @@
 <!--          </execution>-->
           <execution>
             <!-- Download the veraPDF validation profiles from GitHub -->
-            <id>profiles-rc/1.26</id>
+            <id>profiles-rel/1.26</id>
             <phase>package</phase>
             <goals>
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/veraPDF/veraPDF-validation-profiles/archive/rc/1.26.zip</url>
+              <url>https://github.com/veraPDF/veraPDF-validation-profiles/archive/rel/1.26.zip</url>
               <unpack>false</unpack>
               <skipCache>true</skipCache>
               <outputDirectory>${project.build.directory}/staging/profiles</outputDirectory>
             </configuration>
           </execution>
           <execution>
-            <id>model-rc/1.26</id>
+            <id>model-rel/1.26</id>
             <phase>package</phase>
             <goals>
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/veraPDF/veraPDF-model/archive/rc/1.26.zip</url>
+              <url>https://github.com/veraPDF/veraPDF-model/archive/rel/1.26.zip</url>
               <unpack>false</unpack>
               <skipCache>true</skipCache>
               <outputDirectory>${project.build.directory}/staging/model</outputDirectory>
@@ -252,7 +252,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>http://software.verapdf.org/dev/veraPDF-sample-plugin-pack-rc.zip</url>
+              <url>http://software.verapdf.org/dev/veraPDF-sample-plugin-pack-rel.zip</url>
               <unpack>false</unpack>
               <skipCache>true</skipCache>
               <outputDirectory>${project.build.directory}/staging/plugins</outputDirectory>
