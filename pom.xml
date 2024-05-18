@@ -28,12 +28,12 @@
   <parent>
     <artifactId>verapdf-parent</artifactId>
     <groupId>org.verapdf</groupId>
-    <version>1.26.1</version>
+    <version>1.26.2</version>
   </parent>
 
   <groupId>org.verapdf</groupId>
   <artifactId>verapdf-apps</artifactId>
-  <version>1.26.0-RC1</version>
+  <version>1.26.0</version>
   <packaging>pom</packaging>
 
   <name>veraPDF PDF/A Validation Applications</name>
@@ -72,9 +72,9 @@
   <properties>
     <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
     <sonar.language>java</sonar.language>
-    <verapdf.library.version>[1.26.0-RC,1.27.0)</verapdf.library.version>
-    <verapdf.pdfbox.validation.version>[1.26.0-RC,1.27.0)</verapdf.pdfbox.validation.version>
-    <verapdf.validation.version>[1.26.0-RC,1.27.0)</verapdf.validation.version>
+    <verapdf.library.version>[1.26.0,1.27.0)</verapdf.library.version>
+    <verapdf.pdfbox.validation.version>[1.26.0,1.27.0)</verapdf.pdfbox.validation.version>
+    <verapdf.validation.version>[1.26.0,1.27.0)</verapdf.validation.version>
   </properties>
 
   <dependencyManagement>
