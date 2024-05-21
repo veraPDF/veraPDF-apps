@@ -28,12 +28,12 @@
   <parent>
     <artifactId>verapdf-parent</artifactId>
     <groupId>org.verapdf</groupId>
-    <version>1.24.1</version>
+    <version>1.26.2</version>
   </parent>
 
   <groupId>org.verapdf</groupId>
   <artifactId>verapdf-apps</artifactId>
-  <version>1.24.0</version>
+  <version>1.26.0</version>
   <packaging>pom</packaging>
 
   <name>veraPDF PDF/A Validation Applications</name>
@@ -72,9 +72,9 @@
   <properties>
     <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
     <sonar.language>java</sonar.language>
-    <verapdf.library.version>[1.24.0,1.25.0)</verapdf.library.version>
-    <verapdf.pdfbox.validation.version>[1.24.0,1.25.0)</verapdf.pdfbox.validation.version>
-    <verapdf.validation.version>[1.24.0,1.25.0)</verapdf.validation.version>
+    <verapdf.library.version>[1.26.0,1.27.0)</verapdf.library.version>
+    <verapdf.pdfbox.validation.version>[1.26.0,1.27.0)</verapdf.pdfbox.validation.version>
+    <verapdf.validation.version>[1.26.0,1.27.0)</verapdf.validation.version>
   </properties>
 
   <dependencyManagement>
@@ -125,26 +125,29 @@
   <build>
 
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.12.1</version>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.2.5</version>
       </plugin>
 
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.11</version>
       </plugin>
 
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
+        <version>2.16.2</version>
       </plugin>
     </plugins>
   </build>

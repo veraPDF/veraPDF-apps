@@ -19,6 +19,7 @@ import org.verapdf.core.VeraPDFException;
 import org.verapdf.core.utils.LogsFileHandler;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.gui.utils.GUIConstants;
+import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
 import org.verapdf.policy.PolicyChecker;
@@ -61,11 +62,11 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 	private static final String ERROR_IN_CREATING_TEMP_FILE = "Can't create temporary file for XML report"; //$NON-NLS-1$
 	private static final String ERROR_IN_OBTAINING_POLICY_FEATURES = "Can't obtain enabled features from policy files"; //$NON-NLS-1$
 
-	private List<File> pdfs;
-	private ValidationProfile customProfile;
-	private File policy;
-	private CheckerPanel parent;
-	private ConfigManager configManager;
+	private final List<File> pdfs;
+	private final ValidationProfile customProfile;
+	private final File policy;
+	private final CheckerPanel parent;
+	private final ConfigManager configManager;
 	private File xmlReport = null;
 	private File htmlReport = null;
 	private ValidateWorkerSummary validateWorkerSummary = null;
@@ -109,15 +110,10 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 					this.parent.handleValidationError(ERROR_IN_OBTAINING_POLICY_FEATURES + ": ", e);
 				}
 			}
-			ProcessorConfig resultConfig = this.customProfile == null
-					? ProcessorFactory.fromValues(validatorConfig, featuresConfig,
-					                              this.configManager.getPluginsCollectionConfig(),
-					                              this.configManager.getFixerConfig(), tasks,
-					                              veraAppConfig.getFixesFolder())
-					: ProcessorFactory.fromValues(validatorConfig, featuresConfig,
-					                              this.configManager.getPluginsCollectionConfig(),
-					                              this.configManager.getFixerConfig(), tasks,
-					                              this.customProfile, veraAppConfig.getFixesFolder());
+			ProcessorConfig resultConfig = ProcessorFactory.fromValues(validatorConfig, featuresConfig, 
+					this.configManager.getPluginsCollectionConfig(), this.configManager.getFixerConfig(), tasks, 
+					this.customProfile == null ? Profiles.defaultProfile() : this.customProfile, 
+					veraAppConfig.getFixesFolder());
 			try (BatchProcessor processor = ProcessorFactory.fileBatchProcessor(resultConfig)) {
 				VeraAppConfig applicationConfig = this.configManager.getApplicationConfig();
 				BatchSummary batchSummary = processor.process(this.pdfs,
@@ -166,7 +162,7 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 
 	private void writeHtmlReport() {
 		final String extension = "html";
-		final String ext = "." + extension;
+		final String ext = '.' + extension;
 		try {
 			this.htmlReport = File.createTempFile("veraPDF-tempHTMLReport", ext); //$NON-NLS-1$
 			this.htmlReport.deleteOnExit();
@@ -203,8 +199,8 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 		return failedPolicyJobsCount;
 	}
 
-	public class ValidateWorkerSummary {
-		private BatchSummary batchSummary;
+	public static class ValidateWorkerSummary {
+		private final BatchSummary batchSummary;
 		private int policyNonCompliantJobCount = -1;
 
 		public ValidateWorkerSummary(BatchSummary batchSummary, int policyNonCompliantJobCount) {

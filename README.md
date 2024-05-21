@@ -2,7 +2,7 @@ veraPDF-apps
 ===============
 *Command line and GUI industry supported PDF/A and PDF/UA Validation*
 
-[![Build Status](https://jenkins.openpreservation.org/job/veraPDF/job/1.24/job/apps/badge/icon)](https://jenkins.openpreservation.org/job/veraPDF/job/1.24/job/apps/ "OPF Jenkins")
+[![Build Status](https://jenkins.openpreservation.org/job/veraPDF/job/1.26/job/apps/badge/icon)](https://jenkins.openpreservation.org/job/veraPDF/job/1.26/job/apps/ "OPF Jenkins")
 [![Maven Central](https://img.shields.io/maven-central/v/org.verapdf/verapdf-apps.svg)](https://repo1.maven.org/maven2/org/verapdf/verapdf-apps/ "Maven central")
 [![CodeCov Coverage](https://img.shields.io/codecov/c/github/veraPDF/veraPDF-apps.svg)](https://codecov.io/gh/veraPDF/veraPDF-apps/ "CodeCov coverage")
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ac55527c6ac04c3ab57c932c85c9be4d)](https://app.codacy.com/gh/veraPDF/veraPDF-apps/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade "Codacy grade")
@@ -28,7 +28,7 @@ Quick Start
 
 ### veraPDF GUI
 #### Download release version
-You can download a Java-based installer for the latest veraPDF GUI release [from our download site](https://software.verapdf.org/rel/verapdf-installer.zip). The current installation process requires Java 8 - 17 to be pre-installed.
+You can download a Java-based installer for the latest veraPDF GUI release [from our download site](https://software.verapdf.org/rel/verapdf-installer.zip). The current installation process requires Java 8 - 21 to be pre-installed.
 
 #### Download latest development version
 If you want to try the latest development version you can obtain it from our [development download site](https://software.verapdf.org/dev/verapdf-installer.zip). Be aware that we release development snapshots regularly, often more than once a day. While we try to ensure that development builds are well tested there are no guarantees.
@@ -37,14 +37,14 @@ If you want to try the latest development version you can obtain it from our [de
 Once downloaded unzip the archive which contains the installer jar with batch and shell scripts to launch, the zip contents are as follows:
 
     verapdf-${project.version}/verapdf-install.bat
-    verapdf-${project.version}/verapdf-install.sh
+    verapdf-${project.version}/verapdf-install
     verapdf-${project.version}/verapdf-izpack-installer-${project.version}.jar
 
 Where `${project.version}` is the last development or release version.
 
-Windows users should run the 'verapdf-install.bat' dos batch file, while Linux and OSX users should run the shell script, `verapdf-install.sh`. It's possible to run the installer directly on any platform:
+Windows users should run the 'verapdf-install.bat' batch file, while Linux and OSX users should run the shell script, `verapdf-install`. It's possible to run the installer directly on any platform:
 
-    java - jar <path-to-installer-jar>/verapdf-izpack-installer-${project.version}.jar
+    java -jar <path-to-installer-jar>/verapdf-izpack-installer-${project.version}.jar
 
 #### Linux full command line download and install
 Linux users can download and execute the veraPDF installer using the following commands:
@@ -52,7 +52,7 @@ Linux users can download and execute the veraPDF installer using the following c
     wget http://downloads.verapdf.org/rel/verapdf-installer.zip
     unzip verapdf-installer.zip
     cd verapdf-<version>
-    ./verapdf-install.sh
+    ./verapdf-install
 
 #### veraPDF GUI manual
 We've prepared a manual for the GUI which is included in the library project and can be [downloaded from GitHub](https://github.com/veraPDF/veraPDF-apps/raw/integration/veraPDFPDFAConformanceCheckerGUI.pdf).
@@ -68,33 +68,35 @@ Building the veraPDF-apps from Source
 
 In order to build this project you'll need:
 
- * Java 8 - 17, which can be downloaded [from Oracle](https://www.oracle.com/technetwork/java/javase/downloads/index.html), or for Linux users [OpenJDK](https://openjdk.java.net/install/index.html).
+ * Java 8 - 21, which can be downloaded [from Oracle](https://www.oracle.com/technetwork/java/javase/downloads/index.html), or for Linux users [OpenJDK](https://openjdk.java.net/install/index.html).
  * [Maven v3+](https://maven.apache.org/)
 
 Life will be easier if you also use [Git](https://git-scm.com/) to obtain and manage the source.
 
 ### Building veraPDF
 First you'll need to obtain a version of the veraPDF-apps source code. You can compile either the latest release version or the latest development source.
+
 #### Downloading the latest release source
 Use Git to clone the repository and ensure that the `master` branch is checked out:
-```
-git clone https://github.com/veraPDF/veraPDF-apps
-git checkout master
-```
+
+    git clone https://github.com/veraPDF/veraPDF-apps
+    cd veraPDF-apps
+    git checkout master
+
 or download the latest [tar archive](https://github.com/veraPDF/veraPDF-apps/archive/master.tar.gz "veraPDF-apps latest GitHub tar archive") or [zip archive](https://github.com/veraPDF/veraPDF-apps/archive/master.zip "veraPDF-apps latest GitHub zip archive") from GitHub.
 
 #### Downloading the latest development source
 Use Git to clone the repository and ensure that the `integration` branch is checked out:
 
     git clone https://github.com/veraPDF/veraPDF-apps
+    cd veraPDF-apps
     git checkout integration
 
 or download the latest [tar archive](https://github.com/veraPDF/veraPDF-apps/archive/integration.tar.gz "veraPDF-apps latest GitHub tar archive") or [zip archive](https://github.com/veraPDF/veraPDF-apps/archive/integration.zip "veraPDF-apps latest GitHub zip archive") from GitHub.
 
 #### Use Maven to compile the source
-Move to the downloaded project directory and call Maven install:
+Call Maven install:
 
-    cd veraPDF-apps
     mvn clean install
 
 #### Testing the build

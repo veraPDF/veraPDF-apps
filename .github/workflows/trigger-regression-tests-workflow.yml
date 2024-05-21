@@ -9,7 +9,7 @@ jobs:
   trigger_build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - name: Set up JDK 1.11
@@ -25,5 +25,5 @@ jobs:
              owner: 'veraPDF',
              repo: 'verapdf-integration-tests',
              workflow_id: 'run-pdfa-tests-workflow.yml',
-             ref: 'rel/1.24'
+             ref: 'rel/1.26'
             })

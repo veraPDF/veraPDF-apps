@@ -32,7 +32,7 @@ public class MultithreadingTest {
 		List<Future<ValidationResult>> futureResult = startValidation(fileToValidate, numberOfThreads);
 		List<ValidationResult> validationResults = getValidationResult(futureResult);
 
-		Boolean isExpectedResults = compareResultsFromDifferentThreads(validationResults);
+		boolean isExpectedResults = compareResultsFromDifferentThreads(validationResults);
 
 		assertTrue(isExpectedResults);
 	}

@@ -76,10 +76,10 @@ public class PDFValidationApplication extends JFrame {
 
 	private AboutPanel aboutPanel;
 	private SettingsPanel settingsPanel;
-	private FeaturesConfigPanel featuresPanel;
+	private final FeaturesConfigPanel featuresPanel;
 	private CheckerPanel checkerPanel;
-	private VeraAppConfig config;
-	private PolicyPanel policyConfig;
+	private final VeraAppConfig config;
+	private final PolicyPanel policyConfig;
 
 	private PDFValidationApplication(double frameScale) {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -151,7 +151,7 @@ public class PDFValidationApplication extends JFrame {
 					}
 
 					MetadataFixerConfig fixConf = FixerFactory
-							.configFromValues(PDFValidationApplication.this.settingsPanel.getFixMetadataPrefix(), true);
+							.configFromValues(PDFValidationApplication.this.settingsPanel.getFixMetadataPrefix());
 					try {
 						configManager.updateFixerConfig(fixConf);
 					} catch (JAXBException | IOException excep) {
@@ -276,7 +276,7 @@ public class PDFValidationApplication extends JFrame {
 				} else {
 					JOptionPane.showMessageDialog(
 							PDFValidationApplication.this,
-							String.format(Applications.UPDATE_LATEST_VERSION, "\n", details.getVersion()),
+							String.format(Applications.UPDATE_LATEST_VERSION, '\n', details.getVersion()),
 							GUIConstants.CHECK_FOR_UPDATES_TEXT,
 							JOptionPane.INFORMATION_MESSAGE);
 				}
@@ -369,7 +369,7 @@ public class PDFValidationApplication extends JFrame {
 		double frameScale = 1;
 		if (args.length > 1 && "--frameScale".equals(args[0]) && args[1] != null) {
 			try {
-				frameScale = Double.valueOf(args[1]);
+				frameScale = Double.parseDouble(args[1]);
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 			}

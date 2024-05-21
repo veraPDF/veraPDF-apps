@@ -103,9 +103,8 @@ public final class VeraPdfCli {
 			try {
 				if (!cliArgParser.isMultiprocessing()) {
 					System.exit(singleThreadProcess(cliArgParser).value);
-				} else {
-					System.exit(MultiThreadProcessor.process(cliArgParser).value);
 				}
+				System.exit(MultiThreadProcessor.process(cliArgParser).value);
 			} catch (InterruptedException e) {
 				logger.log(Level.WARNING, "Interrupted", e);
 				System.exit(ExitCodes.INTERRUPTED_EXCEPTION.value);
@@ -116,7 +115,7 @@ public final class VeraPdfCli {
 				long maxMemory = heapUsage.getMax() / MEGABYTE;
 				long usedMemory = heapUsage.getUsed() / MEGABYTE;
 				System.out.format(",%s\n", message); //$NON-NLS-1$
-				System.out.format("Memory Use: %sM/%sM\n", Long.valueOf(usedMemory), Long.valueOf(maxMemory)); //$NON-NLS-1$
+				System.out.format("Memory Use: %sM/%sM\n", usedMemory, maxMemory); //$NON-NLS-1$
 				System.out.format(
 						"To increase the memory available to the JVM please assign the JAVA_OPTS environment variable.\n"); //$NON-NLS-1$
 				System.out.format("The examples below increase the maximum heap available to the JVM to 2GB:\n"); //$NON-NLS-1$
@@ -205,7 +204,7 @@ public final class VeraPdfCli {
 			return;
 		}
 		if (!updater.isUpdateAvailable(details)) {
-			System.out.format(Applications.UPDATE_LATEST_VERSION, ",", details.getVersion() + "\n"); //$NON-NLS-1$
+			System.out.format(Applications.UPDATE_LATEST_VERSION, ',', details.getVersion() + '\n'); //$NON-NLS-1$
 			return;
 		}
 		System.out.format(

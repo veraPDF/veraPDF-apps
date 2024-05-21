@@ -4,11 +4,10 @@ import com.beust.jcommander.*;
 import org.verapdf.features.FeatureObjectType;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
+import org.verapdf.processor.FormatOption;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 
 public class FormatterHelper extends DefaultUsageFormatter {
 
@@ -20,7 +19,7 @@ public class FormatterHelper extends DefaultUsageFormatter {
 
 	@Override
 	public void appendAllParametersDetails(StringBuilder out, int indentCount, String indent, List<ParameterDescription> sortedParameters) {
-		if (sortedParameters.size() > 0) {
+		if (!sortedParameters.isEmpty()) {
 			out.append(indent).append("  Options:\n");
 		}
 
@@ -34,7 +33,7 @@ public class FormatterHelper extends DefaultUsageFormatter {
 			   .append("  ")
 			   .append(parameter.required() ? "* " : "  ")
 			   .append(pd.getNames())
-			   .append("\n");
+			   .append('\n');
 
 			if (hasDescription) {
 				wrapDescription(out, indentCount, s(indentCount) + description);
@@ -73,7 +72,11 @@ public class FormatterHelper extends DefaultUsageFormatter {
 						flavours.add(PDFAFlavour.NO_FLAVOUR);
 					}
 					valueList = flavours.toString();
-				} else {
+				} else if (FormatOption.class.getCanonicalName().equals(type.getName())) {
+					List<FormatOption> formatOptions = new LinkedList<>(Arrays.asList(FormatOption.values()));
+					formatOptions.remove(FormatOption.MRR);
+					valueList = formatOptions.toString();
+				}else {
 					valueList = EnumSet.allOf((Class<? extends Enum>) type).toString();
 				}
 				String possibleValues = "Possible Values: " + valueList;
@@ -94,7 +97,9 @@ public class FormatterHelper extends DefaultUsageFormatter {
 				Type fieldGenericType = pd.getParameterized().findFieldGenericType();
 				String valueList = null;
 				if (FeatureObjectType.class.equals(fieldGenericType)) {
-					valueList = Arrays.asList(FeatureObjectType.values()).toString();
+					List<FeatureObjectType> featuresList = new LinkedList<>(Arrays.asList(FeatureObjectType.values()));
+					featuresList.remove(FeatureObjectType.ERROR);
+					valueList = featuresList.toString();
 				}
 				if (valueList != null) {
 					String possibleValues = "Possible Values: " + valueList;
@@ -102,11 +107,11 @@ public class FormatterHelper extends DefaultUsageFormatter {
 					out.append(possibleValues);
 				}
 			}
-			out.append("\n");
+			out.append('\n');
 		}
 	}
 
 	private static String newLineAndIndent(int indent) {
-		return "\n" + s(indent);
+		return '\n' + s(indent);
 	}
 }

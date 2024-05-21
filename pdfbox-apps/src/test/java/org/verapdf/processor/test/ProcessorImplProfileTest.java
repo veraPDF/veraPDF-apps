@@ -64,7 +64,7 @@ public class ProcessorImplProfileTest {
             JAXBException {
     	PdfBoxFoundryProvider.initialise();
         ProfileDirectory directory = Profiles.getVeraProfileDirectory();
-        assertTrue(directory.getValidationProfiles().size() > 0);
+        assertTrue(!directory.getValidationProfiles().isEmpty());
         for (ValidationProfile profile : directory.getValidationProfiles()) {
             File tmpProfile = File.createTempFile("verapdf", "profile");
             try (OutputStream os = new FileOutputStream(tmpProfile)) {
@@ -78,12 +78,12 @@ public class ProcessorImplProfileTest {
     }
 
     private static void testWithProfileFile(final PDFAFlavour flavour,
-            final File profileFile) throws FileNotFoundException, IOException, JAXBException {
+            final File profileFile) throws IOException, JAXBException {
 		try (InputStream is = new FileInputStream(profileFile)) {
 			ValidationProfile profile = Profiles.profileFromXml(is);
 	        ProcessorConfig config = ProcessorFactory.fromValues(ValidatorFactory.defaultConfig(), FeatureFactory.defaultConfig(), PluginsCollectionConfig.defaultConfig(), FixerFactory.defaultConfig(), EnumSet.noneOf(TaskType.class), profile);
 			assertEquals(flavour, ProcessorFactory.fileBatchProcessor(config).getConfig().getCustomProfile().getPDFAFlavour());
-			assertTrue(profile.equals(ProcessorFactory.fileBatchProcessor(config).getConfig().getCustomProfile()));
+			assertEquals(profile, ProcessorFactory.fileBatchProcessor(config).getConfig().getCustomProfile());
 		}
     }
 }

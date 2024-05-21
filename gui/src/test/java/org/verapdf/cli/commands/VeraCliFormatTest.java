@@ -24,7 +24,6 @@
 package org.verapdf.cli.commands;
 
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.verapdf.processor.FormatOption;

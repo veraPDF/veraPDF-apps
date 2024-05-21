@@ -68,50 +68,50 @@ import java.util.logging.Logger;
 public class VeraCliArgParser {
 	private static final Logger LOGGER = Logger.getLogger(VeraCliArgParser.class.getCanonicalName());
 
-	final static VeraCliArgParser DEFAULT_ARGS = new VeraCliArgParser();
-	final static String FLAG_SEP = "-"; //$NON-NLS-1$
-	final static String OPTION_SEP = "--"; //$NON-NLS-1$
-	final static String HELP_FLAG = FLAG_SEP + "h"; //$NON-NLS-1$
-	final static String HELP = OPTION_SEP + "help"; //$NON-NLS-1$
-	final static String VERSION = OPTION_SEP + "version"; //$NON-NLS-1$
-	final static String FLAVOUR_FLAG = FLAG_SEP + "f"; //$NON-NLS-1$
-	final static String FLAVOUR = OPTION_SEP + "flavour"; //$NON-NLS-1$
-	final static String DEFAULT_FLAVOUR_FLAG = FLAG_SEP + "df"; //$NON-NLS-1$
-	final static String DEFAULT_FLAVOUR = OPTION_SEP + "defaultflavour"; //$NON-NLS-1$
-	final static String SUCCESS = OPTION_SEP + "success"; //$NON-NLS-1$
-	final static String PASSED = OPTION_SEP + "passed"; //$NON-NLS-1$
-	final static String LIST_FLAG = FLAG_SEP + "l"; //$NON-NLS-1$
-	final static String LIST = OPTION_SEP + "list"; //$NON-NLS-1$
-	final static String LOAD_PROFILE_FLAG = FLAG_SEP + "p"; //$NON-NLS-1$
-	final static String LOAD_PROFILE = OPTION_SEP + "profile"; //$NON-NLS-1$
-	final static String EXTRACT_FLAG = FLAG_SEP + "x"; //$NON-NLS-1$
-	final static String EXTRACT = OPTION_SEP + "extract"; //$NON-NLS-1$
-	final static String FORMAT = OPTION_SEP + "format"; //$NON-NLS-1$
-	final static String RECURSE_FLAG = FLAG_SEP + "r"; //$NON-NLS-1$
-	final static String RECURSE = OPTION_SEP + "recurse"; //$NON-NLS-1$
-	final static String SERVER_MODE = OPTION_SEP + "servermode"; //$NON-NLS-1$
-	final static String VERBOSE_FLAG = FLAG_SEP + "v"; //$NON-NLS-1$
-	final static String VERBOSE = OPTION_SEP + "verbose"; //$NON-NLS-1$
-	final static String DEBUG_FLAG = FLAG_SEP + "d"; //$NON-NLS-1$
-	final static String DEBUG = OPTION_SEP + "debug"; //$NON-NLS-1$
-	final static String MAX_FAILURES_DISPLAYED = OPTION_SEP + "maxfailuresdisplayed"; //$NON-NLS-1$
-	final static String MAX_FAILURES = OPTION_SEP + "maxfailures"; //$NON-NLS-1$
-	final static String FIX_METADATA = OPTION_SEP + "fixmetadata"; //$NON-NLS-1$
-	final static String FIX_METADATA_PREFIX = OPTION_SEP + "prefix"; //$NON-NLS-1$
-	final static String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder"; //$NON-NLS-1$
-	final static String NON_PDF_EXTENSION = OPTION_SEP + "nonpdfext";
-	final static String POLICY_FILE = OPTION_SEP + "policyfile"; //$NON-NLS-1$
-	final static String ADD_LOGS = OPTION_SEP + "addlogs"; //$NON-NLS-1$
-	final static String DISABLE_ERROR_MESSAGES = OPTION_SEP + "disableerrormessages"; //$NON-NLS-1$
-	final static String PASSWORD = OPTION_SEP + "password"; //$NON-NLS-1$
-	final static String LOG_LEVEL = OPTION_SEP + "loglevel"; //$NON-NLS-1$
-	final static String PROGRESS = OPTION_SEP + "progress"; //$NON-NLS-1$
-	final static String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
-	final static String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
-	final static String VALID_OFF_FLAG = FLAG_SEP + "o"; //$NON-NLS-1$
-	final static String VALID_OFF = OPTION_SEP + "off"; //$NON-NLS-1$
-	final static String NUMBER_OF_PROCESSES_FLAG = OPTION_SEP + "processes"; //$NON-NLS-1$
-	final static String VERA_PATH_FLAG = OPTION_SEP + "verapath";
+	static final VeraCliArgParser DEFAULT_ARGS = new VeraCliArgParser();
+	static final String FLAG_SEP = "-"; //$NON-NLS-1$
+	static final String OPTION_SEP = "--"; //$NON-NLS-1$
+	public static final String HELP_FLAG = FLAG_SEP + 'h'; //$NON-NLS-1$
+	public static final String HELP = OPTION_SEP + "help"; //$NON-NLS-1$
+	public static final String VERSION = OPTION_SEP + "version"; //$NON-NLS-1$
+	public static final String FLAVOUR_FLAG = FLAG_SEP + 'f'; //$NON-NLS-1$
+	public static final String FLAVOUR = OPTION_SEP + "flavour"; //$NON-NLS-1$
+	public static final String DEFAULT_FLAVOUR_FLAG = FLAG_SEP + "df"; //$NON-NLS-1$
+	public static final String DEFAULT_FLAVOUR = OPTION_SEP + "defaultflavour"; //$NON-NLS-1$
+	public static final String SUCCESS = OPTION_SEP + "success"; //$NON-NLS-1$
+	public static final String PASSED = OPTION_SEP + "passed"; //$NON-NLS-1$
+	public static final String LIST_FLAG = FLAG_SEP + 'l'; //$NON-NLS-1$
+	public static final String LIST = OPTION_SEP + "list"; //$NON-NLS-1$
+	public static final String LOAD_PROFILE_FLAG = FLAG_SEP + 'p'; //$NON-NLS-1$
+	public static final String LOAD_PROFILE = OPTION_SEP + "profile"; //$NON-NLS-1$
+	public static final String EXTRACT_FLAG = FLAG_SEP + 'x'; //$NON-NLS-1$
+	public static final String EXTRACT = OPTION_SEP + "extract"; //$NON-NLS-1$
+	public static final String FORMAT = OPTION_SEP + "format"; //$NON-NLS-1$
+	public static final String RECURSE_FLAG = FLAG_SEP + 'r'; //$NON-NLS-1$
+	public static final String RECURSE = OPTION_SEP + "recurse"; //$NON-NLS-1$
+	public static final String SERVER_MODE = OPTION_SEP + "servermode"; //$NON-NLS-1$
+	public static final String VERBOSE_FLAG = FLAG_SEP + 'v'; //$NON-NLS-1$
+	public static final String VERBOSE = OPTION_SEP + "verbose"; //$NON-NLS-1$
+	public static final String DEBUG_FLAG = FLAG_SEP + 'd'; //$NON-NLS-1$
+	public static final String DEBUG = OPTION_SEP + "debug"; //$NON-NLS-1$
+	public static final String MAX_FAILURES_DISPLAYED = OPTION_SEP + "maxfailuresdisplayed"; //$NON-NLS-1$
+	public static final String MAX_FAILURES = OPTION_SEP + "maxfailures"; //$NON-NLS-1$
+	public static final String FIX_METADATA = OPTION_SEP + "fixmetadata"; //$NON-NLS-1$
+	public static final String FIX_METADATA_PREFIX = OPTION_SEP + "prefix"; //$NON-NLS-1$
+	public static final String FIX_METADATA_FOLDER = OPTION_SEP + "savefolder"; //$NON-NLS-1$
+	public static final String NON_PDF_EXTENSION = OPTION_SEP + "nonpdfext";
+	public static final String POLICY_FILE = OPTION_SEP + "policyfile"; //$NON-NLS-1$
+	public static final String ADD_LOGS = OPTION_SEP + "addlogs"; //$NON-NLS-1$
+	public static final String DISABLE_ERROR_MESSAGES = OPTION_SEP + "disableerrormessages"; //$NON-NLS-1$
+	public static final String PASSWORD = OPTION_SEP + "password"; //$NON-NLS-1$
+	public static final String LOG_LEVEL = OPTION_SEP + "loglevel"; //$NON-NLS-1$
+	public static final String PROGRESS = OPTION_SEP + "progress"; //$NON-NLS-1$
+	public static final String PROFILES_WIKI_FLAG = FLAG_SEP + "pw";
+	public static final String PROFILES_WIKI = OPTION_SEP + "profilesWiki";
+	public static final String VALID_OFF_FLAG = FLAG_SEP + 'o'; //$NON-NLS-1$
+	public static final String VALID_OFF = OPTION_SEP + "off"; //$NON-NLS-1$
+	public static final String NUMBER_OF_PROCESSES_FLAG = OPTION_SEP + "processes"; //$NON-NLS-1$
+	public static final String VERA_PATH_FLAG = OPTION_SEP + "verapath";
 	public static final String USE_CONFIG = OPTION_SEP + "config";
 
 	@Parameter(names = { HELP_FLAG, HELP }, description = "Shows this message and exits.", help = true)
@@ -168,7 +168,7 @@ public class VeraCliArgParser {
 	@Parameter(names = { FIX_METADATA }, description = "Performs metadata fixes.")
 	private boolean fixMetadata = false;
 
-	@Parameter(names = { ADD_LOGS }, description = "Add logs to mrr, json or html report.")
+	@Parameter(names = { ADD_LOGS }, description = "Add logs to xml (mrr), json or html report.")
 	private boolean addLogs = false;
 
 	@Parameter(names = {DISABLE_ERROR_MESSAGES}, description = "Disable detailed error messages in the validation report.")
@@ -362,7 +362,7 @@ public class VeraCliArgParser {
 
 	/**
 	 * @return format if policy file is not specified,
-	 * otherwise ignore all report format settings and always use mrr report
+	 * otherwise ignore all report format settings and always use xml (mrr) report
 	 */
 	public FormatOption getFormat() {
 		return this.format;
@@ -472,10 +472,12 @@ public class VeraCliArgParser {
 	 	this.saveFolder = veraAppConfig.getFixesFolder();
 	 	this.format = veraAppConfig.getFormat();
 	 	this.isVerbose = veraAppConfig.isVerbose();
-	 	this.policyFile = veraAppConfig.getPolicyFile().isEmpty() ? null : new File(veraAppConfig.getPolicyFile());
+		if (veraAppConfig.getProcessType() == ProcessType.POLICY || veraAppConfig.getProcessType() == ProcessType.POLICY_FIX) {
+			this.policyFile = veraAppConfig.getPolicyFile().isEmpty() ? null : new File(veraAppConfig.getPolicyFile());
+		}
 	 	this.profilesWikiPath = veraAppConfig.getWikiPath();
 
-	 	EnumSet<TaskType> taskTypes =  veraAppConfig.getProcessType().getTasks();
+	 	EnumSet<TaskType> taskTypes = veraAppConfig.getProcessType().getTasks();
 		this.fixMetadata = taskTypes.contains(TaskType.FIX_METADATA);
 
 		this.features = new ArrayList<>();
@@ -582,7 +584,7 @@ public class VeraCliArgParser {
 	}
 
 	public MetadataFixerConfig fixerConfig() {
-		return FixerFactory.configFromValues(this.prefix, true);
+		return FixerFactory.configFromValues(this.prefix);
 	}
 
 	public VeraAppConfig appConfig(final VeraAppConfig base) {
@@ -702,7 +704,7 @@ public class VeraCliArgParser {
 
 	public void checkParametersCompatibility() {
 		if (this.format != FormatOption.MRR && this.format != FormatOption.XML && this.policyFile != null
-		    && !this.policyFile.getAbsolutePath().equals("")) {
+		    && !this.policyFile.getAbsolutePath().isEmpty()) {
 			LOGGER.log(Level.WARNING, "Policy report supports only xml (mrr) output format.");
 			this.format = FormatOption.XML;
 		}
