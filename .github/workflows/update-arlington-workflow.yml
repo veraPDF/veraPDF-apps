@@ -7,6 +7,7 @@ on:
 
 jobs:
   checkout-and-build:
+    if: github.repository == 'veraPDF/veraPDF-apps'
     runs-on: ubuntu-latest
 
     strategy:
@@ -36,7 +37,7 @@ jobs:
           git config user.name "Git User"
           git config user.email "user@test.com"
       - name: Add commit to the test branch
-        run: git cherry-pick -m 1 ${{ github.sha }}
+        run: git cherry-pick -m 1 ${{ github.event.before }}..${{ github.event.after }}
       - name: Build project with Maven
         if: success()
         run: mvn --batch-mode --update-snapshots verify
@@ -62,7 +63,7 @@ jobs:
           git config user.name "Git User"
           git config user.email "user@temp.com"
       - name: Add commit to new branch
-        run: git cherry-pick -m 1 ${{ github.sha }}
+        run: git cherry-pick -m 1 ${{ github.event.before }}..${{ github.event.after }}
       - name: Merge branch into arlington
         if: success()
         run: |
@@ -78,6 +79,7 @@ jobs:
     needs: [checkout-and-build, merge]
     if: |
       always() &&
+      github.repository == 'veraPDF/veraPDF-apps' &&
       (contains(needs.*.result, 'failure') ||
       contains(needs.*.result, 'skipped') ||
       contains(needs.*.result, 'cancelled'))
