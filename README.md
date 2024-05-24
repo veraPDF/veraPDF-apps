@@ -2,7 +2,7 @@ veraPDF-apps
 ===============
 *Command line and GUI industry supported PDF/A and PDF/UA Validation*
 
-[![Build Status](https://jenkins.openpreservation.org/job/veraPDF/job/1.25/job/apps-arlington/badge/icon)](https://jenkins.openpreservation.org/job/veraPDF/job/1.25/job/apps-arlington/ "OPF Jenkins")
+[![Build Status](https://jenkins.openpreservation.org/job/veraPDF/job/1.27/job/apps-arlington/badge/icon)](https://jenkins.openpreservation.org/job/veraPDF/job/1.27/job/apps-arlington/ "OPF Jenkins")
 [![Maven Central](https://img.shields.io/maven-central/v/org.verapdf/verapdf-apps.svg)](https://repo1.maven.org/maven2/org/verapdf/verapdf-apps/ "Maven central")
 [![CodeCov Coverage](https://img.shields.io/codecov/c/github/veraPDF/veraPDF-apps.svg)](https://codecov.io/gh/veraPDF/veraPDF-apps/ "CodeCov coverage")
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ac55527c6ac04c3ab57c932c85c9be4d)](https://app.codacy.com/gh/veraPDF/veraPDF-apps/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade "Codacy grade")
