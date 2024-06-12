@@ -50,7 +50,9 @@ public class ProcessorImplProfileTest {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.processor.ProcessorImpl#profileFromConfig(Config)}
+	 * {@link org.verapdf.processor.ProcessorFactory#fromValues(org.verapdf.pdfa.validation.validators.ValidatorConfig, 
+	 * org.verapdf.features.FeatureExtractorConfig, PluginsCollectionConfig, org.verapdf.metadata.fixer.MetadataFixerConfig, 
+	 * EnumSet, ValidationProfile)}
 	 * .
 	 *
 	 * @throws IOException
