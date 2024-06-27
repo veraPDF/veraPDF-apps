@@ -9,6 +9,7 @@ import org.verapdf.pdfa.validation.validators.test.CallableValidatorForTest;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -29,7 +30,7 @@ public class MultithreadingTest {
 
 		int numberOfThreads = 4;
 
-		List<Future<ValidationResult>> futureResult = startValidation(fileToValidate, numberOfThreads);
+		List<Future<List<ValidationResult>>> futureResult = startValidation(fileToValidate, numberOfThreads);
 		List<ValidationResult> validationResults = getValidationResult(futureResult);
 
 		boolean isExpectedResults = compareResultsFromDifferentThreads(validationResults);
@@ -52,21 +53,21 @@ public class MultithreadingTest {
 		return isExpectedResults;
 	}
 
-	private List<ValidationResult> getValidationResult(List<Future<ValidationResult>> results) throws InterruptedException, java.util.concurrent.ExecutionException {
+	private List<ValidationResult> getValidationResult(List<Future<List<ValidationResult>>> results) throws InterruptedException, java.util.concurrent.ExecutionException {
 		List<ValidationResult> validationResults = new ArrayList<>();
-		for (Future<ValidationResult> result : results) {
-			ValidationResult validationResult = result.get();
-			validationResults.add(validationResult);
+		for (Future<List<ValidationResult>> result : results) {
+			List<ValidationResult> validationResult = result.get();
+			validationResults.addAll(validationResult);
 		}
 		return validationResults;
 	}
 
-	private List<Future<ValidationResult>> startValidation(File fileToValidate, int numberOfThreads) {
-		List<Future<ValidationResult>> futureResult = new ArrayList<>();
+	private List<Future<List<ValidationResult>>> startValidation(File fileToValidate, int numberOfThreads) {
+		List<Future<List<ValidationResult>>> futureResult = new ArrayList<>();
 		ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
 		for (int i = 0; i < numberOfThreads; i++) {
 			CallableValidatorForTest validator = new CallableValidatorForTest(fileToValidate);
-			Future<ValidationResult> submit = executor.submit(validator);
+			Future<List<ValidationResult>> submit = executor.submit(validator);
 			futureResult.add(submit);
 		}
 		return futureResult;
