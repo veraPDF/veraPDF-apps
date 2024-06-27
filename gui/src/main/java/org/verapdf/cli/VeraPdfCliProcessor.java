@@ -21,6 +21,7 @@ import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
+import org.verapdf.pdfa.results.ValidationResult;
 import org.verapdf.policy.PolicyChecker;
 import org.verapdf.processor.*;
 import org.verapdf.processor.app.ConfigManager;
@@ -183,8 +184,11 @@ final class VeraPdfCliProcessor implements Closeable {
 
 				if (result.isPdf() && !result.isEncryptedPdf()) {
 					ProcessorFactory.writeSingleResultReport(result, handler, processorConfig);
-					if (!result.getValidationResult().isCompliant()) {
-						retVal = ExitCodes.INVALID;
+					for (ValidationResult validationResult : result.getValidationResults()) {
+						if (!validationResult.isCompliant()) {
+							retVal = ExitCodes.INVALID;
+							break;
+						}
 					}
 				} else {
 					String message = String.format(

@@ -7,9 +7,10 @@ import org.verapdf.pdfa.results.ValidationResult;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.List;
 import java.util.concurrent.Callable;
 
-public class CallableValidatorForTest implements Callable<ValidationResult> {
+public class CallableValidatorForTest implements Callable<List<ValidationResult>> {
 	private final File fileToValidate;
 
 	public CallableValidatorForTest(File fileToValidate) {
@@ -17,12 +18,12 @@ public class CallableValidatorForTest implements Callable<ValidationResult> {
 	}
 
 	@Override
-	public ValidationResult call() throws Exception {
-		ValidationResult result;
+	public List<ValidationResult> call() throws Exception {
+		List<ValidationResult> result;
 		try (FileInputStream fis = new FileInputStream(this.fileToValidate);
 				PDFAParser parser = Foundries.defaultInstance().createParser(fis); 
 				PDFAValidator validator = Foundries.defaultInstance().createValidator(parser.getFlavour(), false)) {
-			result = validator.validate(parser);
+			result = validator.validateAll(parser);
 		}
 		return result;
 	}
