@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
 
 public class SoftwareUpdaterImpl implements SoftwareUpdater {
 	private static final Logger logger = Logger.getLogger(SoftwareUpdaterImpl.class.getCanonicalName());
-	private static final String latestGF = "https://search.maven.org/solrsearch/select?q=g:org.verapdf.apps+AND+a:greenfield-apps&core=gav&rows=1&wt=xml";
+	private static final String latestGF = "https://search.maven.org/solrsearch/select?q=g:org.verapdf.apps+AND+a:greenfield-apps-arlington&core=gav&rows=1&wt=xml";
 	private static final String latestPDFBox = "https://search.maven.org/solrsearch/select?q=g:org.verapdf.apps+AND+a:pdfbox-apps&core=gav&rows=1&wt=xml";
 	private final String currentVersion = Applications.getAppDetails().getVersion();
 
