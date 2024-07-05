@@ -367,7 +367,7 @@ public class PDFValidationApplication extends JFrame {
 							JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				ReleaseDetails details = ReleaseDetails.byId("gui");
+				ReleaseDetails details = ReleaseDetails.byId("gui-arlington");
 				if (updater.isUpdateAvailable(details)) {
 					int res = JOptionPane.showConfirmDialog(
 							PDFValidationApplication.this,
