@@ -225,7 +225,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://raw.githubusercontent.com/veraPDF/veraPDF-library/integration/RELEASENOTES.md</url>
+              <url>https://raw.githubusercontent.com/veraPDF/veraPDF-arlington-tools/master/RELEASENOTES.md</url>
               <unpack>false</unpack>
               <skipCache>true</skipCache>
               <outputDirectory>${project.build.directory}/staging/documents</outputDirectory>
