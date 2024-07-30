@@ -24,7 +24,7 @@ public class CallableValidatorForTest implements Callable<List<ValidationResult>
 		try (FileInputStream fis = new FileInputStream(this.fileToValidate);
 				PDFAParser parser = Foundries.defaultInstance().createParser(fis); 
 				PDFAValidator validator = Foundries.defaultInstance().createValidator(PDFAFlavour.ARLINGTON1_4, false)) {
-			result = validator.validate(parser);
+			result = validator.validateAll(parser);
 		}
 		return result;
 	}
