@@ -119,7 +119,7 @@
       <updatecheck>
         <include name="model/**"/>
       </updatecheck>
-      <file targetdir="$INSTALL_PATH/model" src="model/arlington-rel/1.26.zip" unpack="true"/>
+      <file targetdir="$INSTALL_PATH/model" src="model/1.26.zip" unpack="true"/>
     </pack>
     <pack name="veraPDF Documentation" required="no">
       <description>The veraPDF documentation.</description>
