@@ -119,15 +119,17 @@ Where `${project.version}` is the current Maven project version. This should bri
 
 ## Building the Docker image
 
-The accompanying [`Dockerfile`](Dockerfile) can be used to build a Docker image containing the veraPDF CLI and GUI applications. The image is based on the official Alpine image. It effedoesn't build the project, instead it downloads a version of the installer. It also builds a slimline JRE which is used to trim the final image size.
+The accompanying [`Dockerfile`](Dockerfile) can be used to build a Docker image containing the veraPDF CLI and GUI applications. The image is based on the official Alpine image. It doesn't build the project, instead it downloads a version of the installer. It also builds a slimline JRE which is used to trim the final image size.
 
-The version built is controlled by two arguments in the Dockerfile, `VERAPDF_VERSION` and `VERAPDF_MINOR_VERSION`. These can be used to select a specific installer at invocation time. The default values are `VERAPDF_VERSION=1.27` and `VERAPDF_MINOR_VERSION=2`, which builds the latest production version, e.g. `1.26.2`.
+The version built is controlled by three arguments in the Dockerfile, `VERAPDF_VERSION`, `VERAPDF_MINOR_VERSION` and `VERAPDF_INSTALLER_FOLDER`. These can be used to select a specific installer at invocation time. The default values are `VERAPDF_VERSION=1.26`, `VERAPDF_MINOR_VERSION=2` and `VERAPDF_INSTALLER_FOLDER=releases`, which builds the latest production version, e.g. `1.26.2`.
 
 To build and run the very latest version:
 
     docker build -t verapdf .
     docker run -it -v "$(pwd)":/data --name verapdf verapdf a.pdf 
 
-To build a specific version, e.g. `1.26.3`:
+To build a specific version, e.g. `1.22.3`:
 
     docker build --build-arg VERAPDF_VERSION=1.22 --build-arg VERAPDF_MINOR_VERSION=3 -t verapdf .
+
+To build a specific development version argument `VERAPDF_INSTALLER_FOLDER` should be set to `develop`.
