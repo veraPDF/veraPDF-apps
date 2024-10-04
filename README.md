@@ -123,13 +123,18 @@ The accompanying [`Dockerfile`](Dockerfile) can be used to build a Docker image 
 
 The version built is controlled by three arguments in the Dockerfile, `VERAPDF_VERSION`, `VERAPDF_MINOR_VERSION` and `VERAPDF_INSTALLER_FOLDER`. These can be used to select a specific installer at invocation time. The default values are `VERAPDF_VERSION=1.26`, `VERAPDF_MINOR_VERSION=2` and `VERAPDF_INSTALLER_FOLDER=releases`, which builds the latest production version, e.g. `1.26.2`.
 
+To run the latest dev build available in the GitHub registry:
+
+    docker run --rm -it -v "$(pwd):/data" ghcr.io/verapdf/cli:dev a.pdf 
+
 To build and run the very latest version:
 
     docker build -t verapdf .
-    docker run -it -v "$(pwd)":/data --name verapdf verapdf a.pdf 
+    docker run -it -v "$(pwd):/data" --name verapdf verapdf a.pdf 
 
 To build a specific version, e.g. `1.22.3`:
 
     docker build --build-arg VERAPDF_VERSION=1.22 --build-arg VERAPDF_MINOR_VERSION=3 -t verapdf .
 
 To build a specific development version argument `VERAPDF_INSTALLER_FOLDER` should be set to `develop`.
+
