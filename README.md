@@ -125,7 +125,7 @@ The version built is controlled by three arguments in the Dockerfile, `VERAPDF_V
 
 To run the latest dev build available in the GitHub registry:
 
-    docker run --rm -it -v "$(pwd):/data" ghcr.io/verapdf/cli:dev a.pdf 
+    docker run --rm -it -v "$(pwd):/data" ghcr.io/verapdf/cli:latest a.pdf 
 
 To build and run the very latest version:
 

@@ -46,7 +46,7 @@ jobs:
             VERAPDF_VERSION=1.27
             VERAPDF_MINOR_VERSION=${{ steps.version.outputs.version }}
             VERAPDF_INSTALLER_FOLDER=develop
-          tags: ghcr.io/verapdf/cli:dev,ghcr.io/verapdf/cli:${{ github.ref_name }}
+          tags: ghcr.io/verapdf/cli:latest,ghcr.io/verapdf/cli:${{ github.ref_name }}
           labels: ${{ steps.meta.outputs.labels }}
           
   send-notification:
