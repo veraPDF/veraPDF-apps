@@ -1,0 +1,25 @@
+name: Purge GitHub container registry.
+
+on:
+  workflow_dispatch:
+  # Runs weekly
+  schedule:
+    - cron: '0 0 * * 1'
+
+jobs:
+  purge-images:
+    if: github.repository == 'veraPDF/veraPDF-apps'
+    name: Delete old images from ghcr.io
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete all PR containers older than a week
+        uses: snok/container-retention-policy@v2
+        with:
+          image-names: cli
+          cut-off: 1 week ago UTC
+          account-type: org
+          org-name: veraPDF
+          keep-at-least: 1
+          skip-tags: latest 
+          untagged-only: false
+          token: ${{ secrets.PAT }}
