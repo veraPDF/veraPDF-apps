@@ -22,4 +22,4 @@ jobs:
           keep-at-least: 1
           skip-tags: latest 
           untagged-only: false
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.WORKFLOW_TOKEN }}
