@@ -39,6 +39,7 @@ import org.verapdf.policy.SchematronGenerator;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -170,6 +171,11 @@ public final class ApplicationUtils {
 
 	public static FeatureExtractorConfig mergeEnabledFeaturesFromPolicy(FeatureExtractorConfig currentConfig, InputStream policy) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		try {
+			dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+		} catch (Exception e) {
+			LOGGER.log(Level.WARNING, "Unable to secure policy processing");
+		}
 		dbf.setNamespaceAware(true);
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document document = db.parse(policy);
