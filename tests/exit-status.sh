@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # This file is part of veraPDF PDF/A Validation Applications, a module of the veraPDF project.
-# Copyright (c) 2015-2024, veraPDF Consortium <info@verapdf.org>
+# Copyright (c) 2015-2025, veraPDF Consortium <info@verapdf.org>
 # All rights reserved.
 #
 # veraPDF PDF/A Validation Applications is free software: you can redistribute it and/or modify
