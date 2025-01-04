@@ -1,6 +1,6 @@
 @REM
 @REM This file is part of veraPDF Installer, a module of the veraPDF project.
-@REM Copyright (c) 2015-2024, veraPDF Consortium <info@verapdf.org>
+@REM Copyright (c) 2015-2025, veraPDF Consortium <info@verapdf.org>
 @REM All rights reserved.
 @REM
 @REM veraPDF Installer is free software: you can redistribute it and/or modify
