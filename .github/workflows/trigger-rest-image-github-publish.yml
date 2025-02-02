@@ -24,7 +24,7 @@ name: Trigger publish rest image to github
 on:
   push:
     tags:
-      - v1.27*
+      - arlington-v1.27*
 
 jobs:
   trigger_build:
@@ -47,5 +47,5 @@ jobs:
              owner: 'veraPDF',
              repo: 'verapdf-rest',
              workflow_id: 'push-github.yml',
-             ref: 'integration'
+             ref: 'arlington'
             })
