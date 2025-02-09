@@ -29,8 +29,8 @@
   </parent>
   <groupId>org.verapdf.apps</groupId>
   <artifactId>greenfield-apps-arlington</artifactId>
-  <name>veraPDF Arlington Applications</name>
-  <description>Wrapper for the greenfield GUI and CLI applications.</description>
+  <name>veraPDF Arlington Applications for Arlington PDF Model</name>
+  <description>Wrapper for the greenfield GUI and CLI applications of Arlington PDF Model.</description>
 
   <build>
     <plugins>

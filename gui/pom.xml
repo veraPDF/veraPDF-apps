@@ -33,7 +33,7 @@
 
   <groupId>org.verapdf.apps</groupId>
   <artifactId>gui-arlington</artifactId>
-  <name>VeraPDF Library GUI</name>
+  <name>VeraPDF Library GUI for Arlington PDF Model</name>
 
   <build>
     <resources>

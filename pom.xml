@@ -36,8 +36,8 @@
   <version>1.27.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>veraPDF Validation Applications</name>
-  <description>veraPDF Validation GUI, CLI and installer.</description>
+  <name>veraPDF Validation Applications for Arlington PDF Model</name>
+  <description>veraPDF Validation GUI, CLI and installer of Arlington PDF Model.</description>
   <url>https://github.com/veraPDF/veraPDF-apps/</url>
   <inceptionYear>2015</inceptionYear>
 

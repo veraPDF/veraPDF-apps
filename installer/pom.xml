@@ -31,8 +31,8 @@
 
   <groupId>org.verapdf.apps</groupId>
   <artifactId>installer-arlington</artifactId>
-  <name>veraPDF Installer</name>
-  <description>Builds the veraPDF software installer.</description>
+  <name>veraPDF Installer for Arlington PDF Model</name>
+  <description>Builds the veraPDF software installer of Arlington PDF Model.</description>
 
 
   <properties>

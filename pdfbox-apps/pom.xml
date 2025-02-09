@@ -29,8 +29,8 @@
   </parent>
   <groupId>org.verapdf.apps</groupId>
   <artifactId>pdfbox-apps</artifactId>
-  <name>veraPDF PDF Box Applications</name>
-  <description>Wrapper for the PDF Box GUI and CLI applications.</description>
+  <name>veraPDF PDF Box Applications for Arlington PDF Model</name>
+  <description>Wrapper for the PDF Box GUI and CLI applications of Arlington PDF Model.</description>
 
   <build>
     <plugins>
