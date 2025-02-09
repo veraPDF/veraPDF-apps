@@ -36,8 +36,8 @@
   <version>1.27.0-SNAPSHOT</version>
   <packaging>pom</packaging>
 
-  <name>veraPDF PDF/A Validation Applications</name>
-  <description>veraPDF PDF/A Validation GUI, CLI and installer.</description>
+  <name>veraPDF Validation Applications</name>
+  <description>veraPDF Validation GUI, CLI and installer.</description>
   <url>https://github.com/veraPDF/veraPDF-apps/</url>
   <inceptionYear>2015</inceptionYear>
 
