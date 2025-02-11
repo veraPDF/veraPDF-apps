@@ -24,7 +24,7 @@ name: Trigger publish rest image to github
 on:
   push:
     tags:
-      - arlington-v1.27*
+      - arlington-v1.29*
 
 jobs:
   trigger_build:
