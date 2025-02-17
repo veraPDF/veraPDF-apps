@@ -31,7 +31,6 @@ import org.verapdf.features.FeatureObjectType;
 import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
-import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.profiles.ValidationProfile;
@@ -714,14 +713,6 @@ public class VeraCliArgParser {
 		    && this.format != FormatOption.HTML && this.addLogs) {
 			LOGGER.log(Level.WARNING, "Log messages in report are supported only in xml (mrr), json and html formats.");
 		}
-		if (Foundries.defaultParserIsPDFBox() && this.fixMetadata) {
-			LOGGER.log(Level.WARNING, "Fixing metadata is not supported in PDFBox validator.");
-			this.fixMetadata = false;
-		}
-		if (Foundries.defaultParserIsPDFBox() && !this.disableErrorMessages) {
-			LOGGER.log(Level.WARNING, "Detailed error messages are not supported in PDFBox validator.");
-			this.disableErrorMessages = true;
-		}
 		if (this.fixMetadata && this.maxFailures > 0) {
 			LOGGER.log(Level.WARNING, "Option maxfailures is ignored when option fixmetadata is enabled");
 			this.maxFailures = -1;
@@ -729,10 +720,6 @@ public class VeraCliArgParser {
 		if (this.maxFailuresDisplayed < -1 || this.maxFailuresDisplayed == 0) {
 			LOGGER.log(Level.WARNING, "Argument " + maxFailuresDisplayed + " of option maxfailuresdisplayed is not supported and changed to 1");
 			this.maxFailuresDisplayed = 1;
-		}
-		if (Foundries.defaultParserIsPDFBox() && this.password != null) {
-			LOGGER.log(Level.WARNING, "Password handling for encrypted files is not supported in PDFBox validator.");
-			this.password = null;
 		}
 		if (getPdfPaths().size() > 1 && this.password != null) {
 			LOGGER.log(Level.WARNING, "Password handling for encrypted files is not supported for batch processing.");
