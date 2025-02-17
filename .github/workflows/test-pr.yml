@@ -58,12 +58,6 @@ jobs:
         with:
           name: gui-report
           path: gui/target/site/jacoco/
-      - name: Upload PDFBox coverage report
-        if: matrix.java-version == 8
-        uses: actions/upload-artifact@v4
-        with:
-          name: pdfbox-report
-          path: pdfbox-apps/target/site/jacoco/
 
   coverage:
     name: Quality Assurance
@@ -82,15 +76,10 @@ jobs:
         with:
           name: gui-report
           path: gui/target/site/jacoco/
-      - name: Download PDFBox coverage report
-        uses: actions/download-artifact@v4
-        with:
-          name: pdfbox-report
-          path: pdfbox-apps/target/site/jacoco/
       - name: Codecov coverage reporting
         uses: codecov/codecov-action@v2
         with:
-          files: greenfield-apps/target/site/jacoco/jacoco.xml, gui/target/site/jacoco/jacoco.xml, pdfbox-apps/target/site/jacoco/jacoco.xml
+          files: greenfield-apps/target/site/jacoco/jacoco.xml, gui/target/site/jacoco/jacoco.xml
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -98,6 +87,6 @@ jobs:
         uses: codacy/codacy-coverage-reporter-action@v1
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: greenfield-apps/target/site/jacoco/jacoco.xml, gui/target/site/jacoco/jacoco.xml, pdfbox-apps/target/site/jacoco/jacoco.xml
+          coverage-reports: greenfield-apps/target/site/jacoco/jacoco.xml, gui/target/site/jacoco/jacoco.xml
       - name: Codacy analysis reporting
         uses: codacy/codacy-analysis-cli-action@master
