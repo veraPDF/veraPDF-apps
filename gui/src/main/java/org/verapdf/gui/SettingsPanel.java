@@ -274,12 +274,7 @@ class SettingsPanel extends JPanel {
 		ValidatorConfig validatorConfig = settings.getValidatorConfig();
 		this.hidePassedRules.setSelected(validatorConfig.isRecordPasses());
 
-		if (Foundries.defaultParserIsPDFBox()) {
-			this.showErrorMessages.setSelected(false);
-			this.showErrorMessages.setEnabled(false);
-		} else {
-			this.showErrorMessages.setSelected(validatorConfig.showErrorMessages());
-		}
+		this.showErrorMessages.setSelected(validatorConfig.showErrorMessages());
 
 		this.logs.setSelected(validatorConfig.isLogsEnabled());
 
