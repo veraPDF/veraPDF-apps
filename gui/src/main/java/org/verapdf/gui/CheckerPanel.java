@@ -24,7 +24,6 @@ import org.verapdf.apps.Applications;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.core.utils.FileUtils;
 import org.verapdf.gui.utils.*;
-import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.flavours.PDFFlavours;
 import org.verapdf.pdfa.validation.profiles.Profiles;
