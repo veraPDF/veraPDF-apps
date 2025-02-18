@@ -320,12 +320,7 @@ class CheckerPanel extends JPanel {
 	private void setupFixMetadataCheckBox(final GridBagLayout gbl, final GridBagConstraints gbc) {
 		this.fixMetadata = new JCheckBox(GUIConstants.FIX_METADATA_LABEL_TEXT);
 		this.fixMetadata.setHorizontalTextPosition(SwingConstants.LEFT);
-		if (Foundries.defaultParserIsPDFBox()) {
-			this.fixMetadata.setSelected(false);
-			this.fixMetadata.setEnabled(false);
-		} else {
-			this.fixMetadata.setSelected(config.getApplicationConfig().getProcessType().getTasks().contains(TaskType.FIX_METADATA));
-		}
+		this.fixMetadata.setSelected(config.getApplicationConfig().getProcessType().getTasks().contains(TaskType.FIX_METADATA));
 		setGridBagConstraintsParameters(gbc, GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_X,
 				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_GRID_Y,
 				GUIConstants.FIX_METADATA_CHECKBOX_CONSTRAINT_WEIGHT_X,
@@ -528,17 +523,15 @@ class CheckerPanel extends JPanel {
 				ProcessType item = (ProcessType) CheckerPanel.this.processTypes.getSelectedItem();
 				switch (item) {
 					case VALIDATE:
-						updateEnabling(!Foundries.defaultParserIsPDFBox(), false);
+					case VALIDATE_EXTRACT:
+						updateEnabling(true, false);
 						break;
 					case EXTRACT:
 						CheckerPanel.this.fixMetadata.setSelected(false);
 						updateEnabling(false, false);
 						break;
-					case VALIDATE_EXTRACT:
-						updateEnabling(!Foundries.defaultParserIsPDFBox(), false);
-						break;
 					case POLICY:
-						updateEnabling(!Foundries.defaultParserIsPDFBox(), true);
+						updateEnabling(true, true);
 						break;
 					default:
 						break;
