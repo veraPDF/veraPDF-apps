@@ -332,38 +332,12 @@
     <profile>
       <id>greenfield-apps</id>
       <activation>
-        <property>
-          <name>!pdfbox.apps</name>
-        </property>
+        <activeByDefault>true</activeByDefault>
       </activation>
       <dependencies>
         <dependency>
           <groupId>org.verapdf.apps</groupId>
           <artifactId>greenfield-apps</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
-      <id>pdfbox-apps</id>
-      <activation>
-        <property>
-          <name>pdfbox.apps</name>
-        </property>
-      </activation>
-      <properties>
-        <installer.zip.prefix>verapdf-pdfbox</installer.zip.prefix>
-        <installer.output.filename>verapdf-izpack-pdfbox-installer-${project.version}.jar</installer.output.filename>
-        <verapdf.apps.package>pdfbox-apps</verapdf.apps.package>
-        <verapdf.wrapper.gui>org.verapdf.apps.PdfBoxGuiWrapper</verapdf.wrapper.gui>
-        <verapdf.wrapper.cli>org.verapdf.apps.PdfBoxCliWrapper</verapdf.wrapper.cli>
-        <verapdf.apps.package.name>PDFBox</verapdf.apps.package.name>
-      </properties>
-      <dependencies>
-        <dependency>
-          <groupId>org.verapdf.apps</groupId>
-          <artifactId>pdfbox-apps</artifactId>
           <version>${project.version}</version>
         </dependency>
       </dependencies>

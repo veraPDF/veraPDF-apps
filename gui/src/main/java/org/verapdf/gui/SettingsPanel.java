@@ -53,7 +53,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import org.verapdf.gui.utils.GUIConstants;
-import org.verapdf.pdfa.Foundries;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
 import org.verapdf.pdfa.validation.profiles.Profiles;
 import org.verapdf.pdfa.validation.validators.ValidatorConfig;
@@ -274,12 +273,7 @@ class SettingsPanel extends JPanel {
 		ValidatorConfig validatorConfig = settings.getValidatorConfig();
 		this.hidePassedRules.setSelected(validatorConfig.isRecordPasses());
 
-		if (Foundries.defaultParserIsPDFBox()) {
-			this.showErrorMessages.setSelected(false);
-			this.showErrorMessages.setEnabled(false);
-		} else {
-			this.showErrorMessages.setSelected(validatorConfig.showErrorMessages());
-		}
+		this.showErrorMessages.setSelected(validatorConfig.showErrorMessages());
 
 		this.logs.setSelected(validatorConfig.isLogsEnabled());
 
