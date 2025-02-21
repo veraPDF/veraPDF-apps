@@ -45,11 +45,6 @@ public interface SoftwareUpdater {
 	public SemanticVersionNumber getLatestAppsVersion();
 
 	/**
-	 * @return the latest available version of the PDFBox veraPDF apps package
-	 */
-	public SemanticVersionNumber getLatestPdfBoxAppsVersion();
-
-	/**
 	 * @return true if there's a later version of the apps available
 	 */
 	public boolean isUpdateAvailable();
