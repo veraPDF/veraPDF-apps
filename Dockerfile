@@ -21,10 +21,10 @@
 
 # See https://docs.docker.com/engine/userguide/eng-image/multistage-build/
 # First build the app on a maven open jdk 11 container
+FROM eclipse-temurin:11-jdk-alpine AS app-installer
 ARG VERAPDF_VERSION
 ARG VERAPDF_MINOR_VERSION
 ARG VERAPDF_INSTALLER_FOLDER
-FROM eclipse-temurin:11-jdk-alpine AS app-installer
 ENV VERAPDF_VERSION=${VERAPDF_VERSION:-1.26}
 ENV VERAPDF_MINOR_VERSION=${VERAPDF_MINOR_VERSION:-2}
 ENV VERAPDF_INSTALLER_FOLDER=${VERAPDF_INSTALLER_FOLDER:-releases}
@@ -54,8 +54,8 @@ FROM alpine:3
 ARG JAVA_OPTS
 ENV JAVA_OPTS=$JAVA_OPTS
 # Specify the veraPDF REST version if you want to (to be used in build automation)
-ARG VERAPDF_VERSION
-ENV VERAPDF_VERSION=${VERAPDF_VERSION}
+# ARG VERAPDF_VERSION
+# ENV VERAPDF_VERSION=${VERAPDF_VERSION}
 
 # Copy the JRE from the previous stage
 ENV JAVA_HOME=/opt/java/openjdk
