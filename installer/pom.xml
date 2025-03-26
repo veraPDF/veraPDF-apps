@@ -281,7 +281,7 @@
               <!-- base for relative paths in izpack descriptor -->
               <baseDir>${izpack.staging}</baseDir>
               <installFile>${izpack.staging}/install.xml</installFile>
-              <output>${project.build.directory}/${installer.output.filename}</output>
+              <outputDirectory>${project.build.directory}</outputDirectory>
             </configuration>
           </execution>
         </executions>
