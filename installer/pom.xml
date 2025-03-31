@@ -268,8 +268,7 @@
         <artifactId>izpack-maven-plugin</artifactId>
         <version>${izpack.version}</version>
         <configuration>
-          <finalName>verapdf-izpack-installer</finalName>
-          <classifier>${project.version}</classifier>
+          <finalName>verapdf-izpack-installer-${project.version}</finalName>
         </configuration>
         <executions>
           <execution>
