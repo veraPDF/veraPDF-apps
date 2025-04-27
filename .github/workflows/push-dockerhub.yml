@@ -68,7 +68,7 @@ jobs:
 
   send-notification:
     runs-on: ubuntu-latest
-    needs: [publish]
+    needs: [push_to_registry]
     if: |
       always() &&
       github.repository == 'veraPDF/veraPDF-apps' &&
