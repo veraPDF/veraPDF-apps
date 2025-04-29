@@ -2,7 +2,7 @@
 <!--
 
     This file is part of VeraPDF Library GUI, a module of the veraPDF project.
-    Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+    Copyright (c) 2015-2025, veraPDF Consortium <info@verapdf.org>
     All rights reserved.
 
     VeraPDF Library GUI is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.verapdf</groupId>
     <artifactId>verapdf-apps</artifactId>
-    <version>1.26.0</version>
+    <version>1.28.0</version>
   </parent>
 
   <groupId>org.verapdf.apps</groupId>

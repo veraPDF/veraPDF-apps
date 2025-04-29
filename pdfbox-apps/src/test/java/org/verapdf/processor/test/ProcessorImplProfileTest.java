@@ -1,20 +1,20 @@
 /**
- * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
- * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * This file is part of veraPDF PDF Box Applications, a module of the veraPDF project.
+ * Copyright (c) 2015-2025, veraPDF Consortium <info@verapdf.org>
  * All rights reserved.
  *
- * VeraPDF Library GUI is free software: you can redistribute it and/or modify
+ * veraPDF PDF Box Applications is free software: you can redistribute it and/or modify
  * it under the terms of either:
  *
  * The GNU General public license GPLv3+.
  * You should have received a copy of the GNU General Public License
- * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the source
+ * along with veraPDF PDF Box Applications as the LICENSE.GPL file in the root of the source
  * tree.  If not, see http://www.gnu.org/licenses/ or
  * https://www.gnu.org/licenses/gpl-3.0.en.html.
  *
  * The Mozilla Public License MPLv2+.
  * You should have received a copy of the Mozilla Public License along with
- * VeraPDF Library GUI as the LICENSE.MPL file in the root of the source tree.
+ * veraPDF PDF Box Applications as the LICENSE.MPL file in the root of the source tree.
  * If a copy of the MPL was not distributed with this file, you can obtain one at
  * http://mozilla.org/MPL/2.0/.
  */
@@ -50,7 +50,9 @@ public class ProcessorImplProfileTest {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.processor.ProcessorImpl#profileFromConfig(Config)}
+	 * {@link org.verapdf.processor.ProcessorFactory#fromValues(org.verapdf.pdfa.validation.validators.ValidatorConfig, 
+	 * org.verapdf.features.FeatureExtractorConfig, PluginsCollectionConfig, org.verapdf.metadata.fixer.MetadataFixerConfig, 
+	 * EnumSet, ValidationProfile)}
 	 * .
 	 *
 	 * @throws IOException

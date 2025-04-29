@@ -1,16 +1,22 @@
 /**
  * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
- * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org> All rights
- * reserved. VeraPDF Library GUI is free software: you can redistribute it
- * and/or modify it under the terms of either: The GNU General public license
- * GPLv3+. You should have received a copy of the GNU General Public License
- * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the
- * source tree. If not, see http://www.gnu.org/licenses/ or
- * https://www.gnu.org/licenses/gpl-3.0.en.html. The Mozilla Public License
- * MPLv2+. You should have received a copy of the Mozilla Public License along
- * with VeraPDF Library GUI as the LICENSE.MPL file in the root of the source
- * tree. If a copy of the MPL was not distributed with this file, you can obtain
- * one at http://mozilla.org/MPL/2.0/.
+ * Copyright (c) 2015-2025, veraPDF Consortium <info@verapdf.org>
+ * All rights reserved.
+ *
+ * VeraPDF Library GUI is free software: you can redistribute it and/or modify
+ * it under the terms of either:
+ *
+ * The GNU General public license GPLv3+.
+ * You should have received a copy of the GNU General Public License
+ * along with VeraPDF Library GUI as the LICENSE.GPL file in the root of the source
+ * tree.  If not, see http://www.gnu.org/licenses/ or
+ * https://www.gnu.org/licenses/gpl-3.0.en.html.
+ *
+ * The Mozilla Public License MPLv2+.
+ * You should have received a copy of the Mozilla Public License along with
+ * VeraPDF Library GUI as the LICENSE.MPL file in the root of the source tree.
+ * If a copy of the MPL was not distributed with this file, you can obtain one at
+ * http://mozilla.org/MPL/2.0/.
  */
 /**
  *
@@ -21,6 +27,7 @@ import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.cli.CliConstants.ExitCodes;
 import org.verapdf.cli.commands.VeraCliArgParser;
 import org.verapdf.core.VeraPDFException;
+import org.verapdf.pdfa.results.ValidationResult;
 import org.verapdf.policy.PolicyChecker;
 import org.verapdf.processor.*;
 import org.verapdf.processor.app.ConfigManager;
@@ -79,7 +86,6 @@ final class VeraPdfCliProcessor implements Closeable {
 	}
 
 	ExitCodes processPaths(final List<String> pdfPaths, boolean nonPdfExt) throws VeraPDFException {
-		ExitCodes retStatus = ExitCodes.VALID;
 		if (isServerMode) {
 			try {
 				this.tempFile = Files.createTempFile("tempReport", ".xml").toFile();
@@ -91,6 +97,7 @@ final class VeraPdfCliProcessor implements Closeable {
 			this.os = System.out;
 		}
 		// If the path list is empty then process the STDIN stream
+		ExitCodes retStatus = ExitCodes.VALID;
 		if (pdfPaths.isEmpty() && !isServerMode) {
 			retStatus = processStdIn();
 		} else {
@@ -183,8 +190,11 @@ final class VeraPdfCliProcessor implements Closeable {
 
 				if (result.isPdf() && !result.isEncryptedPdf()) {
 					ProcessorFactory.writeSingleResultReport(result, handler, processorConfig);
-					if (!result.getValidationResult().isCompliant()) {
-						retVal = ExitCodes.INVALID;
+					for (ValidationResult validationResult : result.getValidationResults()) {
+						if (!validationResult.isCompliant()) {
+							retVal = ExitCodes.INVALID;
+							break;
+						}
 					}
 				} else {
 					String message = String.format(

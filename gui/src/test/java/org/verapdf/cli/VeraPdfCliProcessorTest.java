@@ -1,6 +1,6 @@
 /**
  * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
- * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * Copyright (c) 2015-2025, veraPDF Consortium <info@verapdf.org>
  * All rights reserved.
  *
  * VeraPDF Library GUI is free software: you can redistribute it and/or modify
@@ -54,12 +54,12 @@ public class VeraPdfCliProcessorTest {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
+	 * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(VeraCliArgParser, ConfigManager)}
 	 * .
 	 *
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProfileException
+	 * @throws org.verapdf.core.ProfileException
 	 */
 	@Test
 	public final void testCreateProcessorFromArgsFormat() throws IOException, VeraPDFException {
@@ -83,12 +83,12 @@ public class VeraPdfCliProcessorTest {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
+	 * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(VeraCliArgParser, ConfigManager)}
 	 * .
 	 *
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProfileException
+	 * @throws org.verapdf.core.ProfileException
 	 */
 	@Test
 	public final void testCreateProcessorFromArgsLogPassed() throws VeraPDFException, IOException {
@@ -112,12 +112,12 @@ public class VeraPdfCliProcessorTest {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
+	 * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(VeraCliArgParser, ConfigManager)}
 	 * .
 	 *
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProfileException
+	 * @throws org.verapdf.core.ProfileException
 	 */
 	@Test
 	public final void testCreateProcessorFromArgsExtract() throws IOException, VeraPDFException {
@@ -195,12 +195,12 @@ public class VeraPdfCliProcessorTest {
 
 	/**
 	 * Test method for
-	 * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
+	 * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(VeraCliArgParser, ConfigManager)}
 	 * .
 	 *
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProfileException
+	 * @throws org.verapdf.core.ProfileException
 	 */
 
 	@Test
@@ -234,12 +234,12 @@ public class VeraPdfCliProcessorTest {
 	// TODO: ModelParser that can not be NO_FLAVOUR or AUTO.
 	/**
 	 * Test method for
-	 * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(org.verapdf.cli.commands.VeraCliArgParser)}
+	 * {@link org.verapdf.cli.VeraPdfCliProcessor#createProcessorFromArgs(VeraCliArgParser, ConfigManager)}
 	 * .
 	 *
 	 * @throws IOException
 	 * @throws FileNotFoundException
-	 * @throws ProfileException
+	 * @throws org.verapdf.core.ProfileException
 	 */
 	@Test
 	public final void testCreateProcessorFromArgsNoFlavour()

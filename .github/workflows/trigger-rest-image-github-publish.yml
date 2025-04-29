@@ -19,12 +19,12 @@
 # http://mozilla.org/MPL/2.0/.
 #
 
-name: Trigger pdf/a and pdf/ua regression tests in integration-tests
+name: Trigger publish rest image to github
 
 on:
   push:
     tags:
-      - v*
+      - v1.27*
 
 jobs:
   trigger_build:
@@ -45,7 +45,7 @@ jobs:
           script: |
             await github.rest.actions.createWorkflowDispatch({
              owner: 'veraPDF',
-             repo: 'verapdf-integration-tests',
-             workflow_id: 'run-pdfa-tests-workflow.yml',
-             ref: 'rel/1.28'
+             repo: 'verapdf-rest',
+             workflow_id: 'push-github.yml',
+             ref: 'integration'
             })
