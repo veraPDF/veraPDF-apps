@@ -19,12 +19,12 @@
 # http://mozilla.org/MPL/2.0/.
 #
 
-name: Trigger increment action in webapp-server
+name: Trigger publish rest image to github
 
 on:
   push:
     tags:
-      - v*
+      - arlington-v1.27*
 
 jobs:
   trigger_build:
@@ -44,8 +44,8 @@ jobs:
           github-token: ${{ secrets.WORKFLOW_TOKEN }}
           script: |
             await github.rest.actions.createWorkflowDispatch({
-             owner: 'duallab',
-             repo: 'pdf4wcag-webapp-server',
-             workflow_id: 'version-auto-increment.yml',
-             ref: 'integration'
+             owner: 'veraPDF',
+             repo: 'verapdf-rest',
+             workflow_id: 'push-github.yml',
+             ref: 'arlington'
             })

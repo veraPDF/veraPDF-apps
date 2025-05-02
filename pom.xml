@@ -2,7 +2,7 @@
 <!--
 
     This file is part of veraPDF PDF/A Validation Applications, a module of the veraPDF project.
-    Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+    Copyright (c) 2015-2025, veraPDF Consortium <info@verapdf.org>
     All rights reserved.
 
     veraPDF PDF/A Validation Applications is free software: you can redistribute it and/or modify
@@ -28,16 +28,16 @@
   <parent>
     <artifactId>verapdf-parent</artifactId>
     <groupId>org.verapdf</groupId>
-    <version>1.26.2</version>
+    <version>1.28.1</version>
   </parent>
 
   <groupId>org.verapdf</groupId>
   <artifactId>verapdf-apps-arlington</artifactId>
-  <version>1.26.0</version>
+  <version>1.28.0</version>
   <packaging>pom</packaging>
 
-  <name>veraPDF PDF/A Validation Applications</name>
-  <description>veraPDF PDF/A Validation GUI, CLI and installer.</description>
+  <name>veraPDF Validation Applications for Arlington PDF Model</name>
+  <description>veraPDF Validation GUI, CLI and installer of Arlington PDF Model.</description>
   <url>https://github.com/veraPDF/veraPDF-apps/</url>
   <inceptionYear>2015</inceptionYear>
 
@@ -72,9 +72,9 @@
   <properties>
     <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
     <sonar.language>java</sonar.language>
-    <verapdf.library.version>[1.26.0,1.27.0)</verapdf.library.version>
-    <verapdf.pdfbox.validation.version>[1.26.0,1.27.0)</verapdf.pdfbox.validation.version>
-    <verapdf.validation.version>[1.26.0,1.27.0)</verapdf.validation.version>
+    <verapdf.library.version>[1.28.0,1.29.0)</verapdf.library.version>
+    <verapdf.pdfbox.validation.version>[1.28.0,1.29.0)</verapdf.pdfbox.validation.version>
+    <verapdf.validation.version>[1.28.0,1.29.0)</verapdf.validation.version>
   </properties>
 
   <dependencyManagement>

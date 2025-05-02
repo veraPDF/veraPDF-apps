@@ -1,6 +1,6 @@
 /**
  * This file is part of VeraPDF Library GUI, a module of the veraPDF project.
- * Copyright (c) 2015, veraPDF Consortium <info@verapdf.org>
+ * Copyright (c) 2015-2025, veraPDF Consortium <info@verapdf.org>
  * All rights reserved.
  *
  * VeraPDF Library GUI is free software: you can redistribute it and/or modify
