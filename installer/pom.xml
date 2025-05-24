@@ -352,7 +352,7 @@
       </activation>
       <properties>
         <installer.zip.prefix>verapdf-pdfbox</installer.zip.prefix>
-        <installer.output.filename>verapdf-izpack-pdfbox-installer-${project.version}.jar</installer.output.filename>
+        <installer.output.filename>verapdf-izpack-installer-${project.version}.jar</installer.output.filename>
         <verapdf.apps.package>pdfbox-apps</verapdf.apps.package>
         <verapdf.wrapper.gui>org.verapdf.apps.PdfBoxGuiWrapper</verapdf.wrapper.gui>
         <verapdf.wrapper.cli>org.verapdf.apps.PdfBoxCliWrapper</verapdf.wrapper.cli>
