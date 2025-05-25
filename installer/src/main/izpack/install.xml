@@ -114,13 +114,6 @@
       <parsable targetfile="$INSTALL_PATH/arlington-pdf-model-checker.bat" type="shell"/>
       <executable targetfile="$INSTALL_PATH/arlington-pdf-model-checker.bat"/>
     </pack>
-    <pack name="veraPDF Validation model" required="no" preselected="no">
-      <description>The veraPDF validation model API.</description>
-      <updatecheck>
-        <include name="model/**"/>
-      </updatecheck>
-      <file targetdir="$INSTALL_PATH/model" src="model/integration.zip" unpack="true"/>
-    </pack>
     <pack name="veraPDF Documentation" required="no">
       <description>The veraPDF documentation.</description>
       <updatecheck>
