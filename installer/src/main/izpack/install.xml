@@ -83,7 +83,6 @@
       </updatecheck>
       <file targetdir="$INSTALL_PATH/bin" src="bin/@verapdf.apps.package@-@project.version@.jar"/>
       <executable targetfile="$INSTALL_PATH/bin/@verapdf.apps.package@-@project.version@.jar"/>
-      <file targetdir="$INSTALL_PATH/profiles" src="profiles/integration.zip" unpack="true"/>
       <file targetdir="$INSTALL_PATH/plugins" src="plugins/README.txt"/>
     </pack>
     <pack name="veraPDF Mac and *nix Scripts" required="yes">
@@ -113,13 +112,6 @@
       <file targetdir="$INSTALL_PATH" src="scripts/verapdf.bat"/>
       <parsable targetfile="$INSTALL_PATH/verapdf.bat" type="shell"/>
       <executable targetfile="$INSTALL_PATH/verapdf.bat"/>
-    </pack>
-    <pack name="veraPDF Validation model" required="no" preselected="no">
-      <description>The veraPDF validation model API.</description>
-      <updatecheck>
-        <include name="model/**"/>
-      </updatecheck>
-      <file targetdir="$INSTALL_PATH/model" src="model/integration.zip" unpack="true"/>
     </pack>
     <pack name="veraPDF Documentation" required="no">
       <description>The veraPDF documentation.</description>
