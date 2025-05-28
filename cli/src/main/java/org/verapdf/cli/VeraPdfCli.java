@@ -77,7 +77,7 @@ public final class VeraPdfCli {
 		MemoryMXBean memoryMan = ManagementFactory.getMemoryMXBean();
 		FeaturesPluginsLoader.setBaseFolderPath(System.getProperty(Applications.APP_HOME_PROPERTY));
 		ReleaseDetails.addDetailsFromResource(
-				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
+				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "apps." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
 		VeraCliArgParser cliArgParser = new VeraCliArgParser();
 		JCommander jCommander = new JCommander(cliArgParser);
 		if (Arrays.asList(args).contains(VeraCliArgParser.USE_CONFIG)) {
