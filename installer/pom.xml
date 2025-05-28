@@ -51,6 +51,19 @@
     <verapdf.wrapper.cli>org.verapdf.apps.GreenfieldCliWrapper</verapdf.wrapper.cli>
   </properties>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.verapdf.apps</groupId>
+      <artifactId>cli</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.verapdf.apps</groupId>
+      <artifactId>gui</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
   <build>
     <pluginManagement>
       <plugins>
@@ -285,26 +298,5 @@
 
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>greenfield-apps</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.verapdf.apps</groupId>
-          <artifactId>cli</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>org.verapdf.apps</groupId>
-          <artifactId>gui</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
 
 </project>
