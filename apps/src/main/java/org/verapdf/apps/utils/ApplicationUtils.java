@@ -30,11 +30,11 @@ import java.util.logging.Logger;
 
 import javanet.staxutils.SimpleNamespaceContext;
 import org.verapdf.apps.Applications;
+import org.verapdf.apps.AppsConstants;
 import org.verapdf.core.utils.FileUtils;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.features.FeatureObjectType;
-import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.policy.SchematronGenerator;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -84,8 +84,8 @@ public final class ApplicationUtils {
 				continue;
 			}
 			if (file.isFile()) {
-				if (nonPdfExt || FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF) ||
-						FileUtils.hasExtNoCase(file.getName(), GUIConstants.ZIP)) {
+				if (nonPdfExt || FileUtils.hasExtNoCase(file.getName(), AppsConstants.PDF) ||
+						FileUtils.hasExtNoCase(file.getName(), AppsConstants.ZIP)) {
 					retVal.add(file);
 				} else {
 					LOGGER.log(Level.SEVERE, "File " + file.getAbsolutePath() + " doesn't have a .pdf extension. Try using --nonpdfext flag");
@@ -102,7 +102,7 @@ public final class ApplicationUtils {
 		Applications.checkArgNotNull(toFilter, "toFilter"); //$NON-NLS-1$
 		List<File> retVal = new ArrayList<>();
 		for (File file : toFilter) {
-			if (file.isFile() && (nonPdfExt || FileUtils.hasExtNoCase(file.getName(), GUIConstants.PDF))) {
+			if (file.isFile() && (nonPdfExt || FileUtils.hasExtNoCase(file.getName(), AppsConstants.PDF))) {
 				retVal.add(file);
 			} else if (file.isDirectory() && isRecursive) {
 				retVal.addAll(filterPdfFilesFromDirs(Arrays.asList(file.listFiles()), isRecursive, nonPdfExt));
