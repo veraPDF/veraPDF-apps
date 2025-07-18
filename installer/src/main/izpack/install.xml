@@ -76,42 +76,63 @@
   </panels>
 
   <packs>
-    <pack name="veraPDF GUI" required="yes">
+    <pack name="veraPDF GUI" required="no">
       <description>veraPDF GUI.</description>
       <updatecheck>
         <include name="bin/**"/>
-      </updatecheck>
-      <file targetdir="$INSTALL_PATH/bin" src="bin/@verapdf.apps.package@-@project.version@.jar"/>
-      <executable targetfile="$INSTALL_PATH/bin/@verapdf.apps.package@-@project.version@.jar"/>
-      <file targetdir="$INSTALL_PATH/plugins" src="plugins/README.txt"/>
-    </pack>
-    <pack name="veraPDF Mac and *nix Scripts" required="yes">
-      <description>Scripts for using the veraPDF software.</description>
-      <os family="unix"/>
-      <updatecheck>
         <include name="verapdf-gui"/>
-        <include name="verapdf"/>
-      </updatecheck>
-      <singlefile src="scripts/verapdf-gui.sh" target="$INSTALL_PATH/verapdf-gui"/>
-      <parsable targetfile="$INSTALL_PATH/verapdf-gui" type="shell"/>
-      <executable targetfile="$INSTALL_PATH/verapdf-gui"/>
-      <singlefile src="scripts/verapdf.sh" target="$INSTALL_PATH/verapdf"/>
-      <parsable targetfile="$INSTALL_PATH/verapdf" type="shell"/>
-      <executable targetfile="$INSTALL_PATH/verapdf"/>
-    </pack>
-    <pack name="veraPDF Batch files" required="yes">
-      <description>Scripts for using the veraPDF software.</description>
-      <os family="windows"/>
-      <updatecheck>
         <include name="verapdf-gui.bat"/>
+      </updatecheck>
+      <file targetdir="$INSTALL_PATH/bin" src="bin/@verapdf.gui.package@-@project.version@.jar"/>
+      <executable targetfile="$INSTALL_PATH/bin/@verapdf.gui.package@-@project.version@.jar"/>
+      <file targetdir="$INSTALL_PATH/plugins" src="plugins/README.txt"/>
+      <singlefile src="scripts/verapdf-gui.sh" target="$INSTALL_PATH/verapdf-gui">
+        <os family="unix"/>
+      </singlefile>
+      <parsable targetfile="$INSTALL_PATH/verapdf-gui" type="shell">
+        <os family="unix"/>
+      </parsable>
+      <executable targetfile="$INSTALL_PATH/verapdf-gui">
+        <os family="unix"/>
+      </executable>
+      <file targetdir="$INSTALL_PATH" src="scripts/verapdf-gui.bat">
+        <os family="windows"/>
+      </file>
+      <parsable targetfile="$INSTALL_PATH/verapdf-gui.bat" type="shell">
+        <os family="windows"/>
+      </parsable>
+      <executable targetfile="$INSTALL_PATH/verapdf-gui.bat">
+        <os family="windows"/>
+      </executable>
+    </pack>
+    <pack name="veraPDF CLI" required="no">
+      <description>veraPDF CLI.</description>
+      <updatecheck>
+        <include name="bin/**"/>
+        <include name="verapdf"/>
         <include name="verapdf.bat"/>
       </updatecheck>
-      <file targetdir="$INSTALL_PATH" src="scripts/verapdf-gui.bat"/>
-      <parsable targetfile="$INSTALL_PATH/verapdf-gui.bat" type="shell"/>
-      <executable targetfile="$INSTALL_PATH/verapdf-gui.bat"/>
-      <file targetdir="$INSTALL_PATH" src="scripts/verapdf.bat"/>
-      <parsable targetfile="$INSTALL_PATH/verapdf.bat" type="shell"/>
-      <executable targetfile="$INSTALL_PATH/verapdf.bat"/>
+      <file targetdir="$INSTALL_PATH/bin" src="bin/@verapdf.cli.package@-@project.version@.jar"/>
+      <executable targetfile="$INSTALL_PATH/bin/@verapdf.cli.package@-@project.version@.jar"/>
+      <file targetdir="$INSTALL_PATH/plugins" src="plugins/README.txt"/>
+      <singlefile src="scripts/verapdf.sh" target="$INSTALL_PATH/verapdf">
+        <os family="unix"/>
+      </singlefile>
+      <parsable targetfile="$INSTALL_PATH/verapdf" type="shell">
+        <os family="unix"/>
+      </parsable>
+      <executable targetfile="$INSTALL_PATH/verapdf">
+        <os family="unix"/>
+      </executable>
+      <file targetdir="$INSTALL_PATH" src="scripts/verapdf.bat">
+        <os family="windows"/>
+      </file>
+      <parsable targetfile="$INSTALL_PATH/verapdf.bat" type="shell">
+        <os family="windows"/>
+      </parsable>
+      <executable targetfile="$INSTALL_PATH/verapdf.bat">
+        <os family="windows"/>
+      </executable>
     </pack>
     <pack name="veraPDF Documentation" required="no">
       <description>The veraPDF documentation.</description>

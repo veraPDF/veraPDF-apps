@@ -111,9 +111,9 @@ Call Maven install:
 
 #### Testing the build
 
-You can test your build by running the greenfield GUI application from the `greenfield-apps` sub-module.
+You can test your build by running the greenfield GUI application from the `gui` sub-module.
 
-    java -jar greenfield-apps/target/greenfield-apps-${project.version}.jar
+    java -jar greenfield-apps/target/gui-${project.version}.jar
 
 Where `${project.version}` is the current Maven project version. This should bring up the veraPDF GUI main window if the build was successful.
 
