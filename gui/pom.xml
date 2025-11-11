@@ -43,7 +43,7 @@
               <configuration>
                   <archive>
                       <manifestEntries>
-                          <Automatic-Module-Name>org.verapdf.gui</Automatic-Module-Name>
+                          <Automatic-Module-Name>org.verapdf.arlington.gui</Automatic-Module-Name>
                       </manifestEntries>
                   </archive>
               </configuration>

@@ -67,7 +67,7 @@
             <configuration>
                 <archive>
                     <manifestEntries>
-                        <Automatic-Module-Name>org.verapdf.installer</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.verapdf.arlington.installer</Automatic-Module-Name>
                     </manifestEntries>
                 </archive>
             </configuration>

@@ -40,7 +40,7 @@
             <configuration>
                 <archive>
                     <manifestEntries>
-                        <Automatic-Module-Name>org.verapdf.greenfield.apps</Automatic-Module-Name>
+                        <Automatic-Module-Name>org.verapdf.arlington.greenfield.apps</Automatic-Module-Name>
                     </manifestEntries>
                 </archive>
             </configuration>
