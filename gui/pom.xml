@@ -36,6 +36,19 @@
   <name>VeraPDF Library GUI</name>
 
   <build>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <configuration>
+                  <archive>
+                      <manifestEntries>
+                          <Automatic-Module-Name>org.verapdf.gui</Automatic-Module-Name>
+                      </manifestEntries>
+                  </archive>
+              </configuration>
+          </plugin>
+      </plugins>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
