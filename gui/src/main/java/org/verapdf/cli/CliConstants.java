@@ -62,9 +62,9 @@ public final class CliConstants {
 	 */
 	public enum ExitCodes {
 		/** All files parsed and valid */
-		VALID(0, "All files validated."),
+		VALID(0, "All files validated and conform to the selected profile(s)."),
 		/** All files parsed, some invalid */
-		INVALID(1, "Invalid PDF/A file(s) found."),
+		INVALID(1, "All files validated, but at least one does not conform to the selected profile(s)."),
 		/** Bad command line parameters */
 		BAD_PARAMS(2, "Invalid command line parameters."),
 		/** Out of Memory */
