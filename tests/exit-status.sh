@@ -66,7 +66,7 @@ expBatchFail=1
 expBatchPassFail=1
 expBadParams=2
 expOutOfMem=3
-expOutOfMemAlt=1 # HACK: accept alternative exit code 1 for out-of-memmory errors, for the time being.
+expOutOfMemAlt=1 # HACK: accept alternative exit code 1 for out-of-memory errors, for the time being.
 expParseError=7
 
 echo
