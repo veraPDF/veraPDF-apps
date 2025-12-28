@@ -57,7 +57,7 @@ public class FormatterHelper extends DefaultUsageFormatter {
 			   .append('\n');
 
 			if (hasDescription) {
-				wrapDescription(out, indentCount, s(indentCount) + description);
+				wrapDescription(out, indentCount, DefaultUsageFormatter.s(indentCount) + description);
 			}
 			Object def = pd.getDefault();
 
@@ -67,7 +67,7 @@ public class FormatterHelper extends DefaultUsageFormatter {
 				if (hasDescription) {
 					out.append(newLineAndIndent(indentCount));
 				} else {
-					out.append(s(indentCount));
+					out.append(DefaultUsageFormatter.s(indentCount));
 				}
 				out.append(syntax);
 			}
@@ -79,7 +79,7 @@ public class FormatterHelper extends DefaultUsageFormatter {
 				if (hasDescription) {
 					out.append(newLineAndIndent(indentCount));
 				} else {
-					out.append(s(indentCount));
+					out.append(DefaultUsageFormatter.s(indentCount));
 				}
 				out.append(defaultText);
 			}
@@ -108,7 +108,7 @@ public class FormatterHelper extends DefaultUsageFormatter {
 					if (hasDescription) {
 						out.append(newLineAndIndent(indentCount));
 					} else {
-						out.append(s(indentCount));
+						out.append(DefaultUsageFormatter.s(indentCount));
 					}
 					out.append(possibleValues);
 				}
@@ -136,6 +136,6 @@ public class FormatterHelper extends DefaultUsageFormatter {
 	}
 
 	private static String newLineAndIndent(int indent) {
-		return '\n' + s(indent);
+		return '\n' + DefaultUsageFormatter.s(indent);
 	}
 }

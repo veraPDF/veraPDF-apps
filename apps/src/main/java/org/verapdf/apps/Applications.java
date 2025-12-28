@@ -90,7 +90,7 @@ public final class Applications {
 	 * @return the Application Release details for the GUI
 	 */
 	public static ReleaseDetails getAppDetails() {
-		return ReleaseDetails.byId("gui-arlington"); //$NON-NLS-1$
+		return ReleaseDetails.byId("apps-arlington"); //$NON-NLS-1$
 	}
 
 	/**

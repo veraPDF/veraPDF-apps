@@ -373,7 +373,7 @@ public class PDFValidationApplication extends JFrame {
 							JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				ReleaseDetails details = ReleaseDetails.byId("gui-arlington");
+				ReleaseDetails details = ReleaseDetails.byId("apps-arlington");
 				if (updater.isUpdateAvailable(details)) {
 					int res = JOptionPane.showConfirmDialog(
 							PDFValidationApplication.this,
@@ -454,7 +454,7 @@ public class PDFValidationApplication extends JFrame {
 			}
 		}
 		ReleaseDetails.addDetailsFromResource(
-				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "app." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
+				ReleaseDetails.APPLICATION_PROPERTIES_ROOT + "apps." + ReleaseDetails.PROPERTIES_EXT); //$NON-NLS-1$
 		final double finalFrameScale = frameScale;
 		EventQueue.invokeLater(new Runnable() {
 			@Override

@@ -74,7 +74,7 @@ passed directly as parameters when calling the shell or batch script.
 
 In order to build this project you'll need:
 
-- Java 8, 11, 17, 21 or 25, which can be downloaded [from Oracle](https://www.oracle.com/technetwork/java/javase/downloads/index.html), or for Linux users [OpenJDK](https://openjdk.java.net/install/index.html).
+- Java 11, 17, 21 or 25, which can be downloaded [from Oracle](https://www.oracle.com/technetwork/java/javase/downloads/index.html), or for Linux users [OpenJDK](https://openjdk.java.net/install/index.html).
 - [Maven v3+](https://maven.apache.org/)
 
 Life will be easier if you also use [Git](https://git-scm.com/) to obtain and manage the source.
@@ -111,15 +111,15 @@ Call Maven install:
 
 #### Testing the build
 
-You can test your build by running the greenfield GUI application from the `greenfield-apps` sub-module.
+You can test your build by running the greenfield GUI application from the `gui` sub-module.
 
-    java -jar greenfield-apps/target/greenfield-apps-${project.version}.jar
+    java -jar gui/target/gui-${project.version}.jar
 
 Where `${project.version}` is the current Maven project version. This should bring up the veraPDF GUI main window if the build was successful.
 
 ## Building the Docker image
 
-The accompanying [`Dockerfile`](Dockerfile) can be used to build a Docker image containing the veraPDF CLI and GUI applications. The image is based on the official Alpine image. It doesn't build the project, instead it downloads a version of the installer. It also builds a slimline JRE which is used to trim the final image size.
+The accompanying [`Dockerfile`](Dockerfile) can be used to build a Docker image containing the veraPDF CLI application. The image is based on the official Alpine image. It doesn't build the project, instead it downloads a version of the installer. It also builds a slimline JRE which is used to trim the final image size.
 
 The version built is controlled by three arguments in the Dockerfile, `VERAPDF_VERSION`, `VERAPDF_MINOR_VERSION` and `VERAPDF_INSTALLER_FOLDER`. These can be used to select a specific installer at invocation time. The default values are `VERAPDF_VERSION=1.28`, `VERAPDF_MINOR_VERSION=2` and `VERAPDF_INSTALLER_FOLDER=releases`, which builds the latest production version, e.g. `1.28.2`.
 

@@ -21,6 +21,7 @@
 package org.verapdf.gui;
 
 import org.verapdf.apps.Applications;
+import org.verapdf.apps.AppsConstants;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.core.utils.FileUtils;
 import org.verapdf.gui.utils.*;
@@ -116,7 +117,7 @@ class CheckerPanel extends JPanel {
 
 		this.initGui();
 
-		this.pdfChooser = getChooser(true, GUIConstants.PDF, GUIConstants.ZIP);
+		this.pdfChooser = getChooser(true, AppsConstants.PDF, AppsConstants.ZIP);
 		this.pdfChooser.setMultiSelectionEnabled(true);
 		this.pdfChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		this.xmlChooser = getChooser(false, GUIConstants.XML);
@@ -267,7 +268,7 @@ class CheckerPanel extends JPanel {
 		this.add(this.chosenPDF);
 
 		PanelDropTargetListener dtdPDFListener = new PanelDropTargetListener(-1,
-				GUIConstants.PDF, GUIConstants.ZIP);
+				AppsConstants.PDF, AppsConstants.ZIP);
 		targetPDF = new DropTarget(this.chosenPDF, DnDConstants.ACTION_COPY_OR_MOVE,
 				dtdPDFListener, true, null);
 	}
@@ -285,7 +286,7 @@ class CheckerPanel extends JPanel {
 		choosePDF.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent e) {
-				CheckerPanel.this.chooseFile(CheckerPanel.this.pdfChooser, new String[] { GUIConstants.PDF });
+				CheckerPanel.this.chooseFile(CheckerPanel.this.pdfChooser, new String[] { AppsConstants.PDF });
 			}
 		});
 	}
@@ -784,7 +785,7 @@ class CheckerPanel extends JPanel {
 			this.viewHTML.setEnabled(false);
 
 			switch (extensions[0]) {
-				case GUIConstants.PDF:
+				case AppsConstants.PDF:
 					this.pdfsToProcess = ApplicationUtils.filterPdfFiles(selectedFiles, true, true);
 					this.chosenPDF.setText(getSelectedPathsMessage(selectedFiles));
 					break;
@@ -892,7 +893,7 @@ class CheckerPanel extends JPanel {
 		ProcessType selectedItem = (ProcessType) this.processTypes.getSelectedItem();
 		if (isFixMetadata() && config.getApplicationConfig().getFixesFolder().isEmpty() && this.pdfsToProcess != null) {
 			for (File pdf : pdfsToProcess) {
-				if (FileUtils.hasExtNoCase(pdf.getName(), GUIConstants.ZIP)) {
+				if (FileUtils.hasExtNoCase(pdf.getName(), AppsConstants.ZIP)) {
 					logger.log(Level.WARNING, "Fixing metadata are not supported for zip processing, if save folder isn't defined");
 					this.fixMetadata.setSelected(false);
 					break;
