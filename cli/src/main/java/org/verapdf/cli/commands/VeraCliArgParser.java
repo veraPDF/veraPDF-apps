@@ -22,13 +22,13 @@ package org.verapdf.cli.commands;
 
 import com.beust.jcommander.*;
 import org.verapdf.apps.Applications;
+import org.verapdf.apps.AppsConstants;
 import org.verapdf.apps.utils.ApplicationUtils;
 import org.verapdf.core.VeraPDFException;
 import org.verapdf.core.utils.FileUtils;
 import org.verapdf.features.FeatureExtractorConfig;
 import org.verapdf.features.FeatureFactory;
 import org.verapdf.features.FeatureObjectType;
-import org.verapdf.gui.utils.GUIConstants;
 import org.verapdf.metadata.fixer.FixerFactory;
 import org.verapdf.metadata.fixer.MetadataFixerConfig;
 import org.verapdf.pdfa.flavours.PDFAFlavour;
@@ -725,7 +725,7 @@ public class VeraCliArgParser {
 			LOGGER.log(Level.WARNING, "Password handling for encrypted files is not supported for batch processing.");
 			this.password = null;
 		}
-		if (!getPdfPaths().isEmpty() && FileUtils.hasExtNoCase(getPdfPaths().get(0), GUIConstants.ZIP) && this.password != null) {
+		if (!getPdfPaths().isEmpty() && FileUtils.hasExtNoCase(getPdfPaths().get(0), AppsConstants.ZIP) && this.password != null) {
 			LOGGER.log(Level.WARNING, "Password handling for encrypted files is not supported for zip processing.");
 			this.password = null;
 		}
@@ -733,7 +733,7 @@ public class VeraCliArgParser {
 			LOGGER.log(Level.WARNING, "Validation progress output is not supported for multiprocessing.");
 		}
 		for (String pdfPath : getPdfPaths()) {
-			if (FileUtils.hasExtNoCase(pdfPath, GUIConstants.ZIP)) {
+			if (FileUtils.hasExtNoCase(pdfPath, AppsConstants.ZIP)) {
 				if (this.fixMetadata && saveFolder().isEmpty()) {
 					LOGGER.log(Level.WARNING, "Fixing metadata is not supported for zip processing, if save folder isn't defined");
 					this.fixMetadata = false;

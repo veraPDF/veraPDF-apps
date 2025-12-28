@@ -43,8 +43,9 @@
 
   <modules>
     <module>gui</module>
-    <module>greenfield-apps</module>
     <module>installer</module>
+    <module>cli</module>
+    <module>apps</module>
   </modules>
 
   <scm>

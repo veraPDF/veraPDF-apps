@@ -33,7 +33,6 @@ import java.util.logging.Logger;
 import javax.xml.parsers.*;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.verapdf.ReleaseDetails;
@@ -42,7 +41,6 @@ import org.verapdf.version.Versions;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * @author <a href="mailto:carl@openpreservation.org">Carl Wilson</a>
@@ -52,7 +50,7 @@ import org.xml.sax.SAXException;
 
 public class SoftwareUpdaterImpl implements SoftwareUpdater {
 	private static final Logger logger = Logger.getLogger(SoftwareUpdaterImpl.class.getCanonicalName());
-	private static final String latestGF = "https://search.maven.org/solrsearch/select?q=g:org.verapdf.apps+AND+a:greenfield-apps&core=gav&rows=1&wt=xml";
+	private static final String latestGF = "https://search.maven.org/solrsearch/select?q=g:org.verapdf.apps+AND+a:apps&core=gav&rows=1&wt=xml";
 	private final String currentVersion = Applications.getAppDetails().getVersion();
 
 	/**
@@ -131,7 +129,7 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 			XPath path = XPathFactory.newInstance().newXPath();
 			NodeList versions = ((NodeList) path.evaluate("//str[@name='v']", doc, XPathConstants.NODESET));
 			return Versions.fromString(versions.item(0).getFirstChild().getNodeValue());
-		} catch (IOException | ParserConfigurationException | SAXException | XPathExpressionException excep) {
+		} catch (Exception excep) {
 			excep.printStackTrace();
 			throw new IllegalStateException(String.format("Problem parsing version number from URL %s", endpoint), //$NON-NLS-1$
 					excep);
