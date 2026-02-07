@@ -40,7 +40,7 @@ FROM eclipse-temurin:11-jdk-alpine AS jre-builder
 
 # Create a custom Java runtime
 RUN "$JAVA_HOME/bin/jlink" \
-         --add-modules java.base,java.logging,java.xml,jdk.crypto.ec,java.desktop,jdk.management \
+         --add-modules java.base,java.compiler,java.logging,java.xml,jdk.crypto.ec,java.desktop,jdk.management \
          --strip-debug \
          --no-man-pages \
          --no-header-files \
