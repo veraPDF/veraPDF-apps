@@ -26,7 +26,7 @@
   <parent>
     <groupId>org.verapdf</groupId>
     <artifactId>verapdf-apps</artifactId>
-    <version>1.29.0-SNAPSHOT</version>
+    <version>1.30.0-RC1</version>
   </parent>
 
   <groupId>org.verapdf.apps</groupId>
@@ -236,7 +236,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>http://software.verapdf.org/dev/veraPDF-sample-plugin-pack-dev.zip</url>
+              <url>http://software.verapdf.org/dev/veraPDF-sample-plugin-pack-rc.zip</url>
               <unpack>false</unpack>
               <skipCache>true</skipCache>
               <outputDirectory>${project.build.directory}/staging/plugins</outputDirectory>
