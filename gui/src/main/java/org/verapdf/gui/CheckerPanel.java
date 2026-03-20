@@ -926,7 +926,7 @@ class CheckerPanel extends JPanel {
 			return flavour.getPart().getFamily().getFamily() + " " + flavour.getPart().getPartNumber() + 
 					"." + flavour.getPart().getSubpartNumber() + " " + flavour.getLevel().getCode();
 		}
-		return String.format(flavour.getPart().getFamily().getFamily() + "-%d%S", flavour.getPart().getPartNumber(), //$NON-NLS-1$
+		return String.format(flavour.getPart().getFamily().getFamily() + "-%d%s", flavour.getPart().getPartNumber(), //$NON-NLS-1$
 				flavour.getLevel().getCode());
 	}
 
