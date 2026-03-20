@@ -935,7 +935,7 @@ class CheckerPanel extends JPanel {
 		if (PDFAFlavour.SpecificationFamily.ARLINGTON == flavour.getPart().getFamily()) {
 			return flavour.getId().substring(PDFAFlavours.ARLINGTON_PREFIX.length());
 		}
-		return String.format(flavour.getPart().getFamily() + "-%d%S", flavour.getPart().getPartNumber(), //$NON-NLS-1$
+		return String.format(flavour.getPart().getFamily() + "-%d%s", flavour.getPart().getPartNumber(), //$NON-NLS-1$
 				flavour.getLevel().getCode());
 	}
 
