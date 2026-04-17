@@ -24,8 +24,8 @@ name: Publish Docker image
 on:
   push:
     tags:
-      - 'v1.28.*'
-      - '!v1.28.0-RC*'
+      - 'v1.30.*'
+      - '!v1.30.0-RC*'
 
 jobs:
   push_to_registry:
@@ -60,7 +60,7 @@ jobs:
           context: .
           file: ./Dockerfile
           build-args: |
-            VERAPDF_VERSION=1.28
+            VERAPDF_VERSION=1.30
             VERAPDF_MINOR_VERSION=${{ steps.version.outputs.version }}
           push: true
           tags: verapdf/cli:latest,verapdf/cli:${{ github.ref_name }}
