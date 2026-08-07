@@ -130,7 +130,6 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 			NodeList versions = ((NodeList) path.evaluate("//str[@name='v']", doc, XPathConstants.NODESET));
 			return Versions.fromString(versions.item(0).getFirstChild().getNodeValue());
 		} catch (Exception excep) {
-			excep.printStackTrace();
 			throw new IllegalStateException(String.format("Problem parsing version number from URL %s", endpoint), //$NON-NLS-1$
 					excep);
 		}

@@ -224,7 +224,6 @@ class CheckerPanel extends JPanel {
 				try {
 					config.updateAppConfig(appConfigFromState());
 				} catch (JAXBException | IOException exception) {
-					exception.printStackTrace();
 				}
 			}
 		});
@@ -436,7 +435,6 @@ class CheckerPanel extends JPanel {
 				try {
 					config.updateValidatorConfig(validatorConfigFromState());
 				} catch (JAXBException | IOException e) {
-					e.printStackTrace();
 				}
 			}
 		});
@@ -504,7 +502,6 @@ class CheckerPanel extends JPanel {
 				try {
 					config.updateAppConfig(appConfigFromState());
 				} catch (JAXBException | IOException exception) {
-					exception.printStackTrace();
 				}
 			}
 
@@ -539,7 +536,6 @@ class CheckerPanel extends JPanel {
 				try {
 					config.updateAppConfig(appConfigFromState());
 				} catch (JAXBException | IOException exception) {
-					exception.printStackTrace();
 				}
 			}
 
@@ -718,7 +714,6 @@ class CheckerPanel extends JPanel {
 	}
 
 	void handleValidationError(String message, Throwable cause) {
-		cause.printStackTrace();
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
 		this.isValidationErrorOccurred = true;

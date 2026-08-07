@@ -185,7 +185,6 @@ public class PDFValidationApplication extends JFrame {
 						configManager.updateAppConfig(confBuilder.build());
 					} catch (JAXBException | IOException excep) {
 						// TODO Auto-generated catch block
-						excep.printStackTrace();
 					}
 
 					ValidatorConfig validConf = ValidatorFactory.createConfig(
@@ -203,7 +202,6 @@ public class PDFValidationApplication extends JFrame {
 						configManager.updateValidatorConfig(validConf);
 					} catch (JAXBException | IOException excep) {
 						// TODO Auto-generated catch block
-						excep.printStackTrace();
 					}
 
 					MetadataFixerConfig fixConf = FixerFactory
@@ -212,7 +210,6 @@ public class PDFValidationApplication extends JFrame {
 						configManager.updateFixerConfig(fixConf);
 					} catch (JAXBException | IOException excep) {
 						// TODO Auto-generated catch block
-						excep.printStackTrace();
 					}
 
 				}
@@ -425,7 +422,6 @@ public class PDFValidationApplication extends JFrame {
 			try {
 				frameScale = Double.parseDouble(args[1]);
 			} catch (NumberFormatException e) {
-				e.printStackTrace();
 			}
 		}
 		ReleaseDetails.addDetailsFromResource(
@@ -461,7 +457,6 @@ public class PDFValidationApplication extends JFrame {
 				configManager.updateAppConfig(PDFValidationApplication.this.config);
 			} catch (JAXBException | IOException excep) {
 				// TODO Auto-generated catch block
-				excep.printStackTrace();
 			}
 		}
 	}
