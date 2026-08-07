@@ -107,7 +107,7 @@ public class PDFValidationApplication extends JFrame {
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(this, "Error in reading logo image.", GUIConstants.ERROR,
 					JOptionPane.ERROR_MESSAGE);
-			logger.log(Level.WARNING, "Exception in reading logo image", e);
+			logger.log(Level.WARNING, "Exception in reading logo image");
 		}
 
 		final JMenu file = new JMenu("File");
@@ -118,7 +118,7 @@ public class PDFValidationApplication extends JFrame {
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error initialising settings panel.",
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			logger.log(Level.SEVERE, "Exception in initialising settings panel", e);
+			logger.log(Level.SEVERE, "Exception in initialising settings panel");
 		}
 
 		file.add(getSettings());
@@ -164,7 +164,7 @@ public class PDFValidationApplication extends JFrame {
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in loading xml or html image.",
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			logger.log(Level.WARNING, "Exception in loading xml or html image", e);
+			logger.log(Level.WARNING, "Exception in loading xml or html image");
 		}
 		contentPanel.add(this.checkerPanel);
 
@@ -247,7 +247,7 @@ public class PDFValidationApplication extends JFrame {
 						configManager
 								.updateFeaturesConfig(PDFValidationApplication.this.featuresPanel.getFeaturesConfig());
 					} catch (JAXBException | IOException exp) {
-						logger.log(Level.SEVERE, "Exception in updating features config", exp); //$NON-NLS-1$
+						logger.log(Level.SEVERE, "Exception in updating features config"); //$NON-NLS-1$
 					}
 				}
 			}
@@ -278,7 +278,7 @@ public class PDFValidationApplication extends JFrame {
 					} catch (IOException | XMLStreamException ex) {
 						JOptionPane.showMessageDialog(PDFValidationApplication.this,
 								"Error in saving policy config file.", GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-						logger.log(Level.SEVERE, "Error in saving policy config file.", ex);
+						logger.log(Level.SEVERE, "Error in saving policy config file.");
 					}
 				}
 			}
@@ -294,7 +294,7 @@ public class PDFValidationApplication extends JFrame {
 				try {
 					Desktop.getDesktop().open(configManager.getConfigDir());
 				} catch (IOException ex) {
-					logger.log(Level.WARNING, "Exception in opening config location", ex);
+					logger.log(Level.WARNING, "Exception in opening config location");
 				}
 			}
 		});
@@ -395,7 +395,7 @@ public class PDFValidationApplication extends JFrame {
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, "Error in creating mini logo.",
 					GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			logger.log(Level.WARNING, "Exception in creating mini logo", e);
+			logger.log(Level.WARNING, "Exception in creating mini logo");
 		}
 		return logoPanel;
 	}
@@ -407,7 +407,7 @@ public class PDFValidationApplication extends JFrame {
 			String message = String.format(GUIConstants.UNSUPPORTED_OPERATION_EXC_BROWSE, uri);
 			JOptionPane.showMessageDialog(PDFValidationApplication.this, message, GUIConstants.ERROR,
 					JOptionPane.ERROR_MESSAGE);
-			logger.log(Level.SEVERE, "Exception in opening link " + uri, excep); //$NON-NLS-1$
+			logger.log(Level.SEVERE, "Exception in opening link " + uri); //$NON-NLS-1$
 		}
 	}
 
@@ -438,7 +438,7 @@ public class PDFValidationApplication extends JFrame {
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				} catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException
 						| InstantiationException e) {
-					logger.log(Level.SEVERE, "Exception in configuring UI manager", e); //$NON-NLS-1$
+					logger.log(Level.SEVERE, "Exception in configuring UI manager"); //$NON-NLS-1$
 				}
 				try {
 					PDFValidationApplication frame = new PDFValidationApplication(finalFrameScale);
@@ -447,7 +447,7 @@ public class PDFValidationApplication extends JFrame {
 					frame.setIconImage(kit.createImage(url));
 					frame.setVisible(true);
 				} catch (Exception e) {
-					logger.log(Level.SEVERE, "Exception", e); //$NON-NLS-1$
+					logger.log(Level.SEVERE, "Exception"); //$NON-NLS-1$
 				}
 			}
 		});

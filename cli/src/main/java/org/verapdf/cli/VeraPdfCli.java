@@ -105,7 +105,7 @@ public final class VeraPdfCli {
 					jCommander.usage();
 				}
 			} catch (IOException e) {
-				logger.log(Level.SEVERE,"STDIN is not available", e);
+				logger.log(Level.SEVERE,"STDIN is not available");
 			}
 			try {
 				if (!cliArgParser.isMultiprocessing()) {
@@ -113,11 +113,11 @@ public final class VeraPdfCli {
 				}
 				System.exit(MultiThreadProcessor.process(cliArgParser).value);
 			} catch (InterruptedException e) {
-				logger.log(Level.WARNING, "Interrupted", e);
+				logger.log(Level.WARNING, "Interrupted");
 				System.exit(ExitCodes.INTERRUPTED_EXCEPTION.value);
 			} catch (OutOfMemoryError oome) {
 				final String message = "The JVM appears to have run out of memory"; //$NON-NLS-1$
-				logger.log(Level.WARNING, message, oome);
+				logger.log(Level.WARNING, message);
 				MemoryUsage heapUsage = memoryMan.getHeapMemoryUsage();
 				long maxMemory = heapUsage.getMax() / MEGABYTE;
 				long usedMemory = heapUsage.getUsed() / MEGABYTE;

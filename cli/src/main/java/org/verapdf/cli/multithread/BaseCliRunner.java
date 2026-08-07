@@ -85,7 +85,7 @@ public class BaseCliRunner implements Runnable {
             reportScanner = new Scanner(process.getInputStream());
 
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Exception in process", e);
+            LOGGER.log(Level.SEVERE, "Exception in process");
         }
         while (reportScanner.hasNextLine()) {
             multiThreadProcessor.write(getData());
@@ -112,9 +112,9 @@ public class BaseCliRunner implements Runnable {
             isClosed = true;
 
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Can't close process", e);
+            LOGGER.log(Level.SEVERE, "Can't close process");
         } catch (InterruptedException e) {
-            LOGGER.log(Level.SEVERE, "Process interrupted exception", e);
+            LOGGER.log(Level.SEVERE, "Process interrupted exception");
         }
         this.multiThreadProcessor.countDown(CliConstants.ExitCodes.fromValue(process.exitValue()));
         return isClosed;
@@ -126,7 +126,7 @@ public class BaseCliRunner implements Runnable {
             this.out.write("\n".getBytes());
             this.out.flush();
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Can't pass new file to validate", e);
+            LOGGER.log(Level.SEVERE, "Can't pass new file to validate");
         }
     }
 

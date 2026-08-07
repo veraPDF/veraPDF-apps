@@ -847,7 +847,7 @@ class CheckerPanel extends JPanel {
 						Files.copy(report.toPath(), temp.toPath());
 					} catch (FileAlreadyExistsException excep) {
 						String message = String.format(GUIConstants.WARN_FILE_EXISTS, extension.toUpperCase());
-						logger.log(Level.FINE, message, excep);
+						logger.log(Level.FINE, message);
 						int resultOption = JOptionPane.showConfirmDialog(CheckerPanel.this,
 								message, GUIConstants.TITLE_OVERWRITE, JOptionPane.YES_NO_OPTION);
 						if (resultOption == JOptionPane.YES_OPTION) {

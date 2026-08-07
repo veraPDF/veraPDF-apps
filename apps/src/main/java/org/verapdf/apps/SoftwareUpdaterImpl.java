@@ -75,7 +75,7 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 		} catch (MalformedURLException excep) {
 			throw new IllegalStateException(String.format("Problem parsing hard coded URL %s", stringURL), excep); //$NON-NLS-1$
 		} catch (IOException excep) {
-			logger.log(Level.INFO, "Couldn't get latest version info from Jenkins.", excep); //$NON-NLS-1$
+			logger.log(Level.INFO, "Couldn't get latest version info from Jenkins."); //$NON-NLS-1$
 		}
 		return false;
 	}
