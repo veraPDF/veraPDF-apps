@@ -224,7 +224,7 @@ class CheckerPanel extends JPanel {
 				try {
 					config.updateAppConfig(appConfigFromState());
 				} catch (JAXBException | IOException exception) {
-					exception.printStackTrace();
+                    logger.log(Level.WARNING, "Failed to update app config");
 				}
 			}
 		});
@@ -436,7 +436,7 @@ class CheckerPanel extends JPanel {
 				try {
 					config.updateValidatorConfig(validatorConfigFromState());
 				} catch (JAXBException | IOException e) {
-					e.printStackTrace();
+                    logger.log(Level.WARNING, "Failed to update validator config");
 				}
 			}
 		});
@@ -504,7 +504,7 @@ class CheckerPanel extends JPanel {
 				try {
 					config.updateAppConfig(appConfigFromState());
 				} catch (JAXBException | IOException exception) {
-					exception.printStackTrace();
+                    logger.log(Level.WARNING, "Failed to update app config");
 				}
 			}
 
@@ -539,7 +539,7 @@ class CheckerPanel extends JPanel {
 				try {
 					config.updateAppConfig(appConfigFromState());
 				} catch (JAXBException | IOException exception) {
-					exception.printStackTrace();
+                    logger.log(Level.WARNING, "Failed to update app config");
 				}
 			}
 
@@ -718,7 +718,6 @@ class CheckerPanel extends JPanel {
 	}
 
 	void handleValidationError(String message, Throwable cause) {
-		cause.printStackTrace();
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 		this.progressBar.setVisible(false);
 		this.isValidationErrorOccurred = true;
@@ -847,7 +846,7 @@ class CheckerPanel extends JPanel {
 						Files.copy(report.toPath(), temp.toPath());
 					} catch (FileAlreadyExistsException excep) {
 						String message = String.format(GUIConstants.WARN_FILE_EXISTS, extension.toUpperCase());
-						logger.log(Level.FINE, message, excep);
+						logger.log(Level.FINE, message);
 						int resultOption = JOptionPane.showConfirmDialog(CheckerPanel.this,
 								message, GUIConstants.TITLE_OVERWRITE, JOptionPane.YES_NO_OPTION);
 						if (resultOption == JOptionPane.YES_OPTION) {

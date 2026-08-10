@@ -75,7 +75,7 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 		} catch (MalformedURLException excep) {
 			throw new IllegalStateException(String.format("Problem parsing hard coded URL %s", stringURL), excep); //$NON-NLS-1$
 		} catch (IOException excep) {
-			logger.log(Level.INFO, "Couldn't get latest version info from Jenkins.", excep); //$NON-NLS-1$
+			logger.log(Level.INFO, "Couldn't get latest version info from Jenkins."); //$NON-NLS-1$
 		}
 		return false;
 	}
@@ -130,7 +130,6 @@ public class SoftwareUpdaterImpl implements SoftwareUpdater {
 			NodeList versions = ((NodeList) path.evaluate("//str[@name='v']", doc, XPathConstants.NODESET));
 			return Versions.fromString(versions.item(0).getFirstChild().getNodeValue());
 		} catch (Exception excep) {
-			excep.printStackTrace();
 			throw new IllegalStateException(String.format("Problem parsing version number from URL %s", endpoint), //$NON-NLS-1$
 					excep);
 		}

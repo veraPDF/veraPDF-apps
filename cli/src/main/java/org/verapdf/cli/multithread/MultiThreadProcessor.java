@@ -112,7 +112,7 @@ public class MultiThreadProcessor {
 					throw new IllegalStateException("Can't obtain executable veraPDF CLI script path");
 				}
 			} catch (IllegalStateException e) {
-				LOGGER.log(Level.SEVERE, "Can't obtain veraPDF CLI script path", e);
+				LOGGER.log(Level.SEVERE, "Can't obtain veraPDF CLI script path");
 				this.currentExitCode = ExitCodes.FAILED_MULTIPROCESS_START;
 			}
 		}

@@ -91,7 +91,7 @@ final class VeraPdfCliProcessor implements Closeable {
 				this.tempFile = Files.createTempFile("tempReport", ".xml").toFile();
 				this.os = new FileOutputStream(tempFile);
 			} catch (IOException e) {
-				logger.log(Level.SEVERE, "Can't create temp file", e);
+				logger.log(Level.SEVERE, "Can't create temp file");
 			}
 		} else {
 			this.os = System.out;
@@ -121,7 +121,7 @@ final class VeraPdfCliProcessor implements Closeable {
 				return ExitCodes.VALID;
 			}
 		} catch (IOException e) {
-			logger.log(Level.SEVERE,"STDIN is not available", e);
+			logger.log(Level.SEVERE,"STDIN is not available");
 		}
 		ItemDetails item = ItemDetails.fromValues(CliConstants.NAME_STDIN);
 		return processStream(item, System.in);
@@ -148,10 +148,10 @@ final class VeraPdfCliProcessor implements Closeable {
 		} catch (VeraPDFException excep) {
 			String message = CliConstants.EXCEP_VERA_BATCH;
 			System.err.println(message);
-			logger.log(Level.SEVERE, message, excep);
+			logger.log(Level.SEVERE, message);
 			return ExitCodes.VERAPDF_EXCEPTION;
 		} catch (IOException excep) {
-			logger.log(Level.FINE, CliConstants.EXCEP_TEMP_MRR_CLOSE, excep);
+			logger.log(Level.FINE, CliConstants.EXCEP_TEMP_MRR_CLOSE);
 			return ExitCodes.IO_EXCEPTION;
 		}
 	}
@@ -206,21 +206,21 @@ final class VeraPdfCliProcessor implements Closeable {
 
 			} catch (IOException excep) {
 				// TODO Auto-generated catch block
-				logger.log(Level.SEVERE, CliConstants.EXCEP_REPORT_MARSHAL, excep);
+				logger.log(Level.SEVERE, CliConstants.EXCEP_REPORT_MARSHAL);
 				retVal = ExitCodes.JAXB_EXCEPTION;
 			} catch (VeraPDFException e) {
-				logger.log(Level.SEVERE, "STDIN is not available", e);
+				logger.log(Level.SEVERE, "STDIN is not available");
 			}
 
 			if (!this.isStdOut) {
 				try {
 					outputReportStream.close();
 				} catch (IOException ex) {
-					logger.log(Level.WARNING, CliConstants.EXCEP_REPORT_CLOSE, ex);
+					logger.log(Level.WARNING, CliConstants.EXCEP_REPORT_CLOSE);
 				}
 			}
 		} catch (IOException excep) {
-			logger.log(Level.FINER, CliConstants.EXCEP_PROCESSOR_CLOSE, excep);
+			logger.log(Level.FINER, CliConstants.EXCEP_PROCESSOR_CLOSE);
 		}
 		return retVal;
 	}
@@ -253,7 +253,7 @@ final class VeraPdfCliProcessor implements Closeable {
 		} catch (FileNotFoundException excep) {
 			throw new VeraPDFException("Could not find temporary policy result file.", excep);
 		} catch (IOException excep) {
-			logger.log(Level.FINE, "Exception raised closing temporary policy file.", excep);
+			logger.log(Level.FINE, "Exception raised closing temporary policy file.");
 		}
 		if (!tempPolicyResult.delete()) {
 			tempPolicyResult.deleteOnExit();

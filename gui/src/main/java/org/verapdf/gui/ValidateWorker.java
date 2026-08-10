@@ -96,7 +96,7 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 			this.xmlReport.deleteOnExit();
 			this.htmlReport = null;
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, ERROR_IN_CREATING_TEMP_FILE, e);
+			logger.log(Level.SEVERE, ERROR_IN_CREATING_TEMP_FILE);
 			this.parent.handleValidationError(ERROR_IN_CREATING_TEMP_FILE + ": ", e); //$NON-NLS-1$
 		}
 		try (OutputStream mrrReport = new FileOutputStream(this.xmlReport)) {
@@ -112,7 +112,7 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 				try (InputStream policyStream = new FileInputStream(this.policy)) {
 					featuresConfig = ApplicationUtils.mergeEnabledFeaturesFromPolicy(featuresConfig, policyStream);
 				} catch (ParserConfigurationException | SAXException | XPathExpressionException e) {
-					logger.log(Level.SEVERE, ERROR_IN_OBTAINING_POLICY_FEATURES, e);
+					logger.log(Level.SEVERE, ERROR_IN_OBTAINING_POLICY_FEATURES);
 					this.parent.handleValidationError(ERROR_IN_OBTAINING_POLICY_FEATURES + ": ", e);
 				}
 			}
@@ -132,10 +132,10 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 				}
 			}
 		} catch (IOException e) {
-			logger.log(Level.SEVERE, ERROR_IN_OPEN_STREAMS, e);
+			logger.log(Level.SEVERE, ERROR_IN_OPEN_STREAMS);
 			this.parent.handleValidationError(ERROR_IN_OPEN_STREAMS + ": ", e); //$NON-NLS-1$
 		} catch (VeraPDFException | XPathExpressionException | ParserConfigurationException | SAXException  e) {
-			logger.log(Level.SEVERE, ERROR_IN_PROCESSING, e);
+			logger.log(Level.SEVERE, ERROR_IN_PROCESSING);
 			this.parent.handleValidationError(ERROR_IN_PROCESSING + ": ", e); //$NON-NLS-1$
 		}
 		if (this.validateWorkerSummary != null) {
@@ -183,13 +183,13 @@ class ValidateWorker extends SwingWorker<ValidateWorker.ValidateWorkerSummary, I
 						String.format(GUIConstants.IOEXCEP_SAVING_REPORT, extension), GUIConstants.ERROR,
 						JOptionPane.ERROR_MESSAGE);
 				final String message = String.format(GUIConstants.IOEXCEP_SAVING_REPORT, extension);
-				logger.log(Level.SEVERE, message, excep);
+				logger.log(Level.SEVERE, message);
 				this.htmlReport = null;
 			}
 		} catch (IOException excep) {
 			final String message = String.format(GUIConstants.IOEXCEP_SAVING_REPORT, extension);
 			JOptionPane.showMessageDialog(this.parent, message, GUIConstants.ERROR, JOptionPane.ERROR_MESSAGE);
-			logger.log(Level.SEVERE, message, excep);
+			logger.log(Level.SEVERE, message);
 			this.htmlReport = null;
 		}
 	}
