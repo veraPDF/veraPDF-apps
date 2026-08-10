@@ -224,6 +224,7 @@ class CheckerPanel extends JPanel {
 				try {
 					config.updateAppConfig(appConfigFromState());
 				} catch (JAXBException | IOException exception) {
+                    logger.log(Level.WARNING, "Failed to update app config");
 				}
 			}
 		});
@@ -435,6 +436,7 @@ class CheckerPanel extends JPanel {
 				try {
 					config.updateValidatorConfig(validatorConfigFromState());
 				} catch (JAXBException | IOException e) {
+                    logger.log(Level.WARNING, "Failed to update validator config");
 				}
 			}
 		});
@@ -502,6 +504,7 @@ class CheckerPanel extends JPanel {
 				try {
 					config.updateAppConfig(appConfigFromState());
 				} catch (JAXBException | IOException exception) {
+                    logger.log(Level.WARNING, "Failed to update app config");
 				}
 			}
 
@@ -536,6 +539,7 @@ class CheckerPanel extends JPanel {
 				try {
 					config.updateAppConfig(appConfigFromState());
 				} catch (JAXBException | IOException exception) {
+                    logger.log(Level.WARNING, "Failed to update app config");
 				}
 			}
 

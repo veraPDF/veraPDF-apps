@@ -185,6 +185,7 @@ public class PDFValidationApplication extends JFrame {
 						configManager.updateAppConfig(confBuilder.build());
 					} catch (JAXBException | IOException excep) {
 						// TODO Auto-generated catch block
+                        logger.log(Level.WARNING, "Failed to update app config");
 					}
 
 					ValidatorConfig validConf = ValidatorFactory.createConfig(
@@ -202,6 +203,7 @@ public class PDFValidationApplication extends JFrame {
 						configManager.updateValidatorConfig(validConf);
 					} catch (JAXBException | IOException excep) {
 						// TODO Auto-generated catch block
+                        logger.log(Level.WARNING, "Failed to update validator config");
 					}
 
 					MetadataFixerConfig fixConf = FixerFactory
@@ -210,6 +212,7 @@ public class PDFValidationApplication extends JFrame {
 						configManager.updateFixerConfig(fixConf);
 					} catch (JAXBException | IOException excep) {
 						// TODO Auto-generated catch block
+                        logger.log(Level.WARNING, "Failed to update fixer config");
 					}
 
 				}
@@ -422,6 +425,7 @@ public class PDFValidationApplication extends JFrame {
 			try {
 				frameScale = Double.parseDouble(args[1]);
 			} catch (NumberFormatException e) {
+                logger.log(Level.WARNING, "Invalid frame scale " + args[1]);
 			}
 		}
 		ReleaseDetails.addDetailsFromResource(
@@ -457,6 +461,7 @@ public class PDFValidationApplication extends JFrame {
 				configManager.updateAppConfig(PDFValidationApplication.this.config);
 			} catch (JAXBException | IOException excep) {
 				// TODO Auto-generated catch block
+                logger.log(Level.WARNING, "Failed to update app config");
 			}
 		}
 	}
