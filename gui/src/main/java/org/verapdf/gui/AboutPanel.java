@@ -96,7 +96,7 @@ class AboutPanel extends JPanel {
 				} catch (IOException | URISyntaxException excep) {
 					JOptionPane.showMessageDialog(AboutPanel.this, GUIConstants.ERROR, GUIConstants.ERROR,
 							JOptionPane.ERROR_MESSAGE);
-					logger.log(Level.SEVERE, "Exception in opening link " + GUIConstants.LOGO_LINK_URL, excep); //$NON-NLS-1$
+					logger.log(Level.SEVERE, "Exception in opening link " + GUIConstants.LOGO_LINK_URL); //$NON-NLS-1$
 				}
 
 			}
