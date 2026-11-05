@@ -51,6 +51,8 @@ RUN "$JAVA_HOME/bin/jlink" \
 # Now the final application image
 FROM ubuntu:22.04
 
+ENV LANG=C.UTF-8
+
 # Set for additional arguments passed to the java run command, no default
 ARG JAVA_OPTS
 ENV JAVA_OPTS=$JAVA_OPTS
