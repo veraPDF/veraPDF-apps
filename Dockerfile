@@ -21,7 +21,7 @@
 
 # See https://docs.docker.com/engine/userguide/eng-image/multistage-build/
 # First build the app on a maven open jdk 11 container
-FROM eclipse-temurin:11-jdk-jammy AS app-installer
+FROM amazoncorretto:11-alpine-jdk AS app-installer
 ARG VERAPDF_VERSION
 ARG VERAPDF_MINOR_VERSION
 ARG VERAPDF_INSTALLER_FOLDER
@@ -32,12 +32,11 @@ ENV VERAPDF_INSTALLER_FOLDER=${VERAPDF_INSTALLER_FOLDER:-releases}
 WORKDIR /tmp
 COPY docker-install.xml .
 RUN wget -O /tmp/verapdf-installer.zip https://software.verapdf.org/${VERAPDF_INSTALLER_FOLDER}/${VERAPDF_VERSION}/verapdf-greenfield-${VERAPDF_VERSION}.${VERAPDF_MINOR_VERSION}-installer.zip
-RUN apt-get update && apt-get install -y --no-install-recommends unzip && rm -rf /var/lib/apt/lists/*
 RUN unzip verapdf-installer.zip && java -jar ./verapdf-greenfield-${VERAPDF_VERSION}.${VERAPDF_MINOR_VERSION}/verapdf-izpack-installer-${VERAPDF_VERSION}.${VERAPDF_MINOR_VERSION}.jar docker-install.xml
 
-# Now build a Java JRE for the Ubuntu application image
+# Now build a Java JRE for the Alpine application image
 # https://github.com/docker-library/docs/blob/master/eclipse-temurin/README.md#creating-a-jre-using-jlink
-FROM eclipse-temurin:11-jdk-jammy AS jre-builder
+FROM amazoncorretto:11-alpine-jdk AS jre-builder
 
 # Create a custom Java runtime
 RUN "$JAVA_HOME/bin/jlink" \
@@ -49,9 +48,7 @@ RUN "$JAVA_HOME/bin/jlink" \
          --output /javaruntime
 
 # Now the final application image
-FROM ubuntu:22.04
-
-ENV LANG=C.UTF-8
+FROM alpine:3.24
 
 # Set for additional arguments passed to the java run command, no default
 ARG JAVA_OPTS
@@ -67,7 +64,7 @@ COPY --from=jre-builder /javaruntime $JAVA_HOME
 
 # Since this is a running network service we'll create an unprivileged account
 # which will be used to perform the rest of the work and run the actual service:
-RUN groupadd --system verapdf && useradd --system --gid verapdf --home-dir /opt/verapdf --create-home --shell /usr/sbin/nologin verapdf
+RUN addgroup -S verapdf && adduser -S -G verapdf -h /opt/verapdf verapdf
 RUN mkdir --parents /var/opt/verapdf/logs && chown -R verapdf:verapdf /var/opt/verapdf
 
 USER verapdf
