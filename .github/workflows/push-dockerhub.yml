@@ -25,7 +25,7 @@ on:
   push:
     tags:
       - 'v1.30.*'
-      - '!v1.31.0-RC*'
+      - '!v1.30.0-RC*'
   workflow_dispatch:
     inputs:
       tag:
